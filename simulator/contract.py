@@ -52,6 +52,7 @@ class Contract:
     def register_service_provider(
             self, service_type: ServiceType, url: str, metadata: dict, tx: Tx):
         self._before_tx(tx.sender)
+        # Only solvers and directories need public internet facing URLs at present
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
                 self.resource_providers[tx.sender] = Service(service_type, url, metadata, tx.sender)

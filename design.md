@@ -8,6 +8,30 @@ The rules of players in the simulated world are:
  * we're ignoring gas
  * we MUST include a TX object with the correct address and value (which can be 0) in every tx call
 
+## solver stages
+
+ * stage 1 = centralized solver
+   * single process solver service
+   * job creator and resource provider api's are merged
+ * state 2 = centralized solver with split api's
+   * single process solver service
+   * job creator and resource provider api's are split
+ * stage 3 = centralized solver with edge api's
+   * solver is now dumb transport
+   * resource provider and job creator apis are now edge services
+   * the solver only connects messages
+ * stag 4 = libp2p
+   * there is now no solver
+   * libp2p replaces the solver transport
+
+### stages (from Levi)
+
+* Step 1) solver matches, but with marketplace of solvers
+* Step 2) solver runs autonomous agents on behalf of nodes
+* Step 3) autonomous agents are run locally and solver is used for transporting messages
+* Step 4) solver is totally removed, nodes communicate via libp2p
+
+
 ## services
 
 Services:
@@ -102,12 +126,14 @@ The following api's are what the resource provider and job creator will use to c
    * resourceOfferID `CID`
    * cancel the resource offer for everyone
 
+  
+
 #### job creator
 
  * `broadcastJobOffer(jobOfferID)`
    * resourceOfferID `CID`
 
- * `communicateJobOffer(resourceOfferID, jobCreatorID)`
+ * `communicateJobOffer(resourceOfferID, resourceProviderID)`
    * resourceOfferID `CID`
    * jobCreatorID `address`
 
@@ -120,6 +146,8 @@ The following api's are what the resource provider and job creator will use to c
  * `listJobOffers() returns []ID`
    * returns an array of jobOfferID's that the msg._sender can see
    * this means job offers that have been broadcast to everyone AND ones that have been sent to the msg._sender directly
+
+  * `subscribe`
 
 
 ### resource provider
@@ -139,3 +167,7 @@ The following api's are what the resource provider and job creator will use to c
  * cancel job offer
  * hear about match
  * agree match (*)
+ 
+
+
+
