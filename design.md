@@ -10,26 +10,19 @@ The rules of players in the simulated world are:
 
 ## solver stages
 
- * stage 1 = centralized solver
+ * stage 1 = solver matches, but with marketplace of solvers
    * single process solver service
    * job creator and resource provider api's are merged
- * state 2 = centralized solver with split api's
+ * state 2 = solver runs autonomous agents on behalf of nodes
    * single process solver service
    * job creator and resource provider api's are split
- * stage 3 = centralized solver with edge api's
+ * stage 3 = autonomous agents are run locally and solver is used for transporting messages
    * solver is now dumb transport
    * resource provider and job creator apis are now edge services
    * the solver only connects messages
- * stage 4 = libp2p
+ * stage 4 = solver is totally removed, nodes communicate via libp2p
    * there is now no solver
    * libp2p replaces the solver transport
-
-### stages (from Levi)
-
-* Step 1) solver matches, but with marketplace of solvers
-* Step 2) solver runs autonomous agents on behalf of nodes
-* Step 3) autonomous agents are run locally and solver is used for transporting messages
-* Step 4) solver is totally removed, nodes communicate via libp2p
 
 ## services
 
@@ -41,6 +34,40 @@ Services:
  * solver
  * mediator
  * directory
+
+## types
+
+These types are global data structures:
+
+#### Range
+
+Represents a range of values
+
+ * min `uint`
+ * max `uint`
+
+#### ResourceOffer
+
+The ID of the resource offer is the IPFS cid of the JSON document with the following structure:
+ 
+ * owner `address`
+ * CPU `uint`
+ * GPU `uint`
+ * RAM `uint`
+ * prices `map[string]uint`
+   * this is price per instruction for each module
+  
+#### JobOffer
+
+The ID of the job offer is the IPFS cid of the JSON document with the following structure:
+
+ * owner `address`
+ * CPU `Range`
+ * GPU `Range`
+ * RAM `Range`
+ * module `string`
+ * price `uint`
+   * this is price per instruction
 
 ## smart contract
 
@@ -89,14 +116,16 @@ Services:
    * resourceOfferID `CID`
    * timeout `uint`
      * the upper bounds of time this job can take - TODO: is this in seconds or blocks?
-   * timeoutDeposit `uint`
+   * timeoutDeposit `uint` (msg._value)
      * the amount of deposit that will be lost if the job takes longer than timeout
      * this must equal msg._value
    
- * `submitResults`
-  
-
- * `cancelDeal`
+ * `submitResults(dealID, resultsCID, instructionCount, resultsDeposit)`
+    * dealID `CID`
+    * resultsCID `CID`
+    * instructionCount `uint`
+    * resultsDeposit `uint` (msg._value)
+    * submit the results of the job to the smart contract
 
 ## solver
 
@@ -110,46 +139,74 @@ The following api's are what the resource provider and job creator will use to c
 
 #### resource provider
 
- * `broadcastResourceOffer(resourceOfferID)`
-   * resourceOfferID `CID`
-   * tell everyone connected to this solver about the resource offer
-   * this will emit an event and keep the state internally
+Each call to the solver on behalf of a resource provider will include the resource provider's address as part of a signed TX object.
 
- * `communicateResourceOffer(resourceOfferID, jobCreatorID)`
+This is to ensure authentication in services that are not the smart contract.
+
+ * `broadcastResourceOffer(resourceOfferID, resourceOffer)`
+   * resourceOfferID `CID`
+   * resourceOffer `ResourceOffer`
+   * tell everyone connected to this solver about the resource offer
+
+ * `communicateResourceOffer(resourceOfferID, jobCreatorID, resourceOffer)`
    * resourceOfferID `CID`
    * jobCreatorID `address`
+   * resourceOffer `ResourceOffer`
    * tell one specific job creator about the resource offer
-   * this will emit an event and keep the state internally
 
  * `cancelResourceOffer(resourceOfferID)`
    * resourceOfferID `CID`
    * cancel the resource offer for everyone
 
-  
-
 #### job creator
 
- * `broadcastJobOffer(jobOfferID)`
+ * `broadcastJobOffer(jobOfferID, jobOffer)`
    * resourceOfferID `CID`
+   * jobOffer `JobOffer`
+   * tell everyone connected to this solver about the job offers
 
- * `communicateJobOffer(resourceOfferID, resourceProviderID)`
+ * `communicateJobOffer(resourceOfferID, resourceProviderID, jobOffer)`
    * resourceOfferID `CID`
    * jobCreatorID `address`
+   * jobOffer `JobOffer`
+   * tell one specific resource provider about the resource offer
+
+ * `cancelJobOffer(jobOfferID)`
+   * jobOfferID `CID`
+   * cancel the job offer for everyone
 
 #### both
 
- * `listResourceOffers() returns []ID`
-   * returns an array of resourceOfferID's that the msg._sender can see
+ * `listResourceOffers() returns []ResourceOffer`
+   * returns an array of resourceOffers that the msg._sender can see
    * this means resource offers that have been broadcast to everyone AND ones that have been sent to the msg._sender directly
 
- * `listJobOffers() returns []ID`
+ * `getResourceOffer(resourceOfferID) returns ResourceOffer`
+   * returns an array of jobOffers that the msg._sender can see
+   * throw error if msg._sender cannot see the resource offer
+   * this means resource offers that have been broadcast to everyone AND ones that have been sent to the msg._sender directly
+
+ * `listJobOffers() returns []JobOffer`
    * returns an array of jobOfferID's that the msg._sender can see
    * this means job offers that have been broadcast to everyone AND ones that have been sent to the msg._sender directly
 
-  * `subscribe`
+ * `getJobOffer(resourceOfferID) returns ResourceOffer`
+   * returns an array of jobOffers that the msg._sender can see
+   * throw error if msg._sender cannot see the resource offer
+   * this means resource offers that have been broadcast to everyone AND ones that have been sent to the msg._sender directly
+
+ * `onResourceOfferCreated(handler)`
+   * handler `function(resourceOfferID, ResourceOffer)`
+   * called when new resource offers (either global or targeted) are seen
+
+ * `onJobOfferCreated(handler)`
+   * handler `function(jobOfferID, JobOffer)`
+   * called when new job offers (either global or targeted) are seen
+
+ 
 
 
-### resource provider
+## resource provider
 
  * register -> smart contract
  * create resource offer -> solver
@@ -158,7 +215,7 @@ The following api's are what the resource provider and job creator will use to c
  * hear about match <- solver
  * agree match -> smart contract
 
-### job creator
+## job creator
 
  * register (*)
  * create job offer
