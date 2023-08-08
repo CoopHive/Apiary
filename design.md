@@ -20,7 +20,7 @@ The rules of players in the simulated world are:
    * solver is now dumb transport
    * resource provider and job creator apis are now edge services
    * the solver only connects messages
- * stag 4 = libp2p
+ * stage 4 = libp2p
    * there is now no solver
    * libp2p replaces the solver transport
 
@@ -30,7 +30,6 @@ The rules of players in the simulated world are:
 * Step 2) solver runs autonomous agents on behalf of nodes
 * Step 3) autonomous agents are run locally and solver is used for transporting messages
 * Step 4) solver is totally removed, nodes communicate via libp2p
-
 
 ## services
 
