@@ -66,7 +66,7 @@ class Contract:
 
     def _before_tx(self, wallet_address: str):
         self._maybe_init_wallet(wallet_address)
-        self.block_number += 1
+        self._increment_block_number()
 
     def _increment_block_number(self):
         self.block_number += 1

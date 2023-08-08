@@ -6,7 +6,7 @@ The rules of players in the simulated world are:
 
  * you must correctly report your wallet address (we're not actually doing cryptography in the simulator)
  * we're ignoring gas
- * we MUST include a TX object with the correct address and value (which can be 0) in very tx call
+ * we MUST include a TX object with the correct address and value (which can be 0) in every tx call
 
 ## services
 
@@ -114,7 +114,12 @@ The following api's are what the resource provider and job creator will use to c
 #### both
 
  * `listResourceOffers() returns []ID`
-   * returns an array of resourceOfferID's that have been broadcasted
+   * returns an array of resourceOfferID's that the msg._sender can see
+   * this means resource offers that have been broadcast to everyone AND ones that have been sent to the msg._sender directly
+
+ * `listJobOffers() returns []ID`
+   * returns an array of jobOfferID's that the msg._sender can see
+   * this means job offers that have been broadcast to everyone AND ones that have been sent to the msg._sender directly
 
 
 ### resource provider
