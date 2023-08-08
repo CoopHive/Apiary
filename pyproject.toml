@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "lilypad-simulator"
+version = "0.1.0"
+description = "A simulator for the game theory of Lilypad Network"
+authors = ["Luke Marsden <me@lukemarsden.net>"]
+license = "Apache 2"
+readme = "README.md"
+packages = [{include = "lilypad_simulator"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
