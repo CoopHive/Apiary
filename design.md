@@ -1,5 +1,15 @@
 # lilypad design doc
 
+## context
+
+The rules of players in the simulated world are:
+
+ * you must correctly report your wallet address (we're not actually doing cryptography in the simulator)
+ * we're ignoring gas
+ * we MUST include a TX object with the correct address and value (which can be 0) in very tx call
+
+## services
+
 Services:
 
  * smart contract
@@ -18,6 +28,7 @@ Services:
  * `type ServiceType` - enum
     * resourceProvider
     * jobCreator
+    * solver
     * mediator
     * directory
 
@@ -70,21 +81,26 @@ The solver will eventually be removed in favour of point to point communication.
 
 For that reason - the solver has 2 distinct sides to it's api, the resource provider side and job creator side.
 
+The resource provider and job creator will have their **own** api's - seperate to these that their respective CLI's will use.
+
+The following api's are what the resource provider and job creator will use to communicate with the solver.
+
 #### resource provider
 
  * `broadcastResourceOffer(resourceOfferID)`
    * resourceOfferID `CID`
    * tell everyone connected to this solver about the resource offer
+   * this will emit an event and keep the state internally
 
  * `communicateResourceOffer(resourceOfferID, jobCreatorID)`
    * resourceOfferID `CID`
    * jobCreatorID `address`
    * tell one specific job creator about the resource offer
+   * this will emit an event and keep the state internally
 
  * `cancelResourceOffer(resourceOfferID)`
    * resourceOfferID `CID`
-   * cancel the resource offer
-
+   * cancel the resource offer for everyone
 
 #### job creator
 
@@ -95,7 +111,10 @@ For that reason - the solver has 2 distinct sides to it's api, the resource prov
    * resourceOfferID `CID`
    * jobCreatorID `address`
 
+#### both
 
+ * `listResourceOffers() returns []ID`
+   * returns an array of resourceOfferID's that have been broadcasted
 
 
 ### resource provider
