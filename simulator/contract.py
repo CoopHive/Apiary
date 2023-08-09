@@ -12,7 +12,7 @@ from enum import Enum
 
 class ServiceType(Enum):
     RESOURCE_PROVIDER = 1
-    JOB_CREATOR = 2
+    CLIENT = 2
     SOLVER = 3
     MEDIATOR = 4
     DIRECTORY = 5
@@ -53,7 +53,7 @@ class Contract:
         self.wallets = {}
         # For the following service providers, mapping from wallet address -> metadata 
         self.resource_providers = {}
-        self.job_creators = {}
+        self.clients = {}
         self.solvers = {}
         self.mediators = {}
         self.directories = {}
@@ -68,8 +68,8 @@ class Contract:
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
                 self.resource_providers[tx.sender] = Service(service_type, url, metadata, tx.sender)
-            case ServiceType.JOB_CREATOR:
-                self.job_creators[tx.sender] = Service(service_type, url, metadata, tx.sender)
+            case ServiceType.CLIENT:
+                self.clients[tx.sender] = Service(service_type, url, metadata, tx.sender)
             case ServiceType.SOLVER:
                 self.solvers[tx.sender] = Service(service_type, url, metadata, tx.sender)
             case ServiceType.MEDIATOR:
@@ -93,8 +93,8 @@ class Contract:
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
                 self.resource_providers.pop(tx.sender)
-            case ServiceType.JOB_CREATOR:
-                self.job_creators.pop(tx.sender)
+            case ServiceType.CLIENT:
+                self.clients.pop(tx.sender)
             case ServiceType.SOLVER:
                 self.solvers.pop(tx.sender)
             case ServiceType.MEDIATOR:

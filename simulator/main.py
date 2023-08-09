@@ -7,6 +7,8 @@ import pprint
 import random
 from machine import Machine
 from resource_provider import ResourcePovider
+from client import Client
+from job import Job
 
 class Address:
     def __init__(self):
@@ -45,7 +47,7 @@ def main():
         )
 
         contract.register_service_provider(
-            ServiceType.JOB_CREATOR,
+            ServiceType.CLIENT,
             "",
             {"labels": ["local-test"]},
             Tx(create_new_address(), 0)
@@ -71,8 +73,8 @@ def main():
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
                 return contract.resource_providers
-            case ServiceType.JOB_CREATOR:
-                return contract.job_creators
+            case ServiceType.CLIENT:
+                return contract.clients
             case ServiceType.SOLVER:
                 return contract.solvers
             case ServiceType.MEDIATOR:
@@ -87,8 +89,8 @@ def main():
 
     print("--> resource_providers")
     pprint.pprint(get_list_of_service_providers(ServiceType.RESOURCE_PROVIDER))
-    print("--> job_creators")
-    pprint.pprint(get_list_of_service_providers(ServiceType.JOB_CREATOR))
+    print("--> clients")
+    pprint.pprint(get_list_of_service_providers(ServiceType.CLIENT))
     print("--> solvers")
     pprint.pprint(get_list_of_service_providers(ServiceType.SOLVER))
     print("--> directories")
@@ -115,13 +117,22 @@ def main():
     machine_data = new_machine.get_machine_data()
     print(machine_data)
 
-    new_resource_provider = ResourcePovider()
+    new_resource_provider = ResourcePovider('0')
     new_machine_CID = CID('1', {})
     new_resource_provider.add_machine(new_machine_CID, new_machine)
     resource_provider_machines = new_resource_provider.get_machines()
     print(resource_provider_machines)
     # should match above
     print(resource_provider_machines[new_machine_CID.hash].get_machine_data())
+
+    new_client = Client('1')
+    new_job = Job()
+    new_client.add_job(new_job)
+    # print job requirements
+    print(list(new_client.get_jobs())[0].get_job_requirements())
+
+    # # add client and resource provider to each others's local information
+    # new_resource_provider.local_information.add_service_provider()
 
 
 

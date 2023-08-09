@@ -1,10 +1,13 @@
 from contract import CID
 from machine import Machine
+from service_provider_local_information import LocalInformation
 
 class ResourcePovider:
-    def __init__(self):
+    def __init__(self, address: str):
         # machines maps CIDs -> machine metadata
+        self.address = address
         self.machines = {}
+        self.local_information = LocalInformation()
 
     def add_machine(self, machine_id: CID, machine: Machine):
         self.machines[machine_id.hash] = machine
