@@ -2,8 +2,11 @@
 Test entrypoint script.
 """
 
-from simulator.contract import Contract, ServiceType, Tx
+from contract import Contract, ServiceType, Tx, CID
 import pprint
+import random
+from machine import Machine
+from resource_provider import ResourcePovider
 
 class Address:
     def __init__(self):
@@ -24,8 +27,7 @@ def main():
         if len(contract.wallets) != 0:
             Address.increment_current_address(address)
         return hex(Address.get_current_address(address))
-
-
+        # return Address.get_current_address(address)
 
     for _ in range(2):
         contract.register_service_provider(
@@ -63,6 +65,8 @@ def main():
             Tx(create_new_address(), 0)
         )
 
+
+
     def get_list_of_service_providers(service_type: ServiceType):
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
@@ -92,6 +96,32 @@ def main():
     print("--> mediators")
     pprint.pprint(get_list_of_service_providers(ServiceType.MEDIATOR))
 
+    mediators = get_list_of_service_providers(ServiceType.MEDIATOR)
+    some_mediator_address = random.choice(list(mediators.keys()))
+    print(f'mediator being removed: {some_mediator_address}')
+    contract.unregister_service_provider(
+        ServiceType.MEDIATOR,
+        Tx(some_mediator_address, 0))
+
+    print("--> mediators after removing mediator")
+    pprint.pprint(get_list_of_service_providers(ServiceType.MEDIATOR))
+
+    machine_attributes = {'CPU', 'RAM'}
+    new_machine = Machine(machine_attributes)
+    new_machine.add_data('CPU', '4')
+    new_machine.add_data('RAM', '2')
+    # should throw exception if GPU is not one of the machine attributes
+    # new_machine.add_data('GPU', '3090')
+    machine_data = new_machine.get_machine_data()
+    print(machine_data)
+
+    new_resource_provider = ResourcePovider()
+    new_machine_CID = CID('1', {})
+    new_resource_provider.add_machine(new_machine_CID, new_machine)
+    resource_provider_machines = new_resource_provider.get_machines()
+    print(resource_provider_machines)
+    # should match above
+    print(resource_provider_machines[new_machine_CID.hash].get_machine_data())
 
 
 

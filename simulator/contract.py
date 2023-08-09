@@ -19,6 +19,15 @@ class ServiceType(Enum):
 
 
 @dataclass
+class CID:
+    """
+    IPFS CID
+    """
+
+    hash: str
+    data: {}
+
+@dataclass
 class Tx:
     """
     Ethereum transaction metadata
@@ -49,6 +58,9 @@ class Contract:
         self.mediators = {}
         self.directories = {}
 
+    def match_service_type(self):
+        pass
+
     def register_service_provider(
             self, service_type: ServiceType, url: str, metadata: dict, tx: Tx):
         self._before_tx(tx.sender)
@@ -76,3 +88,16 @@ class Contract:
         if wallet_address not in self.wallets:
             self.wallets[wallet_address] = 0
 
+    def unregister_service_provider(
+            self, service_type: ServiceType, tx: Tx):
+        match service_type:
+            case ServiceType.RESOURCE_PROVIDER:
+                self.resource_providers.pop(tx.sender)
+            case ServiceType.JOB_CREATOR:
+                self.job_creators.pop(tx.sender)
+            case ServiceType.SOLVER:
+                self.solvers.pop(tx.sender)
+            case ServiceType.MEDIATOR:
+                self.mediators.pop(tx.sender)
+            case ServiceType.DIRECTORY:
+                self.directories.pop(tx.sender)
