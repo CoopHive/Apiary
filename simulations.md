@@ -2,40 +2,28 @@
 
 A list of the simulations we need to run
 
+Need to be able to vary the following parameters:
 
-## registrations of service providers
+* taxation rate
+  * for maximum flexibility, should be able to be different for every deal
+* the percent of taxes that go jackpot versus somewhere else
+* where jackpots payouts go
+* the amount staked by nodes to other nodes
+* the allocation of rewards from dPoS
+* number of nodes in consortium
+* consensus threshold in consortium
+* how consortium nodes are chosen
+* maximum subset of nodes in a single mediation process
+* reward for announcing successful cheating
+* client collateral
+* collateral multiplier
+* timeout collateral
+* cheating collateral
+* computation rate collateral
+* frequency/probability of checking result
+* reputation metrics? 
+* payment for/amount of time that inputs/outputs are stored
+* 
 
- * register resource provider
- * register job creator
- * register solver
- * register directory 
- * register mediator
 
 
-## boot
-
- * boot as RP - load solver address from smart contract
- * boot at JC - load solver address from smart contract
-
-
-## registrations of job and resource offers
-
- * RP registers resource offer to smart contract
- * JC registers job offer to smart contract
-
-
-## matching
-
-* solver matches job offer and resource offer
-* solver creates deal CID from match
-* solver indicates the match to the two parties
-* (future) parties agree and sign transactions
-
-## sanity
-
-Just checks the simulator is up and functional:
-
- * check for overlapping addresses
- * check that amount of currency in circulation is constant (accounting for new amounts being added)
- * JC and RP agree to the same deal CID
- 
