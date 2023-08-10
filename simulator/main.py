@@ -109,21 +109,32 @@ def main():
     pprint.pprint(get_list_of_service_providers(ServiceType.MEDIATOR))
 
     machine_attributes = {'CPU', 'RAM'}
-    new_machine = Machine(machine_attributes)
-    new_machine.add_data('CPU', '4')
-    new_machine.add_data('RAM', '2')
+    new_machine_1 = Machine(machine_attributes)
+    new_machine_1.add_data('CPU', '4')
+    new_machine_1.add_data('RAM', '2')
     # should throw exception if GPU is not one of the machine attributes
-    # new_machine.add_data('GPU', '3090')
-    machine_data = new_machine.get_machine_data()
+    # new_machine_1.add_data('GPU', '3090')
+    machine_data = new_machine_1.get_machine_data()
     print(machine_data)
 
+    new_machine_2 = Machine(machine_attributes)
+    new_machine_2.add_data('CPU', '8')
+    new_machine_2.add_data('RAM', '4')
+
+
     new_resource_provider = ResourcePovider('0')
-    new_machine_CID = CID('1', {})
-    new_resource_provider.add_machine(new_machine_CID, new_machine)
+    new_machine_1_CID = CID('1', {})
+    new_machine_2_CID = CID('2', {})
+    new_resource_provider.add_machine(new_machine_1_CID, new_machine_1)
+    new_resource_provider.add_machine(new_machine_2_CID, new_machine_2)
     resource_provider_machines = new_resource_provider.get_machines()
     print(resource_provider_machines)
     # should match above
-    print(resource_provider_machines[new_machine_CID.hash].get_machine_data())
+    print(resource_provider_machines[new_machine_1_CID.hash].get_machine_data())
+    print(resource_provider_machines[new_machine_2_CID.hash].get_machine_data())
+
+    print(resource_provider_machines[new_machine_1_CID.hash].get_machine_uuid())
+    print(resource_provider_machines[new_machine_2_CID.hash].get_machine_uuid())
 
     new_client = Client('1')
     new_job = Job()
