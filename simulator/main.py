@@ -11,6 +11,7 @@ from machine import Machine
 from resource_provider import ResourcePovider
 from client import Client
 from job import Job
+from solver import Solver
 
 class Address:
     def __init__(self):
@@ -124,9 +125,10 @@ def main():
     new_machine_2.add_data('RAM', '4')
 
     new_resource_provider_1_url = ""
-    new_resource_provider_1 = ResourcePovider('0', new_resource_provider_1_url)
-    new_machine_1_CID = CID('1', {})
-    new_machine_2_CID = CID('2', {})
+    new_resource_provider_1_public_key = 'new_resource_provider_1_public_key'
+    new_resource_provider_1 = ResourcePovider(new_resource_provider_1_public_key, new_resource_provider_1_url)
+    new_machine_1_CID = CID('new_machine_1_CID', {})
+    new_machine_2_CID = CID('new_machine_2_CID', {})
     new_resource_provider_1.add_machine(new_machine_1_CID, new_machine_1)
     new_resource_provider_1.add_machine(new_machine_2_CID, new_machine_2)
     resource_provider_machines = new_resource_provider_1.get_machines()
@@ -139,7 +141,8 @@ def main():
     print(resource_provider_machines[new_machine_2_CID.hash].get_machine_uuid())
 
     new_client_1_url = ""
-    new_client_1 = Client('1', new_client_1_url)
+    new_client_1_public_key = 'new_client_1_public_key'
+    new_client_1 = Client(new_client_1_public_key, new_client_1_url)
     new_job = Job()
     new_client_1.add_job(new_job)
     # print job requirements
@@ -147,6 +150,19 @@ def main():
 
     # add client and resource provider to each other's local information
     # new_resource_provider_1.local_information.add_service_provider()
+    new_solver_1_public_key = "11"
+    new_solver_1_url = "http://solver.com"
+    new_solver_1 = Solver(new_solver_1_public_key, new_solver_1_url)
+
+    new_solver_1.local_information.add_service_provider(ServiceType.RESOURCE_PROVIDER,
+                                                        new_resource_provider_1_public_key, new_resource_provider_1)
+    # should print public key of first resource provider
+    print(list(new_solver_1.local_information.get_list_of_service_providers(ServiceType.RESOURCE_PROVIDER).values())[0].get_address())
+
+    new_solver_1.local_information.add_service_provider(ServiceType.CLIENT,
+                                                        new_client_1_public_key, new_client_1)
+    # should print public key of first client
+    print(list(new_solver_1.local_information.get_list_of_service_providers(ServiceType.CLIENT).values())[0].get_address())
 
 
 

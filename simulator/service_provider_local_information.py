@@ -39,33 +39,47 @@ class LocalInformation:
     #         case ServiceType.DIRECTORY:
     #             self.directories.pop(tx.sender)
 
+    # def add_service_provider(
+    #         self, service_type: ServiceType, url: str, metadata: dict, public_key: str):
+    #     match service_type:
+    #         case ServiceType.RESOURCE_PROVIDER:
+    #             self.resource_providers[public_key] = Service(service_type, url, metadata, public_key)
+    #         case ServiceType.CLIENT:
+    #             self.clients[public_key] = Service(service_type, url, metadata, public_key)
+    #         case ServiceType.SOLVER:
+    #             self.solvers[public_key] = Service(service_type, url, metadata, public_key)
+    #         case ServiceType.MEDIATOR:
+    #             self.mediators[public_key] = Service(service_type, url, metadata, public_key)
+    #         case ServiceType.DIRECTORY:
+    #             self.directories[public_key] = Service(service_type, url, metadata, public_key)
+
     def add_service_provider(
-            self, service_type: ServiceType, url: str, metadata: dict, address: str):
+            self, service_type: ServiceType, public_key: str, service_provider):
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
-                self.resource_providers[address] = Service(service_type, url, metadata)
+                self.resource_providers[public_key] = service_provider
             case ServiceType.CLIENT:
-                self.clients[address] = Service(service_type, url, metadata)
+                self.clients[public_key] = service_provider
             case ServiceType.SOLVER:
-                self.solvers[address] = Service(service_type, url, metadata)
+                self.solvers[public_key] = service_provider
             case ServiceType.MEDIATOR:
-                self.mediators[address] = Service(service_type, url, metadata)
+                self.mediators[public_key] = service_provider
             case ServiceType.DIRECTORY:
-                self.directories[address] = Service(service_type, url, metadata)
+                self.directories[public_key] = service_provider
 
     def remove_service_provider(
-            self, service_type: ServiceType, address):
+            self, service_type: ServiceType, public_key):
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
-                self.resource_providers.pop(address)
+                self.resource_providers.pop(public_key)
             case ServiceType.CLIENT:
-                self.clients.pop(address)
+                self.clients.pop(public_key)
             case ServiceType.SOLVER:
-                self.solvers.pop(address)
+                self.solvers.pop(public_key)
             case ServiceType.MEDIATOR:
-                self.mediators.pop(address)
+                self.mediators.pop(public_key)
             case ServiceType.DIRECTORY:
-                self.directories.pop(address)
+                self.directories.pop(public_key)
 
     def get_list_of_service_providers(self, service_type: ServiceType):
         match service_type:

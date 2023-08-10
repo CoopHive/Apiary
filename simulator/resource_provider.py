@@ -1,14 +1,13 @@
 from utils import CID
 from machine import Machine
 from service_provider import ServiceProvider
-from service_provider_local_information import LocalInformation
+
 
 class ResourcePovider(ServiceProvider):
-    def __init__(self, address: str, url: str):
+    def __init__(self, public_key: str, url: str):
         # machines maps CIDs -> machine metadata
-        super().__init__(address, url)
+        super().__init__(public_key, url)
         self.machines = {}
-        self.local_information = LocalInformation()
 
     def add_machine(self, machine_id: CID, machine: Machine):
         self.machines[machine_id.hash] = machine
@@ -19,8 +18,3 @@ class ResourcePovider(ServiceProvider):
     def get_machines(self):
         return self.machines
 
-    def get_address(self):
-        return self.address
-
-    def get_url(self):
-        return self.url
