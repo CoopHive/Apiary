@@ -123,8 +123,8 @@ def main():
     new_machine_2.add_data('CPU', '8')
     new_machine_2.add_data('RAM', '4')
 
-
-    new_resource_provider_1 = ResourcePovider('0')
+    new_resource_provider_1_url = ""
+    new_resource_provider_1 = ResourcePovider('0', new_resource_provider_1_url)
     new_machine_1_CID = CID('1', {})
     new_machine_2_CID = CID('2', {})
     new_resource_provider_1.add_machine(new_machine_1_CID, new_machine_1)
@@ -138,7 +138,8 @@ def main():
     print(resource_provider_machines[new_machine_1_CID.hash].get_machine_uuid())
     print(resource_provider_machines[new_machine_2_CID.hash].get_machine_uuid())
 
-    new_client_1 = Client('1')
+    new_client_1_url = ""
+    new_client_1 = Client('1', new_client_1_url)
     new_job = Job()
     new_client_1.add_job(new_job)
     # print job requirements
