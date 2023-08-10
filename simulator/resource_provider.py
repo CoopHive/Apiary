@@ -1,4 +1,4 @@
-from contract import CID
+from utils import CID
 from machine import Machine
 from service_provider_local_information import LocalInformation
 
@@ -17,3 +17,9 @@ class ResourcePovider:
 
     def get_machines(self):
         return self.machines
+
+    def get_address(self):
+        return self.address
+
+    def get_url(self):
+        return self.url
