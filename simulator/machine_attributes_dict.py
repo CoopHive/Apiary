@@ -1,4 +1,7 @@
-machine_attributes = \
-    {'CPU',
+machine_attributes = {
+     'CPU',
      'RAM',
-     'GPU'}
+     'GPU',
+     'created_at',
+     'timeout'
+}

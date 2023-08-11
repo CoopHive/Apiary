@@ -1,6 +1,7 @@
 # TODO: make machine CIDs unique
 from machine_attributes_dict import machine_attributes
 
+
 class Machine:
     static_uuid = 0
 
