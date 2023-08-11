@@ -18,3 +18,5 @@ class ResourcePovider(ServiceProvider):
     def get_machines(self):
         return self.machines
 
+    def create_resource_offer(self):
+        pass

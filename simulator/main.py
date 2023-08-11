@@ -111,8 +111,9 @@ def main():
     # print("--> mediators after removing mediator")
     # pprint.pprint(get_list_of_service_providers(ServiceType.MEDIATOR))
 
-    machine_attributes = {'CPU', 'RAM'}
-    new_machine_1 = Machine(machine_attributes)
+    # machine_attributes = {'CPU', 'RAM'}
+    # new_machine_1 = Machine(machine_attributes)
+    new_machine_1 = Machine()
     new_machine_1.add_data('CPU', '4')
     new_machine_1.add_data('RAM', '2')
     # should throw exception if GPU is not one of the machine attributes
@@ -120,7 +121,8 @@ def main():
     machine_data = new_machine_1.get_machine_data()
     print(machine_data)
 
-    new_machine_2 = Machine(machine_attributes)
+    # new_machine_2 = Machine(machine_attributes)
+    new_machine_2 = Machine()
     new_machine_2.add_data('CPU', '8')
     new_machine_2.add_data('RAM', '4')
 
