@@ -10,48 +10,8 @@ class LocalInformation:
         self.solvers = {}
         self.mediators = {}
         self.directories = {}
-
-    # def add_service_provider(
-    #         self, service_type: ServiceType, url: str, metadata: dict, tx: Tx):
-    #     match service_type:
-    #         case ServiceType.RESOURCE_PROVIDER:
-    #             self.resource_providers[tx.sender] = Service(service_type, url, metadata, tx.sender)
-    #         case ServiceType.CLIENT:
-    #             self.clients[tx.sender] = Service(service_type, url, metadata, tx.sender)
-    #         case ServiceType.SOLVER:
-    #             self.solvers[tx.sender] = Service(service_type, url, metadata, tx.sender)
-    #         case ServiceType.MEDIATOR:
-    #             self.mediators[tx.sender] = Service(service_type, url, metadata, tx.sender)
-    #         case ServiceType.DIRECTORY:
-    #             self.directories[tx.sender] = Service(service_type, url, metadata, tx.sender)
-    #
-    # def remove_service_provider(
-    #         self, service_type: ServiceType, tx: Tx):
-    #     match service_type:
-    #         case ServiceType.RESOURCE_PROVIDER:
-    #             self.resource_providers.pop(tx.sender)
-    #         case ServiceType.CLIENT:
-    #             self.clients.pop(tx.sender)
-    #         case ServiceType.SOLVER:
-    #             self.solvers.pop(tx.sender)
-    #         case ServiceType.MEDIATOR:
-    #             self.mediators.pop(tx.sender)
-    #         case ServiceType.DIRECTORY:
-    #             self.directories.pop(tx.sender)
-
-    # def add_service_provider(
-    #         self, service_type: ServiceType, url: str, metadata: dict, public_key: str):
-    #     match service_type:
-    #         case ServiceType.RESOURCE_PROVIDER:
-    #             self.resource_providers[public_key] = Service(service_type, url, metadata, public_key)
-    #         case ServiceType.CLIENT:
-    #             self.clients[public_key] = Service(service_type, url, metadata, public_key)
-    #         case ServiceType.SOLVER:
-    #             self.solvers[public_key] = Service(service_type, url, metadata, public_key)
-    #         case ServiceType.MEDIATOR:
-    #             self.mediators[public_key] = Service(service_type, url, metadata, public_key)
-    #         case ServiceType.DIRECTORY:
-    #             self.directories[public_key] = Service(service_type, url, metadata, public_key)
+        self.resource_offers = {}
+        self.job_offers = {}
 
     def add_service_provider(
             self, service_type: ServiceType, public_key: str, service_provider):
@@ -93,3 +53,16 @@ class LocalInformation:
                 return self.mediators
             case ServiceType.DIRECTORY:
                 return self.directories
+
+    def add_resource_offer(self, id: str, data):
+        self.resource_offers[id] = data
+
+    def add_job_offer(self, id: str, data):
+        self.job_offers[id] = data
+
+    def get_resource_offers(self):
+        return self.resource_offers
+
+    def get_job_offers(self):
+        return self.job_offers
+

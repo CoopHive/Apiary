@@ -13,6 +13,7 @@ from client import Client
 from job import Job
 from solver import Solver
 from resource_offer import ResourceOffer
+from job_offer import JobOffer
 
 class Address:
     def __init__(self):
@@ -170,6 +171,25 @@ def main():
     new_resource_offer_1 = ResourceOffer()
     new_resource_offer_1.add_data('CPU', '6')
     new_resource_offer_1.add_data('RAM', '3')
+    new_resource_offer_1.add_data('owner', new_resource_provider_1_public_key)
+    new_resource_offer_1.set_id()
+    new_resource_offer_1_id = new_resource_offer_1.get_id()
+    print(new_resource_offer_1.get_id())
+
+    new_job_offer_1 = JobOffer()
+    new_job_offer_1.add_data('CPU', '6')
+    new_job_offer_1.add_data('RAM', '3')
+    new_job_offer_1.add_data('owner', new_client_1_public_key)
+    new_job_offer_1.set_id()
+    new_job_offer_1_id = new_job_offer_1.get_id()
+    print(new_job_offer_1.get_id())
+
+    new_solver_1.local_information.add_resource_offer(new_resource_offer_1_id, new_resource_offer_1)
+    new_solver_1.local_information.add_job_offer(new_job_offer_1_id, new_job_offer_1)
+
+    print(new_solver_1.local_information.get_resource_offers()[new_resource_offer_1_id].get_resource_offer_data().items())
+    print(new_solver_1.local_information.get_job_offers()[new_job_offer_1_id].get_job_offer_data().items())
+
 
 
 if __name__ == "__main__":
