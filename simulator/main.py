@@ -12,6 +12,7 @@ from resource_provider import ResourcePovider
 from client import Client
 from job import Job
 from solver import Solver
+from resource_offer import ResourceOffer
 
 class Address:
     def __init__(self):
@@ -166,6 +167,9 @@ def main():
     # should print public key of first client
     print(list(new_solver_1.local_information.get_list_of_service_providers(ServiceType.CLIENT).values())[0].get_address())
 
+    new_resource_offer_1 = ResourceOffer()
+    new_resource_offer_1.add_data('CPU', '6')
+    new_resource_offer_1.add_data('RAM', '3')
 
 
 if __name__ == "__main__":
