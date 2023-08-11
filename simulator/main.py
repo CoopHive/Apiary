@@ -8,7 +8,7 @@ from utils import ServiceType, Tx, CID
 import pprint
 import random
 from machine import Machine
-from resource_provider import ResourcePovider
+from resource_provider import ResourceProvider
 from client import Client
 from job import Job
 from solver import Solver
@@ -130,7 +130,7 @@ def main():
 
     new_resource_provider_1_url = ""
     new_resource_provider_1_public_key = 'new_resource_provider_1_public_key'
-    new_resource_provider_1 = ResourcePovider(new_resource_provider_1_public_key, new_resource_provider_1_url)
+    new_resource_provider_1 = ResourceProvider(new_resource_provider_1_public_key, new_resource_provider_1_url)
     new_machine_1_CID = CID('new_machine_1_CID', {})
     new_machine_2_CID = CID('new_machine_2_CID', {})
     new_resource_provider_1.add_machine(new_machine_1_CID, new_machine_1)
@@ -189,6 +189,7 @@ def main():
 
     print(new_solver_1.local_information.get_resource_offers()[new_resource_offer_1_id].get_resource_offer_data().items())
     print(new_solver_1.local_information.get_job_offers()[new_job_offer_1_id].get_job_offer_data().items())
+
 
 
 

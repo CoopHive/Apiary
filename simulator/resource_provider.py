@@ -3,7 +3,7 @@ from machine import Machine
 from service_provider import ServiceProvider
 
 
-class ResourcePovider(ServiceProvider):
+class ResourceProvider(ServiceProvider):
     def __init__(self, public_key: str, url: str):
         # machines maps CIDs -> machine metadata
         super().__init__(public_key, url)
