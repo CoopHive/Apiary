@@ -29,7 +29,7 @@ class Solver(ServiceProvider):
 
         return False
 
-    def create_deal(self, job_offer: JobOffer, resource_offer: ResourceOffer):
+    def create_deal(self, job_offer: JobOffer, resource_offer: ResourceOffer) -> Deal:
         # deal in stage 1 solver is exact match
         deal = Deal()
         job_offer_data = job_offer.get_job_offer_data()
@@ -41,4 +41,5 @@ class Solver(ServiceProvider):
 
         return deal
 
-
+    def add_deal_to_smart_contract(self, deal: Deal):
+        pass

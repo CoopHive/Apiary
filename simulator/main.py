@@ -161,12 +161,12 @@ def main():
     new_solver_1.local_information.add_service_provider(ServiceType.RESOURCE_PROVIDER,
                                                         new_resource_provider_1_public_key, new_resource_provider_1)
     # should print public key of first resource provider
-    print(list(new_solver_1.local_information.get_list_of_service_providers(ServiceType.RESOURCE_PROVIDER).values())[0].get_address())
+    print(list(new_solver_1.local_information.get_list_of_service_providers(ServiceType.RESOURCE_PROVIDER).values())[0].get_public_key())
 
     new_solver_1.local_information.add_service_provider(ServiceType.CLIENT,
                                                         new_client_1_public_key, new_client_1)
     # should print public key of first client
-    print(list(new_solver_1.local_information.get_list_of_service_providers(ServiceType.CLIENT).values())[0].get_address())
+    print(list(new_solver_1.local_information.get_list_of_service_providers(ServiceType.CLIENT).values())[0].get_public_key())
 
     new_resource_offer_1 = ResourceOffer()
     new_resource_offer_1.add_data('CPU', '6')
@@ -197,6 +197,9 @@ def main():
     new_deal_1.set_id()
     print(new_deal_1.get_deal_data())
     print(new_deal_1.get_id())
+
+
+
 
 if __name__ == "__main__":
     main()

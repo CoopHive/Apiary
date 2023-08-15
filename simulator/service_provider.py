@@ -2,13 +2,13 @@ from utils import *
 
 
 class ServiceProvider:
-    def __init__(self, address: str = None, url: str = None):
-        self.address = address
+    def __init__(self, public_key: str = None, url: str = None):
+        self.public_key = public_key
         self.url = url
         self.local_information = LocalInformation()
 
-    def get_address(self):
-        return self.address
+    def get_public_key(self):
+        return self.public_key
 
     def get_url(self):
         return self.url
