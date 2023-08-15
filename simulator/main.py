@@ -190,7 +190,8 @@ def main():
     print(new_solver_1.local_information.get_resource_offers()[new_resource_offer_1_id].get_resource_offer_data().items())
     print(new_solver_1.local_information.get_job_offers()[new_job_offer_1_id].get_job_offer_data().items())
 
-
+    new_match_1 = new_solver_1.match_job_offer(new_job_offer_1)
+    print(new_match_1)
 
 
 if __name__ == "__main__":
