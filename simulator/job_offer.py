@@ -10,7 +10,8 @@ class JobOffer:
     def add_data(self, data_field: str, data_value: str):
         # enforces constraints on jobs offers to enable matches
         if data_field not in job_offer_attributes:
-            raise Exception(f"trying to add invalid data field {data_field}")
+            print(f"trying to add invalid data field {data_field}")
+            raise Exception(f"trying to add invalid data field")
         else:
             self.data[data_field] = data_value
 

@@ -193,6 +193,11 @@ def main():
     new_match_1 = new_solver_1.match_job_offer(new_job_offer_1)
     print(new_match_1)
 
+    new_deal_1 = new_solver_1.create_deal(new_job_offer_1, new_resource_offer_1)
+    new_deal_1.set_id()
+    print(new_deal_1.get_deal_data())
+    print(new_deal_1.get_id())
 
 if __name__ == "__main__":
     main()
+

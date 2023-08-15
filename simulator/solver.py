@@ -1,6 +1,7 @@
 from service_provider import ServiceProvider
 from job_offer import JobOffer
 from resource_offer import ResourceOffer
+from deal import Deal
 
 
 class Solver(ServiceProvider):
@@ -27,3 +28,17 @@ class Solver(ServiceProvider):
                 return job_offer_id, resource_offer_id
 
         return False
+
+    def create_deal(self, job_offer: JobOffer, resource_offer: ResourceOffer):
+        # deal in stage 1 solver is exact match
+        deal = Deal()
+        job_offer_data = job_offer.get_job_offer_data()
+        resource_offer_data = resource_offer.get_resource_offer_data()
+        deal.add_data("resource_provider_address", resource_offer_data['owner'])
+        deal.add_data("job_creator_address", job_offer_data['owner'])
+        deal.add_data("resource_offer", resource_offer.get_id())
+        deal.add_data("job_offer", job_offer.get_id())
+
+        return deal
+
+

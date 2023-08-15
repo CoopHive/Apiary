@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-
+from hash_dict import hash_dict
 
 class ServiceType(Enum):
     RESOURCE_PROVIDER = 1
