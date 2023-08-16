@@ -198,6 +198,9 @@ def main():
     print(new_deal_1.get_deal_data())
     print(new_deal_1.get_id())
 
+    new_solver_1.emit_deal_event(new_deal_1)
+    deal_events_1 = new_solver_1.get_deal_events()
+    print(deal_events_1[0].get_deal_data())
 
 
 

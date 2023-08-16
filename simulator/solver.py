@@ -8,6 +8,7 @@ class Solver(ServiceProvider):
     def __init__(self, address: str, url: str):
         super().__init__(address, url)
         self.machine_keys = ['CPU', 'RAM']
+        self.deal_events = []
 
     def match_job_offer(self, job_offer: JobOffer):
         # only look for exact matches for now
@@ -40,6 +41,12 @@ class Solver(ServiceProvider):
         deal.add_data("job_offer", job_offer.get_id())
 
         return deal
+
+    def get_deal_events(self):
+        return self.deal_events
+
+    def emit_deal_event(self, deal: Deal):
+        self.deal_events.append(deal)
 
     def add_deal_to_smart_contract(self, deal: Deal):
         pass
