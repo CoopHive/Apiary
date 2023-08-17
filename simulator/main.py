@@ -33,7 +33,7 @@ def main():
     new_machine_1.add_data('RAM', '2')
     # should throw exception if GPU is not one of the machine attributes
     # new_machine_1.add_data('GPU', '3090')
-    machine_data = new_machine_1.get_machine_data()
+    machine_data = new_machine_1.get_data()
     print(machine_data)
 
     new_machine_2 = Machine()
@@ -50,8 +50,8 @@ def main():
     resource_provider_machines = new_resource_provider_1.get_machines()
     print(resource_provider_machines)
     # should match above
-    print(resource_provider_machines[new_machine_1_CID.hash].get_machine_data())
-    print(resource_provider_machines[new_machine_2_CID.hash].get_machine_data())
+    print(resource_provider_machines[new_machine_1_CID.hash].get_data())
+    print(resource_provider_machines[new_machine_2_CID.hash].get_data())
 
     print(resource_provider_machines[new_machine_1_CID.hash].get_machine_uuid())
     print(resource_provider_machines[new_machine_2_CID.hash].get_machine_uuid())
