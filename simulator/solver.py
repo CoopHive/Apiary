@@ -55,10 +55,10 @@ class Solver(ServiceProvider):
     def emit_event(self, event: Event):
         self.events.append(event)
 
-    # TODO: change to subscribe_event()
-    # def subscribe_deal(self, handler: ServiceProvider.handler_filter_by_owner_public_key, deal: Deal):
-    #     result = handler(deal)
-    #     return result
+    def subscribe_event(self, handler):
+        # TODO: pass parameters to handler
+        result = handler()
+        return result
 
     def add_deal_to_smart_contract(self, deal: Deal):
         pass
