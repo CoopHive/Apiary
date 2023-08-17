@@ -3,6 +3,7 @@ from job_offer import JobOffer
 from resource_offer import ResourceOffer
 from deal import Deal
 from match import Match
+from event import Event
 
 
 class Solver(ServiceProvider):
@@ -17,7 +18,8 @@ class Solver(ServiceProvider):
             if resulting_resource_offer is not None:
                 match = self.create_match(job_offer, resulting_resource_offer)
                 match.set_id()
-                self.emit_event(match)
+                match_event = Event(name="match", data=match)
+                self.emit_event(match_event)
 
     def match_job_offer(self, job_offer: JobOffer):
         # only look for exact matches for now
@@ -50,8 +52,8 @@ class Solver(ServiceProvider):
     def get_events(self):
         return self.events
 
-    def emit_event(self, match: Match):
-        self.events.append(match)
+    def emit_event(self, event: Event):
+        self.events.append(event)
 
     # TODO: change to subscribe_event()
     # def subscribe_deal(self, handler: ServiceProvider.handler_filter_by_owner_public_key, deal: Deal):
