@@ -187,8 +187,8 @@ def main():
     new_solver_1.local_information.add_resource_offer(new_resource_offer_1_id, new_resource_offer_1)
     new_solver_1.local_information.add_job_offer(new_job_offer_1_id, new_job_offer_1)
 
-    print(new_solver_1.local_information.get_resource_offers()[new_resource_offer_1_id].get_resource_offer_data().items())
-    print(new_solver_1.local_information.get_job_offers()[new_job_offer_1_id].get_job_offer_data().items())
+    print(new_solver_1.local_information.get_resource_offers()[new_resource_offer_1_id].get_data().items())
+    print(new_solver_1.local_information.get_job_offers()[new_job_offer_1_id].get_data().items())
 
     new_solver_1.solve()
     # new_match_1 = new_solver_1.match_job_offer(new_job_offer_1)
@@ -197,12 +197,12 @@ def main():
     # new_match_1 = new_solver_1.create_match(new_job_offer_1, new_resource_offer_1)
     # new_match_1.set_id()
     new_match_1 = new_solver_1.get_events()[0].get_data()
-    print(new_match_1.get_match_data())
+    print(new_match_1.get_data())
     print(new_match_1.get_id())
 
     # new_solver_1.emit_event(new_match_1)
     match_events_1 = new_solver_1.get_events()
-    print(match_events_1[0].get_data().get_match_data())
+    print(match_events_1[0].get_data().get_data())
 
     # new_solver_1.subscribe_deal(new_resource_provider_1.handler_filter_by_owner_public_key(new_resource_provider_1_public_key), new_match_1)
 

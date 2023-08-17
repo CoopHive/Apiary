@@ -23,10 +23,10 @@ class Solver(ServiceProvider):
 
     def match_job_offer(self, job_offer: JobOffer):
         # only look for exact matches for now
-        job_offer_data = job_offer.get_job_offer_data()
+        job_offer_data = job_offer.get_data()
         current_resource_offers = self.local_information.get_resource_offers()
         for resource_offer_id, resource_offer in current_resource_offers.items():
-            resource_offer_data = resource_offer.get_resource_offer_data()
+            resource_offer_data = resource_offer.get_data()
             is_match = True
             for machine_key in self.machine_keys:
                 if resource_offer_data[machine_key] != job_offer_data[machine_key]:
@@ -40,8 +40,8 @@ class Solver(ServiceProvider):
     def create_match(self, job_offer: JobOffer, resource_offer: ResourceOffer) -> Match:
         # deal in stage 1 solver is exact match
         match = Match()
-        job_offer_data = job_offer.get_job_offer_data()
-        resource_offer_data = resource_offer.get_resource_offer_data()
+        job_offer_data = job_offer.get_data()
+        resource_offer_data = resource_offer.get_data()
         match.add_data("resource_provider_address", resource_offer_data['owner'])
         match.add_data("job_creator_address", job_offer_data['owner'])
         match.add_data("resource_offer", resource_offer.get_id())

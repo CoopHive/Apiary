@@ -1,4 +1,3 @@
-# from contract import CID
 from utils import CID
 from service_provider import ServiceProvider
 from service_provider_local_information import LocalInformation
