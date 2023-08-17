@@ -18,6 +18,13 @@ class Solver(ServiceProvider):
 
         :return:
         """
+        for job_offer_id, job_offer in self.get_local_information().get_job_offers().items():
+            resulting_resource_offer = self.match_job_offer(job_offer)
+            if resulting_resource_offer is not None:
+                match = self.create_match(job_offer, resulting_resource_offer)
+                match.set_id()
+                self.emit_event(match)
+
 
     def match_job_offer(self, job_offer: JobOffer):
         # only look for exact matches for now
@@ -35,11 +42,10 @@ class Solver(ServiceProvider):
                     is_match = False
 
             if is_match:
-                return job_offer_id, resource_offer_id
+                return resource_offer
 
-        return False
+        return None
 
-    # TODO: change to create_match() and change Deal -> match.py
     def create_match(self, job_offer: JobOffer, resource_offer: ResourceOffer) -> Match:
         # deal in stage 1 solver is exact match
         match = Match()
