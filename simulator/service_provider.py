@@ -16,6 +16,16 @@ class ServiceProvider:
     def get_local_information(self):
         return self.local_information
 
+    # def handler_filter_by_owner_public_key(self, public_key: str, data: dict = {}):
+    #     # result = []
+    #     # # for key, value in data.items():
+    #     # #     if key == public_key or value == public_key:
+    #     # #         result.append((key, value))
+    #     # return result
+    #
+    #     if public_key in data.values():
+    #         return True
+
 
 class LocalInformation:
     def __init__(self):

@@ -2,13 +2,22 @@ from service_provider import ServiceProvider
 from job_offer import JobOffer
 from resource_offer import ResourceOffer
 from deal import Deal
+from match import Match
 
 
 class Solver(ServiceProvider):
     def __init__(self, address: str, url: str):
         super().__init__(address, url)
         self.machine_keys = ['CPU', 'RAM']
-        self.deal_events = []
+        self.match_events = []
+
+    # TODO: implement solve()
+    def solve(self):
+        """
+        loop over job offers and call match_job_offer
+
+        :return:
+        """
 
     def match_job_offer(self, job_offer: JobOffer):
         # only look for exact matches for now
@@ -30,23 +39,29 @@ class Solver(ServiceProvider):
 
         return False
 
-    def create_deal(self, job_offer: JobOffer, resource_offer: ResourceOffer) -> Deal:
+    # TODO: change to create_match() and change Deal -> match.py
+    def create_match(self, job_offer: JobOffer, resource_offer: ResourceOffer) -> Match:
         # deal in stage 1 solver is exact match
-        deal = Deal()
+        match = Match()
         job_offer_data = job_offer.get_job_offer_data()
         resource_offer_data = resource_offer.get_resource_offer_data()
-        deal.add_data("resource_provider_address", resource_offer_data['owner'])
-        deal.add_data("job_creator_address", job_offer_data['owner'])
-        deal.add_data("resource_offer", resource_offer.get_id())
-        deal.add_data("job_offer", job_offer.get_id())
+        match.add_data("resource_provider_address", resource_offer_data['owner'])
+        match.add_data("job_creator_address", job_offer_data['owner'])
+        match.add_data("resource_offer", resource_offer.get_id())
+        match.add_data("job_offer", job_offer.get_id())
 
-        return deal
+        return match
 
-    def get_deal_events(self):
-        return self.deal_events
+    def get_events(self):
+        return self.match_events
 
-    def emit_deal_event(self, deal: Deal):
-        self.deal_events.append(deal)
+    def emit_event(self, match: Match):
+        self.match_events.append(match)
+
+    # TODO: change to subscribe_event()
+    # def subscribe_deal(self, handler: ServiceProvider.handler_filter_by_owner_public_key, deal: Deal):
+    #     result = handler(deal)
+    #     return result
 
     def add_deal_to_smart_contract(self, deal: Deal):
         pass

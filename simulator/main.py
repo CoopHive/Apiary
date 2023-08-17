@@ -190,17 +190,20 @@ def main():
     print(new_solver_1.local_information.get_resource_offers()[new_resource_offer_1_id].get_resource_offer_data().items())
     print(new_solver_1.local_information.get_job_offers()[new_job_offer_1_id].get_job_offer_data().items())
 
+    # TODO: replace with solver.solve()
     new_match_1 = new_solver_1.match_job_offer(new_job_offer_1)
     print(new_match_1)
 
-    new_deal_1 = new_solver_1.create_deal(new_job_offer_1, new_resource_offer_1)
-    new_deal_1.set_id()
-    print(new_deal_1.get_deal_data())
-    print(new_deal_1.get_id())
+    new_match_1 = new_solver_1.create_match(new_job_offer_1, new_resource_offer_1)
+    new_match_1.set_id()
+    print(new_match_1.get_match_data())
+    print(new_match_1.get_id())
 
-    new_solver_1.emit_deal_event(new_deal_1)
-    deal_events_1 = new_solver_1.get_deal_events()
-    print(deal_events_1[0].get_deal_data())
+    new_solver_1.emit_event(new_match_1)
+    deal_events_1 = new_solver_1.get_events()
+    print(deal_events_1[0].get_match_data())
+
+    # new_solver_1.subscribe_deal(new_resource_provider_1.handler_filter_by_owner_public_key(new_resource_provider_1_public_key), new_match_1)
 
 
 
