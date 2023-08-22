@@ -28,6 +28,11 @@ class Address:
 
 def main():
 
+    # create solver
+    new_solver_1_public_key = "11"
+    new_solver_1_url = "http://solver.com"
+    new_solver_1 = Solver(new_solver_1_public_key, new_solver_1_url)
+
     new_machine_1 = Machine()
     new_machine_1.add_data('CPU', '4')
     new_machine_1.add_data('RAM', '2')
@@ -42,7 +47,7 @@ def main():
 
     new_resource_provider_1_url = ""
     new_resource_provider_1_public_key = 'new_resource_provider_1_public_key'
-    new_resource_provider_1 = ResourceProvider(new_resource_provider_1_public_key, new_resource_provider_1_url)
+    new_resource_provider_1 = ResourceProvider(new_resource_provider_1_public_key)
     new_machine_1_CID = CID('new_machine_1_CID', {})
     new_machine_2_CID = CID('new_machine_2_CID', {})
     new_resource_provider_1.add_machine(new_machine_1_CID, new_machine_1)
@@ -58,18 +63,13 @@ def main():
 
     new_client_1_url = ""
     new_client_1_public_key = 'new_client_1_public_key'
-    new_client_1 = Client(new_client_1_public_key, new_client_1_url)
+    new_client_1 = Client(new_client_1_public_key)
     new_job = Job()
     new_client_1.add_job(new_job)
     # print job requirements
     print(list(new_client_1.get_jobs())[0].get_job_requirements())
 
     # add client and resource provider to each other's local information
-    # new_resource_provider_1.local_information.add_service_provider()
-    new_solver_1_public_key = "11"
-    new_solver_1_url = "http://solver.com"
-    new_solver_1 = Solver(new_solver_1_public_key, new_solver_1_url)
-
     new_solver_1.local_information.add_service_provider(ServiceType.RESOURCE_PROVIDER,
                                                         new_resource_provider_1_public_key, new_resource_provider_1)
     # should print public key of first resource provider

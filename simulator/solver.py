@@ -8,9 +8,9 @@ from event import Event
 
 class Solver(ServiceProvider):
     def __init__(self, address: str, url: str):
-        super().__init__(address, url)
+        super().__init__(address)
+        self.url = url
         self.machine_keys = ['CPU', 'RAM']
-        self.events = []
 
     def solve(self):
         for job_offer_id, job_offer in self.get_local_information().get_job_offers().items():
@@ -49,16 +49,8 @@ class Solver(ServiceProvider):
 
         return match
 
-    def get_events(self):
-        return self.events
-
-    def emit_event(self, event: Event):
-        self.events.append(event)
-
-    def subscribe_event(self, handler):
-        # TODO: pass parameters to handler
-        result = handler()
-        return result
+    def get_url(self):
+        return self.url
 
     def add_deal_to_smart_contract(self, deal: Deal):
         pass

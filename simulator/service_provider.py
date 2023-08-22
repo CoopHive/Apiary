@@ -1,20 +1,36 @@
 from utils import *
+from event import Event
 
 
 class ServiceProvider:
-    def __init__(self, public_key: str = None, url: str = None):
+    def __init__(self, public_key: str = None):
         self.public_key = public_key
-        self.url = url
         self.local_information = LocalInformation()
+        self.events = []
+        self.event_handlers = []
 
     def get_public_key(self):
         return self.public_key
 
-    def get_url(self):
-        return self.url
-
     def get_local_information(self):
         return self.local_information
+
+    def get_events(self):
+        return self.events
+
+    def emit_event(self, event: Event):
+        self.events.append(event)
+        for event_handler in self.event_handlers:
+            event_handler(event)
+
+    def subscribe_event(self, handler):
+        self.event_handlers.append(handler)
+
+    # not support unsubscribing
+
+
+
+
 
     # def handler_filter_by_owner_public_key(self, public_key: str, data: dict = {}):
     #     # result = []
