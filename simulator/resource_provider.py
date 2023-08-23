@@ -1,9 +1,10 @@
-from utils import CID
+from utils import *
 from machine import Machine
 from service_provider import ServiceProvider
 from solver import Solver
 from match import Match
 from smart_contract import SmartContract
+
 
 
 class ResourceProvider(ServiceProvider):
@@ -41,6 +42,12 @@ class ResourceProvider(ServiceProvider):
 
     def handle_solver_event(self, event):
         print(f"I, the RP have solver event {event.get_name(), event.get_data().get_id()}")
+        # print(event.get_data().get_data()['resource_provider_address'], self.get_public_key())
+        if event.get_name() == 'match':
+            match = event.get_data()
+            if match.get_data()['resource_provider_address'] == self.get_public_key():
+                tx = Tx(sender=self.get_public_key(), value=1)
+                self.smart_contract.agree_to_match(match, tx)
 
     def handle_smart_contract_event(self, event):
         print(f"I, the RP have smart contract event {event.get_name(), event.get_data().get_id()}")

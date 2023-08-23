@@ -10,7 +10,14 @@ class SmartContract(ServiceProvider):
         self.transactions = []
 
     def agree_to_match(self, match: Match, tx: Tx):
-        pass
+        if match.get_data()['resource_provider_address'] == tx.sender:
+            match.sign_resource_provider()
+            print('rp hit')
+        elif match.get_data()['client_address'] == tx.sender:
+            match.sign_client()
+            print('client hit')
+        if match.get_resource_provider_signed() and match.get_client_signed():
+            print('both rp and client have signed')
 
     def _create_deal(self):
         pass

@@ -1,6 +1,6 @@
 deal_attributes = {
     "resource_provider_address",
-    "job_creator_address",
+    "client_address",
     "resource_offer",
     "job_offer",
     "client_deposit",

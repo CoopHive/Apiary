@@ -43,7 +43,7 @@ class Solver(ServiceProvider):
         job_offer_data = job_offer.get_data()
         resource_offer_data = resource_offer.get_data()
         match.add_data("resource_provider_address", resource_offer_data['owner'])
-        match.add_data("job_creator_address", job_offer_data['owner'])
+        match.add_data("client_address", job_offer_data['owner'])
         match.add_data("resource_offer", resource_offer.get_id())
         match.add_data("job_offer", job_offer.get_id())
 
