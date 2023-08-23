@@ -14,6 +14,7 @@ from job import Job
 from solver import Solver
 from resource_offer import ResourceOffer
 from job_offer import JobOffer
+from smart_contract import SmartContract
 
 
 class Address:
@@ -30,17 +31,29 @@ class Address:
 def main():
 
     # create solver
-    new_solver_1_public_key = "11"
+    new_solver_1_public_key = "new_solver_1_public_key"
     new_solver_1_url = "http://solver.com"
     new_solver_1 = Solver(new_solver_1_public_key, new_solver_1_url)
 
+    # create smart contract
+    new_smart_contract_1_public_key = "new_smart_contract_1_public_key"
+    new_smart_contract_1 = SmartContract(new_smart_contract_1_public_key)
+
+    # create resource provider
     new_resource_provider_1_public_key = 'new_resource_provider_1_public_key'
     new_resource_provider_1 = ResourceProvider(new_resource_provider_1_public_key)
+    # resource provider connects to solver
     new_resource_provider_1.connect_to_solver(url=new_solver_1_url, solver=new_solver_1)
+    # resource provider connects to smart contract
+    new_resource_provider_1.connect_to_smart_contract(smart_contract=new_smart_contract_1)
 
     new_client_1_public_key = 'new_client_1_public_key'
     new_client_1 = Client(new_client_1_public_key)
+    # client connects to solver
     new_client_1.connect_to_solver(url=new_solver_1_url, solver=new_solver_1)
+    # client connects to smart contract
+    new_client_1.connect_to_smart_contract(smart_contract=new_smart_contract_1)
+
 
     new_resource_offer_1 = ResourceOffer()
     new_resource_offer_1.add_data('CPU', '6')

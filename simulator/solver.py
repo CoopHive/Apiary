@@ -7,8 +7,8 @@ from event import Event
 
 
 class Solver(ServiceProvider):
-    def __init__(self, address: str, url: str):
-        super().__init__(address)
+    def __init__(self, public_key: str, url: str):
+        super().__init__(public_key)
         self.url = url
         self.machine_keys = ['CPU', 'RAM']
 

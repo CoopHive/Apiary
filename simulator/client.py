@@ -4,7 +4,7 @@ from service_provider_local_information import LocalInformation
 from collections import deque
 from job import Job
 from solver import Solver
-
+from smart_contract import SmartContract
 
 class Client(ServiceProvider):
     def __init__(self, address: str):
@@ -23,6 +23,10 @@ class Client(ServiceProvider):
         self.solver = solver
         solver.subscribe_event(self.handle_event)
 
+    def connect_to_smart_contract(self, smart_contract: SmartContract):
+        self.smart_contract = smart_contract
+        smart_contract.subscribe_event(self.handle_smart_contract_event)
+
     def add_job(self, job: Job):
         self.current_jobs.append(job)
 
@@ -32,4 +36,6 @@ class Client(ServiceProvider):
     def handle_event(self, event):
         print(f"I, the Client have event {event.get_name(), event.get_data().get_id()}")
 
+    def handle_smart_contract_event(self, event):
+        print(f"I, the Client have smart contract event {event.get_name(), event.get_data().get_id()}")
 
