@@ -68,10 +68,14 @@ class ResourceProvider(ServiceProvider):
     def create_result(self, deal_id):
         print(f"I, the RP am posting the result for deal {deal_id}")
         result = Result()
-        result.add_data("deal_id", deal_id)
+        result.add_data('deal_id', deal_id)
+        instruction_count = '1'
+        result.add_data('instruction_count', instruction_count)
         result.set_id()
-        result.add_data("result_id", result.get_id())
-        tx = Tx(sender=self.get_public_key(), value=1)
+        result.add_data('result_id', result.get_id())
+        cheating_collateral_multiplier = self.current_deals[deal_id].get_data()['cheating_collateral_multiplier']
+        cheating_collateral = cheating_collateral_multiplier * int(instruction_count)
+        tx = Tx(sender=self.get_public_key(), value=cheating_collateral)
         self.get_smart_contract().post_result(result, tx)
 
     def update_job_running_times(self):

@@ -35,8 +35,8 @@ class SmartContract(ServiceProvider):
             print()
             print(f'transaction value of {tx.value} does not match client deposit {match_data["client_deposit"]}')
             raise Exception("transaction value does not match timeout deposit")
-        self.balances[match.get_data()['client_address']] -= client_deposit
-        self.balance += client_deposit
+        self.balances[match.get_data()['client_address']] -= tx.value
+        self.balance += tx.value
         match.sign_client()
         print('client has signed')
         print(self.balances)
@@ -74,6 +74,17 @@ class SmartContract(ServiceProvider):
         print(self.balances)
         print(self.balance)
 
+    def _post_cheating_collateral(self, result: Result, tx: Tx):
+        deal_id = result.get_data()['deal_id']
+        cheating_collateral_multiplier = self.deals[deal_id].get_data()['cheating_collateral_multiplier']
+        instruction_count = result.get_data()['instruction_count']
+        intended_cheating_collateral = cheating_collateral_multiplier * instruction_count
+        if cheating_collateral_multiplier * instruction_count != tx.value:
+            print()
+            print(f'transaction value of {tx.value} does not match needed cheating collateral deposit {intended_cheating_collateral}')
+            raise Exception("transaction value does not match needed cheating collateral")
+        self.balance += tx.value
+
     def post_result(self, result: Result, tx: Tx):
         deal_id = result.get_data()['deal_id']
         if self.deals[deal_id].get_data()['resource_provider_address'] == tx.sender:
@@ -82,5 +93,5 @@ class SmartContract(ServiceProvider):
             self._refund_timeout_deposit(result)
 
     def fund(self, tx: Tx):
-        self.balances[tx.sender] = tx.value
+        self.balances[tx.sender] = self.balances.get(tx.sender, 0) + tx.value
         print(self.balances)
