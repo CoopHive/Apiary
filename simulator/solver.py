@@ -70,6 +70,7 @@ class Solver(ServiceProvider):
         match.add_data("timeout", 10)
         match.add_data("timeout_deposit", 3)
         match.add_data("cheating_collateral_multiplier", 50)
+        match.add_data("price_per_instruction", 0.1)
 
     def create_match(self, job_offer: JobOffer, resource_offer: ResourceOffer) -> Match:
         # deal in stage 1 solver is exact match

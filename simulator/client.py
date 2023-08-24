@@ -15,6 +15,8 @@ class Client(ServiceProvider):
         self.local_information = LocalInformation()
         self.solver_url = None
         self.solver = None
+        self.current_deals = {}  # maps deal id to deals
+        self.deals_finished_in_current_step = []
 
     def get_solver(self):
         return self.solver
@@ -48,6 +50,28 @@ class Client(ServiceProvider):
 
     def handle_smart_contract_event(self, event):
         print(f"I, the Client have smart contract event {event.get_name(), event.get_data().get_id()}")
-        # if event.get_name() == 'result':
+        if event.get_name() == 'deal':
+            deal = event.get_data()
+            deal_data = deal.get_data()
+            deal_id = deal.get_id()
+            if deal_data['client_address'] == self.get_public_key():
+                self.current_deals[deal_id] = deal
 
+        if event.get_name() == 'result':
+            result = event.get_data()
+            result_data = result.get_data()
+            result_instruction_count = result_data['instruction_count']
+            result_instruction_count = float(result_instruction_count)
+            deal_id = result_data['deal_id']
+            price_per_instruction = self.current_deals[deal_id].get_data()['price_per_instruction']
+            payment_value = result_instruction_count * price_per_instruction
+            tx = Tx(sender=self.get_public_key(), value=payment_value)
+            self.smart_contract.post_client_payment(result, tx)
+            self.deals_finished_in_current_step.append(deal_id)
 
+    def update_finished_deals(self):
+        # remove finished deals from list of current deals and running jobs
+        for deal_id in self.deals_finished_in_current_step:
+            del self.current_deals[deal_id]
+        # clear list of deals finished in current step
+        self.deals_finished_in_current_step.clear()

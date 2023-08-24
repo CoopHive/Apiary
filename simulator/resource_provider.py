@@ -62,8 +62,8 @@ class ResourceProvider(ServiceProvider):
             deal = event.get_data()
             deal_data = deal.get_data()
             deal_id = deal.get_id()
-            self.current_deals[deal_id] = deal
             if deal_data['resource_provider_address'] == self.get_public_key():
+                self.current_deals[deal_id] = deal
                 self.current_job_running_times[deal_id] = 0
 
     def create_result(self, deal_id):

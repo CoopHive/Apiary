@@ -93,7 +93,32 @@ class SmartContract(ServiceProvider):
             self.emit_event(result_event)
             self._refund_timeout_deposit(result)
 
-    # def post_client_payment(self, result: Result, tx: Tx):
+    def _refund_client_deposit(self, deal: Deal):
+        client_address = deal.get_data()['client_address']
+        client_deposit = deal.get_data()['client_deposit']
+        self.balance -= client_deposit
+        self.balances[client_address] += client_deposit
+
+    def post_client_payment(self, result: Result, tx: Tx):
+        result_data = result.get_data()
+        result_instruction_count = result_data['instruction_count']
+        result_instruction_count = float(result_instruction_count)
+        deal_id = result_data['deal_id']
+        price_per_instruction = self.deals[deal_id].get_data()['price_per_instruction']
+        expected_payment_value = result_instruction_count * price_per_instruction
+        if tx.value != expected_payment_value:
+            print()
+            print(f'transaction value of {tx.value} does not match expected payment value {expected_payment_value}')
+            raise Exception("transaction value does not match expected payment value")
+        # add transaction value to balance
+        self.balance += tx.value
+        deal = self.deals[deal_id]
+        resource_provider_address = deal.get_data()['resource_provider_address']
+        # pay resource provider
+        self.balance -= tx.value
+        self.balances[resource_provider_address] += tx.value
+        # refund client deposit
+        self._refund_client_deposit(deal)
 
     def fund(self, tx: Tx):
         self.balances[tx.sender] = self.balances.get(tx.sender, 0) + tx.value
