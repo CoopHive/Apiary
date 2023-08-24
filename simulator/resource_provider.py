@@ -15,8 +15,9 @@ class ResourceProvider(ServiceProvider):
         self.solver_url = None
         self.solver = None
         self.smart_contract = None
-        self.current_deals = {}
-        self.current_job_running_times = {}
+        self.current_deals = {}  # maps deal id to deals
+        self.current_job_running_times = {}  # maps deal id to how long the resource provider has been running the job
+        self.deals_finished_in_current_step = []
 
     def get_solver(self):
         return self.solver
@@ -84,3 +85,11 @@ class ResourceProvider(ServiceProvider):
             expected_running_time = self.current_deals[deal_id].get_data()['actual_honest_time_to_completion']
             if self.current_job_running_times[deal_id] >= expected_running_time:
                 self.create_result(deal_id)
+                self.deals_finished_in_current_step.append(deal_id)
+        # remove finished deals from list of current deals and running jobs
+        for deal_id in self.deals_finished_in_current_step:
+            del self.current_deals[deal_id]
+            del self.current_job_running_times[deal_id]
+        # clear list of deals finished in current step
+        self.deals_finished_in_current_step.clear()
+
