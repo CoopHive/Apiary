@@ -63,11 +63,23 @@ class SmartContract(ServiceProvider):
         deal_event = Event(name='deal', data=deal)
         self.emit_event(deal_event)
 
+    def _refund_timeout_deposit(self, result: Result):
+        deal_id = result.get_data()['deal_id']
+        deal_data = self.deals[deal_id].get_data()
+        timeout_deposit = deal_data['timeout_deposit']
+        resource_provider_address = deal_data['resource_provider_address']
+        self.balances[resource_provider_address] += timeout_deposit
+        self.balance -= timeout_deposit
+        print()
+        print(self.balances)
+        print(self.balance)
+
     def post_result(self, result: Result, tx: Tx):
         deal_id = result.get_data()['deal_id']
         if self.deals[deal_id].get_data()['resource_provider_address'] == tx.sender:
             result_event = Event(name='result', data=result)
             self.emit_event(result_event)
+            self._refund_timeout_deposit(result)
 
     def fund(self, tx: Tx):
         self.balances[tx.sender] = tx.value
