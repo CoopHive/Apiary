@@ -46,6 +46,9 @@ def main():
     new_resource_provider_1.connect_to_solver(url=new_solver_1_url, solver=new_solver_1)
     # resource provider connects to smart contract
     new_resource_provider_1.connect_to_smart_contract(smart_contract=new_smart_contract_1)
+    # resource provider adds funds
+    tx = Tx(sender=new_resource_provider_1_public_key, value=10)
+    new_resource_provider_1.get_smart_contract().fund(tx)
 
     new_client_1_public_key = 'new_client_1_public_key'
     new_client_1 = Client(new_client_1_public_key)
@@ -53,6 +56,9 @@ def main():
     new_client_1.connect_to_solver(url=new_solver_1_url, solver=new_solver_1)
     # client connects to smart contract
     new_client_1.connect_to_smart_contract(smart_contract=new_smart_contract_1)
+    # client adds funds
+    tx = Tx(sender=new_client_1_public_key, value=10)
+    new_client_1.get_smart_contract().fund(tx)
 
 
     new_resource_offer_1 = ResourceOffer()

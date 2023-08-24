@@ -21,6 +21,9 @@ class ResourceProvider(ServiceProvider):
     def get_solver(self):
         return self.solver
 
+    def get_smart_contract(self):
+        return self.smart_contract
+
     def connect_to_solver(self, url: str, solver: Solver):
         self.solver_url = url
         self.solver = solver
@@ -49,7 +52,7 @@ class ResourceProvider(ServiceProvider):
             match = event.get_data()
             if match.get_data()['resource_provider_address'] == self.get_public_key():
                 tx = Tx(sender=self.get_public_key(), value=1)
-                self.smart_contract.agree_to_match(match, tx)
+                self.get_smart_contract().agree_to_match(match, tx)
 
     def handle_smart_contract_event(self, event):
         print(f"I, the RP have smart contract event {event.get_name(), event.get_data().get_id()}")
@@ -68,7 +71,7 @@ class ResourceProvider(ServiceProvider):
         result.set_id()
         result.add_data("result_id", result.get_id())
         tx = Tx(sender=self.get_public_key(), value=1)
-        self.smart_contract.post_result(result, tx)
+        self.get_smart_contract().post_result(result, tx)
 
     def update_job_running_times(self):
         for deal_id, running_time in self.current_job_running_times.items():

@@ -11,6 +11,7 @@ class SmartContract(ServiceProvider):
         super().__init__(public_key)
         self.transactions = []
         self.deals = {}  # mapping from deal id to deal
+        self.balances = {}  # mapping from public key to balance
 
     def agree_to_match(self, match: Match, tx: Tx):
         if match.get_data()['resource_provider_address'] == tx.sender:
@@ -42,4 +43,5 @@ class SmartContract(ServiceProvider):
             self.emit_event(result_event)
 
     def fund(self, tx: Tx):
-        pass
+        self.balances[tx.sender] = tx.value
+        print(self.balances)
