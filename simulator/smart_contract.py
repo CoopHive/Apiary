@@ -62,6 +62,7 @@ class SmartContract(ServiceProvider):
         self.deals[deal.get_id()] = deal
         deal_event = Event(name='deal', data=deal)
         self.emit_event(deal_event)
+        print("deal attributes:", deal.get_data())
 
     def _refund_timeout_deposit(self, result: Result):
         deal_id = result.get_data()['deal_id']

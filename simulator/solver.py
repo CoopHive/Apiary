@@ -13,6 +13,7 @@ class Solver(ServiceProvider):
         self.url = url
         self.machine_keys = ['CPU', 'RAM']
         self.smart_contract = None
+        self.deals_made_in_current_step = []
 
     def connect_to_smart_contract(self, smart_contract: SmartContract):
         self.smart_contract = smart_contract
@@ -20,6 +21,22 @@ class Solver(ServiceProvider):
 
     def handle_smart_contract_event(self, event):
         print(f"I, the Solver have smart contract event {event.get_name(), event.get_data().get_id()}")
+        # if deal, remove resource and job offers from list
+        if event.get_name() == 'deal':
+            deal = event.get_data()
+            self.deals_made_in_current_step.append(deal)
+
+    def remove_outdated_offers(self):
+        for deal in self.deals_made_in_current_step:
+            deal_data = deal.get_data()
+            # delete resource offer
+            resource_offer = deal_data['resource_offer']
+            del self.get_local_information().get_resource_offers()[resource_offer]
+            # delete job offer
+            job_offer = deal_data['job_offer']
+            del self.get_local_information().get_job_offers()[job_offer]
+        # clear list of deals made in current step
+        self.deals_made_in_current_step.clear()
 
     def solve(self):
         for job_offer_id, job_offer in self.get_local_information().get_job_offers().items():
@@ -29,6 +46,8 @@ class Solver(ServiceProvider):
                 match.set_id()
                 match_event = Event(name='match', data=match)
                 self.emit_event(match_event)
+        # remove outdated job and resource offers
+        self.remove_outdated_offers()
 
     def match_job_offer(self, job_offer: JobOffer):
         # only look for exact matches for now
