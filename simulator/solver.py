@@ -4,6 +4,7 @@ from resource_offer import ResourceOffer
 from deal import Deal
 from match import Match
 from event import Event
+from smart_contract import SmartContract
 
 
 class Solver(ServiceProvider):
@@ -11,6 +12,14 @@ class Solver(ServiceProvider):
         super().__init__(public_key)
         self.url = url
         self.machine_keys = ['CPU', 'RAM']
+        self.smart_contract = None
+
+    def connect_to_smart_contract(self, smart_contract: SmartContract):
+        self.smart_contract = smart_contract
+        smart_contract.subscribe_event(self.handle_smart_contract_event)
+
+    def handle_smart_contract_event(self, event):
+        print(f"I, the Solver have smart contract event {event.get_name(), event.get_data().get_id()}")
 
     def solve(self):
         for job_offer_id, job_offer in self.get_local_information().get_job_offers().items():

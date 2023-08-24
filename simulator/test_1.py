@@ -30,14 +30,16 @@ class Address:
 
 def main():
 
+    # create smart contract
+    new_smart_contract_1_public_key = "new_smart_contract_1_public_key"
+    new_smart_contract_1 = SmartContract(new_smart_contract_1_public_key)
+
     # create solver
     new_solver_1_public_key = "new_solver_1_public_key"
     new_solver_1_url = "http://solver.com"
     new_solver_1 = Solver(new_solver_1_public_key, new_solver_1_url)
-
-    # create smart contract
-    new_smart_contract_1_public_key = "new_smart_contract_1_public_key"
-    new_smart_contract_1 = SmartContract(new_smart_contract_1_public_key)
+    # solver connects to smart contract
+    new_solver_1.connect_to_smart_contract(smart_contract=new_smart_contract_1)
 
     # create resource provider
     new_resource_provider_1_public_key = 'new_resource_provider_1_public_key'
