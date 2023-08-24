@@ -72,15 +72,9 @@ def main():
     new_resource_provider_1.get_solver().get_local_information().add_resource_offer(new_resource_offer_1_id, new_resource_offer_1)
     new_client_1.get_solver().get_local_information().add_job_offer(new_job_offer_1_id, new_job_offer_1)
 
-    new_solver_1.solve()
-
-    # print(new_solver_1.local_information.get_resource_offers()[new_resource_offer_1_id].get_data().items())
-    # print(new_solver_1.local_information.get_job_offers()[new_job_offer_1_id].get_data().items())
-    # new_match_1 = new_solver_1.get_events()[0].get_data()
-    # print(new_match_1.get_data())
-    # print(new_match_1.get_id())
-
-
+    for step in range(2):
+        new_solver_1.solve()
+        new_resource_provider_1.update_job_running_times()
 
 
 
