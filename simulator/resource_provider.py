@@ -79,13 +79,7 @@ class ResourceProvider(ServiceProvider):
         tx = Tx(sender=self.get_public_key(), value=cheating_collateral)
         self.get_smart_contract().post_result(result, tx)
 
-    def update_job_running_times(self):
-        for deal_id, running_time in self.current_job_running_times.items():
-            self.current_job_running_times[deal_id] += 1
-            expected_running_time = self.current_deals[deal_id].get_data()['actual_honest_time_to_completion']
-            if self.current_job_running_times[deal_id] >= expected_running_time:
-                self.create_result(deal_id)
-                self.deals_finished_in_current_step.append(deal_id)
+    def update_finished_deals(self):
         # remove finished deals from list of current deals and running jobs
         for deal_id in self.deals_finished_in_current_step:
             del self.current_deals[deal_id]
@@ -93,3 +87,12 @@ class ResourceProvider(ServiceProvider):
         # clear list of deals finished in current step
         self.deals_finished_in_current_step.clear()
 
+    def update_job_running_times(self):
+        for deal_id, running_time in self.current_job_running_times.items():
+            self.current_job_running_times[deal_id] += 1
+            expected_running_time = self.current_deals[deal_id].get_data()['actual_honest_time_to_completion']
+            if self.current_job_running_times[deal_id] >= expected_running_time:
+                self.create_result(deal_id)
+                self.deals_finished_in_current_step.append(deal_id)
+
+        self.update_finished_deals()

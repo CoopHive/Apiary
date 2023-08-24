@@ -48,4 +48,6 @@ class Client(ServiceProvider):
 
     def handle_smart_contract_event(self, event):
         print(f"I, the Client have smart contract event {event.get_name(), event.get_data().get_id()}")
+        # if event.get_name() == 'result':
+
 

@@ -93,6 +93,8 @@ class SmartContract(ServiceProvider):
             self.emit_event(result_event)
             self._refund_timeout_deposit(result)
 
+    # def post_client_payment(self, result: Result, tx: Tx):
+
     def fund(self, tx: Tx):
         self.balances[tx.sender] = self.balances.get(tx.sender, 0) + tx.value
         print(self.balances)
