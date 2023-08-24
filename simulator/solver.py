@@ -37,6 +37,12 @@ class Solver(ServiceProvider):
 
         return None
 
+    def add_random_match_data(self, match):
+        match.add_data("client_deposit", 5)
+        match.add_data("timeout", 10)
+        match.add_data("timeout_deposit", 3)
+        match.add_data("cheating_collateral_multiplier", 50)
+
     def create_match(self, job_offer: JobOffer, resource_offer: ResourceOffer) -> Match:
         # deal in stage 1 solver is exact match
         match = Match()
@@ -46,6 +52,8 @@ class Solver(ServiceProvider):
         match.add_data("client_address", job_offer_data['owner'])
         match.add_data("resource_offer", resource_offer.get_id())
         match.add_data("job_offer", job_offer.get_id())
+
+        self.add_random_match_data(match)
 
         return match
 
