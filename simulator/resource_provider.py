@@ -14,6 +14,7 @@ class ResourceProvider(ServiceProvider):
         self.solver_url = None
         self.solver = None
         self.smart_contract = None
+        self.current_job_running_times = {}
 
     def get_solver(self):
         return self.solver
@@ -50,4 +51,11 @@ class ResourceProvider(ServiceProvider):
 
     def handle_smart_contract_event(self, event):
         print(f"I, the RP have smart contract event {event.get_name(), event.get_data().get_id()}")
+        if event.get_name() == 'deal':
+            deal = event.get_data()
+            deal_data = deal.get_data()
+            deal_id = deal.get_id()
+            if deal_data['resource_provider_address'] == self.get_public_key():
+                self.current_job_running_times[deal_id] = 0
+
 
