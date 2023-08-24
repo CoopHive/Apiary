@@ -51,7 +51,8 @@ class ResourceProvider(ServiceProvider):
         if event.get_name() == 'match':
             match = event.get_data()
             if match.get_data()['resource_provider_address'] == self.get_public_key():
-                tx = Tx(sender=self.get_public_key(), value=1)
+                timeout_deposit = match.get_data()['timeout_deposit']
+                tx = Tx(sender=self.get_public_key(), value=timeout_deposit)
                 self.get_smart_contract().agree_to_match(match, tx)
 
     def handle_smart_contract_event(self, event):

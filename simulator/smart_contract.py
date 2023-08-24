@@ -12,14 +12,41 @@ class SmartContract(ServiceProvider):
         self.transactions = []
         self.deals = {}  # mapping from deal id to deal
         self.balances = {}  # mapping from public key to balance
+        self.balance = 0  # total balance in the contract
+
+    def _agree_to_match_resource_provider(self, match: Match, tx: Tx):
+        match_data = match.get_data()
+        timeout_deposit = match_data['timeout_deposit']
+        if tx.value != timeout_deposit:
+            print()
+            print(f'transaction value of {tx.value} does not match timeout deposit {match_data["timeout_deposit"]}')
+            raise Exception("transaction value does not match timeout deposit")
+        self.balances[match.get_data()['resource_provider_address']] -= timeout_deposit
+        self.balance += timeout_deposit
+        match.sign_resource_provider()
+        print('rp has signed')
+        print(self.balances)
+        print(self.balance)
+
+    def _agree_to_match_client(self, match: Match, tx: Tx):
+        match_data = match.get_data()
+        client_deposit = match_data['client_deposit']
+        if tx.value != client_deposit:
+            print()
+            print(f'transaction value of {tx.value} does not match client deposit {match_data["client_deposit"]}')
+            raise Exception("transaction value does not match timeout deposit")
+        self.balances[match.get_data()['client_address']] -= client_deposit
+        self.balance += client_deposit
+        match.sign_client()
+        print('client has signed')
+        print(self.balances)
+        print(self.balance)
 
     def agree_to_match(self, match: Match, tx: Tx):
         if match.get_data()['resource_provider_address'] == tx.sender:
-            match.sign_resource_provider()
-            print('rp has signed')
+            self._agree_to_match_resource_provider(match, tx)
         elif match.get_data()['client_address'] == tx.sender:
-            match.sign_client()
-            print('client has signed')
+            self._agree_to_match_client(match, tx)
         if match.get_resource_provider_signed() and match.get_client_signed():
             print('both rp and client have signed')
             self._create_deal(match)
