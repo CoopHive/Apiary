@@ -18,7 +18,7 @@ class Solver(ServiceProvider):
             if resulting_resource_offer is not None:
                 match = self.create_match(job_offer, resulting_resource_offer)
                 match.set_id()
-                match_event = Event(name="match", data=match)
+                match_event = Event(name='match', data=match)
                 self.emit_event(match_event)
 
     def match_job_offer(self, job_offer: JobOffer):

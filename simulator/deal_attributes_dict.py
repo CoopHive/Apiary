@@ -7,4 +7,5 @@ deal_attributes = {
     "timeout",
     "timeout_deposit",
     "cheating_collateral_multiplier",
+    "actual_honest_time_to_completion",
 }

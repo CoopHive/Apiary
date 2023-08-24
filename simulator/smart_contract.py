@@ -4,6 +4,7 @@ from event import Event
 from match import Match
 from deal import Deal
 
+
 class SmartContract(ServiceProvider):
     def __init__(self, public_key: str):
         super().__init__(public_key)
@@ -28,6 +29,9 @@ class SmartContract(ServiceProvider):
             deal.add_data(data_field, data_value)
         deal.set_id()
         self.deals[deal.get_id()] = deal
+        deal_event = Event(name='deal', data=deal)
+        self.emit_event(deal_event)
+
 
     def post_result(self):
         pass

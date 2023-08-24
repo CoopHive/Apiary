@@ -6,7 +6,6 @@ from match import Match
 from smart_contract import SmartContract
 
 
-
 class ResourceProvider(ServiceProvider):
     def __init__(self, public_key: str):
         # machines maps CIDs -> machine metadata
@@ -51,3 +50,4 @@ class ResourceProvider(ServiceProvider):
 
     def handle_smart_contract_event(self, event):
         print(f"I, the RP have smart contract event {event.get_name(), event.get_data().get_id()}")
+
