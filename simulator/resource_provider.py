@@ -5,12 +5,16 @@ from solver import Solver
 from match import Match
 from smart_contract import SmartContract
 from result import Result
+import logging
+import os
 
 
 class ResourceProvider(ServiceProvider):
     def __init__(self, public_key: str):
         # machines maps CIDs -> machine metadata
         super().__init__(public_key)
+        self.logger = logging.getLogger(f"Resource Provider {self.public_key}")
+        logging.basicConfig(filename=f'{os.getcwd()}/local_logs', filemode='w', level=logging.DEBUG)
         self.machines = {}
         self.solver_url = None
         self.solver = None
@@ -47,7 +51,7 @@ class ResourceProvider(ServiceProvider):
         pass
 
     def handle_solver_event(self, event):
-        print(f"I, the RP have solver event {event.get_name(), event.get_data().get_id()}")
+        self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
         # print(event.get_data().get_data()['resource_provider_address'], self.get_public_key())
         if event.get_name() == 'match':
             match = event.get_data()
@@ -57,7 +61,7 @@ class ResourceProvider(ServiceProvider):
                 self.get_smart_contract().agree_to_match(match, tx)
 
     def handle_smart_contract_event(self, event):
-        print(f"I, the RP have smart contract event {event.get_name(), event.get_data().get_id()}")
+        self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
         if event.get_name() == 'deal':
             deal = event.get_data()
             deal_data = deal.get_data()
@@ -67,7 +71,7 @@ class ResourceProvider(ServiceProvider):
                 self.current_job_running_times[deal_id] = 0
 
     def create_result(self, deal_id):
-        print(f"I, the RP am posting the result for deal {deal_id}")
+        self.logger.info(f"posting the result for deal {deal_id}")
         result = Result()
         result.add_data('deal_id', deal_id)
         instruction_count = '1'

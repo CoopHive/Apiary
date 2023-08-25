@@ -5,11 +5,15 @@ from collections import deque
 from job import Job
 from solver import Solver
 from smart_contract import SmartContract
+import logging
+import os
 
 
 class Client(ServiceProvider):
     def __init__(self, address: str):
         super().__init__(address)
+        self.logger = logging.getLogger(f"Client {self.public_key}")
+        logging.basicConfig(filename=f'{os.getcwd()}/local_logs', filemode='w', level=logging.DEBUG)
         # TODO: should determine the best data structure for this
         self.current_jobs = deque()
         self.local_information = LocalInformation()
@@ -27,7 +31,7 @@ class Client(ServiceProvider):
     def connect_to_solver(self, url: str, solver: Solver):
         self.solver_url = url
         self.solver = solver
-        solver.subscribe_event(self.handle_event)
+        solver.subscribe_event(self.handle_solver_event)
 
     def connect_to_smart_contract(self, smart_contract: SmartContract):
         self.smart_contract = smart_contract
@@ -39,8 +43,8 @@ class Client(ServiceProvider):
     def get_jobs(self):
         return self.current_jobs
 
-    def handle_event(self, event):
-        print(f"I, the Client have event {event.get_name(), event.get_data().get_id()}")
+    def handle_solver_event(self, event):
+        self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
         if event.get_name() == 'match':
             match = event.get_data()
             if match.get_data()['client_address'] == self.get_public_key():
@@ -49,7 +53,7 @@ class Client(ServiceProvider):
                 self.get_smart_contract().agree_to_match(match, tx)
 
     def handle_smart_contract_event(self, event):
-        print(f"I, the Client have smart contract event {event.get_name(), event.get_data().get_id()}")
+        self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
         if event.get_name() == 'deal':
             deal = event.get_data()
             deal_data = deal.get_data()

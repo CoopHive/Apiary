@@ -16,6 +16,8 @@ from resource_offer import ResourceOffer
 from job_offer import JobOffer
 from smart_contract import SmartContract
 
+import logging
+
 
 class Address:
     def __init__(self):

@@ -4,11 +4,15 @@ from event import Event
 from match import Match
 from deal import Deal
 from result import Result
+import logging
+import os
 
 
 class SmartContract(ServiceProvider):
     def __init__(self, public_key: str):
         super().__init__(public_key)
+        self.logger = logging.getLogger(f"Smart Contract {self.public_key}")
+        logging.basicConfig(filename=f'{os.getcwd()}/local_logs', filemode='w', level=logging.DEBUG)
         self.transactions = []
         self.deals = {}  # mapping from deal id to deal
         self.balances = {}  # mapping from public key to balance
@@ -24,9 +28,7 @@ class SmartContract(ServiceProvider):
         self.balances[match.get_data()['resource_provider_address']] -= timeout_deposit
         self.balance += timeout_deposit
         match.sign_resource_provider()
-        print('rp has signed')
-        print(self.balances)
-        print(self.balance)
+        self.logger.info(f"resource provider {match.get_data()['resource_provider_address']} has signed match {match.get_id()}")
 
     def _agree_to_match_client(self, match: Match, tx: Tx):
         match_data = match.get_data()
@@ -38,9 +40,7 @@ class SmartContract(ServiceProvider):
         self.balances[match.get_data()['client_address']] -= tx.value
         self.balance += tx.value
         match.sign_client()
-        print('client has signed')
-        print(self.balances)
-        print(self.balance)
+        self.logger.info(f"client {match.get_data()['client_address']} has signed match {match.get_id()}")
 
     def agree_to_match(self, match: Match, tx: Tx):
         if match.get_data()['resource_provider_address'] == tx.sender:
@@ -48,9 +48,9 @@ class SmartContract(ServiceProvider):
         elif match.get_data()['client_address'] == tx.sender:
             self._agree_to_match_client(match, tx)
         if match.get_resource_provider_signed() and match.get_client_signed():
-            print('both rp and client have signed')
+            self.logger.info(f"both resource provider {match.get_data()['resource_provider_address']} and client {match.get_data()['client_address']} have signed match {match.get_id()}")
+            self.logger.info(f"match attributes of match {match.get_id()}: {match.get_data()}")
             self._create_deal(match)
-            print("match attributes:", match.get_data())
 
     def _create_deal(self, match):
         deal = Deal()
@@ -62,7 +62,7 @@ class SmartContract(ServiceProvider):
         self.deals[deal.get_id()] = deal
         deal_event = Event(name='deal', data=deal)
         self.emit_event(deal_event)
-        print("deal attributes:", deal.get_data())
+        self.logger.info(f"deal created; deal attributes:, {deal.get_data()}")
 
     def _refund_timeout_deposit(self, result: Result):
         deal_id = result.get_data()['deal_id']
@@ -71,9 +71,7 @@ class SmartContract(ServiceProvider):
         resource_provider_address = deal_data['resource_provider_address']
         self.balances[resource_provider_address] += timeout_deposit
         self.balance -= timeout_deposit
-        print()
-        print(self.balances)
-        print(self.balance)
+        self._log_balances()
 
     def _post_cheating_collateral(self, result: Result, tx: Tx):
         deal_id = result.get_data()['deal_id']
@@ -81,7 +79,6 @@ class SmartContract(ServiceProvider):
         instruction_count = result.get_data()['instruction_count']
         intended_cheating_collateral = cheating_collateral_multiplier * instruction_count
         if cheating_collateral_multiplier * instruction_count != tx.value:
-            print()
             print(f'transaction value of {tx.value} does not match needed cheating collateral deposit {intended_cheating_collateral}')
             raise Exception("transaction value does not match needed cheating collateral")
         self.balance += tx.value
@@ -107,7 +104,6 @@ class SmartContract(ServiceProvider):
         price_per_instruction = self.deals[deal_id].get_data()['price_per_instruction']
         expected_payment_value = result_instruction_count * price_per_instruction
         if tx.value != expected_payment_value:
-            print()
             print(f'transaction value of {tx.value} does not match expected payment value {expected_payment_value}')
             raise Exception("transaction value does not match expected payment value")
         # add transaction value to balance
@@ -122,4 +118,7 @@ class SmartContract(ServiceProvider):
 
     def fund(self, tx: Tx):
         self.balances[tx.sender] = self.balances.get(tx.sender, 0) + tx.value
-        print(self.balances)
+
+    def _log_balances(self):
+        self.logger.info(f"Smart Contract balance: {self.balance}")
+        self.logger.info(f"Smart Contract balances: {self.balances}")

@@ -5,11 +5,15 @@ from deal import Deal
 from match import Match
 from event import Event
 from smart_contract import SmartContract
+import logging
+import os
 
 
 class Solver(ServiceProvider):
     def __init__(self, public_key: str, url: str):
         super().__init__(public_key)
+        self.logger = logging.getLogger(f"Solver {self.public_key}")
+        logging.basicConfig(filename=f'{os.getcwd()}/local_logs', filemode='w', level=logging.DEBUG)
         self.url = url
         self.machine_keys = ['CPU', 'RAM']
         self.smart_contract = None
@@ -20,7 +24,7 @@ class Solver(ServiceProvider):
         smart_contract.subscribe_event(self.handle_smart_contract_event)
 
     def handle_smart_contract_event(self, event):
-        print(f"I, the Solver have smart contract event {event.get_name(), event.get_data().get_id()}")
+        self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
         # if deal, remove resource and job offers from list
         if event.get_name() == 'deal':
             deal = event.get_data()
