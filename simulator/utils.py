@@ -26,7 +26,9 @@ class Tx:
     """
     sender: str
     # how many wei
-    value: int
+    value: float
+    # method: str
+    # arguments: []
 
 
 @dataclass

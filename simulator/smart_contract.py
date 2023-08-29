@@ -122,3 +122,10 @@ class SmartContract(ServiceProvider):
     def _log_balances(self):
         self.logger.info(f"Smart Contract balance: {self.balance}")
         self.logger.info(f"Smart Contract balances: {self.balances}")
+
+    def get_balances(self):
+        return self.balances
+
+    def get_balance(self):
+        return self.balance
+
