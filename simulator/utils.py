@@ -38,3 +38,18 @@ class Service:
     # metadata will be stored as an ipfs CID
     metadata: dict
     wallet_address: str
+
+
+extra_necessary_match_data = {
+    "client_deposit": 5,
+    "timeout": 10,
+    "timeout_deposit": 3,
+    "cheating_collateral_multiplier": 50,
+    "price_per_instruction": 0.1,
+}
+
+example_offer_data = {
+    "CPU": 6,
+    "RAM": 3,
+}
+

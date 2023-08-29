@@ -123,9 +123,9 @@ class SmartContract(ServiceProvider):
         self.logger.info(f"Smart Contract balance: {self.balance}")
         self.logger.info(f"Smart Contract balances: {self.balances}")
 
-    def get_balances(self):
+    def _get_balances(self):
         return self.balances
 
-    def get_balance(self):
+    def _get_balance(self):
         return self.balance
 

@@ -7,7 +7,7 @@ from event import Event
 from smart_contract import SmartContract
 import logging
 import os
-
+from utils import *
 
 class Solver(ServiceProvider):
     def __init__(self, public_key: str, url: str):
@@ -69,12 +69,9 @@ class Solver(ServiceProvider):
 
         return None
 
-    def add_random_match_data(self, match):
-        match.add_data("client_deposit", 5)
-        match.add_data("timeout", 10)
-        match.add_data("timeout_deposit", 3)
-        match.add_data("cheating_collateral_multiplier", 50)
-        match.add_data("price_per_instruction", 0.1)
+    def add_necessary_match_data(self, match):
+        for data_field, data_value in extra_necessary_match_data.items():
+            match.add_data(data_field, data_value)
 
     def create_match(self, job_offer: JobOffer, resource_offer: ResourceOffer) -> Match:
         # deal in stage 1 solver is exact match
@@ -86,7 +83,7 @@ class Solver(ServiceProvider):
         match.add_data("resource_offer", resource_offer.get_id())
         match.add_data("job_offer", job_offer.get_id())
 
-        self.add_random_match_data(match)
+        self.add_necessary_match_data(match)
 
         return match
 

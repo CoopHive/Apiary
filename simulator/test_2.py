@@ -1,12 +1,4 @@
-"""
-Test entrypoint script.
-"""
-
-# from contract import Contract, ServiceType, Tx, CID
-from utils import ServiceType, Tx, CID
-
-import pprint
-import random
+from utils import *
 from machine import Machine
 from service_provider import ServiceProvider
 from resource_provider import ResourceProvider
@@ -16,16 +8,16 @@ from solver import Solver
 from resource_offer import ResourceOffer
 from job_offer import JobOffer
 from smart_contract import SmartContract
-
 import logging
 
 
-class Address:
+class Addresses:
     def __init__(self):
         self.current_address = 0
 
     def get_current_address(self):
-        return self.current_address
+        self.increment_current_address()
+        return str(self.current_address)
 
     def increment_current_address(self):
         self.current_address += 1
@@ -59,9 +51,10 @@ def fund_smart_contract(service_provider, value: float):
 
 def create_resource_offer(owner_public_key: str):
     resource_offer = ResourceOffer()
-    resource_offer.add_data('CPU', '6')
-    resource_offer.add_data('RAM', '3')
     resource_offer.add_data('owner', owner_public_key)
+    for data_field, data_value in example_offer_data.items():
+        resource_offer.add_data(data_field, data_value)
+
     resource_offer.set_id()
 
     return resource_offer
@@ -69,9 +62,10 @@ def create_resource_offer(owner_public_key: str):
 
 def create_job_offer(owner_public_key: str):
     job_offer = JobOffer()
-    job_offer.add_data('CPU', '6')
-    job_offer.add_data('RAM', '3')
     job_offer.add_data('owner', owner_public_key)
+    for data_field, data_value in example_offer_data.items():
+        job_offer.add_data(data_field, data_value)
+
     job_offer.set_id()
 
     return job_offer
@@ -79,26 +73,28 @@ def create_job_offer(owner_public_key: str):
 
 def main():
 
+    addresses = Addresses()
+
     # create smart contract
-    new_smart_contract_1_public_key = "new_smart_contract_1_public_key"
+    new_smart_contract_1_public_key = addresses.get_current_address()
     new_smart_contract_1 = SmartContract(new_smart_contract_1_public_key)
 
     # create solver
-    new_solver_1_public_key = "new_solver_1_public_key"
+    new_solver_1_public_key = addresses.get_current_address()
     new_solver_1_url = "http://solver.com"
     new_solver_1 = Solver(new_solver_1_public_key, new_solver_1_url)
     # solver connects to smart contract
     new_solver_1.connect_to_smart_contract(smart_contract=new_smart_contract_1)
 
     # create resource provider
-    new_resource_provider_1_public_key = 'new_resource_provider_1_public_key'
+    new_resource_provider_1_public_key = addresses.get_current_address()
     new_resource_provider_1 = create_resource_provider(new_resource_provider_1_public_key, new_solver_1, new_smart_contract_1)
     # resource provider adds funds
     new_resource_provider_1_initial_fund = 10
     fund_smart_contract(new_resource_provider_1, new_resource_provider_1_initial_fund)
 
     # create client
-    new_client_1_public_key = 'new_client_1_public_key'
+    new_client_1_public_key = addresses.get_current_address()
     new_client_1 = create_client(new_client_1_public_key, new_solver_1, new_smart_contract_1)
     # client adds funds
     new_client_1_initial_fund = 10
