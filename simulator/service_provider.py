@@ -108,4 +108,14 @@ class LocalInformation:
     def get_job_offers(self):
         return self.job_offers
 
+    def add_resource_provider(self, resource_provider):
+        self.resource_providers[resource_provider.get_public_key()] = resource_provider
 
+    def get_resource_providers(self):
+        return self.resource_providers
+
+    def add_client(self, client):
+        self.clients[client.get_public_key()] = client
+
+    def get_clients(self):
+        return self.clients

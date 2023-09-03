@@ -19,6 +19,8 @@ class Solver(ServiceProvider):
         self.machine_keys = ['CPU', 'RAM']
         self.smart_contract = None
         self.deals_made_in_current_step = []
+        self.currently_matched_job_offers = set()
+        self.current_matched_resource_offers = set()
 
     def connect_to_smart_contract(self, smart_contract: SmartContract):
         self.smart_contract = smart_contract
@@ -32,10 +34,14 @@ class Solver(ServiceProvider):
             self.deals_made_in_current_step.append(deal)
 
     def remove_outdated_offers(self):
+        print([deal.get_id() for deal in self.deals_made_in_current_step])
         for deal in self.deals_made_in_current_step:
             deal_data = deal.get_data()
             # delete resource offer
             resource_offer = deal_data['resource_offer']
+            print(deal.get_id())
+            print(resource_offer)
+            print(self.get_local_information().get_resource_offers())
             del self.get_local_information().get_resource_offers()[resource_offer]
             # delete job offer
             job_offer = deal_data['job_offer']
@@ -47,9 +53,16 @@ class Solver(ServiceProvider):
         for job_offer_id, job_offer in self.get_local_information().get_job_offers().items():
             resulting_resource_offer = self.match_job_offer(job_offer)
             if resulting_resource_offer is not None:
+                # add job and resource offers to sets of currently matched offers
+                resulting_resource_offer_id = resulting_resource_offer.get_id()
+                self.current_matched_resource_offers.add(resulting_resource_offer_id)
+                self.currently_matched_job_offers.add(job_offer_id)
+                # create match
                 match = self.create_match(job_offer, resulting_resource_offer)
                 match.set_id()
+                # create match event
                 match_event = Event(name='match', data=match)
+                # emit match event
                 self.emit_event(match_event)
                 # go on to the next job offer
                 continue
@@ -59,8 +72,12 @@ class Solver(ServiceProvider):
     def match_job_offer(self, job_offer: JobOffer):
         # only look for exact matches for now
         job_offer_data = job_offer.get_data()
+        job_offer_id = job_offer.get_id()
         current_resource_offers = self.local_information.get_resource_offers()
         for resource_offer_id, resource_offer in current_resource_offers.items():
+            # do not consider offers that have already been matched
+            if (job_offer_id in self.currently_matched_job_offers) or (resource_offer_id in self.current_matched_resource_offers):
+                continue
             resource_offer_data = resource_offer.get_data()
             is_match = True
             for machine_key in self.machine_keys:

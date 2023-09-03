@@ -79,46 +79,58 @@ def main():
     num_clients = 5
 
     # create smart contract
-    new_smart_contract_1_public_key = addresses.get_current_address()
-    new_smart_contract_1 = SmartContract(new_smart_contract_1_public_key)
+    new_smart_contract_public_key = addresses.get_current_address()
+    new_smart_contract = SmartContract(new_smart_contract_public_key)
 
     # create solver
-    new_solver_1_public_key = addresses.get_current_address()
-    new_solver_1_url = "http://solver.com"
-    new_solver_1 = Solver(new_solver_1_public_key, new_solver_1_url)
+    new_solver_public_key = addresses.get_current_address()
+    new_solver_url = "http://solver.com"
+    new_solver = Solver(new_solver_public_key, new_solver_url)
     # solver connects to smart contract
-    new_solver_1.connect_to_smart_contract(smart_contract=new_smart_contract_1)
+    new_solver.connect_to_smart_contract(smart_contract=new_smart_contract)
 
     for _ in range(num_resource_providers):
         # create resource provider
-        new_resource_provider_1_public_key = addresses.get_current_address()
-        new_resource_provider_1 = create_resource_provider(new_resource_provider_1_public_key, new_solver_1, new_smart_contract_1)
+        new_resource_provider_public_key = addresses.get_current_address()
+        new_resource_provider = create_resource_provider(new_resource_provider_public_key, new_solver, new_smart_contract)
         # resource provider adds funds
         # new_resource_provider_1_initial_fund = 10
         # new_resource_provider_1_initial_fund = random.randint(0, 1000)
-        new_resource_provider_1_initial_fund = 100
-        fund_smart_contract(new_resource_provider_1, new_resource_provider_1_initial_fund)
+        new_resource_provider_initial_fund = 100
+        fund_smart_contract(new_resource_provider, new_resource_provider_initial_fund)
 
     for _ in range(num_clients):
         # create client
-        new_client_1_public_key = addresses.get_current_address()
-        new_client_1 = create_client(new_client_1_public_key, new_solver_1, new_smart_contract_1)
+        new_client_public_key = addresses.get_current_address()
+        new_client = create_client(new_client_public_key, new_solver, new_smart_contract)
         # client adds funds
-        new_client_1_initial_fund = 10
-        fund_smart_contract(new_client_1, new_client_1_initial_fund)
+        new_client_initial_fund = 10
+        fund_smart_contract(new_client, new_client_initial_fund)
 
-    new_resource_offer_1 = create_resource_offer(new_resource_provider_1_public_key)
-    new_resource_offer_1_id = new_resource_offer_1.get_id()
+    resource_providers = new_solver.get_local_information().get_resource_providers()
+    # print(resource_providers)
+    for resource_provider_public_key, resource_provider in resource_providers.items():
+        new_resource_offer = create_resource_offer(resource_provider_public_key)
+        new_resource_offer_id = new_resource_offer.get_id()
+        resource_provider.get_solver().get_local_information().add_resource_offer(new_resource_offer_id, new_resource_offer)
 
-    new_job_offer_1 = create_job_offer(new_client_1_public_key)
-    new_job_offer_1_id = new_job_offer_1.get_id()
+    clients = new_solver.get_local_information().get_clients()
+    for client_public_key, client in clients.items():
+        new_job_offer = create_job_offer(client_public_key)
+        new_job_offer_id = new_job_offer.get_id()
+        client.get_solver().get_local_information().add_job_offer(new_job_offer_id, new_job_offer)
 
-    new_resource_provider_1.get_solver().get_local_information().add_resource_offer(new_resource_offer_1_id, new_resource_offer_1)
-    new_client_1.get_solver().get_local_information().add_job_offer(new_job_offer_1_id, new_job_offer_1)
+    # new_job_offer = create_job_offer(new_client_public_key)
+    # new_job_offer_id = new_job_offer.get_id()
+    #
+    # # new_resource_provider.get_solver().get_local_information().add_resource_offer(new_resource_offer_id, new_resource_offer)
+    # new_client.get_solver().get_local_information().add_job_offer(new_job_offer_id, new_job_offer)
 
     for step in range(2):
-        new_solver_1.solve()
-        new_resource_provider_1.update_job_running_times()
+        new_solver.solve()
+        # todo iterate over all resource providers
+        for resource_provider_public_key, resource_provider in resource_providers.items():
+            resource_provider.update_job_running_times()
 
 
 

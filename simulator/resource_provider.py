@@ -32,7 +32,8 @@ class ResourceProvider(ServiceProvider):
     def connect_to_solver(self, url: str, solver: Solver):
         self.solver_url = url
         self.solver = solver
-        solver.subscribe_event(self.handle_solver_event)
+        self.solver.subscribe_event(self.handle_solver_event)
+        self.solver.get_local_information().add_resource_provider(self)
 
     def connect_to_smart_contract(self, smart_contract: SmartContract):
         self.smart_contract = smart_contract
