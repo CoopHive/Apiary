@@ -66,6 +66,8 @@ class Solver(ServiceProvider):
                 self.emit_event(match_event)
                 # go on to the next job offer
                 continue
+        self.currently_matched_job_offers.clear()
+        self.current_matched_resource_offers.clear()
         # remove outdated job and resource offers
         self.remove_outdated_offers()
 

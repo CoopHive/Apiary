@@ -12,6 +12,7 @@ from job_offer import JobOffer
 from smart_contract import SmartContract
 import logging
 
+
 class Addresses:
     def __init__(self):
         self.current_address = 0
