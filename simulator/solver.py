@@ -34,14 +34,14 @@ class Solver(ServiceProvider):
             self.deals_made_in_current_step.append(deal)
 
     def remove_outdated_offers(self):
-        print([deal.get_id() for deal in self.deals_made_in_current_step])
+        # print([deal.get_id() for deal in self.deals_made_in_current_step])
         for deal in self.deals_made_in_current_step:
             deal_data = deal.get_data()
             # delete resource offer
             resource_offer = deal_data['resource_offer']
-            print(deal.get_id())
-            print(resource_offer)
-            print(self.get_local_information().get_resource_offers())
+            # print(deal.get_id())
+            print(f"resource_offer {resource_offer}")
+            # print(self.get_local_information().get_resource_offers())
             del self.get_local_information().get_resource_offers()[resource_offer]
             # delete job offer
             job_offer = deal_data['job_offer']
@@ -49,7 +49,15 @@ class Solver(ServiceProvider):
         # clear list of deals made in current step
         self.deals_made_in_current_step.clear()
 
+    def solver_cleanup(self):
+        self.currently_matched_job_offers.clear()
+        self.current_matched_resource_offers.clear()
+        # remove outdated job and resource offers
+        self.remove_outdated_offers()
+
     def solve(self):
+        print()
+        print(self.get_local_information().get_job_offers().items())
         for job_offer_id, job_offer in self.get_local_information().get_job_offers().items():
             resulting_resource_offer = self.match_job_offer(job_offer)
             if resulting_resource_offer is not None:
@@ -66,10 +74,6 @@ class Solver(ServiceProvider):
                 self.emit_event(match_event)
                 # go on to the next job offer
                 continue
-        self.currently_matched_job_offers.clear()
-        self.current_matched_resource_offers.clear()
-        # remove outdated job and resource offers
-        self.remove_outdated_offers()
 
     def match_job_offer(self, job_offer: JobOffer):
         # only look for exact matches for now

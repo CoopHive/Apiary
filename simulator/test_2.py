@@ -11,6 +11,10 @@ from resource_offer import ResourceOffer
 from job_offer import JobOffer
 from smart_contract import SmartContract
 import logging
+import os
+
+logger = logging.getLogger(f"test")
+logging.basicConfig(filename=f'{os.getcwd()}/local_logs', filemode='w', level=logging.DEBUG)
 
 
 class Addresses:
@@ -131,9 +135,14 @@ def main():
         new_solver.solve()
         # todo iterate over all resource providers
         for resource_provider_public_key, resource_provider in resource_providers.items():
-            resource_provider.update_job_running_times()
+            resource_provider.resource_provider_loop()
+        for client_public_key, client in clients.items():
+            client.client_loop()
+        new_solver.solver_cleanup()
 
-
+        logger.info("")
+        logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop {step} completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        logger.info("")
 
 
 

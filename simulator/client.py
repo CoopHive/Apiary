@@ -4,6 +4,7 @@ from service_provider_local_information import LocalInformation
 from collections import deque
 from job import Job
 from solver import Solver
+from match import Match
 from smart_contract import SmartContract
 import logging
 import os
@@ -21,6 +22,7 @@ class Client(ServiceProvider):
         self.solver = None
         self.current_deals = {}  # maps deal id to deals
         self.deals_finished_in_current_step = []
+        self.current_matched_offers = []
 
     def get_solver(self):
         return self.solver
@@ -44,14 +46,17 @@ class Client(ServiceProvider):
     def get_jobs(self):
         return self.current_jobs
 
+    def _agree_to_match(self, match: Match):
+        client_deposit = match.get_data()['client_deposit']
+        tx = Tx(sender=self.get_public_key(), value=client_deposit)
+        self.get_smart_contract().agree_to_match(match, tx)
+
     def handle_solver_event(self, event):
         self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
         if event.get_name() == 'match':
             match = event.get_data()
             if match.get_data()['client_address'] == self.get_public_key():
-                client_deposit = match.get_data()['client_deposit']
-                tx = Tx(sender=self.get_public_key(), value=client_deposit)
-                self.get_smart_contract().agree_to_match(match, tx)
+                self.current_matched_offers.append(match)
 
     def handle_smart_contract_event(self, event):
         self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
@@ -81,3 +86,10 @@ class Client(ServiceProvider):
             del self.current_deals[deal_id]
         # clear list of deals finished in current step
         self.deals_finished_in_current_step.clear()
+
+    def client_loop(self):
+        for match in self.current_matched_offers:
+            self._agree_to_match(match)
+        self.update_finished_deals()
+        self.current_matched_offers.clear()
+

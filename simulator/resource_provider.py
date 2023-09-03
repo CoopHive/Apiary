@@ -22,6 +22,7 @@ class ResourceProvider(ServiceProvider):
         self.current_deals = {}  # maps deal id to deals
         self.current_job_running_times = {}  # maps deal id to how long the resource provider has been running the job
         self.deals_finished_in_current_step = []
+        self.current_matched_offers = []
 
     def get_solver(self):
         return self.solver
@@ -51,15 +52,18 @@ class ResourceProvider(ServiceProvider):
     def create_resource_offer(self):
         pass
 
+    def _agree_to_match(self, match: Match):
+        timeout_deposit = match.get_data()['timeout_deposit']
+        tx = Tx(sender=self.get_public_key(), value=timeout_deposit)
+        self.get_smart_contract().agree_to_match(match, tx)
+
     def handle_solver_event(self, event):
         self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
         # print(event.get_data().get_data()['resource_provider_address'], self.get_public_key())
         if event.get_name() == 'match':
             match = event.get_data()
             if match.get_data()['resource_provider_address'] == self.get_public_key():
-                timeout_deposit = match.get_data()['timeout_deposit']
-                tx = Tx(sender=self.get_public_key(), value=timeout_deposit)
-                self.get_smart_contract().agree_to_match(match, tx)
+                self.current_matched_offers.append(match)
 
     def handle_smart_contract_event(self, event):
         self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
@@ -101,3 +105,25 @@ class ResourceProvider(ServiceProvider):
                 self.deals_finished_in_current_step.append(deal_id)
 
         self.update_finished_deals()
+
+    def resource_provider_loop(self):
+        for match in self.current_matched_offers:
+            self._agree_to_match(match)
+        self.update_job_running_times()
+        self.current_matched_offers.clear()
+
+
+# todo when handling events, add to list to be managed later, i.e. don't start signing stuff immediately
+
+
+
+
+
+
+
+
+
+
+
+
+
