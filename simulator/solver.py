@@ -9,6 +9,7 @@ import logging
 import os
 from utils import *
 
+
 class Solver(ServiceProvider):
     def __init__(self, public_key: str, url: str):
         super().__init__(public_key)
@@ -50,6 +51,8 @@ class Solver(ServiceProvider):
                 match.set_id()
                 match_event = Event(name='match', data=match)
                 self.emit_event(match_event)
+                # go on to the next job offer
+                continue
         # remove outdated job and resource offers
         self.remove_outdated_offers()
 

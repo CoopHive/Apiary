@@ -64,14 +64,15 @@ class Client(ServiceProvider):
         if event.get_name() == 'result':
             result = event.get_data()
             result_data = result.get_data()
-            result_instruction_count = result_data['instruction_count']
-            result_instruction_count = float(result_instruction_count)
             deal_id = result_data['deal_id']
-            price_per_instruction = self.current_deals[deal_id].get_data()['price_per_instruction']
-            payment_value = result_instruction_count * price_per_instruction
-            tx = Tx(sender=self.get_public_key(), value=payment_value)
-            self.smart_contract.post_client_payment(result, tx)
-            self.deals_finished_in_current_step.append(deal_id)
+            if deal_id in self.current_deals.keys():
+                result_instruction_count = result_data['instruction_count']
+                result_instruction_count = float(result_instruction_count)
+                price_per_instruction = self.current_deals[deal_id].get_data()['price_per_instruction']
+                payment_value = result_instruction_count * price_per_instruction
+                tx = Tx(sender=self.get_public_key(), value=payment_value)
+                self.smart_contract.post_client_payment(result, tx)
+                self.deals_finished_in_current_step.append(deal_id)
 
     def update_finished_deals(self):
         # remove finished deals from list of current deals and running jobs

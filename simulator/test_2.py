@@ -1,3 +1,5 @@
+import numpy as np
+import random
 from utils import *
 from machine import Machine
 from service_provider import ServiceProvider
@@ -9,7 +11,6 @@ from resource_offer import ResourceOffer
 from job_offer import JobOffer
 from smart_contract import SmartContract
 import logging
-
 
 class Addresses:
     def __init__(self):
@@ -74,6 +75,8 @@ def create_job_offer(owner_public_key: str):
 def main():
 
     addresses = Addresses()
+    num_resource_providers = 5
+    num_clients = 5
 
     # create smart contract
     new_smart_contract_1_public_key = addresses.get_current_address()
@@ -86,19 +89,23 @@ def main():
     # solver connects to smart contract
     new_solver_1.connect_to_smart_contract(smart_contract=new_smart_contract_1)
 
-    # create resource provider
-    new_resource_provider_1_public_key = addresses.get_current_address()
-    new_resource_provider_1 = create_resource_provider(new_resource_provider_1_public_key, new_solver_1, new_smart_contract_1)
-    # resource provider adds funds
-    new_resource_provider_1_initial_fund = 10
-    fund_smart_contract(new_resource_provider_1, new_resource_provider_1_initial_fund)
+    for _ in range(num_resource_providers):
+        # create resource provider
+        new_resource_provider_1_public_key = addresses.get_current_address()
+        new_resource_provider_1 = create_resource_provider(new_resource_provider_1_public_key, new_solver_1, new_smart_contract_1)
+        # resource provider adds funds
+        # new_resource_provider_1_initial_fund = 10
+        # new_resource_provider_1_initial_fund = random.randint(0, 1000)
+        new_resource_provider_1_initial_fund = 100
+        fund_smart_contract(new_resource_provider_1, new_resource_provider_1_initial_fund)
 
-    # create client
-    new_client_1_public_key = addresses.get_current_address()
-    new_client_1 = create_client(new_client_1_public_key, new_solver_1, new_smart_contract_1)
-    # client adds funds
-    new_client_1_initial_fund = 10
-    fund_smart_contract(new_client_1, new_client_1_initial_fund)
+    for _ in range(num_clients):
+        # create client
+        new_client_1_public_key = addresses.get_current_address()
+        new_client_1 = create_client(new_client_1_public_key, new_solver_1, new_smart_contract_1)
+        # client adds funds
+        new_client_1_initial_fund = 10
+        fund_smart_contract(new_client_1, new_client_1_initial_fund)
 
     new_resource_offer_1 = create_resource_offer(new_resource_provider_1_public_key)
     new_resource_offer_1_id = new_resource_offer_1.get_id()
