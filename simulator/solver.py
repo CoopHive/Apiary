@@ -40,7 +40,7 @@ class Solver(ServiceProvider):
             # delete resource offer
             resource_offer = deal_data['resource_offer']
             # print(deal.get_id())
-            print(f"resource_offer {resource_offer}")
+            # print(f"resource_offer {resource_offer}")
             # print(self.get_local_information().get_resource_offers())
             del self.get_local_information().get_resource_offers()[resource_offer]
             # delete job offer
@@ -56,8 +56,8 @@ class Solver(ServiceProvider):
         self.remove_outdated_offers()
 
     def solve(self):
-        print()
-        print(self.get_local_information().get_job_offers().items())
+        # print()
+        # print(self.get_local_information().get_job_offers().items())
         for job_offer_id, job_offer in self.get_local_information().get_job_offers().items():
             resulting_resource_offer = self.match_job_offer(job_offer)
             if resulting_resource_offer is not None:

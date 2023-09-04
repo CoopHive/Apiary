@@ -59,7 +59,6 @@ class ResourceProvider(ServiceProvider):
 
     def handle_solver_event(self, event):
         self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
-        # print(event.get_data().get_data()['resource_provider_address'], self.get_public_key())
         if event.get_name() == 'match':
             match = event.get_data()
             if match.get_data()['resource_provider_address'] == self.get_public_key():

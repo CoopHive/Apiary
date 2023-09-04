@@ -55,9 +55,10 @@ def fund_smart_contract(service_provider, value: float):
     service_provider.get_smart_contract().fund(tx)
 
 
-def create_resource_offer(owner_public_key: str):
+def create_resource_offer(owner_public_key: str, created_at):
     resource_offer = ResourceOffer()
     resource_offer.add_data('owner', owner_public_key)
+    resource_offer.add_data('created_at', created_at)
     for data_field, data_value in example_offer_data.items():
         resource_offer.add_data(data_field, data_value)
 
@@ -66,15 +67,32 @@ def create_resource_offer(owner_public_key: str):
     return resource_offer
 
 
-def create_job_offer(owner_public_key: str):
+def create_job_offer(owner_public_key: str, created_at):
     job_offer = JobOffer()
     job_offer.add_data('owner', owner_public_key)
+    job_offer.add_data('created_at', created_at)
     for data_field, data_value in example_offer_data.items():
         job_offer.add_data(data_field, data_value)
 
     job_offer.set_id()
 
     return job_offer
+
+
+def create_n_resource_offers(resource_providers, num_resource_offers_per_resource_provider, created_at):
+    for _ in range(num_resource_offers_per_resource_provider):
+        for resource_provider_public_key, resource_provider in resource_providers.items():
+            new_resource_offer = create_resource_offer(resource_provider_public_key, created_at)
+            new_resource_offer_id = new_resource_offer.get_id()
+            resource_provider.get_solver().get_local_information().add_resource_offer(new_resource_offer_id, new_resource_offer)
+
+
+def create_n_job_offers(clients, num_job_offers_per_client, created_at):
+    for _ in range(num_job_offers_per_client):
+        for client_public_key, client in clients.items():
+            new_job_offer = create_job_offer(client_public_key, created_at)
+            new_job_offer_id = new_job_offer.get_id()
+            client.get_solver().get_local_information().add_job_offer(new_job_offer_id, new_job_offer)
 
 
 def main():
@@ -112,34 +130,58 @@ def main():
         new_client_initial_fund = 10
         fund_smart_contract(new_client, new_client_initial_fund)
 
+    num_resource_offers_per_resource_provider = 1
     resource_providers = new_solver.get_local_information().get_resource_providers()
-    # print(resource_providers)
-    for resource_provider_public_key, resource_provider in resource_providers.items():
-        new_resource_offer = create_resource_offer(resource_provider_public_key)
-        new_resource_offer_id = new_resource_offer.get_id()
-        resource_provider.get_solver().get_local_information().add_resource_offer(new_resource_offer_id, new_resource_offer)
 
+    num_job_offers_per_client = 1
     clients = new_solver.get_local_information().get_clients()
-    for client_public_key, client in clients.items():
-        new_job_offer = create_job_offer(client_public_key)
-        new_job_offer_id = new_job_offer.get_id()
-        client.get_solver().get_local_information().add_job_offer(new_job_offer_id, new_job_offer)
 
     for step in range(2):
+        logger.info("")
+        logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop {step} started~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        logger.info("")
+        current_time_step_str = str(step)
+        create_n_resource_offers(resource_providers, num_resource_offers_per_resource_provider, current_time_step_str)
+        create_n_job_offers(clients, num_job_offers_per_client, current_time_step_str)
+        logger.info("")
+        logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        logger.info("")
         new_solver.solve()
+        logger.info("")
+        logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        logger.info("")
         # todo iterate over all resource providers
+        logger.info("")
+        logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        logger.info("")
         for resource_provider_public_key, resource_provider in resource_providers.items():
             resource_provider.resource_provider_loop()
+        logger.info("")
+        logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        logger.info("")
+
+        logger.info("")
+        logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        logger.info("")
         for client_public_key, client in clients.items():
             client.client_loop()
+        logger.info("")
+        logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        logger.info("")
+        logger.info("")
+        logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        logger.info("")
         new_solver.solver_cleanup()
+        logger.info("")
+        logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        logger.info("")
 
         logger.info("")
         logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop {step} completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         logger.info("")
 
 
-
+# todo note that the offers need to be different from each other in some regard in order to not remove needed stuff
 
 
 
