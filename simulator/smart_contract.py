@@ -66,6 +66,8 @@ class SmartContract(ServiceProvider):
         deal_event = Event(name='deal', data=deal)
         self.emit_event(deal_event)
         self.logger.info(f"deal created; deal attributes:, {deal.get_data()}")
+        # append to transactions
+        self.transactions.append(deal_event)
 
     def _refund_timeout_deposit(self, result: Result):
         deal_id = result.get_data()['deal_id']
@@ -93,6 +95,8 @@ class SmartContract(ServiceProvider):
                 result_event = Event(name='result', data=result)
                 self.emit_event(result_event)
                 self._refund_timeout_deposit(result)
+                # append to transactions
+                self.transactions.append(result_event)
 
     def post_result(self, result: Result, tx: Tx):
         self.results_posted_in_current_step.append([result, tx])

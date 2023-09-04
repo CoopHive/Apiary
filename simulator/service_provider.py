@@ -26,21 +26,7 @@ class ServiceProvider:
     def subscribe_event(self, handler):
         self.event_handlers.append(handler)
 
-    # not support unsubscribing
-
-
-
-
-
-    # def handler_filter_by_owner_public_key(self, public_key: str, data: dict = {}):
-    #     # result = []
-    #     # # for key, value in data.items():
-    #     # #     if key == public_key or value == public_key:
-    #     # #         result.append((key, value))
-    #     # return result
-    #
-    #     if public_key in data.values():
-    #         return True
+    # not supporting unsubscribing
 
 
 class LocalInformation:
