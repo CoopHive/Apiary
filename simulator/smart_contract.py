@@ -27,7 +27,8 @@ class SmartContract(ServiceProvider):
             print()
             print(f'transaction value of {tx.value} does not match timeout deposit {match_data["timeout_deposit"]}')
             raise Exception("transaction value does not match timeout deposit")
-        self.balances[match.get_data()['resource_provider_address']] -= timeout_deposit
+        resource_provider_address = match_data['resource_provider_address']
+        self.balances[resource_provider_address] -= timeout_deposit
         self.balance += timeout_deposit
         match.sign_resource_provider()
         self.logger.info(f"resource provider {match.get_data()['resource_provider_address']} has signed match {match.get_id()}")
@@ -39,7 +40,12 @@ class SmartContract(ServiceProvider):
             print()
             print(f'transaction value of {tx.value} does not match client deposit {match_data["client_deposit"]}')
             raise Exception("transaction value does not match timeout deposit")
-        self.balances[match.get_data()['client_address']] -= tx.value
+        client_address = match_data['client_address']
+        if client_deposit > self.balances[client_address]:
+            print()
+            print(f'transaction value of {tx.value} exceeds client balance of {self.balances[client_address]}')
+            raise Exception("transaction value exceeds balance")
+        self.balances[client_address] -= tx.value
         self.balance += tx.value
         match.sign_client()
         self.logger.info(f"client {match.get_data()['client_address']} has signed match {match.get_id()}")
@@ -76,16 +82,22 @@ class SmartContract(ServiceProvider):
         resource_provider_address = deal_data['resource_provider_address']
         self.balances[resource_provider_address] += timeout_deposit
         self.balance -= timeout_deposit
-        self._log_balances()
 
     def _post_cheating_collateral(self, result: Result, tx: Tx):
         deal_id = result.get_data()['deal_id']
-        cheating_collateral_multiplier = self.deals[deal_id].get_data()['cheating_collateral_multiplier']
+        deal_data = self.deals[deal_id].get_data()
+        cheating_collateral_multiplier = deal_data['cheating_collateral_multiplier']
         instruction_count = result.get_data()['instruction_count']
         intended_cheating_collateral = cheating_collateral_multiplier * instruction_count
-        if cheating_collateral_multiplier * instruction_count != tx.value:
+        if intended_cheating_collateral != tx.value:
             print(f'transaction value of {tx.value} does not match needed cheating collateral deposit {intended_cheating_collateral}')
             raise Exception("transaction value does not match needed cheating collateral")
+        resource_provider_address = deal_data['resource_provider_address']
+        if intended_cheating_collateral > self.balances[resource_provider_address]:
+            print()
+            print(f'transaction value of {tx.value} exceeds resource provider balance of {self.balances[resource_provider_address]}')
+            raise Exception("transaction value exceeds balance")
+        self.balances[resource_provider_address] -= tx.value
         self.balance += tx.value
 
     def _create_and_emit_result_events(self):
@@ -97,6 +109,10 @@ class SmartContract(ServiceProvider):
                 self._refund_timeout_deposit(result)
                 # append to transactions
                 self.transactions.append(result_event)
+
+    def _account_for_cheating_collateral_payments(self):
+        for result, tx in self.results_posted_in_current_step:
+            self._post_cheating_collateral(result, tx)
 
     def post_result(self, result: Result, tx: Tx):
         self.results_posted_in_current_step.append([result, tx])
@@ -112,18 +128,27 @@ class SmartContract(ServiceProvider):
         result_instruction_count = result_data['instruction_count']
         result_instruction_count = float(result_instruction_count)
         deal_id = result_data['deal_id']
-        price_per_instruction = self.deals[deal_id].get_data()['price_per_instruction']
+        deal_data = self.deals[deal_id].get_data()
+        price_per_instruction = deal_data['price_per_instruction']
         expected_payment_value = result_instruction_count * price_per_instruction
         if tx.value != expected_payment_value:
             print(f'transaction value of {tx.value} does not match expected payment value {expected_payment_value}')
             raise Exception("transaction value does not match expected payment value")
-        # add transaction value to balance
+        client_address = deal_data['client_address']
+        if expected_payment_value > self.balances[client_address]:
+            print()
+            print(f'transaction value of {tx.value} exceeds client balance of {self.balances[client_address]}')
+            raise Exception("transaction value exceeds balance")
+        # subtract from client's deposit
+        self.balances[client_address] -= tx.value
+        # add transaction value to smart contract balance
         self.balance += tx.value
         deal = self.deals[deal_id]
         resource_provider_address = deal.get_data()['resource_provider_address']
         # pay resource provider
-        self.balance -= tx.value
         self.balances[resource_provider_address] += tx.value
+        # subtract from smart contract balance
+        self.balance -= tx.value
         # refund client deposit
         self._refund_client_deposit(deal)
 
@@ -144,6 +169,8 @@ class SmartContract(ServiceProvider):
         for match in self.matches_made_in_current_step:
             self._create_deal(match)
         self._create_and_emit_result_events()
+        self._account_for_cheating_collateral_payments()
         self.matches_made_in_current_step.clear()
         self.results_posted_in_current_step.clear()
+        self._log_balances()
 

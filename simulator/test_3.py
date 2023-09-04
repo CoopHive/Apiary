@@ -119,7 +119,7 @@ def main():
         # resource provider adds funds
         # new_resource_provider_1_initial_fund = 10
         # new_resource_provider_1_initial_fund = random.randint(0, 1000)
-        new_resource_provider_initial_fund = 100
+        new_resource_provider_initial_fund = 200
         fund_smart_contract(new_resource_provider, new_resource_provider_initial_fund)
 
     for _ in range(num_clients):
@@ -127,7 +127,7 @@ def main():
         new_client_public_key = addresses.get_current_address()
         new_client = create_client(new_client_public_key, new_solver, new_smart_contract)
         # client adds funds
-        new_client_initial_fund = 10
+        new_client_initial_fund = 100
         fund_smart_contract(new_client, new_client_initial_fund)
 
     num_resource_offers_per_resource_provider = 1
@@ -190,8 +190,12 @@ def main():
         logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop {step} completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         logger.info("")
 
+    # for i in range(len(new_smart_contract.transactions)):
+    #     print(f"{new_smart_contract.transactions[i].get_data().get_data()}")
 
-# todo note that the offers need to be different from each other in some regard in order to not remove needed stuff
+
+
+
 
 
 

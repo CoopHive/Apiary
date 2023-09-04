@@ -74,18 +74,21 @@ class ResourceProvider(ServiceProvider):
                 self.current_deals[deal_id] = deal
                 self.current_job_running_times[deal_id] = 0
 
+    def post_result(self, result: Result, tx: Tx):
+        self.get_smart_contract().post_result(result, tx)
+
     def create_result(self, deal_id):
         self.logger.info(f"posting the result for deal {deal_id}")
         result = Result()
         result.add_data('deal_id', deal_id)
-        instruction_count = '1'
+        instruction_count = 1
         result.add_data('instruction_count', instruction_count)
         result.set_id()
         result.add_data('result_id', result.get_id())
         cheating_collateral_multiplier = self.current_deals[deal_id].get_data()['cheating_collateral_multiplier']
         cheating_collateral = cheating_collateral_multiplier * int(instruction_count)
         tx = Tx(sender=self.get_public_key(), value=cheating_collateral)
-        self.get_smart_contract().post_result(result, tx)
+        return result, tx
 
     def update_finished_deals(self):
         # remove finished deals from list of current deals and running jobs
@@ -95,13 +98,17 @@ class ResourceProvider(ServiceProvider):
         # clear list of deals finished in current step
         self.deals_finished_in_current_step.clear()
 
+    def handle_completed_job(self, deal_id):
+        result, tx = self.create_result(deal_id)
+        self.post_result(result, tx)
+        self.deals_finished_in_current_step.append(deal_id)
+
     def update_job_running_times(self):
         for deal_id, running_time in self.current_job_running_times.items():
             self.current_job_running_times[deal_id] += 1
             expected_running_time = self.current_deals[deal_id].get_data()['actual_honest_time_to_completion']
             if self.current_job_running_times[deal_id] >= expected_running_time:
-                self.create_result(deal_id)
-                self.deals_finished_in_current_step.append(deal_id)
+                self.handle_completed_job(deal_id)
 
         self.update_finished_deals()
 
