@@ -45,7 +45,7 @@ extra_necessary_match_data = {
     "timeout": 10,
     "timeout_deposit": 3,
     "cheating_collateral_multiplier": 50,
-    "price_per_instruction": 0.1,
+    "price_per_instruction": 1,
 }
 
 example_offer_data = {

@@ -17,6 +17,8 @@ class SmartContract(ServiceProvider):
         self.deals = {}  # mapping from deal id to deal
         self.balances = {}  # mapping from public key to balance
         self.balance = 0  # total balance in the contract
+        self.matches_made_in_current_step = []
+        self.results_posted_in_current_step = []
 
     def _agree_to_match_resource_provider(self, match: Match, tx: Tx):
         match_data = match.get_data()
@@ -50,7 +52,8 @@ class SmartContract(ServiceProvider):
         if match.get_resource_provider_signed() and match.get_client_signed():
             self.logger.info(f"both resource provider {match.get_data()['resource_provider_address']} and client {match.get_data()['client_address']} have signed match {match.get_id()}")
             self.logger.info(f"match attributes of match {match.get_id()}: {match.get_data()}")
-            self._create_deal(match)
+            # self._create_deal(match)
+            self.matches_made_in_current_step.append(match)
 
     def _create_deal(self, match):
         deal = Deal()
@@ -83,12 +86,16 @@ class SmartContract(ServiceProvider):
             raise Exception("transaction value does not match needed cheating collateral")
         self.balance += tx.value
 
+    def _create_and_emit_result_events(self):
+        for result, tx in self.results_posted_in_current_step:
+            deal_id = result.get_data()['deal_id']
+            if self.deals[deal_id].get_data()['resource_provider_address'] == tx.sender:
+                result_event = Event(name='result', data=result)
+                self.emit_event(result_event)
+                self._refund_timeout_deposit(result)
+
     def post_result(self, result: Result, tx: Tx):
-        deal_id = result.get_data()['deal_id']
-        if self.deals[deal_id].get_data()['resource_provider_address'] == tx.sender:
-            result_event = Event(name='result', data=result)
-            self.emit_event(result_event)
-            self._refund_timeout_deposit(result)
+        self.results_posted_in_current_step.append([result, tx])
 
     def _refund_client_deposit(self, deal: Deal):
         client_address = deal.get_data()['client_address']
@@ -128,4 +135,11 @@ class SmartContract(ServiceProvider):
 
     def _get_balance(self):
         return self.balance
+
+    def _smart_contract_loop(self):
+        for match in self.matches_made_in_current_step:
+            self._create_deal(match)
+        self._create_and_emit_result_events()
+        self.matches_made_in_current_step.clear()
+        self.results_posted_in_current_step.clear()
 
