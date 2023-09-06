@@ -56,9 +56,6 @@ class SmartContract(ServiceProvider):
         elif match.get_data()['client_address'] == tx.sender:
             self._agree_to_match_client(match, tx)
         if match.get_resource_provider_signed() and match.get_client_signed():
-            self.logger.info(f"both resource provider {match.get_data()['resource_provider_address']} and client {match.get_data()['client_address']} have signed match {match.get_id()}")
-            self.logger.info(f"match attributes of match {match.get_id()}: {match.get_data()}")
-            # self._create_deal(match)
             self.matches_made_in_current_step.append(match)
 
     def _create_deal(self, match):
@@ -167,6 +164,8 @@ class SmartContract(ServiceProvider):
 
     def _smart_contract_loop(self):
         for match in self.matches_made_in_current_step:
+            self.logger.info(f"both resource provider {match.get_data()['resource_provider_address']} and client {match.get_data()['client_address']} have signed match {match.get_id()}")
+            self.logger.info(f"match attributes of match {match.get_id()}: {match.get_data()}")
             self._create_deal(match)
         self._create_and_emit_result_events()
         self._account_for_cheating_collateral_payments()
