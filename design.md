@@ -1,4 +1,4 @@
-# lilypad design doc
+# coophive design doc
 
 ## context
 

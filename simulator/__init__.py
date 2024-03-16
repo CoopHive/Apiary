@@ -1,3 +1,3 @@
 """
-Lilypad simulator
+CoopHive simulator
 """

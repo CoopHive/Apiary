@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "lilypad-simulator"
+name = "coophive-simulator"
 version = "0.1.0"
-description = "A simulator for the game theory of Lilypad Network"
-authors = ["Luke Marsden <me@lukemarsden.net>"]
+description = "A simulator for the game theory of the CoopHive protocol"
+authors = ["Levi Rybalov"]
 license = "Apache 2"
 readme = "README.md"
-packages = [{include = "lilypad_simulator"}]
+packages = [{include = "coophive_simulator"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"

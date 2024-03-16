@@ -1,4 +1,4 @@
-# Lilypad Simulator
+# CoopHive Simulator
 
 ## getting started
 

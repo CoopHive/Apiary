@@ -1,5 +1,5 @@
 """
-The smart contract is a Python interface representing (modelling) the Lilypad
+The smart contract is a Python interface representing (modelling) the CoopHive
 Ethereum / Solidity smart contract (and enough of Ethereum itself, e.g.
 wallets).
 
