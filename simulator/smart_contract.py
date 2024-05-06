@@ -5,6 +5,8 @@ from match import Match
 from deal import Deal
 from result import Result
 import logging
+# JSON logging helper function
+from log_json import log_json
 import os
 
 
@@ -31,7 +33,10 @@ class SmartContract(ServiceProvider):
         self.balances[resource_provider_address] -= timeout_deposit
         self.balance += timeout_deposit
         match.sign_resource_provider()
-        self.logger.info(f"resource provider {match.get_data()['resource_provider_address']} has signed match {match.get_id()}")
+        #self.logger.info(f"resource provider {match.get_data()['resource_provider_address']} has signed match {match.get_id()}")
+        # JSON logging
+        log_data = {"resource_provider_address": resource_provider_address, "match_id": match.get_id()}
+        log_json(self.logger, "Resource provider signed match", log_data)
 
     def _agree_to_match_client(self, match: Match, tx: Tx):
         match_data = match.get_data()
@@ -48,7 +53,10 @@ class SmartContract(ServiceProvider):
         self.balances[client_address] -= tx.value
         self.balance += tx.value
         match.sign_client()
-        self.logger.info(f"client {match.get_data()['client_address']} has signed match {match.get_id()}")
+        #self.logger.info(f"client {match.get_data()['client_address']} has signed match {match.get_id()}")
+        # JSON logging
+        log_data = {"client_address": client_address, "match_id": match.get_id()}
+        log_json(self.logger, "Client signed match", log_data)
 
     def agree_to_match(self, match: Match, tx: Tx):
         if match.get_data()['resource_provider_address'] == tx.sender:
@@ -68,7 +76,9 @@ class SmartContract(ServiceProvider):
         self.deals[deal.get_id()] = deal
         deal_event = Event(name='deal', data=deal)
         self.emit_event(deal_event)
-        self.logger.info(f"deal created; deal attributes:, {deal.get_data()}")
+        #self.logger.info(f"deal created; deal attributes:, {deal.get_data()}")
+        # JSON logging
+        log_json(self.logger, "Deal created", {"deal_id": deal.get_id(), "deal_attributes": deal.get_data()})
         # append to transactions
         self.transactions.append(deal_event)
 
@@ -153,8 +163,12 @@ class SmartContract(ServiceProvider):
         self.balances[tx.sender] = self.balances.get(tx.sender, 0) + tx.value
 
     def _log_balances(self):
-        self.logger.info(f"Smart Contract balance: {self.balance}")
-        self.logger.info(f"Smart Contract balances: {self.balances}")
+        #self.logger.info(f"Smart Contract balance: {self.balance}")
+        #self.logger.info(f"Smart Contract balances: {self.balances}")
+        # JSON logging
+        log_json(self.logger, "Smart Contract balance", {"balance": self.balance})
+        log_json(self.logger, "Smart Contract balances", {"balances": self.balances})
+
 
     def _get_balances(self):
         return self.balances
@@ -164,9 +178,17 @@ class SmartContract(ServiceProvider):
 
     def _smart_contract_loop(self):
         for match in self.matches_made_in_current_step:
-            self.logger.info(f"both resource provider {match.get_data()['resource_provider_address']} and client {match.get_data()['client_address']} have signed match {match.get_id()}")
-            self.logger.info(f"match attributes of match {match.get_id()}: {match.get_data()}")
+            resource_provider_address = match.get_data()['resource_provider_address']
+            client_address = match.get_data()['client_address']
+            match_id = match.get_id()
+            match_data = match.get_data()
+            self.logger.info(f"Both resource provider {resource_provider_address} and client {client_address} have signed match {match_id}")
+            # JSON logging
+            log_json(self.logger, "Match attributes", {"match_id": match_id, "match_attributes": match_data})
             self._create_deal(match)
+            # self.logger.info(f"both resource provider {match.get_data()['resource_provider_address']} and client {match.get_data()['client_address']} have signed match {match.get_id()}")
+            # self.logger.info(f"match attributes of match {match.get_id()}: {match.get_data()}")
+            # self._create_deal(match)
         self._create_and_emit_result_events()
         self._account_for_cheating_collateral_payments()
         self.matches_made_in_current_step.clear()

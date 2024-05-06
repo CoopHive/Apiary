@@ -8,6 +8,9 @@ We're ignoring gas for now.
 
 from dataclasses import dataclass
 from enum import Enum
+# JSON logging
+from log_json import log_json
+import logging
 
 
 class ServiceType(Enum):
@@ -57,6 +60,9 @@ class Contract:
         self.solvers = {}
         self.mediators = {}
         self.directories = {}
+        self.logger = logging.getLogger("Contract")
+        logging.basicConfig(filename='contract_logs.log', filemode='w', level=logging.DEBUG)
+
 
     def match_service_type(self):
         pass
@@ -65,6 +71,17 @@ class Contract:
             self, service_type: ServiceType, url: str, metadata: dict, tx: Tx):
         self._before_tx(tx.sender)
         # Only solvers and directories need public internet facing URLs at present
+
+        # JSON logging
+        service_data = {
+            "service_type": service_type.name,
+            "url": url,
+            "metadata": metadata,
+            "wallet_address": tx.sender
+        }
+        log_json(self.logger, "Register service provider", service_data)
+
+
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
                 self.resource_providers[tx.sender] = Service(service_type, url, metadata, tx.sender)
@@ -88,9 +105,18 @@ class Contract:
         if wallet_address not in self.wallets:
             self.wallets[wallet_address] = 0
 
-    def unregister_service_provider(
-            self, service_type: ServiceType, tx: Tx):
+    def unregister_service_provider(self, service_type: ServiceType, tx: Tx):
+
+        # JSON logging
+        service_data = {
+            "service_type": service_type.name,
+            "wallet_address": tx.sender
+        }
+        log_json(self.logger, "Unregister service provider", service_data)
+        
+
         match service_type:
+        
             case ServiceType.RESOURCE_PROVIDER:
                 self.resource_providers.pop(tx.sender)
             case ServiceType.CLIENT:

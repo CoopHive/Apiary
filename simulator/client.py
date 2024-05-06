@@ -6,6 +6,8 @@ from job import Job
 from solver import Solver
 from match import Match
 from smart_contract import SmartContract
+#JSON logging
+from log_json import log_json
 import logging
 import os
 
@@ -35,10 +37,14 @@ class Client(ServiceProvider):
         self.solver = solver
         self.solver.subscribe_event(self.handle_solver_event)
         self.solver.get_local_information().add_client(self)
+        #JSON logging
+        log_json(self.logger, "Connected to solver", {"solver_url": url})
 
     def connect_to_smart_contract(self, smart_contract: SmartContract):
         self.smart_contract = smart_contract
         smart_contract.subscribe_event(self.handle_smart_contract_event)
+        #JSON logging
+        log_json(self.logger, "Connected to smart contract")
 
     def add_job(self, job: Job):
         self.current_jobs.append(job)
@@ -48,18 +54,28 @@ class Client(ServiceProvider):
 
     def _agree_to_match(self, match: Match):
         client_deposit = match.get_data()['client_deposit']
-        tx = Tx(sender=self.get_public_key(), value=client_deposit)
+        tx = self._create_transaction(client_deposit)
+        #tx = Tx(sender=self.get_public_key(), value=client_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
+        #JSON logging
+        log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
+
 
     def handle_solver_event(self, event):
-        self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
+        #JSON logging
+        event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+        log_json(self.logger, "Received solver event", {"event_data": event_data})
+        #self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
         if event.get_name() == 'match':
             match = event.get_data()
             if match.get_data()['client_address'] == self.get_public_key():
                 self.current_matched_offers.append(match)
 
     def handle_smart_contract_event(self, event):
-        self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
+        #JSON logging
+        event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+        log_json(self.logger, "Received smart contract event", {"event_data": event_data})
+        #self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
         if event.get_name() == 'deal':
             deal = event.get_data()
             deal_data = deal.get_data()
@@ -76,7 +92,8 @@ class Client(ServiceProvider):
                 result_instruction_count = float(result_instruction_count)
                 price_per_instruction = self.current_deals[deal_id].get_data()['price_per_instruction']
                 payment_value = result_instruction_count * price_per_instruction
-                tx = Tx(sender=self.get_public_key(), value=payment_value)
+                tx = self._create_transaction(payment_value)
+                #tx = Tx(sender=self.get_public_key(), value=payment_value)
                 self.smart_contract.post_client_payment(result, tx)
                 self.deals_finished_in_current_step.append(deal_id)
 

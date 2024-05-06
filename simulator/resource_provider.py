@@ -6,6 +6,8 @@ from match import Match
 from smart_contract import SmartContract
 from result import Result
 import logging
+# JSON Logging
+from log_json import log_json
 import os
 
 
@@ -35,10 +37,14 @@ class ResourceProvider(ServiceProvider):
         self.solver = solver
         self.solver.subscribe_event(self.handle_solver_event)
         self.solver.get_local_information().add_resource_provider(self)
+        # JSON logging
+        log_json(self.logger, "Connected to solver", {"solver_url": url})
 
     def connect_to_smart_contract(self, smart_contract: SmartContract):
         self.smart_contract = smart_contract
         smart_contract.subscribe_event(self.handle_smart_contract_event)
+        # JSON logging
+        log_json(self.logger, "Connected to smart contract")
 
     def add_machine(self, machine_id: CID, machine: Machine):
         self.machines[machine_id.hash] = machine
@@ -54,18 +60,29 @@ class ResourceProvider(ServiceProvider):
 
     def _agree_to_match(self, match: Match):
         timeout_deposit = match.get_data()['timeout_deposit']
-        tx = Tx(sender=self.get_public_key(), value=timeout_deposit)
+        tx = self._create_transaction(timeout_deposit)
+        #tx = Tx(sender=self.get_public_key(), value=timeout_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
+        # JSON logging
+        log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
+
 
     def handle_solver_event(self, event):
-        self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
+        # JSON logging
+        event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+        log_json(self.logger, "Received solver event", {"event_data": event_data})
+
+        #self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
         if event.get_name() == 'match':
             match = event.get_data()
             if match.get_data()['resource_provider_address'] == self.get_public_key():
                 self.current_matched_offers.append(match)
 
     def handle_smart_contract_event(self, event):
-        self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
+        # JSON logging
+        event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+        log_json(self.logger, "Received smart contract event", {"event_data": event_data})
+        #self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
         if event.get_name() == 'deal':
             deal = event.get_data()
             deal_data = deal.get_data()
@@ -78,7 +95,10 @@ class ResourceProvider(ServiceProvider):
         self.get_smart_contract().post_result(result, tx)
 
     def create_result(self, deal_id):
-        self.logger.info(f"posting the result for deal {deal_id}")
+        # JSON logging
+        result_log_data = {"deal_id": deal_id}
+        log_json(self.logger, "Creating result", result_log_data)
+        #self.logger.info(f"posting the result for deal {deal_id}")
         result = Result()
         result.add_data('deal_id', deal_id)
         instruction_count = 1
@@ -87,7 +107,8 @@ class ResourceProvider(ServiceProvider):
         result.add_data('result_id', result.get_id())
         cheating_collateral_multiplier = self.current_deals[deal_id].get_data()['cheating_collateral_multiplier']
         cheating_collateral = cheating_collateral_multiplier * int(instruction_count)
-        tx = Tx(sender=self.get_public_key(), value=cheating_collateral)
+        tx = self._create_transaction(cheating_collateral)
+        #tx = Tx(sender=self.get_public_key(), value=cheating_collateral)
         return result, tx
 
     def update_finished_deals(self):

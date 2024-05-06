@@ -26,6 +26,11 @@ class ServiceProvider:
     def subscribe_event(self, handler):
         self.event_handlers.append(handler)
 
+    # Create a reusable transaction object
+    def _create_transaction(self, value):
+        """Helper function to create a transaction object."""
+        return Tx(sender=self.get_public_key(), value=value)
+
     # not supporting unsubscribing
 
 

@@ -6,6 +6,8 @@ from match import Match
 from event import Event
 from smart_contract import SmartContract
 import logging
+# JSON logging helper function
+from log_json import log_json
 import os
 from utils import *
 
@@ -27,11 +29,21 @@ class Solver(ServiceProvider):
         smart_contract.subscribe_event(self.handle_smart_contract_event)
 
     def handle_smart_contract_event(self, event):
-        self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
+        #self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
+        #JSON logging
+        event_name = event.get_name()
+        event_data_id = event.get_data().get_id() if event.get_data() else None
+        log_json(self.logger, "Smart contract event", {"event_name": event_name, "event_data_id": event_data_id})
+        
         # if deal, remove resource and job offers from list
         if event.get_name() == 'deal':
             deal = event.get_data()
             self.deals_made_in_current_step.append(deal)
+    
+    def _remove_offer(self, offers_dict, offer_id):
+        """Helper function to remove an offer by ID."""
+        if offer_id in offers_dict:
+            del offers_dict[offer_id]
 
     def remove_outdated_offers(self):
         # print([deal.get_id() for deal in self.deals_made_in_current_step])
@@ -42,10 +54,12 @@ class Solver(ServiceProvider):
             # print(deal.get_id())
             # print(f"resource_offer {resource_offer}")
             # print(self.get_local_information().get_resource_offers())
-            del self.get_local_information().get_resource_offers()[resource_offer]
+            #del self.get_local_information().get_resource_offers()[resource_offer]
             # delete job offer
             job_offer = deal_data['job_offer']
-            del self.get_local_information().get_job_offers()[job_offer]
+            self._remove_offer(self.get_local_information().get_resource_offers(), resource_offer)
+            self._remove_offer(self.get_local_information().get_job_offers(), job_offer)
+            #del self.get_local_information().get_job_offers()[job_offer]
         # clear list of deals made in current step
         self.deals_made_in_current_step.clear()
 
