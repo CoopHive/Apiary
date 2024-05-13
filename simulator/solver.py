@@ -27,11 +27,23 @@ class Solver(ServiceProvider):
         smart_contract.subscribe_event(self.handle_smart_contract_event)
 
     def handle_smart_contract_event(self, event):
-        self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
+        if event.get_name() == 'mediation_random':
+            self.logger.info(f"have smart contract event {event.get_name()}")
+            job_offer_cid = event.get_data()
+            if job_offer_cid not in self.get_local_information().get_job_offers():
+                # solver doesn't have the job offer locally, must retrieve from IPFS
+                job_offer = self.get_local_information().ipfs.get(job_offer_cid)
+            else:
+                job_offer = self.get_local_information().get_job_offers()[job_offer_cid]
+
+            event = job_offer # self.get_local_information().get_job_offers()[job_offer]
+        
         # if deal, remove resource and job offers from list
-        if event.get_name() == 'deal':
+        elif event.get_name() == 'deal':
+            self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
             deal = event.get_data()
             self.deals_made_in_current_step.append(deal)
+                        
 
     def remove_outdated_offers(self):
         # print([deal.get_id() for deal in self.deals_made_in_current_step])

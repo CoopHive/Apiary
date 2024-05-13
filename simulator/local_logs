@@ -1,0 +1,1495 @@
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop 0 started~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Resource Provider 3:have solver event ('match', '220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248')
+INFO:Resource Provider 4:have solver event ('match', '220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248')
+INFO:Resource Provider 5:have solver event ('match', '220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248')
+INFO:Resource Provider 6:have solver event ('match', '220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248')
+INFO:Resource Provider 7:have solver event ('match', '220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248')
+INFO:Client 8:have solver event ('match', '220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248')
+INFO:Client 9:have solver event ('match', '220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248')
+INFO:Client 10:have solver event ('match', '220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248')
+INFO:Client 11:have solver event ('match', '220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248')
+INFO:Client 12:have solver event ('match', '220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248')
+INFO:Resource Provider 3:have solver event ('match', '360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29')
+INFO:Resource Provider 4:have solver event ('match', '360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29')
+INFO:Resource Provider 5:have solver event ('match', '360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29')
+INFO:Resource Provider 6:have solver event ('match', '360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29')
+INFO:Resource Provider 7:have solver event ('match', '360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29')
+INFO:Client 8:have solver event ('match', '360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29')
+INFO:Client 9:have solver event ('match', '360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29')
+INFO:Client 10:have solver event ('match', '360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29')
+INFO:Client 11:have solver event ('match', '360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29')
+INFO:Client 12:have solver event ('match', '360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29')
+INFO:Resource Provider 3:have solver event ('match', '37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc')
+INFO:Resource Provider 4:have solver event ('match', '37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc')
+INFO:Resource Provider 5:have solver event ('match', '37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc')
+INFO:Resource Provider 6:have solver event ('match', '37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc')
+INFO:Resource Provider 7:have solver event ('match', '37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc')
+INFO:Client 8:have solver event ('match', '37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc')
+INFO:Client 9:have solver event ('match', '37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc')
+INFO:Client 10:have solver event ('match', '37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc')
+INFO:Client 11:have solver event ('match', '37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc')
+INFO:Client 12:have solver event ('match', '37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc')
+INFO:Resource Provider 3:have solver event ('match', '54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116')
+INFO:Resource Provider 4:have solver event ('match', '54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116')
+INFO:Resource Provider 5:have solver event ('match', '54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116')
+INFO:Resource Provider 6:have solver event ('match', '54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116')
+INFO:Resource Provider 7:have solver event ('match', '54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116')
+INFO:Client 8:have solver event ('match', '54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116')
+INFO:Client 9:have solver event ('match', '54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116')
+INFO:Client 10:have solver event ('match', '54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116')
+INFO:Client 11:have solver event ('match', '54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116')
+INFO:Client 12:have solver event ('match', '54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116')
+INFO:Resource Provider 3:have solver event ('match', 'ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b')
+INFO:Resource Provider 4:have solver event ('match', 'ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b')
+INFO:Resource Provider 5:have solver event ('match', 'ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b')
+INFO:Resource Provider 6:have solver event ('match', 'ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b')
+INFO:Resource Provider 7:have solver event ('match', 'ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b')
+INFO:Client 8:have solver event ('match', 'ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b')
+INFO:Client 9:have solver event ('match', 'ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b')
+INFO:Client 10:have solver event ('match', 'ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b')
+INFO:Client 11:have solver event ('match', 'ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b')
+INFO:Client 12:have solver event ('match', 'ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b')
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Smart Contract 1:resource provider 3 has signed match 220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248
+INFO:Smart Contract 1:resource provider 4 has signed match 360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29
+INFO:Smart Contract 1:resource provider 5 has signed match 37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc
+INFO:Smart Contract 1:resource provider 6 has signed match 54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116
+INFO:Smart Contract 1:resource provider 7 has signed match ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Smart Contract 1:client 8 has signed match 220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248
+INFO:Smart Contract 1:client 9 has signed match 360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29
+INFO:Smart Contract 1:client 10 has signed match 37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc
+INFO:Smart Contract 1:client 11 has signed match 54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116
+INFO:Smart Contract 1:client 12 has signed match ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating smart contract~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Smart Contract 1:both resource provider 3 and client 8 have signed match 220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248
+INFO:Smart Contract 1:match attributes of match 220d808663d745c6de20ca5ceb41e0496d2947db5bc603ad9720510f794c5248: {'resource_provider_address': '3', 'client_address': '8', 'resource_offer': '9756a423832e33549b56f4a98eafd7d5048168dba70d07fcb17bef33e4cd5d14', 'job_offer': '8f831c871f76591b2d827fd22b86ac2436bb2386cb1275cdf0cf8574734b3d80', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', '3dc54782b247b1cc3402231b72cce009be06aea8705ec0e459c1678960c473d1')
+INFO:Resource Provider 3:have smart contract event ('deal', '3dc54782b247b1cc3402231b72cce009be06aea8705ec0e459c1678960c473d1')
+INFO:Resource Provider 4:have smart contract event ('deal', '3dc54782b247b1cc3402231b72cce009be06aea8705ec0e459c1678960c473d1')
+INFO:Resource Provider 5:have smart contract event ('deal', '3dc54782b247b1cc3402231b72cce009be06aea8705ec0e459c1678960c473d1')
+INFO:Resource Provider 6:have smart contract event ('deal', '3dc54782b247b1cc3402231b72cce009be06aea8705ec0e459c1678960c473d1')
+INFO:Resource Provider 7:have smart contract event ('deal', '3dc54782b247b1cc3402231b72cce009be06aea8705ec0e459c1678960c473d1')
+INFO:Client 8:have smart contract event ('deal', '3dc54782b247b1cc3402231b72cce009be06aea8705ec0e459c1678960c473d1')
+INFO:Client 9:have smart contract event ('deal', '3dc54782b247b1cc3402231b72cce009be06aea8705ec0e459c1678960c473d1')
+INFO:Client 10:have smart contract event ('deal', '3dc54782b247b1cc3402231b72cce009be06aea8705ec0e459c1678960c473d1')
+INFO:Client 11:have smart contract event ('deal', '3dc54782b247b1cc3402231b72cce009be06aea8705ec0e459c1678960c473d1')
+INFO:Client 12:have smart contract event ('deal', '3dc54782b247b1cc3402231b72cce009be06aea8705ec0e459c1678960c473d1')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '3', 'client_address': '8', 'resource_offer': '9756a423832e33549b56f4a98eafd7d5048168dba70d07fcb17bef33e4cd5d14', 'job_offer': '8f831c871f76591b2d827fd22b86ac2436bb2386cb1275cdf0cf8574734b3d80', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:both resource provider 4 and client 9 have signed match 360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29
+INFO:Smart Contract 1:match attributes of match 360028402951769e6cd9995de19568c009d367bb17bb2dd3d01e3c2813a0da29: {'resource_provider_address': '4', 'client_address': '9', 'resource_offer': 'a4f90552d4e454db63661b98935b24e15e5961c97ad23772b16a7b7aa744e957', 'job_offer': 'b2be7fc3281535fe5a9554bf27001baf05b2fe7d006ade5f9e05e3993070dda8', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', '1da61c0332e5ce5ffcfdcb45e2710a81e45bb7e0c32fa79f8b8693ed3d6ac21f')
+INFO:Resource Provider 3:have smart contract event ('deal', '1da61c0332e5ce5ffcfdcb45e2710a81e45bb7e0c32fa79f8b8693ed3d6ac21f')
+INFO:Resource Provider 4:have smart contract event ('deal', '1da61c0332e5ce5ffcfdcb45e2710a81e45bb7e0c32fa79f8b8693ed3d6ac21f')
+INFO:Resource Provider 5:have smart contract event ('deal', '1da61c0332e5ce5ffcfdcb45e2710a81e45bb7e0c32fa79f8b8693ed3d6ac21f')
+INFO:Resource Provider 6:have smart contract event ('deal', '1da61c0332e5ce5ffcfdcb45e2710a81e45bb7e0c32fa79f8b8693ed3d6ac21f')
+INFO:Resource Provider 7:have smart contract event ('deal', '1da61c0332e5ce5ffcfdcb45e2710a81e45bb7e0c32fa79f8b8693ed3d6ac21f')
+INFO:Client 8:have smart contract event ('deal', '1da61c0332e5ce5ffcfdcb45e2710a81e45bb7e0c32fa79f8b8693ed3d6ac21f')
+INFO:Client 9:have smart contract event ('deal', '1da61c0332e5ce5ffcfdcb45e2710a81e45bb7e0c32fa79f8b8693ed3d6ac21f')
+INFO:Client 10:have smart contract event ('deal', '1da61c0332e5ce5ffcfdcb45e2710a81e45bb7e0c32fa79f8b8693ed3d6ac21f')
+INFO:Client 11:have smart contract event ('deal', '1da61c0332e5ce5ffcfdcb45e2710a81e45bb7e0c32fa79f8b8693ed3d6ac21f')
+INFO:Client 12:have smart contract event ('deal', '1da61c0332e5ce5ffcfdcb45e2710a81e45bb7e0c32fa79f8b8693ed3d6ac21f')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '4', 'client_address': '9', 'resource_offer': 'a4f90552d4e454db63661b98935b24e15e5961c97ad23772b16a7b7aa744e957', 'job_offer': 'b2be7fc3281535fe5a9554bf27001baf05b2fe7d006ade5f9e05e3993070dda8', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:both resource provider 5 and client 10 have signed match 37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc
+INFO:Smart Contract 1:match attributes of match 37688ee9448ad2ffdb834621776d15c35613e18f630af9724697ac4d372928bc: {'resource_provider_address': '5', 'client_address': '10', 'resource_offer': '78b9466a25bcc935c7ae01fbba4c0ecb3813c634747d4616674f133ded207c22', 'job_offer': 'a1bf4b665f5d3e9f17ab5520b234562879d153e8b8435638368e53b3cbf0d12c', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', '68db96242208a96faf88abb122cb5c4081a8dbe78b6bc94a5bae9195d99fcaa7')
+INFO:Resource Provider 3:have smart contract event ('deal', '68db96242208a96faf88abb122cb5c4081a8dbe78b6bc94a5bae9195d99fcaa7')
+INFO:Resource Provider 4:have smart contract event ('deal', '68db96242208a96faf88abb122cb5c4081a8dbe78b6bc94a5bae9195d99fcaa7')
+INFO:Resource Provider 5:have smart contract event ('deal', '68db96242208a96faf88abb122cb5c4081a8dbe78b6bc94a5bae9195d99fcaa7')
+INFO:Resource Provider 6:have smart contract event ('deal', '68db96242208a96faf88abb122cb5c4081a8dbe78b6bc94a5bae9195d99fcaa7')
+INFO:Resource Provider 7:have smart contract event ('deal', '68db96242208a96faf88abb122cb5c4081a8dbe78b6bc94a5bae9195d99fcaa7')
+INFO:Client 8:have smart contract event ('deal', '68db96242208a96faf88abb122cb5c4081a8dbe78b6bc94a5bae9195d99fcaa7')
+INFO:Client 9:have smart contract event ('deal', '68db96242208a96faf88abb122cb5c4081a8dbe78b6bc94a5bae9195d99fcaa7')
+INFO:Client 10:have smart contract event ('deal', '68db96242208a96faf88abb122cb5c4081a8dbe78b6bc94a5bae9195d99fcaa7')
+INFO:Client 11:have smart contract event ('deal', '68db96242208a96faf88abb122cb5c4081a8dbe78b6bc94a5bae9195d99fcaa7')
+INFO:Client 12:have smart contract event ('deal', '68db96242208a96faf88abb122cb5c4081a8dbe78b6bc94a5bae9195d99fcaa7')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '5', 'client_address': '10', 'resource_offer': '78b9466a25bcc935c7ae01fbba4c0ecb3813c634747d4616674f133ded207c22', 'job_offer': 'a1bf4b665f5d3e9f17ab5520b234562879d153e8b8435638368e53b3cbf0d12c', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:both resource provider 6 and client 11 have signed match 54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116
+INFO:Smart Contract 1:match attributes of match 54a1ccc76bc437dfef1e2d34ea19306b71eb08b5af38df9f5844e9cd45922116: {'resource_provider_address': '6', 'client_address': '11', 'resource_offer': 'e242036a7f8dc5a6222ba7c9fdc21bd4eec34692fc1bd016df65448a7048a308', 'job_offer': '0a8e6d14ab395810dc43fcc774ed4fa68ec4ff9b9384422daef502cd7bf4fd05', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', '83da21537812cd2e3892f0234cffe0bf368689414bed2a423188038f654dde19')
+INFO:Resource Provider 3:have smart contract event ('deal', '83da21537812cd2e3892f0234cffe0bf368689414bed2a423188038f654dde19')
+INFO:Resource Provider 4:have smart contract event ('deal', '83da21537812cd2e3892f0234cffe0bf368689414bed2a423188038f654dde19')
+INFO:Resource Provider 5:have smart contract event ('deal', '83da21537812cd2e3892f0234cffe0bf368689414bed2a423188038f654dde19')
+INFO:Resource Provider 6:have smart contract event ('deal', '83da21537812cd2e3892f0234cffe0bf368689414bed2a423188038f654dde19')
+INFO:Resource Provider 7:have smart contract event ('deal', '83da21537812cd2e3892f0234cffe0bf368689414bed2a423188038f654dde19')
+INFO:Client 8:have smart contract event ('deal', '83da21537812cd2e3892f0234cffe0bf368689414bed2a423188038f654dde19')
+INFO:Client 9:have smart contract event ('deal', '83da21537812cd2e3892f0234cffe0bf368689414bed2a423188038f654dde19')
+INFO:Client 10:have smart contract event ('deal', '83da21537812cd2e3892f0234cffe0bf368689414bed2a423188038f654dde19')
+INFO:Client 11:have smart contract event ('deal', '83da21537812cd2e3892f0234cffe0bf368689414bed2a423188038f654dde19')
+INFO:Client 12:have smart contract event ('deal', '83da21537812cd2e3892f0234cffe0bf368689414bed2a423188038f654dde19')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '6', 'client_address': '11', 'resource_offer': 'e242036a7f8dc5a6222ba7c9fdc21bd4eec34692fc1bd016df65448a7048a308', 'job_offer': '0a8e6d14ab395810dc43fcc774ed4fa68ec4ff9b9384422daef502cd7bf4fd05', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:both resource provider 7 and client 12 have signed match ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b
+INFO:Smart Contract 1:match attributes of match ba7be91e35fe67eca610bdc6a6735e96e1f27583fbb98763490c1ef80363d02b: {'resource_provider_address': '7', 'client_address': '12', 'resource_offer': 'fbf5b239311cfc7f7db9bc6b221381a0ec50585c35897e737d33b9ae66753c61', 'job_offer': '9379e1e8ae006bc47158549e96a478f88875ef5cc130745cc5270225c81ab4d5', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', '912918e0e3c9d4bcd83dd5280d6077e17ec02bb84051cee94aebaf0f0f648326')
+INFO:Resource Provider 3:have smart contract event ('deal', '912918e0e3c9d4bcd83dd5280d6077e17ec02bb84051cee94aebaf0f0f648326')
+INFO:Resource Provider 4:have smart contract event ('deal', '912918e0e3c9d4bcd83dd5280d6077e17ec02bb84051cee94aebaf0f0f648326')
+INFO:Resource Provider 5:have smart contract event ('deal', '912918e0e3c9d4bcd83dd5280d6077e17ec02bb84051cee94aebaf0f0f648326')
+INFO:Resource Provider 6:have smart contract event ('deal', '912918e0e3c9d4bcd83dd5280d6077e17ec02bb84051cee94aebaf0f0f648326')
+INFO:Resource Provider 7:have smart contract event ('deal', '912918e0e3c9d4bcd83dd5280d6077e17ec02bb84051cee94aebaf0f0f648326')
+INFO:Client 8:have smart contract event ('deal', '912918e0e3c9d4bcd83dd5280d6077e17ec02bb84051cee94aebaf0f0f648326')
+INFO:Client 9:have smart contract event ('deal', '912918e0e3c9d4bcd83dd5280d6077e17ec02bb84051cee94aebaf0f0f648326')
+INFO:Client 10:have smart contract event ('deal', '912918e0e3c9d4bcd83dd5280d6077e17ec02bb84051cee94aebaf0f0f648326')
+INFO:Client 11:have smart contract event ('deal', '912918e0e3c9d4bcd83dd5280d6077e17ec02bb84051cee94aebaf0f0f648326')
+INFO:Client 12:have smart contract event ('deal', '912918e0e3c9d4bcd83dd5280d6077e17ec02bb84051cee94aebaf0f0f648326')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '7', 'client_address': '12', 'resource_offer': 'fbf5b239311cfc7f7db9bc6b221381a0ec50585c35897e737d33b9ae66753c61', 'job_offer': '9379e1e8ae006bc47158549e96a478f88875ef5cc130745cc5270225c81ab4d5', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:Smart Contract balance: 40
+INFO:Smart Contract 1:Smart Contract balances: {'3': 197, '4': 197, '5': 197, '6': 197, '7': 197, '8': 95, '9': 95, '10': 95, '11': 95, '12': 95}
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating smart contract~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop 0 completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop 1 started~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Resource Provider 3:have solver event ('match', '6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2')
+INFO:Resource Provider 4:have solver event ('match', '6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2')
+INFO:Resource Provider 5:have solver event ('match', '6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2')
+INFO:Resource Provider 6:have solver event ('match', '6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2')
+INFO:Resource Provider 7:have solver event ('match', '6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2')
+INFO:Client 8:have solver event ('match', '6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2')
+INFO:Client 9:have solver event ('match', '6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2')
+INFO:Client 10:have solver event ('match', '6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2')
+INFO:Client 11:have solver event ('match', '6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2')
+INFO:Client 12:have solver event ('match', '6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2')
+INFO:Resource Provider 3:have solver event ('match', 'b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6')
+INFO:Resource Provider 4:have solver event ('match', 'b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6')
+INFO:Resource Provider 5:have solver event ('match', 'b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6')
+INFO:Resource Provider 6:have solver event ('match', 'b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6')
+INFO:Resource Provider 7:have solver event ('match', 'b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6')
+INFO:Client 8:have solver event ('match', 'b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6')
+INFO:Client 9:have solver event ('match', 'b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6')
+INFO:Client 10:have solver event ('match', 'b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6')
+INFO:Client 11:have solver event ('match', 'b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6')
+INFO:Client 12:have solver event ('match', 'b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6')
+INFO:Resource Provider 3:have solver event ('match', '9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662')
+INFO:Resource Provider 4:have solver event ('match', '9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662')
+INFO:Resource Provider 5:have solver event ('match', '9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662')
+INFO:Resource Provider 6:have solver event ('match', '9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662')
+INFO:Resource Provider 7:have solver event ('match', '9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662')
+INFO:Client 8:have solver event ('match', '9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662')
+INFO:Client 9:have solver event ('match', '9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662')
+INFO:Client 10:have solver event ('match', '9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662')
+INFO:Client 11:have solver event ('match', '9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662')
+INFO:Client 12:have solver event ('match', '9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662')
+INFO:Resource Provider 3:have solver event ('match', '803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42')
+INFO:Resource Provider 4:have solver event ('match', '803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42')
+INFO:Resource Provider 5:have solver event ('match', '803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42')
+INFO:Resource Provider 6:have solver event ('match', '803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42')
+INFO:Resource Provider 7:have solver event ('match', '803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42')
+INFO:Client 8:have solver event ('match', '803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42')
+INFO:Client 9:have solver event ('match', '803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42')
+INFO:Client 10:have solver event ('match', '803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42')
+INFO:Client 11:have solver event ('match', '803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42')
+INFO:Client 12:have solver event ('match', '803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42')
+INFO:Resource Provider 3:have solver event ('match', '61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818')
+INFO:Resource Provider 4:have solver event ('match', '61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818')
+INFO:Resource Provider 5:have solver event ('match', '61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818')
+INFO:Resource Provider 6:have solver event ('match', '61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818')
+INFO:Resource Provider 7:have solver event ('match', '61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818')
+INFO:Client 8:have solver event ('match', '61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818')
+INFO:Client 9:have solver event ('match', '61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818')
+INFO:Client 10:have solver event ('match', '61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818')
+INFO:Client 11:have solver event ('match', '61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818')
+INFO:Client 12:have solver event ('match', '61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818')
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Smart Contract 1:resource provider 3 has signed match 6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2
+INFO:Resource Provider 3:posting the result for deal 3dc54782b247b1cc3402231b72cce009be06aea8705ec0e459c1678960c473d1
+INFO:Smart Contract 1:resource provider 4 has signed match b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6
+INFO:Resource Provider 4:posting the result for deal 1da61c0332e5ce5ffcfdcb45e2710a81e45bb7e0c32fa79f8b8693ed3d6ac21f
+INFO:Smart Contract 1:resource provider 5 has signed match 9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662
+INFO:Resource Provider 5:posting the result for deal 68db96242208a96faf88abb122cb5c4081a8dbe78b6bc94a5bae9195d99fcaa7
+INFO:Smart Contract 1:resource provider 6 has signed match 803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42
+INFO:Resource Provider 6:posting the result for deal 83da21537812cd2e3892f0234cffe0bf368689414bed2a423188038f654dde19
+INFO:Smart Contract 1:resource provider 7 has signed match 61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818
+INFO:Resource Provider 7:posting the result for deal 912918e0e3c9d4bcd83dd5280d6077e17ec02bb84051cee94aebaf0f0f648326
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Smart Contract 1:client 8 has signed match 6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2
+INFO:Smart Contract 1:client 9 has signed match b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6
+INFO:Smart Contract 1:client 10 has signed match 9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662
+INFO:Smart Contract 1:client 11 has signed match 803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42
+INFO:Smart Contract 1:client 12 has signed match 61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating smart contract~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Smart Contract 1:both resource provider 3 and client 8 have signed match 6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2
+INFO:Smart Contract 1:match attributes of match 6f7dea9c7e42d3a28a7cfa7753d03eafc7c2c347a8c88cc1b3d51cfa24e39bf2: {'resource_provider_address': '3', 'client_address': '8', 'resource_offer': '5f7641faaf3b2ff7d9664bb98cba038b250441bef7b319658973df746b4a88a8', 'job_offer': '343528313628b4fa44a2375440cfad49627b7eebef31cb7ef5f958246e4d9c18', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', 'c3976188e1cc77a40c959ca846ee4c7ac1bd7632f7ca40306241e886eca8a3ae')
+INFO:Resource Provider 3:have smart contract event ('deal', 'c3976188e1cc77a40c959ca846ee4c7ac1bd7632f7ca40306241e886eca8a3ae')
+INFO:Resource Provider 4:have smart contract event ('deal', 'c3976188e1cc77a40c959ca846ee4c7ac1bd7632f7ca40306241e886eca8a3ae')
+INFO:Resource Provider 5:have smart contract event ('deal', 'c3976188e1cc77a40c959ca846ee4c7ac1bd7632f7ca40306241e886eca8a3ae')
+INFO:Resource Provider 6:have smart contract event ('deal', 'c3976188e1cc77a40c959ca846ee4c7ac1bd7632f7ca40306241e886eca8a3ae')
+INFO:Resource Provider 7:have smart contract event ('deal', 'c3976188e1cc77a40c959ca846ee4c7ac1bd7632f7ca40306241e886eca8a3ae')
+INFO:Client 8:have smart contract event ('deal', 'c3976188e1cc77a40c959ca846ee4c7ac1bd7632f7ca40306241e886eca8a3ae')
+INFO:Client 9:have smart contract event ('deal', 'c3976188e1cc77a40c959ca846ee4c7ac1bd7632f7ca40306241e886eca8a3ae')
+INFO:Client 10:have smart contract event ('deal', 'c3976188e1cc77a40c959ca846ee4c7ac1bd7632f7ca40306241e886eca8a3ae')
+INFO:Client 11:have smart contract event ('deal', 'c3976188e1cc77a40c959ca846ee4c7ac1bd7632f7ca40306241e886eca8a3ae')
+INFO:Client 12:have smart contract event ('deal', 'c3976188e1cc77a40c959ca846ee4c7ac1bd7632f7ca40306241e886eca8a3ae')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '3', 'client_address': '8', 'resource_offer': '5f7641faaf3b2ff7d9664bb98cba038b250441bef7b319658973df746b4a88a8', 'job_offer': '343528313628b4fa44a2375440cfad49627b7eebef31cb7ef5f958246e4d9c18', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:both resource provider 4 and client 9 have signed match b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6
+INFO:Smart Contract 1:match attributes of match b64dc9d112a1ebbc2f10fc2335ac883d3e3b7d056af838cd722b07a5d967b5c6: {'resource_provider_address': '4', 'client_address': '9', 'resource_offer': '974f54bf9f30cd1b7b8c222aa71d246cba2d207d08a9bf7f7b215c54475e6b97', 'job_offer': '8dad56fc191b7c2b14e358e778b81b453efb5442027f263c38eb4803774aaf8b', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', 'cb7e6fbdae6e2638aadfa9dc0937c404d5f6d21f78f1b68861254230785dadcb')
+INFO:Resource Provider 3:have smart contract event ('deal', 'cb7e6fbdae6e2638aadfa9dc0937c404d5f6d21f78f1b68861254230785dadcb')
+INFO:Resource Provider 4:have smart contract event ('deal', 'cb7e6fbdae6e2638aadfa9dc0937c404d5f6d21f78f1b68861254230785dadcb')
+INFO:Resource Provider 5:have smart contract event ('deal', 'cb7e6fbdae6e2638aadfa9dc0937c404d5f6d21f78f1b68861254230785dadcb')
+INFO:Resource Provider 6:have smart contract event ('deal', 'cb7e6fbdae6e2638aadfa9dc0937c404d5f6d21f78f1b68861254230785dadcb')
+INFO:Resource Provider 7:have smart contract event ('deal', 'cb7e6fbdae6e2638aadfa9dc0937c404d5f6d21f78f1b68861254230785dadcb')
+INFO:Client 8:have smart contract event ('deal', 'cb7e6fbdae6e2638aadfa9dc0937c404d5f6d21f78f1b68861254230785dadcb')
+INFO:Client 9:have smart contract event ('deal', 'cb7e6fbdae6e2638aadfa9dc0937c404d5f6d21f78f1b68861254230785dadcb')
+INFO:Client 10:have smart contract event ('deal', 'cb7e6fbdae6e2638aadfa9dc0937c404d5f6d21f78f1b68861254230785dadcb')
+INFO:Client 11:have smart contract event ('deal', 'cb7e6fbdae6e2638aadfa9dc0937c404d5f6d21f78f1b68861254230785dadcb')
+INFO:Client 12:have smart contract event ('deal', 'cb7e6fbdae6e2638aadfa9dc0937c404d5f6d21f78f1b68861254230785dadcb')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '4', 'client_address': '9', 'resource_offer': '974f54bf9f30cd1b7b8c222aa71d246cba2d207d08a9bf7f7b215c54475e6b97', 'job_offer': '8dad56fc191b7c2b14e358e778b81b453efb5442027f263c38eb4803774aaf8b', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:both resource provider 5 and client 10 have signed match 9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662
+INFO:Smart Contract 1:match attributes of match 9dfa2e4db34d70eb33fb47597f0c455fc570087b3c4d4bc92629ef8bd99f9662: {'resource_provider_address': '5', 'client_address': '10', 'resource_offer': 'dafa9e8a7b0e17bda7811b0530345e1daa5e2fd6e1ce711779447e0c9ad9f78f', 'job_offer': 'bdff7e89588f8016bd3698642e37974877d028014e87efac814f8679ba658e28', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', '0f3c5e7967be00fb61fb9776aad5f15a60c3ff3602e8d78b3f241ef924d79248')
+INFO:Resource Provider 3:have smart contract event ('deal', '0f3c5e7967be00fb61fb9776aad5f15a60c3ff3602e8d78b3f241ef924d79248')
+INFO:Resource Provider 4:have smart contract event ('deal', '0f3c5e7967be00fb61fb9776aad5f15a60c3ff3602e8d78b3f241ef924d79248')
+INFO:Resource Provider 5:have smart contract event ('deal', '0f3c5e7967be00fb61fb9776aad5f15a60c3ff3602e8d78b3f241ef924d79248')
+INFO:Resource Provider 6:have smart contract event ('deal', '0f3c5e7967be00fb61fb9776aad5f15a60c3ff3602e8d78b3f241ef924d79248')
+INFO:Resource Provider 7:have smart contract event ('deal', '0f3c5e7967be00fb61fb9776aad5f15a60c3ff3602e8d78b3f241ef924d79248')
+INFO:Client 8:have smart contract event ('deal', '0f3c5e7967be00fb61fb9776aad5f15a60c3ff3602e8d78b3f241ef924d79248')
+INFO:Client 9:have smart contract event ('deal', '0f3c5e7967be00fb61fb9776aad5f15a60c3ff3602e8d78b3f241ef924d79248')
+INFO:Client 10:have smart contract event ('deal', '0f3c5e7967be00fb61fb9776aad5f15a60c3ff3602e8d78b3f241ef924d79248')
+INFO:Client 11:have smart contract event ('deal', '0f3c5e7967be00fb61fb9776aad5f15a60c3ff3602e8d78b3f241ef924d79248')
+INFO:Client 12:have smart contract event ('deal', '0f3c5e7967be00fb61fb9776aad5f15a60c3ff3602e8d78b3f241ef924d79248')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '5', 'client_address': '10', 'resource_offer': 'dafa9e8a7b0e17bda7811b0530345e1daa5e2fd6e1ce711779447e0c9ad9f78f', 'job_offer': 'bdff7e89588f8016bd3698642e37974877d028014e87efac814f8679ba658e28', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:both resource provider 6 and client 11 have signed match 803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42
+INFO:Smart Contract 1:match attributes of match 803463e892263a297938fa3522f11a9677f79c461943535feeff36d716fa9d42: {'resource_provider_address': '6', 'client_address': '11', 'resource_offer': 'de2e4c5b1090cd55e3c88d7fc3067a311a66a909040dde9443dfaa4058118ad4', 'job_offer': '0d479f51afcb9eeb91c3ac35e861b1d6483dfafe2ce5224a778c011c5e8ece31', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', '42dd51f67ff04ae449934e9d4fce34cf091fce61aa0c3612ca4ee4978c88deeb')
+INFO:Resource Provider 3:have smart contract event ('deal', '42dd51f67ff04ae449934e9d4fce34cf091fce61aa0c3612ca4ee4978c88deeb')
+INFO:Resource Provider 4:have smart contract event ('deal', '42dd51f67ff04ae449934e9d4fce34cf091fce61aa0c3612ca4ee4978c88deeb')
+INFO:Resource Provider 5:have smart contract event ('deal', '42dd51f67ff04ae449934e9d4fce34cf091fce61aa0c3612ca4ee4978c88deeb')
+INFO:Resource Provider 6:have smart contract event ('deal', '42dd51f67ff04ae449934e9d4fce34cf091fce61aa0c3612ca4ee4978c88deeb')
+INFO:Resource Provider 7:have smart contract event ('deal', '42dd51f67ff04ae449934e9d4fce34cf091fce61aa0c3612ca4ee4978c88deeb')
+INFO:Client 8:have smart contract event ('deal', '42dd51f67ff04ae449934e9d4fce34cf091fce61aa0c3612ca4ee4978c88deeb')
+INFO:Client 9:have smart contract event ('deal', '42dd51f67ff04ae449934e9d4fce34cf091fce61aa0c3612ca4ee4978c88deeb')
+INFO:Client 10:have smart contract event ('deal', '42dd51f67ff04ae449934e9d4fce34cf091fce61aa0c3612ca4ee4978c88deeb')
+INFO:Client 11:have smart contract event ('deal', '42dd51f67ff04ae449934e9d4fce34cf091fce61aa0c3612ca4ee4978c88deeb')
+INFO:Client 12:have smart contract event ('deal', '42dd51f67ff04ae449934e9d4fce34cf091fce61aa0c3612ca4ee4978c88deeb')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '6', 'client_address': '11', 'resource_offer': 'de2e4c5b1090cd55e3c88d7fc3067a311a66a909040dde9443dfaa4058118ad4', 'job_offer': '0d479f51afcb9eeb91c3ac35e861b1d6483dfafe2ce5224a778c011c5e8ece31', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:both resource provider 7 and client 12 have signed match 61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818
+INFO:Smart Contract 1:match attributes of match 61e877affe95229070299591311bacd4cf96f81d84860084e0e31e74f5ec2818: {'resource_provider_address': '7', 'client_address': '12', 'resource_offer': '193b5e5e296df4a4ac0116190813f77811ea756fb46e3602311d3bf4a0f4744a', 'job_offer': '93361305efe4fbc189a98e3be135169826802fe2bffd91113013a61d3a0d9441', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', 'e48e98fa130f1b095cf4b81147ee0ebe29157a52c6a530b7ebaef6a9abf17616')
+INFO:Resource Provider 3:have smart contract event ('deal', 'e48e98fa130f1b095cf4b81147ee0ebe29157a52c6a530b7ebaef6a9abf17616')
+INFO:Resource Provider 4:have smart contract event ('deal', 'e48e98fa130f1b095cf4b81147ee0ebe29157a52c6a530b7ebaef6a9abf17616')
+INFO:Resource Provider 5:have smart contract event ('deal', 'e48e98fa130f1b095cf4b81147ee0ebe29157a52c6a530b7ebaef6a9abf17616')
+INFO:Resource Provider 6:have smart contract event ('deal', 'e48e98fa130f1b095cf4b81147ee0ebe29157a52c6a530b7ebaef6a9abf17616')
+INFO:Resource Provider 7:have smart contract event ('deal', 'e48e98fa130f1b095cf4b81147ee0ebe29157a52c6a530b7ebaef6a9abf17616')
+INFO:Client 8:have smart contract event ('deal', 'e48e98fa130f1b095cf4b81147ee0ebe29157a52c6a530b7ebaef6a9abf17616')
+INFO:Client 9:have smart contract event ('deal', 'e48e98fa130f1b095cf4b81147ee0ebe29157a52c6a530b7ebaef6a9abf17616')
+INFO:Client 10:have smart contract event ('deal', 'e48e98fa130f1b095cf4b81147ee0ebe29157a52c6a530b7ebaef6a9abf17616')
+INFO:Client 11:have smart contract event ('deal', 'e48e98fa130f1b095cf4b81147ee0ebe29157a52c6a530b7ebaef6a9abf17616')
+INFO:Client 12:have smart contract event ('deal', 'e48e98fa130f1b095cf4b81147ee0ebe29157a52c6a530b7ebaef6a9abf17616')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '7', 'client_address': '12', 'resource_offer': '193b5e5e296df4a4ac0116190813f77811ea756fb46e3602311d3bf4a0f4744a', 'job_offer': '93361305efe4fbc189a98e3be135169826802fe2bffd91113013a61d3a0d9441', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Smart Contract 1:Smart Contract balance: 315
+INFO:Smart Contract 1:Smart Contract balances: {'3': 147, '4': 147, '5': 147, '6': 147, '7': 147, '8': 90, '9': 90, '10': 90, '11': 90, '12': 90}
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating smart contract~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop 1 completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop 2 started~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Resource Provider 3:have solver event ('match', '1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be')
+INFO:Resource Provider 4:have solver event ('match', '1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be')
+INFO:Resource Provider 5:have solver event ('match', '1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be')
+INFO:Resource Provider 6:have solver event ('match', '1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be')
+INFO:Resource Provider 7:have solver event ('match', '1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be')
+INFO:Client 8:have solver event ('match', '1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be')
+INFO:Client 9:have solver event ('match', '1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be')
+INFO:Client 10:have solver event ('match', '1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be')
+INFO:Client 11:have solver event ('match', '1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be')
+INFO:Client 12:have solver event ('match', '1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be')
+INFO:Resource Provider 3:have solver event ('match', '546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f')
+INFO:Resource Provider 4:have solver event ('match', '546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f')
+INFO:Resource Provider 5:have solver event ('match', '546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f')
+INFO:Resource Provider 6:have solver event ('match', '546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f')
+INFO:Resource Provider 7:have solver event ('match', '546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f')
+INFO:Client 8:have solver event ('match', '546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f')
+INFO:Client 9:have solver event ('match', '546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f')
+INFO:Client 10:have solver event ('match', '546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f')
+INFO:Client 11:have solver event ('match', '546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f')
+INFO:Client 12:have solver event ('match', '546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f')
+INFO:Resource Provider 3:have solver event ('match', '3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b')
+INFO:Resource Provider 4:have solver event ('match', '3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b')
+INFO:Resource Provider 5:have solver event ('match', '3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b')
+INFO:Resource Provider 6:have solver event ('match', '3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b')
+INFO:Resource Provider 7:have solver event ('match', '3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b')
+INFO:Client 8:have solver event ('match', '3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b')
+INFO:Client 9:have solver event ('match', '3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b')
+INFO:Client 10:have solver event ('match', '3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b')
+INFO:Client 11:have solver event ('match', '3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b')
+INFO:Client 12:have solver event ('match', '3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b')
+INFO:Resource Provider 3:have solver event ('match', 'a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218')
+INFO:Resource Provider 4:have solver event ('match', 'a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218')
+INFO:Resource Provider 5:have solver event ('match', 'a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218')
+INFO:Resource Provider 6:have solver event ('match', 'a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218')
+INFO:Resource Provider 7:have solver event ('match', 'a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218')
+INFO:Client 8:have solver event ('match', 'a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218')
+INFO:Client 9:have solver event ('match', 'a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218')
+INFO:Client 10:have solver event ('match', 'a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218')
+INFO:Client 11:have solver event ('match', 'a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218')
+INFO:Client 12:have solver event ('match', 'a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218')
+INFO:Resource Provider 3:have solver event ('match', 'bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae')
+INFO:Resource Provider 4:have solver event ('match', 'bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae')
+INFO:Resource Provider 5:have solver event ('match', 'bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae')
+INFO:Resource Provider 6:have solver event ('match', 'bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae')
+INFO:Resource Provider 7:have solver event ('match', 'bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae')
+INFO:Client 8:have solver event ('match', 'bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae')
+INFO:Client 9:have solver event ('match', 'bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae')
+INFO:Client 10:have solver event ('match', 'bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae')
+INFO:Client 11:have solver event ('match', 'bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae')
+INFO:Client 12:have solver event ('match', 'bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae')
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Smart Contract 1:resource provider 3 has signed match 1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be
+INFO:Resource Provider 3:posting the result for deal c3976188e1cc77a40c959ca846ee4c7ac1bd7632f7ca40306241e886eca8a3ae
+INFO:Smart Contract 1:resource provider 4 has signed match 546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f
+INFO:Resource Provider 4:posting the result for deal cb7e6fbdae6e2638aadfa9dc0937c404d5f6d21f78f1b68861254230785dadcb
+INFO:Smart Contract 1:resource provider 5 has signed match 3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b
+INFO:Resource Provider 5:posting the result for deal 0f3c5e7967be00fb61fb9776aad5f15a60c3ff3602e8d78b3f241ef924d79248
+INFO:Smart Contract 1:resource provider 6 has signed match a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218
+INFO:Resource Provider 6:posting the result for deal 42dd51f67ff04ae449934e9d4fce34cf091fce61aa0c3612ca4ee4978c88deeb
+INFO:Smart Contract 1:resource provider 7 has signed match bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae
+INFO:Resource Provider 7:posting the result for deal e48e98fa130f1b095cf4b81147ee0ebe29157a52c6a530b7ebaef6a9abf17616
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Smart Contract 1:client 8 has signed match 1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be
+INFO:Smart Contract 1:client 9 has signed match 546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f
+INFO:Smart Contract 1:client 10 has signed match 3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b
+INFO:Smart Contract 1:client 11 has signed match a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218
+INFO:Smart Contract 1:client 12 has signed match bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating smart contract~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Smart Contract 1:both resource provider 3 and client 8 have signed match 1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be
+INFO:Smart Contract 1:match attributes of match 1a016cf91f5e1a43482ccf1a22a65371c96ee83e1b4f0c38ba2da4e05b9239be: {'resource_provider_address': '3', 'client_address': '8', 'resource_offer': '034d4472f58a296a6e2863def600ecd0f4de644ffc45f48d3cd2ff4015ddc96b', 'job_offer': 'd1f9306783f457590c02bdc148271cd754f83c642fad18031fb7335df6d28ea5', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', 'f50042a9417148a8b1612df26509376ec5e720a04a076057b9344283daaf09d4')
+INFO:Resource Provider 3:have smart contract event ('deal', 'f50042a9417148a8b1612df26509376ec5e720a04a076057b9344283daaf09d4')
+INFO:Resource Provider 4:have smart contract event ('deal', 'f50042a9417148a8b1612df26509376ec5e720a04a076057b9344283daaf09d4')
+INFO:Resource Provider 5:have smart contract event ('deal', 'f50042a9417148a8b1612df26509376ec5e720a04a076057b9344283daaf09d4')
+INFO:Resource Provider 6:have smart contract event ('deal', 'f50042a9417148a8b1612df26509376ec5e720a04a076057b9344283daaf09d4')
+INFO:Resource Provider 7:have smart contract event ('deal', 'f50042a9417148a8b1612df26509376ec5e720a04a076057b9344283daaf09d4')
+INFO:Client 8:have smart contract event ('deal', 'f50042a9417148a8b1612df26509376ec5e720a04a076057b9344283daaf09d4')
+INFO:Client 9:have smart contract event ('deal', 'f50042a9417148a8b1612df26509376ec5e720a04a076057b9344283daaf09d4')
+INFO:Client 10:have smart contract event ('deal', 'f50042a9417148a8b1612df26509376ec5e720a04a076057b9344283daaf09d4')
+INFO:Client 11:have smart contract event ('deal', 'f50042a9417148a8b1612df26509376ec5e720a04a076057b9344283daaf09d4')
+INFO:Client 12:have smart contract event ('deal', 'f50042a9417148a8b1612df26509376ec5e720a04a076057b9344283daaf09d4')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '3', 'client_address': '8', 'resource_offer': '034d4472f58a296a6e2863def600ecd0f4de644ffc45f48d3cd2ff4015ddc96b', 'job_offer': 'd1f9306783f457590c02bdc148271cd754f83c642fad18031fb7335df6d28ea5', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:both resource provider 4 and client 9 have signed match 546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f
+INFO:Smart Contract 1:match attributes of match 546b5280f221efd4eb36b05daf645cd61b5e77c5aa6638f869d80e2e6807393f: {'resource_provider_address': '4', 'client_address': '9', 'resource_offer': 'e3f5cbf12d57aa21514fa2c7b20f3086565c4890150577ea827f7f5b382981d7', 'job_offer': 'a5931427cdea85295e065bd122ebcd84a9b100bafc14ad407a2ab215ea472bb2', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', '563b04d02b8ab96cac797369e89e08a81a0af266d9412b754bf83ea75d5e963c')
+INFO:Resource Provider 3:have smart contract event ('deal', '563b04d02b8ab96cac797369e89e08a81a0af266d9412b754bf83ea75d5e963c')
+INFO:Resource Provider 4:have smart contract event ('deal', '563b04d02b8ab96cac797369e89e08a81a0af266d9412b754bf83ea75d5e963c')
+INFO:Resource Provider 5:have smart contract event ('deal', '563b04d02b8ab96cac797369e89e08a81a0af266d9412b754bf83ea75d5e963c')
+INFO:Resource Provider 6:have smart contract event ('deal', '563b04d02b8ab96cac797369e89e08a81a0af266d9412b754bf83ea75d5e963c')
+INFO:Resource Provider 7:have smart contract event ('deal', '563b04d02b8ab96cac797369e89e08a81a0af266d9412b754bf83ea75d5e963c')
+INFO:Client 8:have smart contract event ('deal', '563b04d02b8ab96cac797369e89e08a81a0af266d9412b754bf83ea75d5e963c')
+INFO:Client 9:have smart contract event ('deal', '563b04d02b8ab96cac797369e89e08a81a0af266d9412b754bf83ea75d5e963c')
+INFO:Client 10:have smart contract event ('deal', '563b04d02b8ab96cac797369e89e08a81a0af266d9412b754bf83ea75d5e963c')
+INFO:Client 11:have smart contract event ('deal', '563b04d02b8ab96cac797369e89e08a81a0af266d9412b754bf83ea75d5e963c')
+INFO:Client 12:have smart contract event ('deal', '563b04d02b8ab96cac797369e89e08a81a0af266d9412b754bf83ea75d5e963c')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '4', 'client_address': '9', 'resource_offer': 'e3f5cbf12d57aa21514fa2c7b20f3086565c4890150577ea827f7f5b382981d7', 'job_offer': 'a5931427cdea85295e065bd122ebcd84a9b100bafc14ad407a2ab215ea472bb2', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:both resource provider 5 and client 10 have signed match 3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b
+INFO:Smart Contract 1:match attributes of match 3cf2d2b45a67bcf10d760fe856685b812216f0b41397b12f43dca15d0a7a392b: {'resource_provider_address': '5', 'client_address': '10', 'resource_offer': '84deef438e612f7ba7dc3f530cfe74f8a7da3d2530afc80b004e2f531c0e4e43', 'job_offer': 'c3fb977ef219828827859a928e5696f45d3b9ad25dfb780e311377c28aa01148', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', 'c409f3057fe89fab85d089114b3a32ca27f2492733b8dfe31692452fe3554123')
+INFO:Resource Provider 3:have smart contract event ('deal', 'c409f3057fe89fab85d089114b3a32ca27f2492733b8dfe31692452fe3554123')
+INFO:Resource Provider 4:have smart contract event ('deal', 'c409f3057fe89fab85d089114b3a32ca27f2492733b8dfe31692452fe3554123')
+INFO:Resource Provider 5:have smart contract event ('deal', 'c409f3057fe89fab85d089114b3a32ca27f2492733b8dfe31692452fe3554123')
+INFO:Resource Provider 6:have smart contract event ('deal', 'c409f3057fe89fab85d089114b3a32ca27f2492733b8dfe31692452fe3554123')
+INFO:Resource Provider 7:have smart contract event ('deal', 'c409f3057fe89fab85d089114b3a32ca27f2492733b8dfe31692452fe3554123')
+INFO:Client 8:have smart contract event ('deal', 'c409f3057fe89fab85d089114b3a32ca27f2492733b8dfe31692452fe3554123')
+INFO:Client 9:have smart contract event ('deal', 'c409f3057fe89fab85d089114b3a32ca27f2492733b8dfe31692452fe3554123')
+INFO:Client 10:have smart contract event ('deal', 'c409f3057fe89fab85d089114b3a32ca27f2492733b8dfe31692452fe3554123')
+INFO:Client 11:have smart contract event ('deal', 'c409f3057fe89fab85d089114b3a32ca27f2492733b8dfe31692452fe3554123')
+INFO:Client 12:have smart contract event ('deal', 'c409f3057fe89fab85d089114b3a32ca27f2492733b8dfe31692452fe3554123')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '5', 'client_address': '10', 'resource_offer': '84deef438e612f7ba7dc3f530cfe74f8a7da3d2530afc80b004e2f531c0e4e43', 'job_offer': 'c3fb977ef219828827859a928e5696f45d3b9ad25dfb780e311377c28aa01148', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:both resource provider 6 and client 11 have signed match a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218
+INFO:Smart Contract 1:match attributes of match a71d1c3307b4b14045a38fa246aeddff84654a42c9fdbb5b0e33441705394218: {'resource_provider_address': '6', 'client_address': '11', 'resource_offer': '4ca7ccdaa34f77ce552869af23b3c888b87cbaa8e12ebce150781e665ca85eca', 'job_offer': '1373a7e6032e7499b7a34f515f4dd773739bf3c0d6c414ee4670256c5ba3ad70', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', '0207591d6947e686e4934933dc61d8c9b075de28b336b3be115a46b5c77f9dc6')
+INFO:Resource Provider 3:have smart contract event ('deal', '0207591d6947e686e4934933dc61d8c9b075de28b336b3be115a46b5c77f9dc6')
+INFO:Resource Provider 4:have smart contract event ('deal', '0207591d6947e686e4934933dc61d8c9b075de28b336b3be115a46b5c77f9dc6')
+INFO:Resource Provider 5:have smart contract event ('deal', '0207591d6947e686e4934933dc61d8c9b075de28b336b3be115a46b5c77f9dc6')
+INFO:Resource Provider 6:have smart contract event ('deal', '0207591d6947e686e4934933dc61d8c9b075de28b336b3be115a46b5c77f9dc6')
+INFO:Resource Provider 7:have smart contract event ('deal', '0207591d6947e686e4934933dc61d8c9b075de28b336b3be115a46b5c77f9dc6')
+INFO:Client 8:have smart contract event ('deal', '0207591d6947e686e4934933dc61d8c9b075de28b336b3be115a46b5c77f9dc6')
+INFO:Client 9:have smart contract event ('deal', '0207591d6947e686e4934933dc61d8c9b075de28b336b3be115a46b5c77f9dc6')
+INFO:Client 10:have smart contract event ('deal', '0207591d6947e686e4934933dc61d8c9b075de28b336b3be115a46b5c77f9dc6')
+INFO:Client 11:have smart contract event ('deal', '0207591d6947e686e4934933dc61d8c9b075de28b336b3be115a46b5c77f9dc6')
+INFO:Client 12:have smart contract event ('deal', '0207591d6947e686e4934933dc61d8c9b075de28b336b3be115a46b5c77f9dc6')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '6', 'client_address': '11', 'resource_offer': '4ca7ccdaa34f77ce552869af23b3c888b87cbaa8e12ebce150781e665ca85eca', 'job_offer': '1373a7e6032e7499b7a34f515f4dd773739bf3c0d6c414ee4670256c5ba3ad70', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Smart Contract 1:both resource provider 7 and client 12 have signed match bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae
+INFO:Smart Contract 1:match attributes of match bf6f0d92eacac2862c1ee3c7b86a5008f33e45f1a7dfe6fe6ceb12155359fdae: {'resource_provider_address': '7', 'client_address': '12', 'resource_offer': '210d1f3ceaecdbc28fe3218627febd603b618012bc6159cc0c0e1419f27a61c3', 'job_offer': '01109b468be0ee3a216b04bb324ad4b54b1d19f9af466513d5cc313faea26cd6', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random'}
+INFO:Solver 2:have smart contract event ('deal', '372f01fab0dae66fc2d54866dfef5560e62fcb6033ffc2f82ffccee24fc3bef1')
+INFO:Resource Provider 3:have smart contract event ('deal', '372f01fab0dae66fc2d54866dfef5560e62fcb6033ffc2f82ffccee24fc3bef1')
+INFO:Resource Provider 4:have smart contract event ('deal', '372f01fab0dae66fc2d54866dfef5560e62fcb6033ffc2f82ffccee24fc3bef1')
+INFO:Resource Provider 5:have smart contract event ('deal', '372f01fab0dae66fc2d54866dfef5560e62fcb6033ffc2f82ffccee24fc3bef1')
+INFO:Resource Provider 6:have smart contract event ('deal', '372f01fab0dae66fc2d54866dfef5560e62fcb6033ffc2f82ffccee24fc3bef1')
+INFO:Resource Provider 7:have smart contract event ('deal', '372f01fab0dae66fc2d54866dfef5560e62fcb6033ffc2f82ffccee24fc3bef1')
+INFO:Client 8:have smart contract event ('deal', '372f01fab0dae66fc2d54866dfef5560e62fcb6033ffc2f82ffccee24fc3bef1')
+INFO:Client 9:have smart contract event ('deal', '372f01fab0dae66fc2d54866dfef5560e62fcb6033ffc2f82ffccee24fc3bef1')
+INFO:Client 10:have smart contract event ('deal', '372f01fab0dae66fc2d54866dfef5560e62fcb6033ffc2f82ffccee24fc3bef1')
+INFO:Client 11:have smart contract event ('deal', '372f01fab0dae66fc2d54866dfef5560e62fcb6033ffc2f82ffccee24fc3bef1')
+INFO:Client 12:have smart contract event ('deal', '372f01fab0dae66fc2d54866dfef5560e62fcb6033ffc2f82ffccee24fc3bef1')
+INFO:Smart Contract 1:deal created; deal attributes:, {'resource_provider_address': '7', 'client_address': '12', 'resource_offer': '210d1f3ceaecdbc28fe3218627febd603b618012bc6159cc0c0e1419f27a61c3', 'job_offer': '01109b468be0ee3a216b04bb324ad4b54b1d19f9af466513d5cc313faea26cd6', 'client_deposit': 5, 'timeout': 10, 'timeout_deposit': 3, 'cheating_collateral_multiplier': 50, 'price_per_instruction': 1, 'verification_method': 'random', 'actual_honest_time_to_completion': 1}
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Smart Contract 1:Smart Contract balance: 590
+INFO:Smart Contract 1:Smart Contract balances: {'3': 97, '4': 97, '5': 97, '6': 97, '7': 97, '8': 85, '9': 85, '10': 85, '11': 85, '12': 85}
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating smart contract~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop 2 completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop 3 started~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Resource Provider 3:posting the result for deal f50042a9417148a8b1612df26509376ec5e720a04a076057b9344283daaf09d4
+INFO:Resource Provider 4:posting the result for deal 563b04d02b8ab96cac797369e89e08a81a0af266d9412b754bf83ea75d5e963c
+INFO:Resource Provider 5:posting the result for deal c409f3057fe89fab85d089114b3a32ca27f2492733b8dfe31692452fe3554123
+INFO:Resource Provider 6:posting the result for deal 0207591d6947e686e4934933dc61d8c9b075de28b336b3be115a46b5c77f9dc6
+INFO:Resource Provider 7:posting the result for deal 372f01fab0dae66fc2d54866dfef5560e62fcb6033ffc2f82ffccee24fc3bef1
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating smart contract~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 8:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 9:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 10:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 11:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Client 12:requesting mediation result
+INFO:Solver 2:have smart contract event mediation_random
+INFO:Resource Provider 3:have smart contract event mediation_random
+INFO:Resource Provider 4:have smart contract event mediation_random
+INFO:Resource Provider 5:have smart contract event mediation_random
+INFO:Resource Provider 6:have smart contract event mediation_random
+INFO:Resource Provider 7:have smart contract event mediation_random
+INFO:Client 8:have smart contract event mediation_random
+INFO:Client 9:have smart contract event mediation_random
+INFO:Client 10:have smart contract event mediation_random
+INFO:Client 11:have smart contract event mediation_random
+INFO:Client 12:have smart contract event mediation_random
+INFO:Smart Contract 1:Smart Contract balance: 825
+INFO:Smart Contract 1:Smart Contract balances: {'3': 50, '4': 50, '5': 50, '6': 50, '7': 50, '8': 85, '9': 85, '10': 85, '11': 85, '12': 85}
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating smart contract~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop 3 completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop 4 started~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating smart contract~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:Smart Contract 1:Smart Contract balance: 825
+INFO:Smart Contract 1:Smart Contract balances: {'3': 50, '4': 50, '5': 50, '6': 50, '7': 50, '8': 85, '9': 85, '10': 85, '11': 85, '12': 85}
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating smart contract~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:
+INFO:test:
+INFO:test:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop 4 completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO:test:

@@ -8,4 +8,6 @@ job_offer_attributes = {
     'RAM',
     'module',
     'prices',
+    "verification_method",
+    "mediators",
 }

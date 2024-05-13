@@ -58,9 +58,32 @@ class Client(ServiceProvider):
             if match.get_data()['client_address'] == self.get_public_key():
                 self.current_matched_offers.append(match)
 
+    def decide_whether_or_not_to_mediate(self, event):
+        # for now, always mediate
+        return True
+        
+    def request_mediation(self, event):        
+        self.logger.info(f"requesting mediation {event.get_name()}")
+        self.smart_contract.mediate_result(event)
+
+    def pay_compute_node(self, event):
+        result = event.get_data()
+        result_data = result.get_data()
+        deal_id = result_data['deal_id']
+        if deal_id in self.current_deals.keys():
+            result_instruction_count = result_data['instruction_count']
+            result_instruction_count = float(result_instruction_count)
+            price_per_instruction = self.current_deals[deal_id].get_data()['price_per_instruction']
+            payment_value = result_instruction_count * price_per_instruction
+            tx = Tx(sender=self.get_public_key(), value=payment_value)
+            self.smart_contract.post_client_payment(result, tx)
+            self.deals_finished_in_current_step.append(deal_id)
+    
     def handle_smart_contract_event(self, event):
-        self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
+        if event.get_name() == 'mediation_random':
+            self.logger.info(f"have smart contract event {event.get_name()}")        
         if event.get_name() == 'deal':
+            self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
             deal = event.get_data()
             deal_data = deal.get_data()
             deal_id = deal.get_id()
@@ -68,17 +91,17 @@ class Client(ServiceProvider):
                 self.current_deals[deal_id] = deal
 
         if event.get_name() == 'result':
-            result = event.get_data()
-            result_data = result.get_data()
-            deal_id = result_data['deal_id']
-            if deal_id in self.current_deals.keys():
-                result_instruction_count = result_data['instruction_count']
-                result_instruction_count = float(result_instruction_count)
-                price_per_instruction = self.current_deals[deal_id].get_data()['price_per_instruction']
-                payment_value = result_instruction_count * price_per_instruction
-                tx = Tx(sender=self.get_public_key(), value=payment_value)
-                self.smart_contract.post_client_payment(result, tx)
-                self.deals_finished_in_current_step.append(deal_id)
+            # decide whether to mediate result
+            mediate_flag = self.decide_whether_or_not_to_mediate(event)
+            if mediate_flag:
+                mediation_result = self.request_mediation(event)
+                """
+                mediation should be handled automatically by the smart contract
+                in fact, shouldn't the payment also be handled automatically by the smart contract?
+                """
+            # if not requesting mediation, send payment to compute node
+            else:
+                self.pay_compute_node(event)
 
     def update_finished_deals(self):
         # remove finished deals from list of current deals and running jobs

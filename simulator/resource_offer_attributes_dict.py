@@ -8,4 +8,6 @@ resource_offer_attributes = {
     'GPU',
     'RAM',
     'prices',
+    "verification_method",
+    "mediators",
 }
