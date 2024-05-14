@@ -8,4 +8,10 @@ match_attributes = {
     "timeout",
     "timeout_deposit",
     "cheating_collateral_multiplier",
+    "verification_method",
+    "mediators",
 }
+
+
+#todo add "job" to match attributes
+

@@ -35,6 +35,7 @@ class ServiceProvider:
 
 
 class LocalInformation:
+    ipfs = IPFS()
     def __init__(self):
         self.block_number = 0
         # For the following service providers, mapping from wallet address -> metadata
@@ -45,6 +46,8 @@ class LocalInformation:
         self.directories = {}
         self.resource_offers = {}
         self.job_offers = {}
+        # self.active_job_offers = {}
+        # self.active_resource_offers = {}
 
     def add_service_provider(
             self, service_type: ServiceType, public_key: str, service_provider: ServiceProvider):
@@ -88,10 +91,16 @@ class LocalInformation:
                 return self.directories
 
     def add_resource_offer(self, id: str, data):
+        print("adding resource offer locally")
         self.resource_offers[id] = data
+        print("adding resource offer to IPFS")
+        self.ipfs.add(data)
 
     def add_job_offer(self, id: str, data):
+        print("adding job offer locally")
         self.job_offers[id] = data
+        print("adding job offer to IPFS")
+        self.ipfs.add(data)
 
     def get_resource_offers(self):
         return self.resource_offers

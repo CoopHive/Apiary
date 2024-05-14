@@ -11,4 +11,10 @@ deal_attributes = {
     "actual_honest_time_to_completion",
     "actual_cost_to_resource_provider",
     "actual_benefit_to_client",
+    "verification_method",
+    "mediators",
 }
+
+
+#todo add "job" to deal attributes
+

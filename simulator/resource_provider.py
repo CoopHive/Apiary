@@ -79,11 +79,16 @@ class ResourceProvider(ServiceProvider):
                 self.current_matched_offers.append(match)
 
     def handle_smart_contract_event(self, event):
-        # JSON logging
-        event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
-        log_json(self.logger, "Received smart contract event", {"event_data": event_data})
-        #self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
-        if event.get_name() == 'deal':
+        if event.get_name() == 'mediation_random':
+            #JSON logging
+            event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+            log_json(self.logger, "Received smart contract event", {"event_data": event_data})
+            #self.logger.info(f"have smart contract event {event.get_name()}")        
+        elif event.get_name() == 'deal':
+            #JSON logging
+            event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+            log_json(self.logger, "Received smart contract event", {"event_data": event_data})
+            #self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
             deal = event.get_data()
             deal_data = deal.get_data()
             deal_id = deal.get_id()

@@ -7,8 +7,6 @@ from resource_provider import ResourceProvider
 from client import Client
 from job import Job
 from solver import Solver
-from resource_offer import ResourceOffer
-from job_offer import JobOffer
 from smart_contract import SmartContract
 import logging
 import os
@@ -25,7 +23,7 @@ class Addresses:
         self.increment_current_address()
         return str(self.current_address)
 
-    def increment_current_address(self):
+    def increment_current_address(self): 
         self.current_address += 1
 
 
@@ -54,34 +52,11 @@ def fund_smart_contract(service_provider, value: float):
     tx = Tx(sender=service_provider.get_public_key(), value=value)
     service_provider.get_smart_contract().fund(tx)
 
-
-def create_resource_offer(owner_public_key: str, created_at):
-    resource_offer = ResourceOffer()
-    resource_offer.add_data('owner', owner_public_key)
-    resource_offer.add_data('created_at', created_at)
-    for data_field, data_value in example_offer_data.items():
-        resource_offer.add_data(data_field, data_value)
-
-    resource_offer.set_id()
-
-    return resource_offer
-
-
-def create_job_offer(owner_public_key: str, created_at):
-    job_offer = JobOffer()
-    job_offer.add_data('owner', owner_public_key)
-    job_offer.add_data('created_at', created_at)
-    for data_field, data_value in example_offer_data.items():
-        job_offer.add_data(data_field, data_value)
-
-    job_offer.set_id()
-
-    return job_offer
-
-
 def create_n_resource_offers(resource_providers, num_resource_offers_per_resource_provider, created_at):
     for _ in range(num_resource_offers_per_resource_provider):
+        print(f'resource test {_}')
         for resource_provider_public_key, resource_provider in resource_providers.items():
+            print(resource_provider_public_key, resource_provider)
             new_resource_offer = create_resource_offer(resource_provider_public_key, created_at)
             new_resource_offer_id = new_resource_offer.get_id()
             resource_provider.get_solver().get_local_information().add_resource_offer(new_resource_offer_id, new_resource_offer)
@@ -89,6 +64,7 @@ def create_n_resource_offers(resource_providers, num_resource_offers_per_resourc
 
 def create_n_job_offers(clients, num_job_offers_per_client, created_at):
     for _ in range(num_job_offers_per_client):
+        print(f'job test {_}')
         for client_public_key, client in clients.items():
             new_job_offer = create_job_offer(client_public_key, created_at)
             new_job_offer_id = new_job_offer.get_id()

@@ -102,11 +102,22 @@ class SmartContract(ServiceProvider):
         resource_provider_address = deal_data['resource_provider_address']
         if intended_cheating_collateral > self.balances[resource_provider_address]:
             print()
-            print(f'transaction value of {tx.value} exceeds resource provider balance of {self.balances[resource_provider_address]}')
+            print(f'transaction value of {tx.value} exceeds resource provider balance of {self.balances[resource_provider_address]} of resource provider {resource_provider_address}')
             raise Exception("transaction value exceeds balance")
         self.balances[resource_provider_address] -= tx.value
         self.balance += tx.value
 
+    #TODO: add returning of cheating collateral
+    def refund_cheating_collateral(self, result: Result):
+        deal_id = result.get_data()['deal_id']
+        deal_data = self.deals[deal_id].get_data()
+        cheating_collateral_multiplier = deal_data['cheating_collateral_multiplier']
+        instruction_count = result.get_data()['instruction_count']
+        intended_cheating_collateral = cheating_collateral_multiplier * instruction_count
+        resource_provider_address = deal_data['resource_provider_address']
+        self.balances[resource_provider_address] += intended_cheating_collateral
+        self.balance -= intended_cheating_collateral       
+    
     def _create_and_emit_result_events(self):
         for result, tx in self.results_posted_in_current_step:
             deal_id = result.get_data()['deal_id']
@@ -161,7 +172,102 @@ class SmartContract(ServiceProvider):
 
     def fund(self, tx: Tx):
         self.balances[tx.sender] = self.balances.get(tx.sender, 0) + tx.value
+    
+    def slash_cheating_collateral(self, event: Event):
+        deal_id = result.get_data()['deal_id']
+        deal_data = self.deals[deal_id].get_data()
+        cheating_collateral_multiplier = deal_data['cheating_collateral_multiplier']
+        instruction_count = result.get_data()['instruction_count']
+        intended_cheating_collateral = cheating_collateral_multiplier * instruction_count
+        resource_provider_address = deal_data['resource_provider_address']
+        self.balances[resource_provider_address] -= intended_cheating_collateral
+        self.balance += intended_cheating_collateral
+    
+    def ask_consortium_of_mediators(self, event: Event):
+        # if result was correct, return True
+        # return True
+        # if result was incorrect, return False
+        return True            
 
+    def ask_random_mediator(self, event: Event):
+        """
+        in order to check result, some entity needs to submit the job offer 
+        this can be any of the client, the compute node, the solver, or the smart contract
+        doesn't make sense for it to be the solver
+        if the smart contract does it, then it needs to know the method of verification beforehand,
+        meaning that the verification method needs to be described in the deal
+        the alternative is that either the client or compute node call the verification, but in that case,
+        they need to agree anyway, and it makes sense for the smart contract to be doing the call
+        """
+        
+        """
+        in order to create a job, the smart contract must extract the job spec from the deal data,
+        and emit an event indicating that the solver should find compute nodes that can run the job, 
+        and then choose one randomly
+        """
+        
+        result = event.get_data()
+        deal_id = result.get_data()['deal_id']
+        deal_data = self.deals[deal_id].get_data()
+        # print('hello')
+        job_offer = deal_data['job_offer']
+        print(job_offer)
+
+        #todo: job offer is just a string, need to get the actual job offer object 
+        # otherwise event.get_data().get_id() in e.g. line 30 of solver.py will throw an error
+        mediation_request_event = Event(name='mediation_random', data=job_offer)
+        self.emit_event(mediation_request_event)
+
+
+
+        """
+        this is all wrong
+        the potential mediators need to be agreed upon beforehand
+        but how do we know that they have the correct resources, or that they're even available?
+        maybe intersection of the set of potential mediators and set of nodes that have the resources?
+        
+        alternatively, keep trying random mediators until one is available
+        """
+
+        # how to determine the random mediator from the available ones?
+        # 1) smart contract emits mediation request event 
+        # 2) solver receives mediation request event, sorts the mediators by their ids,
+        #    and puts the list i nto an IPFS CID 
+        # 3) solver submits the CID to the smart contract
+        # 4) smart contract picks a random number (e.g. from drand), 
+        #    and then picks the index of the mediator to be the number of potential mediators % random number
+        # 5) smart contract emits mediation request event
+        # 6) solver handles mediation request event, and matches the job offer with the selected mediator
+        # 7) if any of these steps fail, start over
+
+
+        # if result was correct, return True
+        return True
+        # if result was incorrect, return False
+        # return False            
+    
+    def mediate_result(self, event: Event, tx: Tx=None):
+        result = event.get_data()
+        deal_id = result.get_data()['deal_id']
+        deal_data = self.deals[deal_id].get_data()
+        verification_method = deal_data['verification_method']
+        
+        if verification_method is None:
+            # if there is no verification method specified, assume that the result is correct
+            mediation_flag = True
+        elif verification_method == "random":
+            mediation_flag = self.ask_random_mediator(event)
+        elif verification_method == "consortium":
+            mediation_flag = self.ask_consortium_of_mediators(event)
+        
+        if mediation_flag == True:
+            # if result was correct, then compute node gets paid and returned its collateral, 
+            # client gets paid back its deposit, but pays for the mediation 
+            pass
+        elif mediation_flag == False:
+            # if result was incorrect, then client gets returned its collateral, and compute node gets slashed
+            self.slash_cheating_collateral(event)
+    
     def _log_balances(self):
         #self.logger.info(f"Smart Contract balance: {self.balance}")
         #self.logger.info(f"Smart Contract balances: {self.balances}")
