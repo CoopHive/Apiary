@@ -5,6 +5,9 @@ from solver import Solver
 from match import Match
 from smart_contract import SmartContract
 from result import Result
+import docker
+import time
+from datetime import datetime
 import logging
 # JSON Logging
 from log_json import log_json
@@ -22,7 +25,10 @@ class ResourceProvider(ServiceProvider):
         self.solver = None
         self.smart_contract = None
         self.current_deals = {}  # maps deal id to deals
-        self.current_job_running_times = {}  # maps deal id to how long the resource provider has been running the job
+        # changed to simulate running a docker job
+        self.current_jobs = {}
+        self.docker_client = docker.from_env()
+        #self.current_job_running_times = {}  # maps deal id to how long the resource provider has been running the job
         self.deals_finished_in_current_step = []
         self.current_matched_offers = []
 
@@ -94,7 +100,10 @@ class ResourceProvider(ServiceProvider):
             deal_id = deal.get_id()
             if deal_data['resource_provider_address'] == self.get_public_key():
                 self.current_deals[deal_id] = deal
-                self.current_job_running_times[deal_id] = 0
+                # changed to simulate running a docker job
+                container = self.docker_client.containers.run("alpine", "sleep 30", detach=True)
+                self.current_jobs[deal_id] = container
+                #self.current_job_running_times[deal_id] = 0
 
     def post_result(self, result: Result, tx: Tx):
         self.get_smart_contract().post_result(result, tx)
@@ -120,22 +129,26 @@ class ResourceProvider(ServiceProvider):
         # remove finished deals from list of current deals and running jobs
         for deal_id in self.deals_finished_in_current_step:
             del self.current_deals[deal_id]
-            del self.current_job_running_times[deal_id]
+            # changed to simulate running a docker job
+            del self.current_jobs[deal_id]
         # clear list of deals finished in current step
         self.deals_finished_in_current_step.clear()
 
     def handle_completed_job(self, deal_id):
+        # added to simulate running a docker job
+        container = self.current_jobs[deal_id]
+        container.stop()
+        container.remove()
         result, tx = self.create_result(deal_id)
         self.post_result(result, tx)
         self.deals_finished_in_current_step.append(deal_id)
 
     def update_job_running_times(self):
-        for deal_id, running_time in self.current_job_running_times.items():
-            self.current_job_running_times[deal_id] += 1
-            expected_running_time = self.current_deals[deal_id].get_data()['actual_honest_time_to_completion']
-            if self.current_job_running_times[deal_id] >= expected_running_time:
+        # changed to simulate running a docker job
+        for deal_id, container in self.current_jobs.items():
+            container.reload()
+            if container.status == "exited":
                 self.handle_completed_job(deal_id)
-
         self.update_finished_deals()
 
     def resource_provider_loop(self):
