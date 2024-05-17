@@ -32,6 +32,18 @@ class ResourceProvider(ServiceProvider):
         self.deals_finished_in_current_step = []
         self.current_matched_offers = []
 
+        self.docker_username = 'your_dockerhub_username'
+        self.docker_password = 'your_dockerhub_password'
+
+        self.login_to_docker()
+    
+    def login_to_docker(self):
+        try:
+            self.docker_client.login(username=self.docker_username, password=self.docker_password)
+            self.logger.info("Logged into Docker Hub successfully")
+        except docker.errors.APIError as e:
+            self.logger.error(f"Failed to log into Docker Hub: {e}")
+
     def get_solver(self):
         return self.solver
 
