@@ -21,3 +21,14 @@ class Match(DataAttribute):
     def sign_client(self):
         self.client_signed = True
 
+    def get_data(self):
+        data = {}
+        for attribute in self.data_attributes:
+            data[attribute] = getattr(self, attribute, None)
+        return data
+    
+    def set_attributes(self, attributes):
+        
+        for key, value in attributes.items():
+            setattr(self, key, value)
+        

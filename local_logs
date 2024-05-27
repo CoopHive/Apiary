@@ -1,0 +1,7 @@
+INFO:Smart Contract smart_contract_key:{"message": "Client signed match", "client_address": "client_key", "match_id": null}
+INFO:Client client_key:{"message": "Agreed to match", "match_id": null}
+INFO:Client client_key:{"message": "Rejected match", "match_id": null}
+INFO:Client client_key:{"message": "Rejected match", "match_id": null}
+INFO:Client client_key:{"message": "Connected to solver", "solver_url": "http://solver.com"}
+INFO:Client client_key:{"message": "Connected to solver", "solver_url": "http://solver.com"}
+INFO:Client client_key:{"message": "Received solver event", "event_data": {"name": "match", "id": null}}

@@ -16,10 +16,10 @@ class SmartContract(ServiceProvider):
         self.logger = logging.getLogger(f"Smart Contract {self.public_key}")
         logging.basicConfig(filename=f'{os.getcwd()}/local_logs', filemode='w', level=logging.DEBUG)
         self.transactions = []
-        self.deals = {}  # mapping from deal id to deal
+        self.deals: dict[str, Deal] = {} # type: ignore # mapping from deal id to deal
         self.balances = {}  # mapping from public key to balance
         self.balance = 0  # total balance in the contract
-        self.matches_made_in_current_step = []
+        self.matches_made_in_current_step: list[Match] = []
         self.results_posted_in_current_step = []
 
     def _agree_to_match_resource_provider(self, match: Match, tx: Tx):
@@ -59,14 +59,14 @@ class SmartContract(ServiceProvider):
         log_json(self.logger, "Client signed match", log_data)
 
     def agree_to_match(self, match: Match, tx: Tx):
-        if match.get_data()['resource_provider_address'] == tx.sender:
+        if match.get_data().get('resource_provider_address') == tx.sender:
             self._agree_to_match_resource_provider(match, tx)
-        elif match.get_data()['client_address'] == tx.sender:
+        elif match.get_data().get('client_address') == tx.sender:
             self._agree_to_match_client(match, tx)
         if match.get_resource_provider_signed() and match.get_client_signed():
             self.matches_made_in_current_step.append(match)
 
-    def _create_deal(self, match):
+    def _create_deal(self, match: Match):
         deal = Deal()
         for data_field, data_value in match.get_data().items():
             deal.add_data(data_field, data_value)
@@ -120,13 +120,17 @@ class SmartContract(ServiceProvider):
     
     def _create_and_emit_result_events(self):
         for result, tx in self.results_posted_in_current_step:
-            deal_id = result.get_data()['deal_id']
-            if self.deals[deal_id].get_data()['resource_provider_address'] == tx.sender:
-                result_event = Event(name='result', data=result)
-                self.emit_event(result_event)
-                self._refund_timeout_deposit(result)
-                # append to transactions
-                self.transactions.append(result_event)
+            if not isinstance(result, Result):
+                raise TypeError("result must be an instance of Result")
+            else: 
+                deal_id = result.get_data().get('deal_id')
+                if self.deals[deal_id].get_data()['resource_provider_address'] == tx.sender:
+                    result_event = Event(name='result', data=result)
+                    self.emit_event(result_event)
+                    self._refund_timeout_deposit(result)
+                    # append to transactions
+                    self.transactions.append(result_event)
+
 
     def _account_for_cheating_collateral_payments(self):
         for result, tx in self.results_posted_in_current_step:
@@ -137,7 +141,7 @@ class SmartContract(ServiceProvider):
 
     def _refund_client_deposit(self, deal: Deal):
         client_address = deal.get_data()['client_address']
-        client_deposit = deal.get_data()['client_deposit']
+        client_deposit = deal.get_data().get('client_deposit')
         self.balance -= client_deposit
         self.balances[client_address] += client_deposit
 
@@ -146,7 +150,7 @@ class SmartContract(ServiceProvider):
         result_instruction_count = result_data['instruction_count']
         result_instruction_count = float(result_instruction_count)
         deal_id = result_data['deal_id']
-        deal_data = self.deals[deal_id].get_data()
+        deal_data = self.deals.get(deal_id).get_data()
         price_per_instruction = deal_data['price_per_instruction']
         expected_payment_value = result_instruction_count * price_per_instruction
         if tx.value != expected_payment_value:
@@ -167,13 +171,13 @@ class SmartContract(ServiceProvider):
         self.balances[resource_provider_address] += tx.value
         # subtract from smart contract balance
         self.balance -= tx.value
-        # refund client deposit
+        # refund client deposit 
         self._refund_client_deposit(deal)
 
     def fund(self, tx: Tx):
         self.balances[tx.sender] = self.balances.get(tx.sender, 0) + tx.value
     
-    def slash_cheating_collateral(self, event: Event):
+    def slash_cheating_collateral(self, event: Event, result: Result):
         deal_id = result.get_data()['deal_id']
         deal_data = self.deals[deal_id].get_data()
         cheating_collateral_multiplier = deal_data['cheating_collateral_multiplier']
@@ -189,7 +193,7 @@ class SmartContract(ServiceProvider):
         # if result was incorrect, return False
         return True            
 
-    def ask_random_mediator(self, event: Event):
+    def ask_random_mediator(self, event: Event, result: Result):
         """
         in order to check result, some entity needs to submit the job offer 
         this can be any of the client, the compute node, the solver, or the smart contract
@@ -246,7 +250,7 @@ class SmartContract(ServiceProvider):
         # if result was incorrect, return False
         # return False            
     
-    def mediate_result(self, event: Event, tx: Tx=None):
+    def mediate_result(self, event: Event, result: Result, tx: Tx=None):
         result = event.get_data()
         deal_id = result.get_data()['deal_id']
         deal_data = self.deals[deal_id].get_data()

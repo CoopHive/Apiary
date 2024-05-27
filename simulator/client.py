@@ -10,6 +10,9 @@ from smart_contract import SmartContract
 from log_json import log_json
 import logging
 import os
+from event import Event
+from deal import Deal
+from result import Result
 
 
 class Client(ServiceProvider):
@@ -22,9 +25,9 @@ class Client(ServiceProvider):
         self.local_information = LocalInformation()
         self.solver_url = None
         self.solver = None
-        self.current_deals = {}  # maps deal id to deals
+        self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
         self.deals_finished_in_current_step = []
-        self.current_matched_offers = []
+        self.current_matched_offers: list[Match] = []
         # added for negotiation API
         # HOW DO WE INTIALIZE THESE?! Maybe each job offer should have its own T_accept, T_reject instead of one overarching one for the client
         # maybe T_accept should be calculate_utility times 1.05
@@ -56,10 +59,10 @@ class Client(ServiceProvider):
         self.current_jobs.append(job)
 
     def get_jobs(self):
-        return self.current_jobs
+        return list(self.current_jobs)
 
     def _agree_to_match(self, match: Match):
-        client_deposit = match.get_data()['client_deposit']
+        client_deposit = match.get_data().get('client_deposit')
         tx = self._create_transaction(client_deposit)
         #tx = Tx(sender=self.get_public_key(), value=client_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
@@ -67,66 +70,79 @@ class Client(ServiceProvider):
         log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
 
 
-    def handle_solver_event(self, event):
-        #JSON logging
-        event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+    def handle_solver_event(self, event: Event):
+        data = event.get_data()
+        
+        if not isinstance(data, Match):
+            self.logger.warning(f"Unexpected data type received in solver event: {type(data)}")
+            log_json(self.logger, "Received solver event with unexpected data type", {"name": event.get_name()})
+            return
+
+        # At this point, we know data is of type Match
+        event_data = {"name": event.get_name(), "id": data.get_id()}
         log_json(self.logger, "Received solver event", {"event_data": event_data})
-        #self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
+        
         if event.get_name() == 'match':
-            match = event.get_data()
-            if match.get_data()['client_address'] == self.get_public_key():
+            match = data
+            match_data = match.get_data()
+            if isinstance(match_data, dict) and match_data.get('client_address') == self.get_public_key():
                 self.current_matched_offers.append(match)
 
-    def decide_whether_or_not_to_mediate(self, event):
+
+    def decide_whether_or_not_to_mediate(self, event: Event):
         # for now, always mediate
         return True
         
-    def request_mediation(self, event):        
+    def request_mediation(self, event: Event):        
         self.logger.info(f"requesting mediation {event.get_name()}")
         self.smart_contract.mediate_result(event)
 
-    def pay_compute_node(self, event):
+    def pay_compute_node(self, event: Event):
         result = event.get_data()
-        result_data = result.get_data()
-        deal_id = result_data['deal_id']
-        if deal_id in self.current_deals.keys():
-            result_instruction_count = result_data['instruction_count']
-            result_instruction_count = float(result_instruction_count)
-            price_per_instruction = self.current_deals[deal_id].get_data()['price_per_instruction']
-            payment_value = result_instruction_count * price_per_instruction
-            tx = Tx(sender=self.get_public_key(), value=payment_value)
-            self.smart_contract.post_client_payment(result, tx)
-            self.deals_finished_in_current_step.append(deal_id)
-    
-    def handle_smart_contract_event(self, event):
-        if event.get_name() == 'mediation_random':
-            # JSON Logging
-            event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+        if not isinstance(result, Result):
+            self.logger.warning(f"Unexpected data type received in solver event: {type(result)}")
+        else:
+            result_data = result.get_data()
+            deal_id = result_data['deal_id']
+            if deal_id in self.current_deals.keys():
+                self.smart_contract.deals[deal_id] = self.current_deals.get(deal_id)
+                result_instruction_count = result_data['instruction_count']
+                result_instruction_count = float(result_instruction_count)
+                price_per_instruction = self.current_deals.get("deal_123").get_data().get('price_per_instruction')
+                payment_value = result_instruction_count * price_per_instruction
+                tx = Tx(sender=self.get_public_key(), value=payment_value)
+                
+                self.smart_contract.post_client_payment(result, tx)
+                
+                
+                self.deals_finished_in_current_step.append(deal_id)
+        
+    def handle_smart_contract_event(self, event: Event):
+        data = event.get_data()
+
+        if isinstance(data, Deal) or isinstance(data, Match):
+            event_data = {"name": event.get_name(), "id": data.get_id()}
             log_json(self.logger, "Received smart contract event", {"event_data": event_data})
-            #self.logger.info(f"have smart contract event {event.get_name()}")        
-        if event.get_name() == 'deal':
-            # JSON Logging
-            event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
-            log_json(self.logger, "Received smart contract event", {"event_data": event_data})
-            #self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
-            deal = event.get_data()
+        else:
+            log_json(self.logger, "Received smart contract event with unexpected data type", {"name": event.get_name()})
+        
+        if isinstance(data, Deal):
+            deal = data
             deal_data = deal.get_data()
             deal_id = deal.get_id()
             if deal_data['client_address'] == self.get_public_key():
                 self.current_deals[deal_id] = deal
 
-        if event.get_name() == 'result':
+        elif isinstance(data, Match):
+            match = data
             # decide whether to mediate result
-            mediate_flag = self.decide_whether_or_not_to_mediate(event)
-            if mediate_flag:
-                mediation_result = self.request_mediation(event)
-                """
-                mediation should be handled automatically by the smart contract
-                in fact, shouldn't the payment also be handled automatically by the smart contract?
-                """
-            # if not requesting mediation, send payment to compute node
-            else:
-                self.pay_compute_node(event)
+            if event.get_name() == 'result':
+                mediate_flag = self.decide_whether_or_not_to_mediate(event)
+                if mediate_flag:
+                    self.request_mediation(event)
+                else:
+                    self.pay_compute_node(event)
+
 
     def update_finished_deals(self):
         # remove finished deals from list of current deals and running jobs
@@ -135,7 +151,7 @@ class Client(ServiceProvider):
         # clear list of deals finished in current step
         self.deals_finished_in_current_step.clear()
 
-    def make_match_decision(self, match, algorithm):
+    def make_match_decision(self, match: Match, algorithm):
         #print("entered make_match_decision")
         if algorithm == 'accept_all':
             # This is a simple algorithm for testing but in practice, it is not wise for the client to simply accept all 
@@ -164,7 +180,7 @@ class Client(ServiceProvider):
                     self.reject_match(match)
             else:
                 print("is NOT the only match in accept_reject")
-                best_match = self.find_best_match_for_job(match.get_data()['job_offer'])
+                best_match = self.find_best_match_for_job(match.get_data().get('job_offer'))
                 if best_match == match and match_utility > self.T_accept:
                     self._agree_to_match(match)
                 else:
@@ -199,7 +215,7 @@ class Client(ServiceProvider):
                     self.negotiate_match(match)
             else:
                 print("accept_reject_negotiate and is NOT only match")
-                best_match = self.find_best_match_for_job(match.get_data()['job_offer'])
+                best_match = self.find_best_match_for_job(match.get_data().get('job_offer'))
                 if best_match == match:
                     utility = self.calculate_utility(match)
                     if utility > self.T_accept:
@@ -219,13 +235,13 @@ class Client(ServiceProvider):
         #   Utility function should be well-defined and customizable, allowing adjustments based on different client requirements.
         #   T_accept and T_reject may be static or dynamically adjusted based on historical data or current market conditions.
     
-    def is_only_match(self, match):
-        job_offer_id = match.get_data()['job_offer']
+    def is_only_match(self, match: Match):
+        job_offer_id = match.get_data().get('job_offer')
         print("job_offer_id is ", job_offer_id)
         print("number of current matched offers is ", len(self.current_matched_offers))
         for m in self.current_matched_offers:
             #print("the job_offer_id of this match is: ", m.get_data()['job_offer'])
-            if m != match and m.get_data()['job_offer'] == job_offer_id:
+            if m != match and m.get_data().get('job_offer') == job_offer_id:
                 #print("there is another match for this job offer")
                 return False
         return True
@@ -234,7 +250,7 @@ class Client(ServiceProvider):
         best_match = None
         highest_utility = -float('inf')
         for match in self.current_matched_offers:
-            if match.get_data()['job_offer'] == job_offer_id:
+            if match.get_data().get('job_offer') == job_offer_id:
                 utility = self.calculate_utility(match)
                 if utility > highest_utility:
                     highest_utility = utility
@@ -244,7 +260,7 @@ class Client(ServiceProvider):
     # More negative utility = worse for client, Closer to zero utility = better for client
     # Utility always negative in this calculation, so trying to have utility closest to zero
     # Thus set T_accept to -15 for some flexibility and T_reject to -30
-    def calculate_utility(self, match):
+    def calculate_utility(self, match: Match):
         """
         Calculate the utility of a match based on several factors.
         COST and TIME are the main determiners.
@@ -256,13 +272,13 @@ class Client(ServiceProvider):
         - Lower timeout deposit is better (weighted negatively, with less importance than timeout).
         """
         data = match.get_data()
-        price_per_instruction = data.get('price_per_instruction', 0)
+        price_per_instruction = data.get('price_per_instruction')
         print("price_per_instruction is ", price_per_instruction)
-        client_deposit = data.get('client_deposit', 0)
+        client_deposit = data.get('client_deposit')
         print("client_deposit is ", client_deposit)
-        timeout = data.get('timeout', 0)
+        timeout = data.get('timeout')
         print("timeout is ", timeout)
-        timeout_deposit = data.get('timeout_deposit', 0)
+        timeout_deposit = data.get('timeout_deposit')
         print("timeout_deposit is ", timeout_deposit)
         
         # Calculate utility with appropriate weights
