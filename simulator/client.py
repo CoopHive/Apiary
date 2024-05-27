@@ -230,6 +230,7 @@ class Client(ServiceProvider):
                 return False
         return True
 
+    # TODO: need a tie breaking mechanism here! otherwise if two or more matches have the same utility, the best_match is the first one in current_matched_offers
     def find_best_match_for_job(self, job_offer_id):
         best_match = None
         highest_utility = -float('inf')
@@ -277,12 +278,13 @@ class Client(ServiceProvider):
 
     
     def reject_match(self, match):
-    # Implement rejection logic
+    # TODO: Implement rejection logic
         log_json(self.logger, "Rejected match", {"match_id": match.get_id()})
         pass
 
     def negotiate_match(self, match):
-        # Implement negotiation logic
+        # TODO: Implement negotiation logic
+        # TODO: Implement HTTP communication for negotiation
         log_json(self.logger, "Negotiated match", {"match_id": match.get_id()})
         pass
 

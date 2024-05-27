@@ -89,6 +89,8 @@ class SmartContract(ServiceProvider):
         resource_provider_address = deal_data['resource_provider_address']
         self.balances[resource_provider_address] += timeout_deposit
         self.balance -= timeout_deposit
+        #self.logger.info(f"timeout deposit of {timeout_deposit} refunded to resource provider {resource_provider_address}")
+        log_json(self.logger, "Timeout deposit refunded", {"timeout_deposit": timeout_deposit, "resource_provider_address": resource_provider_address})
 
     def _post_cheating_collateral(self, result: Result, tx: Tx):
         deal_id = result.get_data()['deal_id']
@@ -97,12 +99,14 @@ class SmartContract(ServiceProvider):
         instruction_count = result.get_data()['instruction_count']
         intended_cheating_collateral = cheating_collateral_multiplier * instruction_count
         if intended_cheating_collateral != tx.value:
-            print(f'transaction value of {tx.value} does not match needed cheating collateral deposit {intended_cheating_collateral}')
+            #print(f'transaction value of {tx.value} does not match needed cheating collateral deposit {intended_cheating_collateral}')
+            log_json(self.logger, "Cheating collateral deposit does not match needed", {"transaction_value": tx.value, "needed_cheating_collateral": intended_cheating_collateral})
             raise Exception("transaction value does not match needed cheating collateral")
         resource_provider_address = deal_data['resource_provider_address']
         if intended_cheating_collateral > self.balances[resource_provider_address]:
             print()
-            print(f'transaction value of {tx.value} exceeds resource provider balance of {self.balances[resource_provider_address]} of resource provider {resource_provider_address}')
+            #print(f'transaction value of {tx.value} exceeds resource provider balance of {self.balances[resource_provider_address]} of resource provider {resource_provider_address}')
+            log_json(self.logger, "Transaction value exceeds resource provider balance", {"transaction_value": tx.value, "resource_provider_balance": self.balances[resource_provider_address], "resource_provider_address": resource_provider_address})
             raise Exception("transaction value exceeds balance")
         self.balances[resource_provider_address] -= tx.value
         self.balance += tx.value
@@ -174,10 +178,10 @@ class SmartContract(ServiceProvider):
         self.balances[tx.sender] = self.balances.get(tx.sender, 0) + tx.value
     
     def slash_cheating_collateral(self, event: Event):
-        deal_id = result.get_data()['deal_id']
+        deal_id = event.get_data()['deal_id']
         deal_data = self.deals[deal_id].get_data()
         cheating_collateral_multiplier = deal_data['cheating_collateral_multiplier']
-        instruction_count = result.get_data()['instruction_count']
+        instruction_count = event.get_data()['instruction_count']
         intended_cheating_collateral = cheating_collateral_multiplier * instruction_count
         resource_provider_address = deal_data['resource_provider_address']
         self.balances[resource_provider_address] -= intended_cheating_collateral
