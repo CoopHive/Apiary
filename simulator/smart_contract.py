@@ -25,6 +25,8 @@ class SmartContract(ServiceProvider):
     def _agree_to_match_resource_provider(self, match: Match, tx: Tx):
         match_data = match.get_data()
         timeout_deposit = match_data['timeout_deposit']
+    
+        
         if tx.value != timeout_deposit:
             print()
             print(f'transaction value of {tx.value} does not match timeout deposit {match_data["timeout_deposit"]}')
@@ -67,13 +69,17 @@ class SmartContract(ServiceProvider):
             self.matches_made_in_current_step.append(match)
 
     def _create_deal(self, match: Match):
+        print(f"Match data before setting ID: {match.get_data()}")
         deal = Deal()
         for data_field, data_value in match.get_data().items():
             deal.add_data(data_field, data_value)
         # todo: this is for testing purposes, should not be added here manually
         deal.add_data('actual_honest_time_to_completion', 1)
         deal.set_id()
+        print(f"Deal ID after setting: {deal.get_id()}")
         self.deals[deal.get_id()] = deal
+        print(f"Deals dictionary: {self.deals}")
+
         deal_event = Event(name='deal', data=deal)
         self.emit_event(deal_event)
         #self.logger.info(f"deal created; deal attributes:, {deal.get_data()}")

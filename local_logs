@@ -1,7 +1,5 @@
-INFO:Smart Contract smart_contract_key:{"message": "Client signed match", "client_address": "client_key", "match_id": null}
-INFO:Client client_key:{"message": "Agreed to match", "match_id": null}
-INFO:Client client_key:{"message": "Rejected match", "match_id": null}
-INFO:Client client_key:{"message": "Rejected match", "match_id": null}
-INFO:Client client_key:{"message": "Connected to solver", "solver_url": "http://solver.com"}
-INFO:Client client_key:{"message": "Connected to solver", "solver_url": "http://solver.com"}
-INFO:Client client_key:{"message": "Received solver event", "event_data": {"name": "match", "id": null}}
+INFO:Smart Contract public_key:{"message": "Resource provider signed match", "resource_provider_address": "provider_address", "match_id": null}
+INFO:Smart Contract public_key:{"message": "Client signed match", "client_address": "client_address", "match_id": null}
+INFO:Smart Contract public_key:{"message": "Client signed match", "client_address": "client_address", "match_id": null}
+INFO:Smart Contract public_key:{"message": "Resource provider signed match", "resource_provider_address": "provider_address", "match_id": null}
+INFO:Smart Contract public_key:{"message": "Deal created", "deal_id": "8645e4e5876d2482d8b75a57d05a0ccde06da0f113df93c4008a1ac12a7d8aaf", "deal_attributes": {"mediators": null, "client_deposit": null, "resource_offer": null, "job_offer": null, "verification_method": null, "actual_cost_to_resource_provider": null, "actual_honest_time_to_completion": null, "client_address": null, "timeout_deposit": null, "timeout": null, "resource_provider_address": null, "actual_benefit_to_client": null, "cheating_collateral_multiplier": null, "price_per_instruction": null}}
