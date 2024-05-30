@@ -3,12 +3,11 @@ match_attributes = {
     "client_address",
     "resource_offer",
     "job_offer",
-    "price_per_instruction",
-    # add resource_provider expected number of instructions
-    # add expected cost to resource provider MAYBE
-    # add expected benefit to client MAYBE
+    "price_per_instruction", # value in dollars
+    "expected_number_of_instructions"
+    "expected_benefit_to_client" # this should be a value in dollars
     "client_deposit",
-    "timeout",
+    "timeout", # should be number of seconds, minutes, idk
     "timeout_deposit",
     "cheating_collateral_multiplier",
     "verification_method",

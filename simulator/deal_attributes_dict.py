@@ -4,6 +4,8 @@ deal_attributes = {
     "resource_offer",
     "job_offer",
     "price_per_instruction",
+    "expected_number_of_instructions"
+    "expected_benefit_to_client"
     "client_deposit",
     "timeout",
     "timeout_deposit",
