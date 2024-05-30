@@ -31,4 +31,7 @@ class Match(DataAttribute):
         
         for key, value in attributes.items():
             setattr(self, key, value)
+            
+    def add_data(self, data_field, data_value):
+        setattr(self, data_field, data_value )
         

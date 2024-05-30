@@ -69,17 +69,17 @@ class SmartContract(ServiceProvider):
             self.matches_made_in_current_step.append(match)
 
     def _create_deal(self, match: Match):
-        print(f"Match data before setting ID: {match.get_data()}")
+        
         deal = Deal()
         for data_field, data_value in match.get_data().items():
             deal.add_data(data_field, data_value)
         # todo: this is for testing purposes, should not be added here manually
         deal.add_data('actual_honest_time_to_completion', 1)
+        
         deal.set_id()
-        print(f"Deal ID after setting: {deal.get_id()}")
-        self.deals[deal.get_id()] = deal
-        print(f"Deals dictionary: {self.deals}")
 
+        self.deals[deal.get_id()] = deal
+    
         deal_event = Event(name='deal', data=deal)
         self.emit_event(deal_event)
         #self.logger.info(f"deal created; deal attributes:, {deal.get_data()}")

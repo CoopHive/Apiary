@@ -46,6 +46,7 @@ class Service:
 
 
 
+@dataclass
 class IPFS:
     def __init__(self):
         self.data = {}

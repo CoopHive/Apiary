@@ -44,8 +44,8 @@ class LocalInformation:
         self.solvers = {}
         self.mediators = {}
         self.directories = {}
-        self.resource_offers = {}
-        self.job_offers = {}
+        self.resource_offers: dict[str, ResourceOffer] =  {}
+        self.job_offers: dict[str, JobOffer] = {}
         # self.active_job_offers = {}
         # self.active_resource_offers = {}
 
@@ -101,6 +101,7 @@ class LocalInformation:
         self.job_offers[id] = data
         print("adding job offer to IPFS")
         self.ipfs.add(data)
+    
 
     def get_resource_offers(self):
         return self.resource_offers
