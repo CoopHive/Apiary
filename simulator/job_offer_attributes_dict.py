@@ -8,6 +8,7 @@ job_offer_attributes = {
     'RAM',
     'module',
     'prices',
+    # add instruction count
     "verification_method",
     "mediators",
 }
