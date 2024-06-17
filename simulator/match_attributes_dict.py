@@ -5,9 +5,9 @@ match_attributes = {
     "job_offer",
     "price_per_instruction", # value in dollars
     "expected_number_of_instructions"
-    "expected_benefit_to_client" # this should be a value in dollars
+    "expected_benefit_to_client" # value in dollars
     "client_deposit",
-    "timeout", # should be number of seconds, minutes, idk
+    "timeout", 
     "timeout_deposit",
     "cheating_collateral_multiplier",
     "verification_method",

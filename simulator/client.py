@@ -6,7 +6,6 @@ from job import Job
 from solver import Solver
 from match import Match
 from smart_contract import SmartContract
-#JSON logging
 from log_json import log_json
 import logging
 import os
@@ -25,11 +24,8 @@ class Client(ServiceProvider):
         self.current_deals = {}  # maps deal id to deals
         self.deals_finished_in_current_step = []
         self.current_matched_offers = []
-        # added for negotiation API
         # HOW DO WE INTIALIZE THESE?! Maybe each job offer should have its own T_accept, T_reject instead of one overarching one for the client
-        # maybe T_accept should be calculate_utility times 1.05
         self.T_accept = -15
-        # maybe T_reject should be calculate_utility times 2.1
         self.T_reject = -30
 
     def get_solver(self):
@@ -43,13 +39,11 @@ class Client(ServiceProvider):
         self.solver = solver
         self.solver.subscribe_event(self.handle_solver_event)
         self.solver.get_local_information().add_client(self)
-        #JSON logging
         log_json(self.logger, "Connected to solver", {"solver_url": url})
 
     def connect_to_smart_contract(self, smart_contract: SmartContract):
         self.smart_contract = smart_contract
         smart_contract.subscribe_event(self.handle_smart_contract_event)
-        #JSON logging
         log_json(self.logger, "Connected to smart contract")
 
     def add_job(self, job: Job):
@@ -61,17 +55,13 @@ class Client(ServiceProvider):
     def _agree_to_match(self, match: Match):
         client_deposit = match.get_data()['client_deposit']
         tx = self._create_transaction(client_deposit)
-        #tx = Tx(sender=self.get_public_key(), value=client_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
-        #JSON logging
         log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
 
 
     def handle_solver_event(self, event):
-        #JSON logging
         event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
         log_json(self.logger, "Received solver event", {"event_data": event_data})
-        #self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
         if event.get_name() == 'match':
             match = event.get_data()
             if match.get_data()['client_address'] == self.get_public_key():
@@ -90,7 +80,6 @@ class Client(ServiceProvider):
         return True
         
     def request_mediation(self, event):        
-        #self.logger.info(f"requesting mediation {event.get_name()}")
         log_json(self.logger, "Requesting mediation", {"event_name": event.get_name()})
         self.smart_contract.mediate_result(event)
 
@@ -110,15 +99,11 @@ class Client(ServiceProvider):
     
     def handle_smart_contract_event(self, event):
         if event.get_name() == 'mediation_random':
-            # JSON Logging
             event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
             log_json(self.logger, "Received smart contract event", {"event_data": event_data})
-            #self.logger.info(f"have smart contract event {event.get_name()}")        
         if event.get_name() == 'deal':
-            # JSON Logging
             event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
             log_json(self.logger, "Received smart contract event", {"event_data": event_data})
-            #self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
             deal = event.get_data()
             deal_data = deal.get_data()
             deal_id = deal.get_id()
@@ -146,19 +131,9 @@ class Client(ServiceProvider):
         self.deals_finished_in_current_step.clear()
 
     def make_match_decision(self, match, algorithm):
-        #print("entered make_match_decision")
         if algorithm == 'accept_all':
-            # This is a simple algorithm for testing but in practice, it is not wise for the client to simply accept all 
-            # acceptable proposals from resource providers and select the best proposal from them because the client may be forced to 
-            # pay a large amount of penalty fees for reneging on many deals
             self._agree_to_match(match)
         elif algorithm == 'accept_reject':
-            #print("entered accept_reject")
-            #   Calculate the utility of this match
-            #   Find the best match for this job offer  
-            #   Accept if this match has the highest utility of all matches and if the utility is acceptable (above a certain threshold T_accept).
-            #   Reject if this match does not have the highest utility of all matches OR it has the highest utility of all matches but the
-            #   utility is not acceptable (below a certain threshold T_accept).
             match_utility = self.calculate_utility(match)
             best_match = self.find_best_match_for_job(match.get_data()['job_offer'])
             # could also check that match_utility > self.T_reject to make it more flexible (basically accept a match if its utility is over T_reject instead of over T_accept)
@@ -167,10 +142,6 @@ class Client(ServiceProvider):
             else:
                 self.reject_match(match)
         elif algorithm == 'accept_reject_negotiate':
-            #   Find the best match for this job offer. If this match is the best, calculate its utility. 
-            #   Accept if this match if the utility is acceptable (above a certain threshold T_accept).
-            #   Reject if this match does not have the highest utility of all matches OR it has the highest utility of all matches but the
-            #   utility is not acceptable (below a certain threshold T_accept).
             #   Negotiate if the utility is within range of being acceptable (between T_reject and T_accept). Call some function negotiate_match
             #   that takes the match as an input and creates a similar but new match where the utility of the new match is > T_accept. 
             #                   Should be able to handle multiple negotiation rounds. 
@@ -194,7 +165,6 @@ class Client(ServiceProvider):
         #       - It allows for some degree of negotiation, making the client less rigid and more adaptable to market conditions.
         #   T_accept and T_reject may be static or dynamically adjusted based on historical data or current market conditions.
 
-    # Currently, if two or more matches have the same utility, the best_match is the first one in current_matched_offers
     def find_best_match_for_job(self, job_offer_id):
         best_match = None
         highest_utility = -float('inf')
@@ -212,11 +182,6 @@ class Client(ServiceProvider):
         expected_number_of_instructions = data.get('expected_number_of_instructions', 0)
         return price_per_instruction * expected_number_of_instructions
     
-    def calculate_time(self, match):
-        data = match.get_data()
-        time = data.get('timeout', 0)
-        return time
-    
     def calculate_benefit(self, match):
         data = match.get_data()
         expected_benefit_to_client = data.get('expected_benefit_to_client', 0)
@@ -228,14 +193,9 @@ class Client(ServiceProvider):
         Calculate the utility of a match based on several factors.
         COST, BENEFIT, and TIME are the main determiners.
         """
-        #abstract logic into calculate benefit and calculate cost, add necessary attributes to match or job offer or resource offer
-        # calculate cost should be number of instructions * price per instruction
         expected_cost = self.calculate_cost(match)
-        # calculate time should be timeout
-        expected_time = self.calculate_time(match)
-        # calculate benefit should be benefit to client from this job
         expected_benefit = self.calculate_benefit(match)
-        utility = expected_benefit - (expected_cost + expected_time)
+        utility = expected_benefit - (expected_cost)
         
         return utility
 
@@ -247,22 +207,45 @@ class Client(ServiceProvider):
         pass
 
     # TODO: Implement negotiation logic. Implement HTTP communication for negotiation
-    def negotiate_match(self, match, maxRounds):
-        
+    def negotiate_match(self, match, max_rounds=5):
         log_json(self.logger, "Negotiating match", {"match_id": match.get_id()})
-        pass
+        for _ in range(max_rounds):
+            new_match_offer = self.create_new_match_offer(match)
+            response = self.communicate_request_to_party(match.get_data()['resource_provider_address'], new_match_offer)
+            if response['accepted']:
+                self._agree_to_match(response['match'])
+                return
+            match = response['counter_offer']
+        self.reject_match(match)
 
+    def create_new_match_offer(self, match):
+        data = match.get_data()
+        new_data = data.copy()
+        new_data['price_per_instruction'] = data['price_per_instruction'] * 0.95  # For example, reduce the price
+        new_match = Match(new_data)
+        return new_match
+    
+    def communicate_request_to_party(self, party_id, match_offer):
+        # Simulate communication - this would need to be implemented with actual P2P or HTTP communication
+        response = self.simulate_communication(party_id, match_offer)
+        return response
+    
+    def simulate_communication(self, party_id, match_offer):
+        log_json(self.logger, "Simulating communication", {"party_id": party_id, "match_offer": match_offer.get_data()})
+        # In a real implementation, this function would send a request to the party_id and wait for a response.
+        response = {
+            'accepted': False,
+            'counter_offer': self.create_new_match_offer(match_offer)
+        }
+        if self.calculate_utility(match_offer) > self.T_accept:
+            response['accepted'] = True
+            response['match'] = match_offer
+        return response
 
-    # for each match, call some function with an input comprised of the match and a match algorithm 
-    # that decides whether the client should accept, reject, or negotiate the deal
-    # i.e. self.make_match_decision(match, algorithm='accept_all') would call self._agree_to_match(match) 
-    # i.e. self.make_match_decision(match, algorithm='accept_reject') would have the client only accept or reject the match, not allowing for negotiations
-    # i.e. self.make_match_decision(match, algorithm='accept_reject_negotiate') would have the client accept, reject, or negotiate the match
     def client_loop(self):
         for match in self.current_matched_offers:
             # use *args, **kwargs
             self.make_match_decision(match, algorithm='accept_reject_negotiate')
-            #self._agree_to_match(match)
         self.update_finished_deals()
         self.current_matched_offers.clear()
 
