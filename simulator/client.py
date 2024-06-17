@@ -24,9 +24,7 @@ class Client(ServiceProvider):
         self.current_deals = {}  # maps deal id to deals
         self.deals_finished_in_current_step = []
         self.current_matched_offers = []
-        # HOW DO WE INTIALIZE THESE?! Maybe each job offer should have its own T_accept, T_reject instead of one overarching one for the client
-        self.T_accept = -15
-        self.T_reject = -30
+        
 
     def get_solver(self):
         return self.solver
@@ -137,7 +135,8 @@ class Client(ServiceProvider):
             match_utility = self.calculate_utility(match)
             best_match = self.find_best_match_for_job(match.get_data()['job_offer'])
             # could also check that match_utility > self.T_reject to make it more flexible (basically accept a match if its utility is over T_reject instead of over T_accept)
-            if best_match == match and match_utility > self.T_accept:
+            # TODO: update where T_accept is accessed from if its moved to job_offer
+            if best_match == match and match_utility > match.get_data()['T_accept']:
                 self._agree_to_match(match)
             else:
                 self.reject_match(match)
@@ -149,9 +148,11 @@ class Client(ServiceProvider):
             best_match = self.find_best_match_for_job(match.get_data()['job_offer'])
             if best_match == match:
                 utility = self.calculate_utility(match)
-                if utility > self.T_accept:
+                # TODO: update where T_accept is accessed from if its moved to job_offer
+                if utility > match.get_data()['T_accept']:
                     self._agree_to_match(match)
-                elif utility < self.T_reject:
+                # TODO: update where T_reject is accessed from if its moved to job_offer
+                elif utility < match.get_data()['T_reject']:
                     self.reject_match(match)
                 else:
                     self.negotiate_match(match)
@@ -187,16 +188,10 @@ class Client(ServiceProvider):
         expected_benefit_to_client = data.get('expected_benefit_to_client', 0)
         return expected_benefit_to_client
 
-    # Currently T_accept is -15 and T_reject to -30 but that DEFINITELY needs to be changed 
     def calculate_utility(self, match):
-        """
-        Calculate the utility of a match based on several factors.
-        COST, BENEFIT, and TIME are the main determiners.
-        """
         expected_cost = self.calculate_cost(match)
         expected_benefit = self.calculate_benefit(match)
         utility = expected_benefit - (expected_cost)
-        
         return utility
 
     
@@ -237,7 +232,8 @@ class Client(ServiceProvider):
             'accepted': False,
             'counter_offer': self.create_new_match_offer(match_offer)
         }
-        if self.calculate_utility(match_offer) > self.T_accept:
+        # TODO: update where T_accept is accessed from if its moved to job_offer
+        if self.calculate_utility(match_offer) > match_offer.get_data()['T_accept']:
             response['accepted'] = True
             response['match'] = match_offer
         return response

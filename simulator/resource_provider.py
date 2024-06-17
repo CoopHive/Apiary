@@ -34,10 +34,6 @@ class ResourceProvider(ServiceProvider):
         self.docker_password = 'your_dockerhub_password'
 
         self.login_to_docker()
-        
-        # HOW DO WE INTIALIZE THESE?! Maybe each job offer should have its own T_accept, T_reject instead of one overarching one for the client
-        self.T_accept = 15
-        self.T_reject = 30
     
     def login_to_docker(self):
         try:
@@ -163,7 +159,8 @@ class ResourceProvider(ServiceProvider):
             match_utility = self.calculate_utility(match)
             best_match = self.find_best_match_for_resource_offer(match.get_data()['resource_offer'])
             # could also check that match_utility > self.T_reject to make it more flexible (basically accept a match if its utility is over T_reject instead of over T_accept)
-            if best_match == match and match_utility > self.T_accept:
+            # TODO: update where T_accept is accessed from if its moved to resource_offer
+            if best_match == match and match_utility > match.get_data()['T_accept']:
                 self._agree_to_match(match)
             else:
                 self.reject_match(match)
@@ -175,9 +172,11 @@ class ResourceProvider(ServiceProvider):
             best_match = self.find_best_match_for_resource_offer(match.get_data()['resource_offer'])
             if best_match == match:
                 utility = self.calculate_utility(match)
-                if utility > self.T_accept:
+                # TODO: update where T_accept is accessed from if its moved to resource_offer
+                if utility > match.get_data()['T_accept']:
                     self._agree_to_match(match)
-                elif utility < self.T_reject:
+                # TODO: update where T_reject is accessed from if its moved to resource_offer
+                elif utility < match.get_data()['T_reject']:
                     self.reject_match(match)
                 else:
                     self.negotiate_match(match)
@@ -266,7 +265,8 @@ class ResourceProvider(ServiceProvider):
             'accepted': False,
             'counter_offer': self.create_new_match_offer(match_offer)
         }
-        if self.calculate_utility(match_offer) > self.T_accept:
+        # TODO: update where T_accept is accessed from if its moved to resource_offer
+        if self.calculate_utility(match_offer) > match_offer.get_data()['T_accept']:
             response['accepted'] = True
             response['match'] = match_offer
         return response
