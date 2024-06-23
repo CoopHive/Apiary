@@ -9,7 +9,7 @@ from smart_contract import SmartContract
 from log_json import log_json
 import logging
 import os
-
+from globals import global_time  # Import the global variable
 
 class Client(ServiceProvider):
     def __init__(self, address: str):
@@ -24,6 +24,7 @@ class Client(ServiceProvider):
         self.current_deals = {}  # maps deal id to deals
         self.deals_finished_in_current_step = []
         self.current_matched_offers = []
+       
         
 
     def get_solver(self):

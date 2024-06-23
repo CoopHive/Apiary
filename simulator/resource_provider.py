@@ -12,7 +12,7 @@ import logging
 # JSON Logging
 from log_json import log_json
 import os
-
+from globals import global_time  # Import the global variable
 
 class ResourceProvider(ServiceProvider):
     def __init__(self, public_key: str):

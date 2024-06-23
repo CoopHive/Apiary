@@ -10,6 +10,8 @@ from solver import Solver
 from smart_contract import SmartContract
 import logging
 import os
+import time
+from globals import global_time
 
 logger = logging.getLogger(f"test")
 logging.basicConfig(filename=f'{os.getcwd()}/local_logs', filemode='w', level=logging.DEBUG)
@@ -72,6 +74,7 @@ def create_n_job_offers(clients, num_job_offers_per_client, created_at):
 
 
 def main():
+    # TODO: look AA DECOMMITMENT paper and implement basic generate offer and evaluate accept 
 
     addresses = Addresses()
     num_resource_providers = 5

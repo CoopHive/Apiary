@@ -28,3 +28,4 @@ def start_client():
 
 if __name__ == "__main__":
     start_client()
+    # TODO: Add this to client.py to simulate negotiation between client and resource provider
