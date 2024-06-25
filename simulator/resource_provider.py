@@ -73,9 +73,12 @@ class ResourceProvider(ServiceProvider):
 
     def evaluate_match(self, match):
         # Here you evaluate the match and decide whether to accept or counteroffer
-        if self.calculate_utility(match) > match.get_data()['T_accept']:
-            return "accepted"
+        if self.calculate_utility(match) > match.get_data()['resource_offer']['T_accept']:
+            return "RP accepted from evaluate match"
+        elif self.calculate_utility(match) < match.get_data()['resource_offer']['T_reject']:
+            return "RP rejected from evaluate match"
         else:
+            print("RP sending counteroffer from evaluate match")
             counter_offer = self.create_new_match_offer(match)
             return f"New match offer: {counter_offer.get_data()}"
 
@@ -205,7 +208,7 @@ class ResourceProvider(ServiceProvider):
             best_match = self.find_best_match_for_resource_offer(match.get_data()['resource_offer'])
             # could also check that match_utility > self.T_reject to make it more flexible (basically accept a match if its utility is over T_reject instead of over T_accept)
             # TODO: update where T_accept is accessed from if its moved to resource_offer
-            if best_match == match and match_utility > match.get_data()['T_accept']:
+            if best_match == match and match_utility > match.get_data()['resource_offer']['T_accept']:
                 self._agree_to_match(match)
             else:
                 self.reject_match(match)
@@ -218,10 +221,10 @@ class ResourceProvider(ServiceProvider):
             if best_match == match:
                 utility = self.calculate_utility(match)
                 # TODO: update where T_accept is accessed from if its moved to resource_offer
-                if utility > match.get_data()['T_accept']:
+                if utility > match.get_data()['resource_offer']['T_accept']:
                     self._agree_to_match(match)
                 # TODO: update where T_reject is accessed from if its moved to resource_offer
-                elif utility < match.get_data()['T_reject']:
+                elif utility < match.get_data()['resource_offer']['T_reject']:
                     self.reject_match(match)
                 else:
                     self.negotiate_match(match)
@@ -285,9 +288,8 @@ class ResourceProvider(ServiceProvider):
     def create_new_match_offer(self, match):
         data = match.get_data()
         new_data = data.copy()
-        new_data['price_per_instruction'] = data['price_per_instruction'] * 1.05  # For example, increase the price
-        new_data['T_accept'] = data.get('T_accept', -10)  # Default value if T_accept is not present
-        new_data['T_reject'] = data.get('T_reject', -20)  # Default value if T_reject is not present
+        new_data['price_per_instruction'] = data['price_per_instruction'] * 1.06  # For example, increase the price
+        print('RP multiplying price per instruction',data['price_per_instruction'], 'by 1.06 to get', new_data['price_per_instruction'])
         new_match = Match(new_data)
         return new_match
 

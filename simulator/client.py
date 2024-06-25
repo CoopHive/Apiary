@@ -159,7 +159,7 @@ class Client(ServiceProvider):
             best_match = self.find_best_match_for_job(match.get_data()['job_offer'])
             # could also check that match_utility > self.T_reject to make it more flexible (basically accept a match if its utility is over T_reject instead of over T_accept)
             # TODO: update where T_accept is accessed from if its moved to job_offer
-            if best_match == match and match_utility > match.get_data()['T_accept']:
+            if best_match == match and match_utility > match.get_data()['job_offer']['T_accept']:
                 self._agree_to_match(match)
             else:
                 self.reject_match(match)
@@ -172,10 +172,10 @@ class Client(ServiceProvider):
             if best_match == match:
                 utility = self.calculate_utility(match)
                 # TODO: update where T_accept is accessed from if its moved to job_offer
-                if utility > match.get_data()['T_accept']:
+                if utility > match.get_data()['job_offer']['T_accept']:
                     self._agree_to_match(match)
                 # TODO: update where T_reject is accessed from if its moved to job_offer
-                elif utility < match.get_data()['T_reject']:
+                elif utility < match.get_data()['job_offer']['T_reject']:
                     self.reject_match(match)
                 else:
                     self.negotiate_match(match)
@@ -227,12 +227,14 @@ class Client(ServiceProvider):
     # TODO: Implement negotiation logic. Implement HTTP communication for negotiation
     def negotiate_match(self, match, max_rounds=5):
         log_json(self.logger, "Negotiating match", {"match_id": match.get_id()})
-        for _ in range(max_rounds):
+        for i in range(max_rounds):
+            print('negotiation round: ', i)
             new_match_offer = self.create_new_match_offer(match)
             response = self.communicate_request_to_party(match.get_data()['resource_provider_address'], new_match_offer)
             if response['accepted']:
                 self._agree_to_match(response['match'])
                 return
+            print('negotiation failed, creating new match offer')
             match = response['counter_offer']
         self.reject_match(match)
 
@@ -240,8 +242,7 @@ class Client(ServiceProvider):
         data = match.get_data()
         new_data = data.copy()
         new_data['price_per_instruction'] = data['price_per_instruction'] * 0.95  # For example, reduce the price
-        new_data['T_accept'] = data.get('T_accept', -10)  # Default value if T_accept is not present
-        new_data['T_reject'] = data.get('T_reject', -20)  # Default value if T_reject is not present
+        print('client multiplying price per instruction',data['price_per_instruction'], 'by 0.95 to get', new_data['price_per_instruction'])
         new_match = Match(new_data)
         return new_match
     
@@ -266,19 +267,17 @@ class Client(ServiceProvider):
         example_match_data = {
             "resource_provider_address": "rp_address",
             "client_address": "client_address",
-            "resource_offer": "resource_offer_1",
-            "job_offer": "job_offer_1",
+            "resource_offer": {"T_accept": 100.6,  "T_reject": 10, "resource_id": "resource_1"},
+            "job_offer": {"T_accept": 95,  "T_reject": 10, "job_id": "job_1"},
             "price_per_instruction": 0.10,
             "expected_number_of_instructions": 1000,
-            "expected_benefit_to_client": 200,
+            "expected_benefit_to_client": 190,
             "client_deposit": 50,
             "timeout": 100,
             "timeout_deposit": 20,
             "cheating_collateral_multiplier": 1.5,
             "verification_method": "method_1",
             "mediators": ["mediator_1"],
-            "T_accept": -10,
-            "T_reject": -20
         }
         example_match = Match(example_match_data)
         self.negotiate_match(example_match)
