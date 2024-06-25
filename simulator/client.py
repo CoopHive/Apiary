@@ -43,7 +43,12 @@ class Client(ServiceProvider):
                 message = self.client_socket.recv(1024)
                 if not message:
                     break
-                print(f"Received message from server: {message.decode('utf-8')}")
+                message = message.decode('utf-8')
+                print(f"Received message from server: {message}")
+                if "New match offer" in message:
+                    match_data = eval(message.split("New match offer: ")[1])
+                    new_match = Match(match_data)
+                    self.negotiate_match(new_match)
             except ConnectionResetError:
                 print("Connection lost. Closing connection.")
                 self.client_socket.close()
