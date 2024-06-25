@@ -10,6 +10,7 @@ class DataAttribute:
 
     def add_data(self, data_field: str, data_value):
         # enforces constraints on deals to enable matches
+        # print(f"the data attributes are {self.data_attributes}")
         if data_field not in self.data_attributes:
             print(f"trying to add invalid data field {data_field}")
             raise Exception(f"trying to add invalid data field")

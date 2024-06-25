@@ -1,3 +1,6 @@
+import socket
+import threading
+import time
 from utils import *
 from service_provider import ServiceProvider
 from service_provider_local_information import LocalInformation
@@ -24,8 +27,27 @@ class Client(ServiceProvider):
         self.current_deals = {}  # maps deal id to deals
         self.deals_finished_in_current_step = []
         self.current_matched_offers = []
-       
-        
+        self.client_socket = None
+        self.server_address = ('localhost', 1234)
+        self.start_client_socket()
+    
+    def start_client_socket(self):
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client_socket.connect(self.server_address)
+        print("Connected to server")
+        threading.Thread(target=self.handle_server_messages, daemon=True).start()
+
+    def handle_server_messages(self):
+        while True:
+            try:
+                message = self.client_socket.recv(1024)
+                if not message:
+                    break
+                print(f"Received message from server: {message.decode('utf-8')}")
+            except ConnectionResetError:
+                print("Connection lost. Closing connection.")
+                self.client_socket.close()
+                break
 
     def get_solver(self):
         return self.solver
@@ -218,31 +240,57 @@ class Client(ServiceProvider):
         data = match.get_data()
         new_data = data.copy()
         new_data['price_per_instruction'] = data['price_per_instruction'] * 0.95  # For example, reduce the price
+        new_data['T_accept'] = data.get('T_accept', -10)  # Default value if T_accept is not present
+        new_data['T_reject'] = data.get('T_reject', -20)  # Default value if T_reject is not present
         new_match = Match(new_data)
         return new_match
     
     def communicate_request_to_party(self, party_id, match_offer):
         # Simulate communication - this would need to be implemented with actual P2P or HTTP communication
+        log_json(self.logger, "Communicating request to party", {"party_id": party_id, "match_offer": match_offer.get_data()})
         response = self.simulate_communication(party_id, match_offer)
         return response
     
     def simulate_communication(self, party_id, match_offer):
-        log_json(self.logger, "Simulating communication", {"party_id": party_id, "match_offer": match_offer.get_data()})
-        # In a real implementation, this function would send a request to the party_id and wait for a response.
+        message = f"New match offer: {match_offer.get_data()}"
+        self.client_socket.send(message.encode('utf-8'))
+        response_message = self.client_socket.recv(1024).decode('utf-8')
+        log_json(self.logger, "Received response from server", {"response_message": response_message})
         response = {
-            'accepted': False,
+            'accepted': 'accepted' in response_message,
             'counter_offer': self.create_new_match_offer(match_offer)
         }
-        # TODO: update where T_accept is accessed from if its moved to job_offer
-        if self.calculate_utility(match_offer) > match_offer.get_data()['T_accept']:
-            response['accepted'] = True
-            response['match'] = match_offer
         return response
 
     def client_loop(self):
-        for match in self.current_matched_offers:
-            # use *args, **kwargs
-            self.make_match_decision(match, algorithm='accept_reject_negotiate')
-        self.update_finished_deals()
-        self.current_matched_offers.clear()
+        example_match_data = {
+            "resource_provider_address": "rp_address",
+            "client_address": "client_address",
+            "resource_offer": "resource_offer_1",
+            "job_offer": "job_offer_1",
+            "price_per_instruction": 0.10,
+            "expected_number_of_instructions": 1000,
+            "expected_benefit_to_client": 200,
+            "client_deposit": 50,
+            "timeout": 100,
+            "timeout_deposit": 20,
+            "cheating_collateral_multiplier": 1.5,
+            "verification_method": "method_1",
+            "mediators": ["mediator_1"],
+            "T_accept": -10,
+            "T_reject": -20
+        }
+        example_match = Match(example_match_data)
+        self.negotiate_match(example_match)
+
+if __name__ == "__main__":
+    address = "Your address here"  # Replace with the actual address
+    client = Client(address)
+    client.client_loop()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Client shutting down.")
+
 

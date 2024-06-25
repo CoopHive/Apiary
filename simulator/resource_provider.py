@@ -1,3 +1,5 @@
+import socket
+import threading
 from utils import *
 from machine import Machine
 from service_provider import ServiceProvider
@@ -29,11 +31,54 @@ class ResourceProvider(ServiceProvider):
         self.docker_client = docker.from_env()
         self.deals_finished_in_current_step = []
         self.current_matched_offers = []
+        self.server_socket = None
+        self.start_server_socket()
 
         self.docker_username = 'your_dockerhub_username'
         self.docker_password = 'your_dockerhub_password'
 
         self.login_to_docker()
+    
+    def start_server_socket(self):
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.bind(('localhost', 1234))
+        self.server_socket.listen(5)
+        print("Server listening on port 1234")
+        threading.Thread(target=self.accept_clients, daemon=True).start()
+
+    def accept_clients(self):
+        while True:
+            client_socket, addr = self.server_socket.accept()
+            print(f"Connection established with {addr}")
+            threading.Thread(target=self.handle_client_messages, args=(client_socket,), daemon=True).start()
+
+    def handle_client_messages(self, client_socket):
+        while True:
+            try:
+                message = client_socket.recv(1024)
+                if not message:
+                    break
+                message = message.decode('utf-8')  # Decode the message from bytes to string
+                print(f"Received message from client: {message}")
+                match_data = eval(message.split("New match offer: ")[1])  # Convert string to dictionary
+                match = Match(match_data)
+                response = self.evaluate_match(match)
+                client_socket.send(response.encode('utf-8'))
+            except ConnectionResetError:
+                print("Connection lost. Closing connection.")
+                client_socket.close()
+                break
+            except Exception as e:
+                print(f"Error handling message: {e}")
+
+    def evaluate_match(self, match):
+        # Here you evaluate the match and decide whether to accept or counteroffer
+        if self.calculate_utility(match) > match.get_data()['T_accept']:
+            return "accepted"
+        else:
+            counter_offer = self.create_new_match_offer(match)
+            return f"New match offer: {counter_offer.get_data()}"
+
     
     def login_to_docker(self):
         try:
@@ -189,15 +234,6 @@ class ResourceProvider(ServiceProvider):
         #   Introduce a flexibility factor that allows flexibility for when a cient decides to negotiate or reject (manipulates T_reject or utility somehow).
         #       - It allows for some degree of negotiation, making the client less rigid and more adaptable to market conditions.
         #   T_accept and T_reject may be static or dynamically adjusted based on historical data or current market conditions.
-    
-    def is_only_match(self, match):
-        resource_offer_id = match.get_data()['resource_offer']
-        print("resource_offer_id is ", resource_offer_id)
-        print("number of current matched offers is ", len(self.current_matched_offers))
-        for m in self.current_matched_offers:
-            if m != match and m.get_data()['resource_offer'] == resource_offer_id:
-                return False
-        return True
 
     def find_best_match_for_resource_offer(self, resource_offer_id):
         best_match = None
@@ -250,27 +286,27 @@ class ResourceProvider(ServiceProvider):
         data = match.get_data()
         new_data = data.copy()
         new_data['price_per_instruction'] = data['price_per_instruction'] * 1.05  # For example, increase the price
+        new_data['T_accept'] = data.get('T_accept', -10)  # Default value if T_accept is not present
+        new_data['T_reject'] = data.get('T_reject', -20)  # Default value if T_reject is not present
         new_match = Match(new_data)
         return new_match
 
     def communicate_request_to_party(self, party_id, match_offer):
         # Simulate communication - this would need to be implemented with actual P2P or HTTP communication
+        log_json(self.logger, "Communicating request to party", {"party_id": party_id, "match_offer": match_offer.get_data()})
         response = self.simulate_communication(party_id, match_offer)
         return response
 
     def simulate_communication(self, party_id, match_offer):
-        log_json(self.logger, "Simulating communication", {"party_id": party_id, "match_offer": match_offer.get_data()})
-        # In a real implementation, this function would send a request to the party_id and wait for a response.
+        message = f"New match offer: {match_offer.get_data()}"
+        self.client_socket.send(message.encode('utf-8'))
+        response_message = self.client_socket.recv(1024).decode('utf-8')
+        log_json(self.logger, "Received response from server", {"response_message": response_message})
         response = {
-            'accepted': False,
+            'accepted': 'accepted' in response_message,
             'counter_offer': self.create_new_match_offer(match_offer)
         }
-        # TODO: update where T_accept is accessed from if its moved to resource_offer
-        if self.calculate_utility(match_offer) > match_offer.get_data()['T_accept']:
-            response['accepted'] = True
-            response['match'] = match_offer
         return response
-
 
 
     def resource_provider_loop(self):
@@ -281,7 +317,15 @@ class ResourceProvider(ServiceProvider):
 
 
 # todo when handling events, add to list to be managed later, i.e. don't start signing stuff immediately
-
+if __name__ == "__main__":
+    public_key = "Your public key here"  # Replace with the actual public key
+    resource_provider = ResourceProvider(public_key)
+    resource_provider.resource_provider_loop()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Server shutting down.")
 
 
 
