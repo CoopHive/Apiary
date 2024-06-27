@@ -229,7 +229,20 @@ class Client(ServiceProvider):
         log_json(self.logger, "Rejected match", {"match_id": match.get_id()})
         pass
 
-    # TODO: Implement negotiation logic. Implement HTTP communication for negotiation
+    # def negotiate_match(self, match, max_rounds=5, strategy_parameter=0.5):
+    #     log_json(self.logger, "Negotiating match", {"match_id": match.get_id()})
+    #     for round in range(1, max_rounds + 1):
+    #         print('Negotiation round:', round)
+    #         new_match_offer = self.create_new_match_offer(match, round, max_rounds, strategy_parameter)
+    #         response = self.communicate_request_to_party(match.get_data()['resource_provider_address'], new_match_offer)
+            
+    #         if self.evaluate_accept(match, new_match_offer, response['match'], strategy_parameter):
+    #             self._agree_to_match(response['match'])
+    #             return
+    #         match = response['counter_offer']
+    #     self.reject_match(match)
+
+
     def negotiate_match(self, match, max_rounds=5):
         log_json(self.logger, "Negotiating match", {"match_id": match.get_id()})
         for i in range(max_rounds):
@@ -242,6 +255,35 @@ class Client(ServiceProvider):
             print('negotiation failed, creating new match offer')
             match = response['counter_offer']
         self.reject_match(match)
+
+    # example way of integrating current round number and negotiation aggression into generate_offer
+    # def create_new_match_offer(self, match, round_num, max_rounds, strategy_parameter=0.5):
+    #     data = match.get_data()
+    #     current_offer = {key: data[key] for key in data if key in ['price_per_instruction']}
+        
+    #     # Define target offer (for simplicity, reduce the price per instruction by 20% as an example)
+    #     target_offer = {key: data[key] * 0.8 for key in current_offer}
+        
+    #     # Calculate the concession factor based on the round number, total rounds, and strategy parameter
+    #     concession_factor = (1 - (round_num / max_rounds) ** strategy_parameter)
+        
+    #     # Generate new offer based on the concession factor
+    #     new_data = {}
+    #     for key in current_offer:
+    #         if key == 'price_per_instruction':
+    #             new_data[key] = current_offer[key] - (concession_factor * (current_offer[key] - target_offer[key]))
+    #         else:
+    #             new_data[key] = current_offer[key]
+
+    #     # Create a new match object with the updated offer
+    #     new_match = Match()
+    #     for key, value in data.items():
+    #         if key in new_data:
+    #             new_match.add_data(key, new_data[key])
+    #         else:
+    #             new_match.add_data(key, value)
+        
+    #     return new_match
 
     def create_new_match_offer(self, match):
         data = match.get_data()
