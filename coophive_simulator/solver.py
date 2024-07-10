@@ -4,8 +4,6 @@ import os
 from coophive_simulator.deal import Deal
 from coophive_simulator.event import Event
 from coophive_simulator.job_offer import JobOffer
-
-# JSON logging helper function
 from coophive_simulator.log_json import log_json
 from coophive_simulator.match import Match
 from coophive_simulator.resource_offer import ResourceOffer

@@ -3,8 +3,6 @@ import os
 
 from coophive_simulator.deal import Deal
 from coophive_simulator.event import Event
-
-# JSON logging helper function
 from coophive_simulator.log_json import log_json
 from coophive_simulator.match import Match
 from coophive_simulator.result import Result
@@ -40,7 +38,7 @@ class SmartContract(ServiceProvider):
         self.balance += timeout_deposit
         match.sign_resource_provider()
         # self.logger.info(f"resource provider {match.get_data()['resource_provider_address']} has signed match {match.get_id()}")
-        # JSON logging
+
         log_data = {
             "resource_provider_address": resource_provider_address,
             "match_id": match.get_id(),
@@ -67,7 +65,7 @@ class SmartContract(ServiceProvider):
         self.balance += tx.value
         match.sign_client()
         # self.logger.info(f"client {match.get_data()['client_address']} has signed match {match.get_id()}")
-        # JSON logging
+
         log_data = {"client_address": client_address, "match_id": match.get_id()}
         log_json(self.logger, "Client signed match", log_data)
 
@@ -90,7 +88,7 @@ class SmartContract(ServiceProvider):
         deal_event = Event(name="deal", data=deal)
         self.emit_event(deal_event)
         # self.logger.info(f"deal created; deal attributes:, {deal.get_data()}")
-        # JSON logging
+
         log_json(
             self.logger,
             "Deal created",
@@ -325,7 +323,7 @@ class SmartContract(ServiceProvider):
     def _log_balances(self):
         # self.logger.info(f"Smart Contract balance: {self.balance}")
         # self.logger.info(f"Smart Contract balances: {self.balances}")
-        # JSON logging
+
         log_json(self.logger, "Smart Contract balance", {"balance": self.balance})
         log_json(self.logger, "Smart Contract balances", {"balances": self.balances})
 
@@ -344,7 +342,7 @@ class SmartContract(ServiceProvider):
             self.logger.info(
                 f"Both resource provider {resource_provider_address} and client {client_address} have signed match {match_id}"
             )
-            # JSON logging
+
             log_json(
                 self.logger,
                 "Match attributes",
