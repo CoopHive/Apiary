@@ -16,5 +16,5 @@ deal_attributes = {
 }
 
 
-#todo add "job" to deal attributes
+#TODO: add "job" to deal attributes
 
