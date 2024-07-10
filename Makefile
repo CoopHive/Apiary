@@ -16,6 +16,11 @@ install:
 	poetry install -n
 	poetry run pre-commit install
 
+.PHONY: codestyle
+codestyle:
+	poetry run isort --settings-path pyproject.toml ./
+	poetry run black --config pyproject.toml ./
+
 .PHONY: check-codestyle
 check-codestyle:
 	poetry run isort --diff --check-only --settings-path pyproject.toml ./
