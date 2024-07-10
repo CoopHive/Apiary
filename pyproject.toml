@@ -1,16 +1,59 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
 name = "coophive-simulator"
-version = "0.1.0"
+version = "0.1.1"
 description = "A simulator for the game theory of the CoopHive protocol"
-authors = ["Levi Rybalov"]
+authors = ["Levi Rybalov, Matteo Manzi"]
 license = "Apache 2"
 readme = "README.md"
 packages = [{include = "coophive_simulator"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+numpy = { version = ">=2.0.0, <2.1.0"}
 
+[tool.poetry.dev-dependencies]
+black = { version = ">=24.3.0, <24.4.0"}
+darglint = { version = ">=1.7.0, <1.8.1"}
+isort = {extras = ["colors"], version = ">=5.11.0, <5.12.0"}
+pre-commit = { version = ">=3.0.0, <3.3.0"}
+pydocstyle = { version = ">=6.0, <6.2.2"}
+pytest = { version = ">=7.1.0, <7.3.0"}
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.black]
+# https://github.com/psf/black
+target-version = ["py37"]
+line-length = 88
+color = true
+
+exclude = '''
+/(
+    \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | env
+    | venv
+)/
+'''
+
+[tool.isort]
+# https://github.com/timothycrosley/isort/
+py_version = 37
+line_length = 88
+
+known_typing = ["typing", "types", "typing_extensions", "mypy", "mypy_extensions"]
+sections = ["FUTURE", "TYPING", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+include_trailing_comma = true
+profile = "black"
+multi_line_output = 3
+indent = 4
+color_output = true
