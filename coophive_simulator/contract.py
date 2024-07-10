@@ -1,20 +1,21 @@
-"""
-The smart contract is a Python interface representing (modelling) the CoopHive
-Ethereum / Solidity smart contract (and enough of Ethereum itself, e.g.
-wallets).
+"""Python interface representing the CoopHive Ethereum/Solidity smart contract.
 
+It also models enough of Ethereum itself, such as wallets. 
 We're ignoring gas for now.
 """
 
+# TODO: Matteo question: are we going to need to start modeling gas fees at a certaint point?
+
 import logging
-from dataclasses import dataclass
 from enum import Enum
 
-# JSON logging
 from coophive_simulator.log_json import log_json
+from coophive_simulator.utils import Service, Tx
 
 
 class ServiceType(Enum):
+    """Enumeration of different service types available in the contract."""
+
     RESOURCE_PROVIDER = 1
     CLIENT = 2
     SOLVER = 3
@@ -22,40 +23,13 @@ class ServiceType(Enum):
     DIRECTORY = 5
 
 
-@dataclass
-class CID:
-    """
-    IPFS CID
-    """
-
-    hash: str
-    data: {}
-
-
-@dataclass
-class Tx:
-    """
-    Ethereum transaction metadata
-    """
-
-    sender: str
-    # how many wei
-    value: int
-
-
-@dataclass
-class Service:
-    service_type: ServiceType
-    url: str
-    # metadata will be stored as an ipfs CID
-    metadata: dict
-    wallet_address: str
-
-
 class Contract:
+    """Class representing the smart contract."""
+
     def __init__(self):
+        """Initialize the contract with default values."""
         self.block_number = 0
-        # Mapping from wallet address -> amount of LIL
+        # Mapping from wallet address -> amount of LIL # TODO: Matteo question: legacy comment to be removed (LIL)?
         self.wallets = {}
         # For the following service providers, mapping from wallet address -> metadata
         self.resource_providers = {}
@@ -69,15 +43,23 @@ class Contract:
         )
 
     def match_service_type(self):
+        """Match a service type."""
         pass
 
     def register_service_provider(
         self, service_type: ServiceType, url: str, metadata: dict, tx: Tx
     ):
+        """Register a service provider.
+
+        Args:
+            service_type: The type of service.
+            url: The URL of the service.
+            metadata: Metadata of the service.
+            tx: The transaction associated with the registration.
+        """
         self._before_tx(tx.sender)
         # Only solvers and directories need public internet facing URLs at present
 
-        # JSON logging
         service_data = {
             "service_type": service_type.name,
             "url": url,
@@ -109,24 +91,30 @@ class Contract:
                 )
 
     def _before_tx(self, wallet_address: str):
+        """Perform actions required before a transaction."""
         self._maybe_init_wallet(wallet_address)
         self._increment_block_number()
 
     def _increment_block_number(self):
+        """Increment the block number."""
         self.block_number += 1
 
     def _maybe_init_wallet(self, wallet_address: str):
+        """Initialize a wallet if it does not already exist."""
         if wallet_address not in self.wallets:
             self.wallets[wallet_address] = 0
 
     def unregister_service_provider(self, service_type: ServiceType, tx: Tx):
+        """Unregister a service provider.
 
-        # JSON logging
+        Args:
+            service_type: The type of service.
+            tx: The transaction associated with the unregistration.
+        """
         service_data = {"service_type": service_type.name, "wallet_address": tx.sender}
         log_json(self.logger, "Unregister service provider", service_data)
 
         match service_type:
-
             case ServiceType.RESOURCE_PROVIDER:
                 self.resource_providers.pop(tx.sender)
             case ServiceType.CLIENT:
