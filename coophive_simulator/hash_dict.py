@@ -1,5 +1,5 @@
-import json
 import hashlib
+import json
 
 
 def hash_dict(dict) -> str:

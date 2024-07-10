@@ -1,5 +1,5 @@
-from data_attribute import DataAttribute
-from job_offer_attributes_dict import job_offer_attributes
+from coophive_simulator.data_attribute import DataAttribute
+from coophive_simulator.job_offer_attributes_dict import job_offer_attributes
 
 
 class JobOffer(DataAttribute):

@@ -1,5 +1,5 @@
-from utils import *
-from event import Event
+from coophive_simulator.event import Event
+from coophive_simulator.utils import *
 
 
 class ServiceProvider:
@@ -36,6 +36,7 @@ class ServiceProvider:
 
 class LocalInformation:
     ipfs = IPFS()
+
     def __init__(self):
         self.block_number = 0
         # For the following service providers, mapping from wallet address -> metadata
@@ -50,7 +51,11 @@ class LocalInformation:
         # self.active_resource_offers = {}
 
     def add_service_provider(
-            self, service_type: ServiceType, public_key: str, service_provider: ServiceProvider):
+        self,
+        service_type: ServiceType,
+        public_key: str,
+        service_provider: ServiceProvider,
+    ):
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
                 self.resource_providers[public_key] = service_provider
@@ -63,8 +68,7 @@ class LocalInformation:
             case ServiceType.DIRECTORY:
                 self.directories[public_key] = service_provider
 
-    def remove_service_provider(
-            self, service_type: ServiceType, public_key):
+    def remove_service_provider(self, service_type: ServiceType, public_key):
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
                 self.resource_providers.pop(public_key)

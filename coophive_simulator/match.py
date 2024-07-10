@@ -1,5 +1,5 @@
-from data_attribute import DataAttribute
-from match_attributes_dict import match_attributes
+from coophive_simulator.data_attribute import DataAttribute
+from coophive_simulator.match_attributes_dict import match_attributes
 
 
 class Match(DataAttribute):
@@ -20,4 +20,3 @@ class Match(DataAttribute):
 
     def sign_client(self):
         self.client_signed = True
-

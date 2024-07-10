@@ -6,11 +6,12 @@ wallets).
 We're ignoring gas for now.
 """
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
+
 # JSON logging
-from log_json import log_json
-import logging
+from coophive_simulator.log_json import log_json
 
 
 class ServiceType(Enum):
@@ -30,11 +31,13 @@ class CID:
     hash: str
     data: {}
 
+
 @dataclass
 class Tx:
     """
     Ethereum transaction metadata
     """
+
     sender: str
     # how many wei
     value: int
@@ -54,21 +57,23 @@ class Contract:
         self.block_number = 0
         # Mapping from wallet address -> amount of LIL
         self.wallets = {}
-        # For the following service providers, mapping from wallet address -> metadata 
+        # For the following service providers, mapping from wallet address -> metadata
         self.resource_providers = {}
         self.clients = {}
         self.solvers = {}
         self.mediators = {}
         self.directories = {}
         self.logger = logging.getLogger("Contract")
-        logging.basicConfig(filename='contract_logs.log', filemode='w', level=logging.DEBUG)
-
+        logging.basicConfig(
+            filename="contract_logs.log", filemode="w", level=logging.DEBUG
+        )
 
     def match_service_type(self):
         pass
 
     def register_service_provider(
-            self, service_type: ServiceType, url: str, metadata: dict, tx: Tx):
+        self, service_type: ServiceType, url: str, metadata: dict, tx: Tx
+    ):
         self._before_tx(tx.sender)
         # Only solvers and directories need public internet facing URLs at present
 
@@ -77,22 +82,31 @@ class Contract:
             "service_type": service_type.name,
             "url": url,
             "metadata": metadata,
-            "wallet_address": tx.sender
+            "wallet_address": tx.sender,
         }
         log_json(self.logger, "Register service provider", service_data)
 
-
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
-                self.resource_providers[tx.sender] = Service(service_type, url, metadata, tx.sender)
+                self.resource_providers[tx.sender] = Service(
+                    service_type, url, metadata, tx.sender
+                )
             case ServiceType.CLIENT:
-                self.clients[tx.sender] = Service(service_type, url, metadata, tx.sender)
+                self.clients[tx.sender] = Service(
+                    service_type, url, metadata, tx.sender
+                )
             case ServiceType.SOLVER:
-                self.solvers[tx.sender] = Service(service_type, url, metadata, tx.sender)
+                self.solvers[tx.sender] = Service(
+                    service_type, url, metadata, tx.sender
+                )
             case ServiceType.MEDIATOR:
-                self.mediators[tx.sender] = Service(service_type, url, metadata, tx.sender)
+                self.mediators[tx.sender] = Service(
+                    service_type, url, metadata, tx.sender
+                )
             case ServiceType.DIRECTORY:
-                self.directories[tx.sender] = Service(service_type, url, metadata, tx.sender)
+                self.directories[tx.sender] = Service(
+                    service_type, url, metadata, tx.sender
+                )
 
     def _before_tx(self, wallet_address: str):
         self._maybe_init_wallet(wallet_address)
@@ -108,15 +122,11 @@ class Contract:
     def unregister_service_provider(self, service_type: ServiceType, tx: Tx):
 
         # JSON logging
-        service_data = {
-            "service_type": service_type.name,
-            "wallet_address": tx.sender
-        }
+        service_data = {"service_type": service_type.name, "wallet_address": tx.sender}
         log_json(self.logger, "Unregister service provider", service_data)
-        
 
         match service_type:
-        
+
             case ServiceType.RESOURCE_PROVIDER:
                 self.resource_providers.pop(tx.sender)
             case ServiceType.CLIENT:

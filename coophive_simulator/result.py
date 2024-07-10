@@ -1,5 +1,5 @@
-from data_attribute import DataAttribute
-from results_attributes_dict import result_attributes
+from coophive_simulator.data_attribute import DataAttribute
+from coophive_simulator.results_attributes_dict import result_attributes
 
 
 class Result(DataAttribute):

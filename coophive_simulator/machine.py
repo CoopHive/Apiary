@@ -1,6 +1,6 @@
 # TODO: make machine CIDs unique
-from data_attribute import DataAttribute
-from machine_attributes_dict import machine_attributes
+from coophive_simulator.data_attribute import DataAttribute
+from coophive_simulator.machine_attributes_dict import machine_attributes
 
 
 class Machine(DataAttribute):

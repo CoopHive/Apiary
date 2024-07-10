@@ -1,20 +1,24 @@
-import numpy as np
-import random
-from utils import *
-from machine import Machine
-from service_provider import ServiceProvider
-from resource_provider import ResourceProvider
-from client import Client
-from job import Job
-from solver import Solver
-from resource_offer import ResourceOffer
-from job_offer import JobOffer
-from smart_contract import SmartContract
 import logging
 import os
+import random
+
+import numpy as np
+
+from coophive_simulator.client import Client
+from coophive_simulator.job import Job
+from coophive_simulator.job_offer import JobOffer
+from coophive_simulator.machine import Machine
+from coophive_simulator.resource_offer import ResourceOffer
+from coophive_simulator.resource_provider import ResourceProvider
+from coophive_simulator.service_provider import ServiceProvider
+from coophive_simulator.smart_contract import SmartContract
+from coophive_simulator.solver import Solver
+from coophive_simulator.utils import *
 
 logger = logging.getLogger(f"test")
-logging.basicConfig(filename=f'{os.getcwd()}/local_logs', filemode='w', level=logging.DEBUG)
+logging.basicConfig(
+    filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
+)
 
 
 class Addresses:
@@ -29,7 +33,9 @@ class Addresses:
         self.current_address += 1
 
 
-def create_resource_provider(resource_provider_public_key: str, solver: Solver, smart_contract: SmartContract):
+def create_resource_provider(
+    resource_provider_public_key: str, solver: Solver, smart_contract: SmartContract
+):
     # create resource provider
     resource_provider = ResourceProvider(resource_provider_public_key)
     # resource provider connects to solver
@@ -40,7 +46,9 @@ def create_resource_provider(resource_provider_public_key: str, solver: Solver, 
     return resource_provider
 
 
-def create_client(client_public_key: str, solver: Solver, smart_contract: SmartContract):
+def create_client(
+    client_public_key: str, solver: Solver, smart_contract: SmartContract
+):
     client = Client(client_public_key)
     # client connects to solver
     client.connect_to_solver(url=solver.get_url(), solver=solver)
@@ -57,7 +65,7 @@ def fund_smart_contract(service_provider, value: float):
 
 def create_resource_offer(owner_public_key: str):
     resource_offer = ResourceOffer()
-    resource_offer.add_data('owner', owner_public_key)
+    resource_offer.add_data("owner", owner_public_key)
     for data_field, data_value in example_offer_data.items():
         resource_offer.add_data(data_field, data_value)
 
@@ -68,7 +76,7 @@ def create_resource_offer(owner_public_key: str):
 
 def create_job_offer(owner_public_key: str):
     job_offer = JobOffer()
-    job_offer.add_data('owner', owner_public_key)
+    job_offer.add_data("owner", owner_public_key)
     for data_field, data_value in example_offer_data.items():
         job_offer.add_data(data_field, data_value)
 
@@ -97,7 +105,9 @@ def main():
     for _ in range(num_resource_providers):
         # create resource provider
         new_resource_provider_public_key = addresses.get_current_address()
-        new_resource_provider = create_resource_provider(new_resource_provider_public_key, new_solver, new_smart_contract)
+        new_resource_provider = create_resource_provider(
+            new_resource_provider_public_key, new_solver, new_smart_contract
+        )
         # resource provider adds funds
         # new_resource_provider_1_initial_fund = 10
         # new_resource_provider_1_initial_fund = random.randint(0, 1000)
@@ -107,7 +117,9 @@ def main():
     for _ in range(num_clients):
         # create client
         new_client_public_key = addresses.get_current_address()
-        new_client = create_client(new_client_public_key, new_solver, new_smart_contract)
+        new_client = create_client(
+            new_client_public_key, new_solver, new_smart_contract
+        )
         # client adds funds
         new_client_initial_fund = 10
         fund_smart_contract(new_client, new_client_initial_fund)
@@ -117,32 +129,36 @@ def main():
     for resource_provider_public_key, resource_provider in resource_providers.items():
         new_resource_offer = create_resource_offer(resource_provider_public_key)
         new_resource_offer_id = new_resource_offer.get_id()
-        resource_provider.get_solver().get_local_information().add_resource_offer(new_resource_offer_id, new_resource_offer)
+        resource_provider.get_solver().get_local_information().add_resource_offer(
+            new_resource_offer_id, new_resource_offer
+        )
 
     clients = new_solver.get_local_information().get_clients()
     for client_public_key, client in clients.items():
         new_job_offer = create_job_offer(client_public_key)
         new_job_offer_id = new_job_offer.get_id()
-        client.get_solver().get_local_information().add_job_offer(new_job_offer_id, new_job_offer)
+        client.get_solver().get_local_information().add_job_offer(
+            new_job_offer_id, new_job_offer
+        )
 
     for step in range(2):
         new_solver.solve()
         # todo iterate over all resource providers
-        for resource_provider_public_key, resource_provider in resource_providers.items():
+        for (
+            resource_provider_public_key,
+            resource_provider,
+        ) in resource_providers.items():
             resource_provider.resource_provider_loop()
         for client_public_key, client in clients.items():
             client.client_loop()
         new_solver.solver_cleanup()
 
         logger.info("")
-        logger.info(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop {step} completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop {step} completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
         logger.info("")
-
-
-
-
 
 
 if __name__ == "__main__":
     main()
-

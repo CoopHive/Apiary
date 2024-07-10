@@ -1,5 +1,4 @@
-from utils import *
-# from service_provider import ServiceProvider
+from coophive_simulator.utils import ServiceType
 
 
 class LocalInformation:
@@ -15,7 +14,8 @@ class LocalInformation:
         self.job_offers = {}
 
     def add_service_provider(
-            self, service_type: ServiceType, public_key: str, service_provider):
+        self, service_type: ServiceType, public_key: str, service_provider
+    ):
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
                 self.resource_providers[public_key] = service_provider
@@ -28,8 +28,7 @@ class LocalInformation:
             case ServiceType.DIRECTORY:
                 self.directories[public_key] = service_provider
 
-    def remove_service_provider(
-            self, service_type: ServiceType, public_key):
+    def remove_service_provider(self, service_type: ServiceType, public_key):
         match service_type:
             case ServiceType.RESOURCE_PROVIDER:
                 self.resource_providers.pop(public_key)
@@ -66,4 +65,3 @@ class LocalInformation:
 
     def get_job_offers(self):
         return self.job_offers
-

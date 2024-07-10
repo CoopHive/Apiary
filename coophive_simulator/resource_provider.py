@@ -1,17 +1,19 @@
-from utils import *
-from machine import Machine
-from service_provider import ServiceProvider
-from solver import Solver
-from match import Match
-from smart_contract import SmartContract
-from result import Result
-import docker
+import logging
+import os
 import time
 from datetime import datetime
-import logging
+
+import docker
+
 # JSON Logging
-from log_json import log_json
-import os
+from coophive_simulator.log_json import log_json
+from coophive_simulator.machine import Machine
+from coophive_simulator.match import Match
+from coophive_simulator.result import Result
+from coophive_simulator.service_provider import ServiceProvider
+from coophive_simulator.smart_contract import SmartContract
+from coophive_simulator.solver import Solver
+from coophive_simulator.utils import *
 
 
 class ResourceProvider(ServiceProvider):
@@ -19,7 +21,9 @@ class ResourceProvider(ServiceProvider):
         # machines maps CIDs -> machine metadata
         super().__init__(public_key)
         self.logger = logging.getLogger(f"Resource Provider {self.public_key}")
-        logging.basicConfig(filename=f'{os.getcwd()}/local_logs', filemode='w', level=logging.DEBUG)
+        logging.basicConfig(
+            filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
+        )
         self.machines = {}
         self.solver_url = None
         self.solver = None
@@ -28,18 +32,20 @@ class ResourceProvider(ServiceProvider):
         # changed to simulate running a docker job
         self.current_jobs = {}
         self.docker_client = docker.from_env()
-        #self.current_job_running_times = {}  # maps deal id to how long the resource provider has been running the job
+        # self.current_job_running_times = {}  # maps deal id to how long the resource provider has been running the job
         self.deals_finished_in_current_step = []
         self.current_matched_offers = []
 
-        self.docker_username = 'your_dockerhub_username'
-        self.docker_password = 'your_dockerhub_password'
+        self.docker_username = "your_dockerhub_username"
+        self.docker_password = "your_dockerhub_password"
 
         self.login_to_docker()
-    
+
     def login_to_docker(self):
         try:
-            self.docker_client.login(username=self.docker_username, password=self.docker_password)
+            self.docker_client.login(
+                username=self.docker_username, password=self.docker_password
+            )
             self.logger.info("Logged into Docker Hub successfully")
         except docker.errors.APIError as e:
             self.logger.error(f"Failed to log into Docker Hub: {e}")
@@ -77,45 +83,50 @@ class ResourceProvider(ServiceProvider):
         pass
 
     def _agree_to_match(self, match: Match):
-        timeout_deposit = match.get_data()['timeout_deposit']
+        timeout_deposit = match.get_data()["timeout_deposit"]
         tx = self._create_transaction(timeout_deposit)
-        #tx = Tx(sender=self.get_public_key(), value=timeout_deposit)
+        # tx = Tx(sender=self.get_public_key(), value=timeout_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
         # JSON logging
         log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
-
 
     def handle_solver_event(self, event):
         # JSON logging
         event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
         log_json(self.logger, "Received solver event", {"event_data": event_data})
 
-        #self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
-        if event.get_name() == 'match':
+        # self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
+        if event.get_name() == "match":
             match = event.get_data()
-            if match.get_data()['resource_provider_address'] == self.get_public_key():
+            if match.get_data()["resource_provider_address"] == self.get_public_key():
                 self.current_matched_offers.append(match)
 
     def handle_smart_contract_event(self, event):
-        if event.get_name() == 'mediation_random':
-            #JSON logging
+        if event.get_name() == "mediation_random":
+            # JSON logging
             event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
-            log_json(self.logger, "Received smart contract event", {"event_data": event_data})
-            #self.logger.info(f"have smart contract event {event.get_name()}")        
-        elif event.get_name() == 'deal':
-            #JSON logging
+            log_json(
+                self.logger, "Received smart contract event", {"event_data": event_data}
+            )
+            # self.logger.info(f"have smart contract event {event.get_name()}")
+        elif event.get_name() == "deal":
+            # JSON logging
             event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
-            log_json(self.logger, "Received smart contract event", {"event_data": event_data})
-            #self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
+            log_json(
+                self.logger, "Received smart contract event", {"event_data": event_data}
+            )
+            # self.logger.info(f"have smart contract event {event.get_name(), event.get_data().get_id()}")
             deal = event.get_data()
             deal_data = deal.get_data()
             deal_id = deal.get_id()
-            if deal_data['resource_provider_address'] == self.get_public_key():
+            if deal_data["resource_provider_address"] == self.get_public_key():
                 self.current_deals[deal_id] = deal
                 # changed to simulate running a docker job
-                container = self.docker_client.containers.run("alpine", "sleep 30", detach=True)
+                container = self.docker_client.containers.run(
+                    "alpine", "sleep 30", detach=True
+                )
                 self.current_jobs[deal_id] = container
-                #self.current_job_running_times[deal_id] = 0
+                # self.current_job_running_times[deal_id] = 0
 
     def post_result(self, result: Result, tx: Tx):
         self.get_smart_contract().post_result(result, tx)
@@ -124,17 +135,19 @@ class ResourceProvider(ServiceProvider):
         # JSON logging
         result_log_data = {"deal_id": deal_id}
         log_json(self.logger, "Creating result", result_log_data)
-        #self.logger.info(f"posting the result for deal {deal_id}")
+        # self.logger.info(f"posting the result for deal {deal_id}")
         result = Result()
-        result.add_data('deal_id', deal_id)
+        result.add_data("deal_id", deal_id)
         instruction_count = 1
-        result.add_data('instruction_count', instruction_count)
+        result.add_data("instruction_count", instruction_count)
         result.set_id()
-        result.add_data('result_id', result.get_id())
-        cheating_collateral_multiplier = self.current_deals[deal_id].get_data()['cheating_collateral_multiplier']
+        result.add_data("result_id", result.get_id())
+        cheating_collateral_multiplier = self.current_deals[deal_id].get_data()[
+            "cheating_collateral_multiplier"
+        ]
         cheating_collateral = cheating_collateral_multiplier * int(instruction_count)
         tx = self._create_transaction(cheating_collateral)
-        #tx = Tx(sender=self.get_public_key(), value=cheating_collateral)
+        # tx = Tx(sender=self.get_public_key(), value=cheating_collateral)
         return result, tx
 
     def update_finished_deals(self):
@@ -171,16 +184,3 @@ class ResourceProvider(ServiceProvider):
 
 
 # todo when handling events, add to list to be managed later, i.e. don't start signing stuff immediately
-
-
-
-
-
-
-
-
-
-
-
-
-

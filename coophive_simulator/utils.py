@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from resource_offer import ResourceOffer
-from job_offer import JobOffer
+from coophive_simulator.data_attribute import DataAttribute
+from coophive_simulator.hash_dict import hash_dict
+from coophive_simulator.job_offer import JobOffer
+from coophive_simulator.resource_offer import ResourceOffer
 
-from hash_dict import hash_dict
-from data_attribute import DataAttribute
 
 class ServiceType(Enum):
     RESOURCE_PROVIDER = 1
@@ -24,11 +24,13 @@ class CID:
     hash: str
     data: {}
 
+
 @dataclass
 class Tx:
     """
     Ethereum transaction metadata
     """
+
     sender: str
     # how many wei
     value: float
@@ -43,7 +45,6 @@ class Service:
     # metadata will be stored as an ipfs CID
     metadata: dict
     wallet_address: str
-
 
 
 class IPFS:
@@ -75,18 +76,15 @@ extra_necessary_match_data = {
 }
 
 
-#todo: make this a generator that generates realistic values
+# todo: make this a generator that generates realistic values
 # pull from existing databases online?
-example_offer_data = {
-    "CPU": 6,
-    "RAM": 3,
-    "GPU": 1
-}
+example_offer_data = {"CPU": 6, "RAM": 3, "GPU": 1}
+
 
 def create_resource_offer(owner_public_key: str, created_at):
     resource_offer = ResourceOffer()
-    resource_offer.add_data('owner', owner_public_key)
-    resource_offer.add_data('created_at', created_at)
+    resource_offer.add_data("owner", owner_public_key)
+    resource_offer.add_data("created_at", created_at)
     for data_field, data_value in example_offer_data.items():
         print(data_field, data_value)
         resource_offer.add_data(data_field, data_value)
@@ -98,8 +96,8 @@ def create_resource_offer(owner_public_key: str, created_at):
 
 def create_job_offer(owner_public_key: str, created_at):
     job_offer = JobOffer()
-    job_offer.add_data('owner', owner_public_key)
-    job_offer.add_data('created_at', created_at)
+    job_offer.add_data("owner", owner_public_key)
+    job_offer.add_data("created_at", created_at)
     for data_field, data_value in example_offer_data.items():
         job_offer.add_data(data_field, data_value)
 

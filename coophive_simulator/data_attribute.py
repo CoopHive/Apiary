@@ -1,4 +1,4 @@
-from hash_dict import hash_dict
+from coophive_simulator.hash_dict import hash_dict
 
 
 class DataAttribute:
