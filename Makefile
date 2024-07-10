@@ -25,6 +25,9 @@ codestyle:
 check-codestyle:
 	poetry run isort --diff --check-only --settings-path pyproject.toml ./
 	poetry run black --diff --check --config pyproject.toml ./
+
+.PHONY: docs
+docs:
 	poetry run pydocstyle --convention=google .
 
 .PHONY: test
