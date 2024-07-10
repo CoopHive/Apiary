@@ -1,16 +1,10 @@
 import logging
 import os
-import random
-
-import numpy as np
 
 from coophive_simulator.client import Client
-from coophive_simulator.job import Job
 from coophive_simulator.job_offer import JobOffer
-from coophive_simulator.machine import Machine
 from coophive_simulator.resource_offer import ResourceOffer
 from coophive_simulator.resource_provider import ResourceProvider
-from coophive_simulator.service_provider import ServiceProvider
 from coophive_simulator.smart_contract import SmartContract
 from coophive_simulator.solver import Solver
 from coophive_simulator.utils import *

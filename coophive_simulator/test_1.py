@@ -2,21 +2,13 @@
 Test entrypoint script.
 """
 
-import logging
-import pprint
-import random
-
 from coophive_simulator.client import Client
-from coophive_simulator.job import Job
 from coophive_simulator.job_offer import JobOffer
-from coophive_simulator.machine import Machine
 from coophive_simulator.resource_offer import ResourceOffer
 from coophive_simulator.resource_provider import ResourceProvider
 from coophive_simulator.smart_contract import SmartContract
 from coophive_simulator.solver import Solver
-
-# from contract import Contract, ServiceType, Tx, CID
-from coophive_simulator.utils import CID, ServiceType, Tx
+from coophive_simulator.utils import Tx
 
 
 class Address:
