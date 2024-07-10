@@ -3,8 +3,6 @@ import os
 from collections import deque
 
 from coophive_simulator.job import Job
-
-# JSON logging
 from coophive_simulator.log_json import log_json
 from coophive_simulator.match import Match
 from coophive_simulator.service_provider import ServiceProvider
@@ -47,13 +45,13 @@ class Client(ServiceProvider):
         self.solver = solver
         self.solver.subscribe_event(self.handle_solver_event)
         self.solver.get_local_information().add_client(self)
-        # JSON logging
+
         log_json(self.logger, "Connected to solver", {"solver_url": url})
 
     def connect_to_smart_contract(self, smart_contract: SmartContract):
         self.smart_contract = smart_contract
         smart_contract.subscribe_event(self.handle_smart_contract_event)
-        # JSON logging
+
         log_json(self.logger, "Connected to smart contract")
 
     def add_job(self, job: Job):
@@ -67,11 +65,11 @@ class Client(ServiceProvider):
         tx = self._create_transaction(client_deposit)
         # tx = Tx(sender=self.get_public_key(), value=client_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
-        # JSON logging
+
         log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
 
     def handle_solver_event(self, event):
-        # JSON logging
+
         event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
         log_json(self.logger, "Received solver event", {"event_data": event_data})
         # self.logger.info(f"have solver event {event.get_name(), event.get_data().get_id()}")
@@ -105,14 +103,14 @@ class Client(ServiceProvider):
 
     def handle_smart_contract_event(self, event):
         if event.get_name() == "mediation_random":
-            # JSON Logging
+
             event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
             log_json(
                 self.logger, "Received smart contract event", {"event_data": event_data}
             )
             # self.logger.info(f"have smart contract event {event.get_name()}")
         if event.get_name() == "deal":
-            # JSON Logging
+
             event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
             log_json(
                 self.logger, "Received smart contract event", {"event_data": event_data}
