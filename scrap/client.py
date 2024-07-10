@@ -1,3 +1,4 @@
+import logging
 import socket
 import threading
 
@@ -8,7 +9,7 @@ def handle_input(client_socket):
             message = input("Enter your message: ")
             client_socket.send(message.encode("utf-8"))
         except BrokenPipeError:
-            print("Connection to server lost. Exiting.")
+            logging.info("Connection to server lost. Exiting.")
             client_socket.close()
             break
 
@@ -16,7 +17,7 @@ def handle_input(client_socket):
 def start_client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect(("localhost", 1234))
-    print("Connected to server")
+    logging.info("Connected to server")
 
     threading.Thread(target=handle_input, args=(client_socket,)).start()
 
@@ -24,7 +25,7 @@ def start_client():
         message = client_socket.recv(1024)
         if not message:
             break
-        print(f"Received message from server: {message.decode('utf-8')}")
+        logging.info(f"Received message from server: {message.decode('utf-8')}")
 
 
 if __name__ == "__main__":
