@@ -1,3 +1,1 @@
-"""
-CoopHive simulator
-"""
+"""CoopHive simulator."""

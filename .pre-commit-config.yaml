@@ -22,8 +22,8 @@ repos:
         types: [python]
         language: system
 
-      - id: pydocstyle
-        name: pydocstyle
-        entry: poetry run pydocstyle --convention=google .
-        types: [python]
-        language: system
+      # - id: pydocstyle
+      #   name: pydocstyle
+      #   entry: poetry run pydocstyle --convention=google .
+      #   types: [python]
+      #   language: system

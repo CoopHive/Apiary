@@ -1,9 +1,10 @@
-"""
-Test entrypoint script.
+"""This module sets up and manages the main functionality of the coophive simulator.
+
+It includes defining and handling the Address class, setting up various components such as solvers, machines, resource providers, clients,
+resource offers, and job offers, and running the main simulation.
 """
 
-import pprint
-import random
+import logging
 
 from coophive_simulator.client import Client
 from coophive_simulator.job import Job
@@ -12,22 +13,15 @@ from coophive_simulator.machine import Machine
 from coophive_simulator.resource_offer import ResourceOffer
 from coophive_simulator.resource_provider import ResourceProvider
 from coophive_simulator.solver import Solver
-from coophive_simulator.utils import CID, ServiceType, Tx
-
-
-class Address:
-    def __init__(self):
-        self.current_address = 0
-
-    def get_current_address(self):
-        return self.current_address
-
-    def increment_current_address(self):
-        self.current_address += 1
+from coophive_simulator.utils import CID, ServiceType
 
 
 def main():
+    """The main function to run the coophive simulator.
 
+    This function sets up the solvers, machines, resource providers, clients, resource offers, and job offers.
+    It adds data to these components, establishes relationships between them, and performs the solve operation.
+    """
     # create solver
     new_solver_1_public_key = "11"
     new_solver_1_url = "http://solver.com"
@@ -39,13 +33,12 @@ def main():
     # should throw exception if GPU is not one of the machine attributes
     # new_machine_1.add_data('GPU', '3090')
     machine_data = new_machine_1.get_data()
-    print(machine_data)
+    logging.info(machine_data)
 
     new_machine_2 = Machine()
     new_machine_2.add_data("CPU", "8")
     new_machine_2.add_data("RAM", "4")
 
-    new_resource_provider_1_url = ""
     new_resource_provider_1_public_key = "new_resource_provider_1_public_key"
     new_resource_provider_1 = ResourceProvider(new_resource_provider_1_public_key)
     new_machine_1_CID = CID("new_machine_1_CID", {})
@@ -53,21 +46,20 @@ def main():
     new_resource_provider_1.add_machine(new_machine_1_CID, new_machine_1)
     new_resource_provider_1.add_machine(new_machine_2_CID, new_machine_2)
     resource_provider_machines = new_resource_provider_1.get_machines()
-    print(resource_provider_machines)
+    logging.info(resource_provider_machines)
     # should match above
-    print(resource_provider_machines[new_machine_1_CID.hash].get_data())
-    print(resource_provider_machines[new_machine_2_CID.hash].get_data())
+    logging.info(resource_provider_machines[new_machine_1_CID.hash].get_data())
+    logging.info(resource_provider_machines[new_machine_2_CID.hash].get_data())
 
-    print(resource_provider_machines[new_machine_1_CID.hash].get_machine_uuid())
-    print(resource_provider_machines[new_machine_2_CID.hash].get_machine_uuid())
+    logging.info(resource_provider_machines[new_machine_1_CID.hash].get_machine_uuid())
+    logging.info(resource_provider_machines[new_machine_2_CID.hash].get_machine_uuid())
 
-    new_client_1_url = ""
     new_client_1_public_key = "new_client_1_public_key"
     new_client_1 = Client(new_client_1_public_key)
     new_job = Job()
     new_client_1.add_job(new_job)
     # print job requirements
-    print(list(new_client_1.get_jobs())[0].get_job_requirements())
+    logging.info(list(new_client_1.get_jobs())[0].get_job_requirements())
 
     # add client and resource provider to each other's local information
     new_solver_1.local_information.add_service_provider(
@@ -76,7 +68,7 @@ def main():
         new_resource_provider_1,
     )
     # should print public key of first resource provider
-    print(
+    logging.info(
         list(
             new_solver_1.local_information.get_list_of_service_providers(
                 ServiceType.RESOURCE_PROVIDER
@@ -88,7 +80,7 @@ def main():
         ServiceType.CLIENT, new_client_1_public_key, new_client_1
     )
     # should print public key of first client
-    print(
+    logging.info(
         list(
             new_solver_1.local_information.get_list_of_service_providers(
                 ServiceType.CLIENT
@@ -102,7 +94,7 @@ def main():
     new_resource_offer_1.add_data("owner", new_resource_provider_1_public_key)
     new_resource_offer_1.set_id()
     new_resource_offer_1_id = new_resource_offer_1.get_id()
-    print(new_resource_offer_1.get_id())
+    logging.info(new_resource_offer_1.get_id())
 
     new_job_offer_1 = JobOffer()
     new_job_offer_1.add_data("CPU", "6")
@@ -110,19 +102,19 @@ def main():
     new_job_offer_1.add_data("owner", new_client_1_public_key)
     new_job_offer_1.set_id()
     new_job_offer_1_id = new_job_offer_1.get_id()
-    print(new_job_offer_1.get_id())
+    logging.info(new_job_offer_1.get_id())
 
     new_solver_1.local_information.add_resource_offer(
         new_resource_offer_1_id, new_resource_offer_1
     )
     new_solver_1.local_information.add_job_offer(new_job_offer_1_id, new_job_offer_1)
 
-    print(
+    logging.info(
         new_solver_1.local_information.get_resource_offers()[new_resource_offer_1_id]
         .get_data()
         .items()
     )
-    print(
+    logging.info(
         new_solver_1.local_information.get_job_offers()[new_job_offer_1_id]
         .get_data()
         .items()
@@ -130,8 +122,8 @@ def main():
 
     new_solver_1.solve()
     new_match_1 = new_solver_1.get_events()[0].get_data()
-    print(new_match_1.get_data())
-    print(new_match_1.get_id())
+    logging.info(new_match_1.get_data())
+    logging.info(new_match_1.get_id())
 
 
 if __name__ == "__main__":

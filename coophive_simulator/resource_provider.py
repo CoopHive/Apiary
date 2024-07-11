@@ -41,7 +41,6 @@ class ResourceProvider(ServiceProvider):
         Args:
             public_key (str): The public key associated with the resource provider.
         """
-
         # machines maps CIDs -> machine metadata
         super().__init__(public_key)
         self.logger = logging.getLogger(f"Resource Provider {self.public_key}")

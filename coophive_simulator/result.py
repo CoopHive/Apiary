@@ -1,8 +1,18 @@
+"""Define the Result class which extends DataAttribute."""
+
 from coophive_simulator.data_attribute import DataAttribute
-from coophive_simulator.results_attributes_dict import result_attributes
+
+result_attributes = {
+    "deal_id",
+    "result_id",
+    "instruction_count",
+}
 
 
 class Result(DataAttribute):
+    """Result class to handle specific data attributes related to results."""
+
     def __init__(self):
+        """Initialize a new Result instance."""
         super().__init__()
         self.data_attributes = result_attributes
