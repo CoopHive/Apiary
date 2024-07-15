@@ -35,10 +35,8 @@ To check the code style without modifying the files, run:
     make check-codestyle
 To check the documentation style, run:
 
-    ```bash
     make docs
 
 To run the tests, use:
 
-    ```bash
     make test
