@@ -29,11 +29,9 @@ CoopHive Simulator is a tool designed to simulate the agent-based and game theor
 
 To format the code according to the project's style guidelines, run:
 
-    ```bash
     make codestyle
 To check the code style without modifying the files, run:
 
-    ```bash
     make check-codestyle
 To check the documentation style, run:
 
