@@ -119,7 +119,6 @@ def main():
         fund_smart_contract(new_client, new_client_initial_fund)
 
     resource_providers = new_solver.get_local_information().get_resource_providers()
-    # print(resource_providers)
     for resource_provider_public_key, resource_provider in resource_providers.items():
         new_resource_offer = create_resource_offer(resource_provider_public_key)
         new_resource_offer_id = new_resource_offer.get_id()

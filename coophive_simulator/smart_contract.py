@@ -1,3 +1,8 @@
+"""This module defines the SmartContract class.
+
+It handles the operations and logic associated with smart contracts, including transactions, deals, matches, and results.
+"""
+
 import logging
 import os
 
@@ -7,11 +12,23 @@ from coophive_simulator.log_json import log_json
 from coophive_simulator.match import Match
 from coophive_simulator.result import Result
 from coophive_simulator.service_provider import ServiceProvider
-from coophive_simulator.utils import *
+from coophive_simulator.utils import Tx
 
 
 class SmartContract(ServiceProvider):
+    """A class to represent a smart contract.
+
+    This class extends the ServiceProvider class and provides methods to handle
+    the lifecycle of a smart contract including creating deals, handling matches,
+    posting results, and managing balances.
+    """
+
     def __init__(self, public_key: str):
+        """Initialize the SmartContract with a public key.
+
+        Args:
+            public_key (str): The public key for the smart contract.
+        """
         super().__init__(public_key)
         self.logger = logging.getLogger(f"Smart Contract {self.public_key}")
         logging.basicConfig(
@@ -25,11 +42,11 @@ class SmartContract(ServiceProvider):
         self.results_posted_in_current_step = []
 
     def _agree_to_match_resource_provider(self, match: Match, tx: Tx):
+        """Handle the resource provider's agreement to a match."""
         match_data = match.get_data()
         timeout_deposit = match_data["timeout_deposit"]
         if tx.value != timeout_deposit:
-            print()
-            print(
+            logging.info(
                 f'transaction value of {tx.value} does not match timeout deposit {match_data["timeout_deposit"]}'
             )
             raise Exception("transaction value does not match timeout deposit")
@@ -46,18 +63,17 @@ class SmartContract(ServiceProvider):
         log_json(self.logger, "Resource provider signed match", log_data)
 
     def _agree_to_match_client(self, match: Match, tx: Tx):
+        """Handle the client's agreement to a match."""
         match_data = match.get_data()
         client_deposit = match_data["client_deposit"]
         if tx.value != client_deposit:
-            print()
-            print(
+            logging.info(
                 f'transaction value of {tx.value} does not match client deposit {match_data["client_deposit"]}'
             )
             raise Exception("transaction value does not match timeout deposit")
         client_address = match_data["client_address"]
         if client_deposit > self.balances[client_address]:
-            print()
-            print(
+            logging.info(
                 f"transaction value of {tx.value} exceeds client balance of {self.balances[client_address]}"
             )
             raise Exception("transaction value exceeds balance")
@@ -70,6 +86,12 @@ class SmartContract(ServiceProvider):
         log_json(self.logger, "Client signed match", log_data)
 
     def agree_to_match(self, match: Match, tx: Tx):
+        """Handle agreement to a match by either the resource provider or client.
+
+        Args:
+            match (Match): The match object.
+            tx (Tx): The transaction object.
+        """
         if match.get_data()["resource_provider_address"] == tx.sender:
             self._agree_to_match_resource_provider(match, tx)
         elif match.get_data()["client_address"] == tx.sender:
@@ -81,13 +103,12 @@ class SmartContract(ServiceProvider):
         deal = Deal()
         for data_field, data_value in match.get_data().items():
             deal.add_data(data_field, data_value)
-        # todo: this is for testing purposes, should not be added here manually
+        # TODO: this is for testing purposes, should not be added here manually
         deal.add_data("actual_honest_time_to_completion", 1)
         deal.set_id()
         self.deals[deal.get_id()] = deal
         deal_event = Event(name="deal", data=deal)
         self.emit_event(deal_event)
-        # self.logger.info(f"deal created; deal attributes:, {deal.get_data()}")
 
         log_json(
             self.logger,
@@ -104,7 +125,6 @@ class SmartContract(ServiceProvider):
         resource_provider_address = deal_data["resource_provider_address"]
         self.balances[resource_provider_address] += timeout_deposit
         self.balance -= timeout_deposit
-        # self.logger.info(f"timeout deposit of {timeout_deposit} refunded to resource provider {resource_provider_address}")
         log_json(
             self.logger,
             "Timeout deposit refunded",
@@ -123,7 +143,6 @@ class SmartContract(ServiceProvider):
             cheating_collateral_multiplier * instruction_count
         )
         if intended_cheating_collateral != tx.value:
-            # print(f'transaction value of {tx.value} does not match needed cheating collateral deposit {intended_cheating_collateral}')
             log_json(
                 self.logger,
                 "Cheating collateral deposit does not match needed",
@@ -137,8 +156,6 @@ class SmartContract(ServiceProvider):
             )
         resource_provider_address = deal_data["resource_provider_address"]
         if intended_cheating_collateral > self.balances[resource_provider_address]:
-            print()
-            # print(f'transaction value of {tx.value} exceeds resource provider balance of {self.balances[resource_provider_address]} of resource provider {resource_provider_address}')
             log_json(
                 self.logger,
                 "Transaction value exceeds resource provider balance",
@@ -156,6 +173,11 @@ class SmartContract(ServiceProvider):
 
     # TODO: add returning of cheating collateral
     def refund_cheating_collateral(self, result: Result):
+        """Refund the cheating collateral based on the result.
+
+        Args:
+            result (Result): The result object.
+        """
         deal_id = result.get_data()["deal_id"]
         deal_data = self.deals[deal_id].get_data()
         cheating_collateral_multiplier = deal_data["cheating_collateral_multiplier"]
@@ -182,15 +204,18 @@ class SmartContract(ServiceProvider):
             self._post_cheating_collateral(result, tx)
 
     def post_result(self, result: Result, tx: Tx):
+        """Post a result and add it to the results posted in the current step."""
         self.results_posted_in_current_step.append([result, tx])
 
     def _refund_client_deposit(self, deal: Deal):
+        """Refund the client's deposit based on the deal."""
         client_address = deal.get_data()["client_address"]
         client_deposit = deal.get_data()["client_deposit"]
         self.balance -= client_deposit
         self.balances[client_address] += client_deposit
 
     def post_client_payment(self, result: Result, tx: Tx):
+        """Post a payment from the client based on the result."""
         result_data = result.get_data()
         result_instruction_count = result_data["instruction_count"]
         result_instruction_count = float(result_instruction_count)
@@ -199,14 +224,13 @@ class SmartContract(ServiceProvider):
         price_per_instruction = deal_data["price_per_instruction"]
         expected_payment_value = result_instruction_count * price_per_instruction
         if tx.value != expected_payment_value:
-            print(
+            logging.info(
                 f"transaction value of {tx.value} does not match expected payment value {expected_payment_value}"
             )
             raise Exception("transaction value does not match expected payment value")
         client_address = deal_data["client_address"]
         if expected_payment_value > self.balances[client_address]:
-            print()
-            print(
+            logging.info(
                 f"transaction value of {tx.value} exceeds client balance of {self.balances[client_address]}"
             )
             raise Exception("transaction value exceeds balance")
@@ -224,9 +248,11 @@ class SmartContract(ServiceProvider):
         self._refund_client_deposit(deal)
 
     def fund(self, tx: Tx):
+        """Fund the smart contract with a transaction."""
         self.balances[tx.sender] = self.balances.get(tx.sender, 0) + tx.value
 
     def slash_cheating_collateral(self, event: Event):
+        """Slash the cheating collateral based on an event."""
         deal_id = event.get_data()["deal_id"]
         deal_data = self.deals[deal_id].get_data()
         cheating_collateral_multiplier = deal_data["cheating_collateral_multiplier"]
@@ -239,36 +265,38 @@ class SmartContract(ServiceProvider):
         self.balance += intended_cheating_collateral
 
     def ask_consortium_of_mediators(self, event: Event):
-        # if result was correct, return True
-        # return True
-        # if result was incorrect, return False
-        return True
+        """Ask a consortium of mediators to check the result.
+
+        Args:
+            event (Event): The event object.
+
+        Returns:
+            bool: True if the result was correct, False otherwise.
+        """
+        return True  # TODO: remove default boolean.
 
     def ask_random_mediator(self, event: Event):
-        """
-        in order to check result, some entity needs to submit the job offer
+        """Ask a random mediator to check the result.
+
+        In order to check result, some entity needs to submit the job offer
         this can be any of the client, the compute node, the solver, or the smart contract
         doesn't make sense for it to be the solver
         if the smart contract does it, then it needs to know the method of verification beforehand,
         meaning that the verification method needs to be described in the deal
         the alternative is that either the client or compute node call the verification, but in that case,
-        they need to agree anyway, and it makes sense for the smart contract to be doing the call
-        """
+        they need to agree anyway, and it makes sense for the smart contract to be doing the call.
 
-        """
-        in order to create a job, the smart contract must extract the job spec from the deal data,
-        and emit an event indicating that the solver should find compute nodes that can run the job, 
+        In order to create a job, the smart contract must extract the job spec from the deal data,
+        and emit an event indicating that the solver should find compute nodes that can run the job,
         and then choose one randomly
         """
-
         result = event.get_data()
         deal_id = result.get_data()["deal_id"]
         deal_data = self.deals[deal_id].get_data()
-        # print('hello')
         job_offer = deal_data["job_offer"]
-        print(job_offer)
+        logging.info(job_offer)
 
-        # todo: job offer is just a string, need to get the actual job offer object
+        # TODO: job offer is just a string, need to get the actual job offer object
         # otherwise event.get_data().get_id() in e.g. line 30 of solver.py will throw an error
         mediation_request_event = Event(name="mediation_random", data=job_offer)
         self.emit_event(mediation_request_event)
@@ -285,7 +313,7 @@ class SmartContract(ServiceProvider):
         # how to determine the random mediator from the available ones?
         # 1) smart contract emits mediation request event
         # 2) solver receives mediation request event, sorts the mediators by their ids,
-        #    and puts the list i nto an IPFS CID
+        #    and puts the list into an IPFS CID
         # 3) solver submits the CID to the smart contract
         # 4) smart contract picks a random number (e.g. from drand),
         #    and then picks the index of the mediator to be the number of potential mediators % random number
@@ -299,6 +327,12 @@ class SmartContract(ServiceProvider):
         # return False
 
     def mediate_result(self, event: Event, tx: Tx = None):
+        """Mediate the result based on the specified verification method.
+
+        Args:
+            event (Event): The event object.
+            tx (Tx, optional): The transaction object. Defaults to None.
+        """
         result = event.get_data()
         deal_id = result.get_data()["deal_id"]
         deal_data = self.deals[deal_id].get_data()

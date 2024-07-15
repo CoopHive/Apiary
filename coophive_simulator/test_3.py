@@ -59,12 +59,12 @@ def create_n_resource_offers(
     resource_providers, num_resource_offers_per_resource_provider, created_at
 ):
     for _ in range(num_resource_offers_per_resource_provider):
-        print(f"resource test {_}")
+        logger.info(f"resource test {_}")
         for (
             resource_provider_public_key,
             resource_provider,
         ) in resource_providers.items():
-            print(resource_provider_public_key, resource_provider)
+            logger.info(resource_provider_public_key, resource_provider)
             new_resource_offer = create_resource_offer(
                 resource_provider_public_key, created_at
             )
@@ -76,7 +76,7 @@ def create_n_resource_offers(
 
 def create_n_job_offers(clients, num_job_offers_per_client, created_at):
     for _ in range(num_job_offers_per_client):
-        print(f"job test {_}")
+        logger.info(f"job test {_}")
         for client_public_key, client in clients.items():
             new_job_offer = create_job_offer(client_public_key, created_at)
             new_job_offer_id = new_job_offer.get_id()
@@ -216,9 +216,6 @@ def main():
             f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop {step} completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         )
         logger.info("")
-
-    # for i in range(len(new_smart_contract.transactions)):
-    #     print(f"{new_smart_contract.transactions[i].get_data().get_data()}")
 
 
 if __name__ == "__main__":

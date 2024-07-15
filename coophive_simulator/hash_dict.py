@@ -1,10 +1,11 @@
+"""This module provides a utility function to hash a dictionary using SHA-256."""
+
 import hashlib
 import json
 
 
 def hash_dict(dict) -> str:
-    """
-    Generate a SHA-256 hash of a dictionary.
+    """Generate a SHA-256 hash of a dictionary.
 
     Args:
         dict (dict): Dictionary to be hashed.

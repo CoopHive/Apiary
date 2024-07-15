@@ -1,20 +1,39 @@
+"""This module provides helper functions for testing purposes.
+
+Functions:
+    create_resource_provider: Create a resource provider and connect it to a solver and a smart contract.
+    create_client: Create a client and connect it to a solver and a smart contract.
+    fund_smart_contract: Fund a smart contract using a transaction from a service provider.
+    create_resource_offer: Create a resource offer with example data.
+    create_job_offer: Create a job offer with example data.
+    create_n_resource_offers: Create a specified number of resource offers for each resource provider.
+    create_n_job_offers: Create a specified number of job offers for each client.
+"""
+
 from coophive_simulator.client import Client
 from coophive_simulator.job_offer import JobOffer
 from coophive_simulator.resource_offer import ResourceOffer
 from coophive_simulator.resource_provider import ResourceProvider
 from coophive_simulator.smart_contract import SmartContract
 from coophive_simulator.solver import Solver
-from coophive_simulator.utils import Tx
+from coophive_simulator.utils import Tx, example_offer_data
 
 
 def create_resource_provider(
     resource_provider_public_key: str, solver: Solver, smart_contract: SmartContract
 ):
-    # create resource provider
+    """Create a resource provider and connect it to a solver and a smart contract.
+
+    Args:
+        resource_provider_public_key (str): The public key of the resource provider.
+        solver (Solver): The solver to connect to.
+        smart_contract (SmartContract): The smart contract to connect to.
+
+    Returns:
+        ResourceProvider: The created resource provider.
+    """
     resource_provider = ResourceProvider(resource_provider_public_key)
-    # resource provider connects to solver
     resource_provider.connect_to_solver(url=solver.get_url(), solver=solver)
-    # resource provider connects to smart contract
     resource_provider.connect_to_smart_contract(smart_contract=smart_contract)
 
     return resource_provider
@@ -23,22 +42,44 @@ def create_resource_provider(
 def create_client(
     client_public_key: str, solver: Solver, smart_contract: SmartContract
 ):
+    """Create a client and connect it to a solver and a smart contract.
+
+    Args:
+        client_public_key (str): The public key of the client.
+        solver (Solver): The solver to connect to.
+        smart_contract (SmartContract): The smart contract to connect to.
+
+    Returns:
+        Client: The created client.
+    """
     client = Client(client_public_key)
-    # client connects to solver
     client.connect_to_solver(url=solver.get_url(), solver=solver)
-    # client connects to smart contract
     client.connect_to_smart_contract(smart_contract=smart_contract)
 
     return client
 
 
 def fund_smart_contract(service_provider, value: float):
+    """Fund a smart contract using a transaction from a service provider.
+
+    Args:
+        service_provider (ServiceProvider): The service provider to fund the smart contract.
+        value (float): The value of the transaction.
+    """
     tx = service_provider._create_transaction(value)
-    # tx = Tx(sender=service_provider.get_public_key(), value=value)
     service_provider.get_smart_contract().fund(tx)
 
 
 def create_resource_offer(owner_public_key: str, created_at):
+    """Create a resource offer with example data.
+
+    Args:
+        owner_public_key (str): The public key of the resource offer owner.
+        created_at (str): The creation timestamp.
+
+    Returns:
+        ResourceOffer: The created resource offer.
+    """
     resource_offer = ResourceOffer()
     resource_offer.add_data("owner", owner_public_key)
     resource_offer.add_data("created_at", created_at)
@@ -51,6 +92,15 @@ def create_resource_offer(owner_public_key: str, created_at):
 
 
 def create_job_offer(owner_public_key: str, created_at):
+    """Create a job offer with example data.
+
+    Args:
+        owner_public_key (str): The public key of the job offer owner.
+        created_at (str): The creation timestamp.
+
+    Returns:
+        JobOffer: The created job offer.
+    """
     job_offer = JobOffer()
     job_offer.add_data("owner", owner_public_key)
     job_offer.add_data("created_at", created_at)
@@ -65,6 +115,13 @@ def create_job_offer(owner_public_key: str, created_at):
 def create_n_resource_offers(
     resource_providers, num_resource_offers_per_resource_provider, created_at
 ):
+    """Create a specified number of resource offers for each resource provider.
+
+    Args:
+        resource_providers (dict): A dictionary of resource providers with public keys as keys.
+        num_resource_offers_per_resource_provider (int): The number of resource offers to create per resource provider.
+        created_at (str): The creation timestamp.
+    """
     for _ in range(num_resource_offers_per_resource_provider):
         for (
             resource_provider_public_key,
@@ -80,6 +137,13 @@ def create_n_resource_offers(
 
 
 def create_n_job_offers(clients, num_job_offers_per_client, created_at):
+    """Create a specified number of job offers for each client.
+
+    Args:
+        clients (dict): A dictionary of clients with public keys as keys.
+        num_job_offers_per_client (int): The number of job offers to create per client.
+        created_at (str): The creation timestamp.
+    """
     for _ in range(num_job_offers_per_client):
         for client_public_key, client in clients.items():
             new_job_offer = create_job_offer(client_public_key, created_at)

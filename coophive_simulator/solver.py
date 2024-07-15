@@ -1,3 +1,5 @@
+"""This module defines the Solver class which is responsible for connecting to smart contracts, handling events, and managing job and resource offers."""
+
 import logging
 import os
 
@@ -9,11 +11,14 @@ from coophive_simulator.match import Match
 from coophive_simulator.resource_offer import ResourceOffer
 from coophive_simulator.service_provider import ServiceProvider
 from coophive_simulator.smart_contract import SmartContract
-from coophive_simulator.utils import *
+from coophive_simulator.utils import extra_necessary_match_data
 
 
 class Solver(ServiceProvider):
+    """Solver class to handle smart contract connections, events, and the matching of job and resource offers."""
+
     def __init__(self, public_key: str, url: str):
+        """Initialize the Solver with a public key and URL."""
         super().__init__(public_key)
         self.logger = logging.getLogger(f"Solver {self.public_key}")
         logging.basicConfig(
@@ -27,10 +32,12 @@ class Solver(ServiceProvider):
         self.current_matched_resource_offers = set()
 
     def connect_to_smart_contract(self, smart_contract: SmartContract):
+        """Connect the solver to a smart contract and subscribe to events."""
         self.smart_contract = smart_contract
         smart_contract.subscribe_event(self.handle_smart_contract_event)
 
     def handle_smart_contract_event(self, event):
+        """Handle events from the smart contract."""
         if event.get_name() == "mediation_random":
             event_name = event.get_name()
             event_data_id = event.get_data().get_id() if event.get_data() else None
@@ -47,9 +54,7 @@ class Solver(ServiceProvider):
             else:
                 job_offer = self.get_local_information().get_job_offers()[job_offer_cid]
 
-            event = (
-                job_offer  # self.get_local_information().get_job_offers()[job_offer]
-            )
+            event = job_offer
 
         # if deal, remove resource and job offers from list
         elif event.get_name() == "deal":
@@ -60,39 +65,39 @@ class Solver(ServiceProvider):
             self.deals_made_in_current_step.append(deal)
 
     def _remove_offer(self, offers_dict, offer_id):
-        """Helper function to remove an offer by ID."""
+        """Helper function to remove an offer by ID.
+
+        Args:
+            offers_dict (dict): The dictionary of offers.
+            offer_id (str): The ID of the offer to remove.
+        """
         if offer_id in offers_dict:
             del offers_dict[offer_id]
 
     def remove_outdated_offers(self):
-        # print([deal.get_id() for deal in self.deals_made_in_current_step])
+        """Remove outdated offers that have been dealt in the current step."""
         for deal in self.deals_made_in_current_step:
             deal_data = deal.get_data()
             # delete resource offer
             resource_offer = deal_data["resource_offer"]
-            # print(deal.get_id())
-            # print(f"resource_offer {resource_offer}")
-            # print(self.get_local_information().get_resource_offers())
-            # del self.get_local_information().get_resource_offers()[resource_offer]
             # delete job offer
             job_offer = deal_data["job_offer"]
             self._remove_offer(
                 self.get_local_information().get_resource_offers(), resource_offer
             )
             self._remove_offer(self.get_local_information().get_job_offers(), job_offer)
-            # del self.get_local_information().get_job_offers()[job_offer]
         # clear list of deals made in current step
         self.deals_made_in_current_step.clear()
 
     def solver_cleanup(self):
+        """Perform cleanup operations for the solver."""
         self.currently_matched_job_offers.clear()
         self.current_matched_resource_offers.clear()
         # remove outdated job and resource offers
         self.remove_outdated_offers()
 
     def solve(self):
-        # print()
-        # print(self.get_local_information().get_job_offers().items())
+        """Solve the current matching problem by matching job offers with resource offers."""
         for job_offer_id, job_offer in (
             self.get_local_information().get_job_offers().items()
         ):
@@ -113,6 +118,14 @@ class Solver(ServiceProvider):
                 continue
 
     def match_job_offer(self, job_offer: JobOffer):
+        """Match a job offer with a resource offer.
+
+        Args:
+            job_offer (JobOffer): The job offer to match.
+
+        Returns:
+            ResourceOffer: The matched resource offer, or None if no match is found.
+        """
         # only look for exact matches for now
         job_offer_data = job_offer.get_data()
         job_offer_id = job_offer.get_id()
@@ -135,10 +148,20 @@ class Solver(ServiceProvider):
         return None
 
     def add_necessary_match_data(self, match):
+        """Add necessary match data to a match."""
         for data_field, data_value in extra_necessary_match_data.items():
             match.add_data(data_field, data_value)
 
     def create_match(self, job_offer: JobOffer, resource_offer: ResourceOffer) -> Match:
+        """Create a match between a job offer and a resource offer.
+
+        Args:
+            job_offer (JobOffer): The job offer.
+            resource_offer (ResourceOffer): The resource offer.
+
+        Returns:
+            Match: The created match.
+        """
         # deal in stage 1 solver is exact match
         match = Match()
         job_offer_data = job_offer.get_data()
@@ -153,7 +176,9 @@ class Solver(ServiceProvider):
         return match
 
     def get_url(self):
+        """Get the URL of the solver."""
         return self.url
 
     def add_deal_to_smart_contract(self, deal: Deal):
+        """Add a deal to the smart contract."""
         pass
