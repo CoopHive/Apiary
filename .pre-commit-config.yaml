@@ -1,0 +1,29 @@
+default_stages: [commit, push]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+        exclude: LICENSE
+
+  - repo: local
+    hooks:
+      - id: isort
+        name: isort
+        entry: poetry run isort --settings-path pyproject.toml
+        types: [python]
+        language: system
+
+      - id: black
+        name: black
+        entry: poetry run black --config pyproject.toml
+        types: [python]
+        language: system
+
+      - id: pydocstyle
+        name: pydocstyle
+        entry: poetry run pydocstyle --convention=google .
+        types: [python]
+        language: system

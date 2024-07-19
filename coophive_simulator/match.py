@@ -1,0 +1,51 @@
+"""Define the Match class which extends DataAttribute and provides functionality related to matching attributes and signing."""
+
+from coophive_simulator.data_attribute import DataAttribute
+
+# TODO: add "job" to match attributes.
+match_attributes = {
+    "resource_provider_address",
+    "client_address",
+    "resource_offer",
+    "job_offer",
+    "price_per_instruction",
+    "client_deposit",
+    "timeout",
+    "timeout_deposit",
+    "cheating_collateral_multiplier",
+    "verification_method",
+    "mediators",
+}
+
+
+class Match(DataAttribute):
+    """Represents a match object that inherits from DataAttribute.
+
+    Attributes:
+    - data_attributes (dict): Dictionary of match attributes.
+    - client_signed (bool): Flag indicating if client has signed.
+    - resource_provider_signed (bool): Flag indicating if resource provider has signed.
+    """
+
+    def __init__(self):
+        """Initializes a Match object."""
+        super().__init__()
+        self.data_attributes = match_attributes
+        self.client_signed = False
+        self.resource_provider_signed = False
+
+    def get_resource_provider_signed(self):
+        """Get the status of resource provider signed flag."""
+        return self.resource_provider_signed
+
+    def get_client_signed(self):
+        """Get the status of client signed flag."""
+        return self.client_signed
+
+    def sign_resource_provider(self):
+        """Set the resource provider signed flag to True."""
+        self.resource_provider_signed = True
+
+    def sign_client(self):
+        """Set the client signed flag to True."""
+        self.client_signed = True
