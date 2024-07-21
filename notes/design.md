@@ -4,22 +4,23 @@
 
 This is a document to conceptualize the high-level design choices of Coophive, with regards to its multi-agent systems, data-driven optimal control, agent-to-agent negotiation. It is currently an unstructured set of notes, based on the legacy design, existing documents such as legacy white paper, Figma Compute Market Achitecture. It serves as the reference point to define the building blocks of the agent marketplace. When possible, the discussion is kept general, while when necessary the specificities of the exchanged assets (storage, compute) will be introduced.
 
+## Introduction
 
+The problem statement starts with the presence of a chain-generic/asset generic marketplace to interact optimally against. The value of the protocol is in recognizing, for example, the existance of idle computational power on the planet and of existing computational tasks that could be interested offering something in exchange for such a task to be performed. This creates an off-chain market of negotiation in which agents compete/cooperate to cut a good deal, i.e., they act optimally with respect to their fitness landscape, their action space and their state space.
 
+While the outcome of each negotiation goes on chain, negotiations are performed off-chain, and both on-chain and off-chain data can be used to inform various negotiation strategies.
 
+A set of environmental variables appear necessary for actors to construct optimal policies. These include:
 
+- ETH price. We believe the dynamics of the protocol, being based on smart contracts and EVM technology, to be driven by the state of the Ethereum protocol. One proxy for this is the point-in-time price of ETH.
 
+- Gas Fees. Because of the need to record the outcome of a negotiation on the blockchain, the point-in-time gas fees is necessary to build policies. It's like having a time-dependent transaction cost model in trad-fi: the profitability of a position is a function of the current transaction costs.
 
+- Electricity costs. This is a space-time dependent variable defining the cost of electricity in the world. Agents, aware of their location, are interested in measuring the point-in-time field of the cost of electricity to understand the hedge they may have against other potential agents in different locations.
 
+It appears necessary to associate to each block (each deal), the wallet of the address, its hardware specifications, geolocation, timestamp.
 
 # Legacy Notes to be Integrated in v2.
-## context
-
-The rules of players in the simulated world are:
-
- * you must correctly report your wallet address (we're not actually doing cryptography in the simulator)
- * we're ignoring gas
- * we MUST include a TX object with the correct address and value (which can be 0) in every tx call
 
 ## services
 
