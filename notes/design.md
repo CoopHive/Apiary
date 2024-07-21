@@ -1,5 +1,18 @@
-# coophive design doc
+# Coophive Multi-Agent System Design
 
+## Abstract
+
+This is a document to conceptualize the high-level design choices of Coophive, with regards to its multi-agent systems, data-driven optimal control, agent-to-agent negotiation. It is currently an unstructured set of notes, based on the legacy design, existing documents such as legacy white paper, Figma Compute Market Achitecture. It serves as the reference point to define the building blocks of the agent marketplace. When possible, the discussion is kept general, while when necessary the specificities of the exchanged assets (storage, compute) will be introduced.
+
+
+
+
+
+
+
+
+
+# Legacy Notes to be Integrated in v2.
 ## context
 
 The rules of players in the simulated world are:
