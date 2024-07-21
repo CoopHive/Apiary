@@ -10,6 +10,8 @@ The problem statement starts with the presence of a chain-generic/asset generic 
 
 While the outcome of each negotiation goes on chain, negotiations are performed off-chain, and both on-chain and off-chain data can be used to inform various negotiation strategies.
 
+A big part of the off-chain information are centralized in a pubsub que, a set of recorded messages, more or less public, that every agent can listen to (and store locally for memory). We need to define better the pubsub cue, equivalent in many ways to a broker order book.
+
 A set of environmental variables appear necessary for actors to construct optimal policies. These include:
 
 - ETH price. We believe the dynamics of the protocol, being based on smart contracts and EVM technology, to be driven by the state of the Ethereum protocol. One proxy for this is the point-in-time price of ETH.
@@ -18,20 +20,13 @@ A set of environmental variables appear necessary for actors to construct optima
 
 - Electricity costs. This is a space-time dependent variable defining the cost of electricity in the world. Agents, aware of their location, are interested in measuring the point-in-time field of the cost of electricity to understand the hedge they may have against other potential agents in different locations.
 
-It appears necessary to associate to each block (each deal), the wallet of the address, its hardware specifications, geolocation, timestamp.
+It appears necessary to associate to each block (each deal), the wallet of the address, its hardware specifications, geolocation, timestamp. This means that in the transaction we need to have the IPFS CID, in which the computational cost of a task is specified (to be clarified with which quantitative metrics). A tricky point here is how to verify that the hardware specifications of a given wallet address in a given CID are true. Agents may be interested in hiding this information to other agents, and if they are able to do so, it is meaningless to build a protocol around the truthfulness of this information.
+
+A task offer has to contain the CID of the data needed to perform the task. One could use this as a proxy for the computational cost of a task (even though a task could be associated with light data and be really expensive).
+
+An on-chain recorded transaction can record the final amount payed in exchange for the computational power provided.
 
 # Legacy Notes to be Integrated in v2.
-
-## services
-
-Services:
-
- * smart contract
- * resource provider (RP)
- * job creator (JC)
- * solver
- * mediator
- * directory
 
 ## types
 
@@ -61,8 +56,6 @@ This enables resource providers to advertise machine capacity without having to 
  * GPU `uint`
  * RAM `uint`
  * labels `map[string]string`
-
-TODO: do we need fractional CPU values like 0.5?
 
 #### ResourceOffer (RO)
 
