@@ -6,7 +6,7 @@ This is a document to conceptualize the high-level design choices of Coophive, w
 
 ## Introduction
 
-The problem statement starts with the presence of a chain-generic/asset generic marketplace to interact optimally against. The value of the protocol is in recognizing, for example, the existance of idle computational power on the planet and of existing computational tasks that could be interested offering something in exchange for such a task to be performed. This creates an off-chain market of negotiation in which agents compete/cooperate to cut a good deal, i.e., they act optimally with respect to their fitness landscape, their action space and their state space.
+The problem statement starts with the presence of a chain-generic/asset generic marketplace to interact optimally against. The value of the protocol is in recognizing, for example, the existance of idle computational power on the planet and of existing computational tasks that could be interested offering something in exchange for such a task to be performed. This creates an off-chain market of negotiation in which agents compete/cooperate to cut a good deal, i.e., they act optimally with respect to their fitness landscape, their action space and their state space (like in every market, negotiation helps the bid inform a "fair market value").
 
 While the outcome of each negotiation goes on chain, negotiations are performed off-chain, and both on-chain and off-chain data can be used to inform various negotiation strategies.
 
@@ -31,9 +31,23 @@ A task offer has to contain the CID of the data needed to perform the task. One 
 
 An on-chain recorded transaction can record the final amount payed in exchange for the computational power provided.
 
-Every agent hardware specifications may limit the state space size. For example, some IoT actors would only be able to remember and act based on on-chain data, while others may be able to have a bigger memory and bigger state space. For the same reason, some agents may be unable to perform certain tasks (that may be costly and limited by time). In other words, each agent has different constraints on both their state space and action space.
+Every agent hardware specifications may limit the state space size. For example, some IoT actors would only be able to remember and act based on on-chain data, while others may be able to have a bigger memory and bigger state space. For the same reason, some agents may be unable to perform certain tasks (that may be costly and limited by time, in fact the validation could also check constraints in the tasks like the time it took to complete.). In other words, each agent has different constraints on both their state space and action space.
 
-A task shall be associated with a variable specifying the possibility for it to be distributed. It could also specify the specific/maximum/minimum number of agents to take the task. The minimum case is to enforce federate learning in the case in which sensitive data needs to be broken down (problem, if agents can fake this IP, multiple virtual agents from the same malitious actor could fill up the task. Is this solvable? Similar issue as above.) This creates a negotiation with some kind of waiting room in which people can subscribe to participate and can opt-out before the room is full.
+A task shall be associated with a variable specifying the possibility for it to be distributed. It could also specify the specific/maximum/minimum number of agents to take the task. The minimum case is to enforce federate learning in the case in which sensitive data needs to be broken down (problem, if agents can fake this IP, multiple virtual agents from the same malitious actor could fill up the task. Is this solvable? Similar issue as above). This creates a negotiation with some kind of waiting room in which people can subscribe to participate and can opt-out before the room is full.
+
+A straightforward definition of fitness is profit.
+
+## Network Robustness
+
+Reading “Timing Reliability for Local Schedulers in Multi-Agent Systems”: it seems pretty evident that in the setup of Multi-agent training following greedy policies, the system will end up being more fragile. I don’t think we can avoid an holistic training setup in which a degree of cooperation is instilled in each agent. This will have the consequence of each agent to behave suboptimally, and the system will become subscettible to greedy attacks. I believe the system will need to tollerate a certain degree of corruption/inefficiency in order to gain robustness.
+Analogous situation in which greedy policies don’t work (see Section 5.1): https://web.stanford.edu/~boyd/papers/pdf/cvx_portfolio.pdf
+Even more relevant, the concept of self-organized criticality: https://www.linkedin.com/posts/jean-philippe-bouchaud-bb08a15_how-critical-is-brain-criticality-activity-7000544505359654912-ETjz/
+
+Not clear how to formalize/verify/deal with this point, but worth mentioning.
+
+Reading "Local Scheduling in Multi-Agent Systems: getting ready for safety-critical scenarios”: is is clear that we need a deep conceptual and practical separation between the intelligent/strategic layer. This is a central node interacting with the agents competition pool, making sure agents are able to act and that the CPS as a whole is achieving what it needs to achieve.. This central node can learn general laws of behaviour based on the goals of the overall system and the behaviour of its components. In this sense, the competition sandbox and the brain are close to each other, conceptually. A deeper separation is with the communication layer/middleware. This module ensures the brain and the components access all the information possible.
+
+Agents need to be robust against different kind of non-stationarities: agents could die, new appear, macrovariable drastically change. How to avoid the overall system of lead to an endogenous crisis triggered by a small variation is external variables? In other words, how to ensure a small degree of chaoticity/fragility against external perturbations?
 
 # Legacy Notes to be Integrated in v2.
 
