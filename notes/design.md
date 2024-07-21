@@ -2,7 +2,7 @@
 
 ## Abstract
 
-This is a document to conceptualize the high-level design choices of Coophive, with regards to its multi-agent systems, data-driven optimal control, agent-to-agent negotiation. It is currently an unstructured set of notes, based on the legacy design, existing documents such as legacy white paper, Figma Compute Market Achitecture. It serves as the reference point to define the building blocks of the agent marketplace. When possible, the discussion is kept general, while when necessary the specificities of the exchanged assets (storage, compute) will be introduced.
+This is a document to conceptualize the high-level design choices of Coophive, with regards to its multi-agent systems, data-driven optimal control, agent-to-agent negotiation. It is currently an unstructured set of notes, based on the legacy design, existing documents such as legacy white paper, Figma Compute Market Achitecture. It serves as the reference point to define the building blocks of the agent marketplace. When possible, the discussion is kept general, while when necessary the specificities of the exchanged assets (storage, compute) will be introduced. The framework is nevertheless defined for "validatable, terminable tasks with collateral transfer after validation".
 
 ## Introduction
 
@@ -10,7 +10,12 @@ The problem statement starts with the presence of a chain-generic/asset generic 
 
 While the outcome of each negotiation goes on chain, negotiations are performed off-chain, and both on-chain and off-chain data can be used to inform various negotiation strategies.
 
-A big part of the off-chain information are centralized in a pubsub que, a set of recorded messages, more or less public, that every agent can listen to (and store locally for memory). We need to define better the pubsub cue, equivalent in many ways to a broker order book.
+A big part of the off-chain information are centralized in a pubsub que, a set of recorded messages, more or less public, that every agent can listen to (and store locally for memory). A question is for example how important it is for agents to observe the negotiation dynamics before an agreement vs learning from the final transaction only: this has consequences on the privacy of offers, as it may be valuable to enforce the publicity of intra-negotiation offers for a more transparent auction mechanism. We need to define better the pubsub cue, equivalent in many ways to a broker order book.
+
+On this, see:
+- https://pintu.co.id/en/academy/post/what-is-decentralized-order-book
+- https://github.com/dyn4mik3/OrderBook
+- https://pypi.org/project/sortedcontainers/
 
 A set of environmental variables appear necessary for actors to construct optimal policies. These include:
 
@@ -18,13 +23,17 @@ A set of environmental variables appear necessary for actors to construct optima
 
 - Gas Fees. Because of the need to record the outcome of a negotiation on the blockchain, the point-in-time gas fees is necessary to build policies. It's like having a time-dependent transaction cost model in trad-fi: the profitability of a position is a function of the current transaction costs.
 
-- Electricity costs. This is a space-time dependent variable defining the cost of electricity in the world. Agents, aware of their location, are interested in measuring the point-in-time field of the cost of electricity to understand the hedge they may have against other potential agents in different locations.
+- Electricity costs. This is a space-time dependent variable defining the cost of electricity in the world. Agents, aware of their location, are interested in measuring the point-in-time field of the cost of electricity to understand the hedge they may have against other potential agents in different locations. This means that agents may have a module solely focused on the forecasting of the local (or even global) electricity price to enhance the state space and then use that as an input for the optimal controller. On this see, among others: https://arxiv.org/abs/2106.06033
 
 It appears necessary to associate to each block (each deal), the wallet of the address, its hardware specifications, geolocation, timestamp. This means that in the transaction we need to have the IPFS CID, in which the computational cost of a task is specified (to be clarified with which quantitative metrics). A tricky point here is how to verify that the hardware specifications of a given wallet address in a given CID are true. Agents may be interested in hiding this information to other agents, and if they are able to do so, it is meaningless to build a protocol around the truthfulness of this information.
 
 A task offer has to contain the CID of the data needed to perform the task. One could use this as a proxy for the computational cost of a task (even though a task could be associated with light data and be really expensive).
 
 An on-chain recorded transaction can record the final amount payed in exchange for the computational power provided.
+
+Every agent hardware specifications may limit the state space size. For example, some IoT actors would only be able to remember and act based on on-chain data, while others may be able to have a bigger memory and bigger state space. For the same reason, some agents may be unable to perform certain tasks (that may be costly and limited by time). In other words, each agent has different constraints on both their state space and action space.
+
+A task shall be associated with a variable specifying the possibility for it to be distributed. It could also specify the specific/maximum/minimum number of agents to take the task. The minimum case is to enforce federate learning in the case in which sensitive data needs to be broken down (problem, if agents can fake this IP, multiple virtual agents from the same malitious actor could fill up the task. Is this solvable? Similar issue as above.) This creates a negotiation with some kind of waiting room in which people can subscribe to participate and can opt-out before the room is full.
 
 # Legacy Notes to be Integrated in v2.
 
