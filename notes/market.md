@@ -54,6 +54,15 @@ https://olas.network/
 
 https://olas.network/whitepaper
 
+## Bittensor
+
+https://bittensor.com/ 
+
+white paper and consensus-v2 paper
+github: https://github.com/opentensor/bittensor
+
+[TODO: read online material and white paper and put down relevant notes]
+
 ## DAIN
 
 Not much more than a nice landing. Nothing to learn, as of July 22nd 2024.
