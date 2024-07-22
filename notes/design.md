@@ -6,15 +6,9 @@ This is a document to conceptualize the high-level design choices of Coophive, w
 
 ## Introduction
 
-[GENERAL, THE IDEA WITH THE SPECIFICATIONS OF THE MACHINE RUNNING A SPECIFIC JOB IS THAT THERE IS GOING TO BE AN EMERGENT SECONDARY MARKETPLACE OF SPECIFICATIONS AND IF AGENTS WANT TO BECOME AUTONOMOUS THEY WILL BUY THIS...]
+The problem statement starts with the presence of a chain-generic/asset generic marketplace to interact optimally against. There are deep implications about going for a chain-generic or more specific marketplace, but this does not seem to have implications on the multi-agent system.
 
-[IMPORTANT POINT, THE AGENTS LOOKING AT THE CURRENT TASK IS UNABLE TO SAY EXACTLY THE COMPUTATIONAL COST OF THE TASK. I CAN LEARN FROM PAST DATA IF PAST TASKS ARE ASSOCIATED TO SPECIFIC SCHEMAS AND I HAVE ENOUGH DATA TO MAP THE DOMAIN OF THE SCHEMAS FUNCTION TO COST AND INTERPOLATE BASED ON THE CURRENT JOB INPUT.]
-
-[THE SCHEMA IS THE DOCKER IMAGE AND AN INPUT, IN THE CASE OF DOCKER]
-[OR THE SCHEMA IS A GITHUB REPO AND A COMMAND]
-[IN THE CASE OF OPEN SOURCE, IT STILL MAKES SENSE TO HAVE A SECONDARY MARKETPLACE, EVEN IF JUST ESTIMATING COSTS FROM LLM ANALYSIS OF THE SOURCE CODE OF THE TASK]
-
-The problem statement starts with the presence of a chain-generic/asset generic [TAYLOR POINTS, AS OF TADAY WE ARE. BETTER TO BE ONLY EVM COMPATIBLE..THIS HAS DEEP IMPLICATIONS FOR THEM, NOT TRIVIAL..] marketplace to interact optimally against. The value of the protocol is in recognizing, for example, the existance of idle computational power on the planet and of existing computational tasks that could be interested offering something in exchange for such a task to be performed. This creates an off-chain market of negotiation in which agents compete/cooperate to cut a good deal, i.e., they act optimally with respect to their fitness landscape, their action space and their state space (like in every market, negotiation helps the bid inform a "fair market value").
+The value of the protocol is in recognizing, for example, the existance of idle computational power on the planet and of existing computational tasks that could be interested offering something in exchange for such a task to be performed. This creates an off-chain market of negotiation in which agents compete/cooperate to cut a good deal, i.e., they act optimally with respect to their fitness landscape, their action space and their state space (like in every market, negotiation helps the bid inform a "fair market value").
 
 While the outcome of each negotiation goes on chain, negotiations are performed off-chain, and both on-chain and off-chain data can be used to inform various negotiation strategies.
 
@@ -27,13 +21,21 @@ On this, see:
 
 A set of environmental variables appear necessary for actors to construct optimal policies. These include:
 
-- ETH price. We believe the dynamics of the protocol, being based on smart contracts and EVM technology, to be driven by the state of the Ethereum protocol. One proxy for this is the point-in-time price of ETH. [YANG DISAGREEMENT: WE DEPEND ON ETHEREUM ONLY FOR THE CONSENSUS, WE WILL DEPEND MORE ON THE L2 GAS FEE AND OR L2 PRICE...TO BE INVESTIGATED.]
+- L1 and L2 tokens price. We believe the dynamics of the protocol, being based on smart contracts and EVM technology, to be driven by the state of the L1 (Ethereum) and L2 (???) protocols. One proxy for this is the point-in-time price of the two protocols.
 
-- Gas Fees. Because of the need to record the outcome of a negotiation on the blockchain, the point-in-time gas fees is necessary to build policies. It's like having a time-dependent transaction cost model in trad-fi: the profitability of a position is a function of the current transaction costs.
+- Gas Fees. Because of the need to record the outcome of a negotiation on the blockchain, the point-in-time gas fees is necessary to build policies. It's like having a time-dependent transaction cost model in trad-fi: the profitability of a position is a function of the current transaction costs. Here we are referring to the gas fees of the L2, but the gas fee of Ethereum may be relevant in modeling the dynamics of costs.
 
 - Electricity costs. This is a space-time dependent variable defining the cost of electricity in the world. Agents, aware of their location, are interested in measuring the point-in-time field of the cost of electricity to understand the hedge they may have against other potential agents in different locations. This means that agents may have a module solely focused on the forecasting of the local (or even global) electricity price to enhance the state space and then use that as an input for the optimal controller. On this see, among others: https://arxiv.org/abs/2106.06033
 
 It appears necessary to associate to each block (each deal), the wallet of the address, its hardware specifications, geolocation, timestamp. This means that in the transaction we need to have the IPFS CID, in which the computational cost of a task is specified (to be clarified with which quantitative metrics). A tricky point here is how to verify that the hardware specifications of a given wallet address in a given CID are true. Agents may be interested in hiding this information to other agents, and if they are able to do so, it is meaningless to build a protocol around the truthfulness of this information.
+
+One solution could be to enable an emergent secondary marketplace of jobs specifications, in which machines can associate (and this can be verified) their hardware specifications to a given Job. The market is emergent as if agents want to become autonomous and this dataset is valuable, they will create it. We may want to investigate this ourselves. An important point, on this, is that agents an agent looking at a given open job is in principle not able to say exactly its computational cost. It can learn from past data only if they are associated with specific schemas that enable the agent to interpolate the input space of the task for that schema (in the presence of enough datapoints to approximate the cost function).
+
+Some examples of a Job Schema are:
+- A docker image and its input(s);
+- A github repository and an associated command;
+
+Even in the open source (git) case, it makes sense to leverage the secondary marketplace, even if the estimation of the task cost is not done via interpolation of previous runs, but via analysis of the source code of the task (for which even analytical estimates of the cost may exist).
 
 A task offer has to contain the CID of the data needed to perform the task. One could use this as a proxy for the computational cost of a task (even though a task could be associated with light data and be really expensive).
 
