@@ -6,7 +6,15 @@ This is a document to conceptualize the high-level design choices of Coophive, w
 
 ## Introduction
 
-The problem statement starts with the presence of a chain-generic/asset generic marketplace to interact optimally against. The value of the protocol is in recognizing, for example, the existance of idle computational power on the planet and of existing computational tasks that could be interested offering something in exchange for such a task to be performed. This creates an off-chain market of negotiation in which agents compete/cooperate to cut a good deal, i.e., they act optimally with respect to their fitness landscape, their action space and their state space (like in every market, negotiation helps the bid inform a "fair market value").
+[GENERAL, THE IDEA WITH THE SPECIFICATIONS OF THE MACHINE RUNNING A SPECIFIC JOB IS THAT THERE IS GOING TO BE AN EMERGENT SECONDARY MARKETPLACE OF SPECIFICATIONS AND IF AGENTS WANT TO BECOME AUTONOMOUS THEY WILL BUY THIS...]
+
+[IMPORTANT POINT, THE AGENTS LOOKING AT THE CURRENT TASK IS UNABLE TO SAY EXACTLY THE COMPUTATIONAL COST OF THE TASK. I CAN LEARN FROM PAST DATA IF PAST TASKS ARE ASSOCIATED TO SPECIFIC SCHEMAS AND I HAVE ENOUGH DATA TO MAP THE DOMAIN OF THE SCHEMAS FUNCTION TO COST AND INTERPOLATE BASED ON THE CURRENT JOB INPUT.]
+
+[THE SCHEMA IS THE DOCKER IMAGE AND AN INPUT, IN THE CASE OF DOCKER]
+[OR THE SCHEMA IS A GITHUB REPO AND A COMMAND]
+[IN THE CASE OF OPEN SOURCE, IT STILL MAKES SENSE TO HAVE A SECONDARY MARKETPLACE, EVEN IF JUST ESTIMATING COSTS FROM LLM ANALYSIS OF THE SOURCE CODE OF THE TASK]
+
+The problem statement starts with the presence of a chain-generic/asset generic [TAYLOR POINTS, AS OF TADAY WE ARE. BETTER TO BE ONLY EVM COMPATIBLE..THIS HAS DEEP IMPLICATIONS FOR THEM, NOT TRIVIAL..] marketplace to interact optimally against. The value of the protocol is in recognizing, for example, the existance of idle computational power on the planet and of existing computational tasks that could be interested offering something in exchange for such a task to be performed. This creates an off-chain market of negotiation in which agents compete/cooperate to cut a good deal, i.e., they act optimally with respect to their fitness landscape, their action space and their state space (like in every market, negotiation helps the bid inform a "fair market value").
 
 While the outcome of each negotiation goes on chain, negotiations are performed off-chain, and both on-chain and off-chain data can be used to inform various negotiation strategies.
 
@@ -19,7 +27,7 @@ On this, see:
 
 A set of environmental variables appear necessary for actors to construct optimal policies. These include:
 
-- ETH price. We believe the dynamics of the protocol, being based on smart contracts and EVM technology, to be driven by the state of the Ethereum protocol. One proxy for this is the point-in-time price of ETH.
+- ETH price. We believe the dynamics of the protocol, being based on smart contracts and EVM technology, to be driven by the state of the Ethereum protocol. One proxy for this is the point-in-time price of ETH. [YANG DISAGREEMENT: WE DEPEND ON ETHEREUM ONLY FOR THE CONSENSUS, WE WILL DEPEND MORE ON THE L2 GAS FEE AND OR L2 PRICE...TO BE INVESTIGATED.]
 
 - Gas Fees. Because of the need to record the outcome of a negotiation on the blockchain, the point-in-time gas fees is necessary to build policies. It's like having a time-dependent transaction cost model in trad-fi: the profitability of a position is a function of the current transaction costs.
 
