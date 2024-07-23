@@ -63,6 +63,20 @@ github: https://github.com/opentensor/bittensor
 
 [TODO: read online material and white paper and put down relevant notes]
 
+## Gensyn
+
+https://www.gensyn.ai/
+
+https://docs.gensyn.ai/litepaper
+
+[TODO: read online material and white paper and put down relevant notes]
+
+## Akash
+
+https://akash.network/
+
+[TODO: read online material and put down relevant notes]
+
 ## DAIN
 
 Not much more than a nice landing. Nothing to learn, as of July 22nd 2024.
