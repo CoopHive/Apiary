@@ -1,12 +1,25 @@
 # Market Research
 
-## Spectral
+## Akash
 
-In Spectral, Agents are on chain.
+https://akash.network/
+
+[TODO: read online material and put down relevant notes]
+
+## Bittensor
+
+https://bittensor.com/ 
+
+white paper and consensus-v2 paper
+github: https://github.com/opentensor/bittensor
 
 [TODO: read online material and white paper and put down relevant notes]
 
-https://www.spectrallabs.xyz/whitepaper
+## DAIN
+
+Not much more than a nice landing. Nothing to learn, as of July 22nd 2024.
+
+https://dain.org/
 
 ## Galadriel
 
@@ -16,6 +29,20 @@ https://galadriel.com/
 
 https://docs.galadriel.com/litepaper
 
+## Gensyn
+
+https://www.gensyn.ai/
+
+https://docs.gensyn.ai/litepaper
+
+[TODO: read online material and white paper and put down relevant notes]
+
+## Inference
+
+https://inferencelabs.com/
+
+https://public.inferencelabs.com/sertn-whitepaper.pdf
+
 ## Morpheus
 
 https://mor.org/
@@ -24,13 +51,19 @@ https://mor.org/
 
 https://mor.org/whitepaper
 
-## Theoriq
+## Olas
 
-https://www.theoriq.ai/
+https://olas.network/
 
-by ChainML: https://www.chainml.net/
+[TODO: read online material and white paper and put down relevant notes]
 
-[TODO: read online material and put down relevant notes]
+https://olas.network/whitepaper
+
+## Prime Intellect
+
+https://www.primeintellect.ai/
+
+https://www.primeintellect.ai/blog/opendiloco
 
 ## Render Network
 
@@ -46,39 +79,20 @@ https://ritual.net/
 
 [TODO: read online material and put down relevant notes]
 
-## Olas
+## Spectral
 
-https://olas.network/
-
-[TODO: read online material and white paper and put down relevant notes]
-
-https://olas.network/whitepaper
-
-## Bittensor
-
-https://bittensor.com/ 
-
-white paper and consensus-v2 paper
-github: https://github.com/opentensor/bittensor
+In Spectral, Agents are on chain.
 
 [TODO: read online material and white paper and put down relevant notes]
 
-## Gensyn
+https://www.spectrallabs.xyz/whitepaper
 
-https://www.gensyn.ai/
+## Theoriq
 
-https://docs.gensyn.ai/litepaper
+https://www.theoriq.ai/
 
-[TODO: read online material and white paper and put down relevant notes]
-
-## Akash
-
-https://akash.network/
+by ChainML: https://www.chainml.net/
 
 [TODO: read online material and put down relevant notes]
 
-## DAIN
-
-Not much more than a nice landing. Nothing to learn, as of July 22nd 2024.
-
-https://dain.org/
+https://truflation.com/blog/theoriq-and-truflation-partner-to-revolutionize-tokenized-real-world-assets
