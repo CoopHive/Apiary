@@ -2,7 +2,9 @@
 
 ## Abstract
 
-This is a document to conceptualize the high-level design choices of Coophive, with regards to its multi-agent systems, data-driven optimal control, agent-to-agent negotiation. It is currently an unstructured set of notes, based on the legacy design, existing documents such as legacy white paper, Figma Compute Market Achitecture. It serves as the reference point to define the building blocks of the agent marketplace. When possible, the discussion is kept general, while when necessary the specificities of the exchanged assets (storage, compute) will be introduced. The framework is nevertheless defined for "validatable, terminable tasks with collateral transfer after validation".
+This is a document to conceptualize the high-level design choices of Coophive, with regards to its multi-agent systems, data-driven optimal control, agent-to-agent negotiation. It is currently an unstructured set of notes, based on the legacy design, existing documents such as legacy white paper, Figma Compute Market Achitecture. It serves as the reference point to define the building blocks of the agent marketplace. When possible, the discussion is kept general, while when necessary the specificities of the exchanged assets (storage, compute) will be introduced. 
+
+The framework is nevertheless defined for "validatable, terminable tasks with collateral transfer after validation". In this context, we talk about "stateless" tasks to stress their inner reproducibility (their lack of dependence against client-specific state variables).
 
 ## Introduction
 
