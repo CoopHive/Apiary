@@ -4,9 +4,21 @@
 
 ### Akash Network
 
-https://akash.network/
+Compute resources marketplace, permissionless cloud resources, the AKT Token is used to incentivize participants.
 
-[TODO: read online material and put down relevant notes]
+Cost-effective supercloud, more than 80% cheaper than AWS, GPC, Azure.
+
+Providers deploy standardized (Kubernetes) infrastructure, tenants define Docker containers of jobs and they deploy them using the network, functioning as some kind of broker of jobs and resources. The value proposition is the distruction of monolith acting as monopolies (AWS) with less competitive pricing and less infrastructural flexibility. The main challange is the managing of an heterogeneus and non-stationary system.
+
+Interestingly, they develped a decentralized version of AI, such as Stable Diffusion and LLMs:
+
+- https://sdxl.akash.network/
+- https://chat.akash.network/
+
+
+Docs:
+- https://akash.network/docs/
+
 
 ### Bittensor
 
