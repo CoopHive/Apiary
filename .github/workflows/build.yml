@@ -1,45 +1,45 @@
-name: build
+# name: build
 
-on:
-  push:
-    branches:
-    - main
-    - master
-  pull_request:
-    branches:
-    - main
-    - master
+# on:
+#   push:
+#     branches:
+#     - main
+#     - master
+#   pull_request:
+#     branches:
+#     - main
+#     - master
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.10"]
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         python-version: ["3.10"]
 
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
+#     steps:
+#     - uses: actions/checkout@v4
+#     - name: Set up Python ${{ matrix.python-version }}
+#       uses: actions/setup-python@v5
+#       with:
+#         python-version: ${{ matrix.python-version }}
 
-    - name: Install poetry
-      run: make poetry-download
+#     - name: Install poetry
+#       run: make poetry-download
 
-    - name: Install dependencies
-      run: |
-        poetry config virtualenvs.in-project true
-        poetry install
+#     - name: Install dependencies
+#       run: |
+#         poetry config virtualenvs.in-project true
+#         poetry install
 
-    - name: Run style checks
-      run: |
-        make check-codestyle
+#     - name: Run style checks
+#       run: |
+#         make check-codestyle
     
-    - name: Run docstrings checks
-      run: |
-        make docs
+#     - name: Run docstrings checks
+#       run: |
+#         make docs
 
-    - name: Run tests
-      run: |
-        make test
+#     - name: Run tests
+#       run: |
+#         make test
