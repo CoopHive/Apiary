@@ -19,6 +19,9 @@ Interestingly, they develped a decentralized version of AI, such as Stable Diffu
 Docs:
 - https://akash.network/docs/
 
+[TODO looking into Akash network docs, with focus on
+https://akash.network/docs/getting-started/intro-to-akash/bids-and-leases/
+]
 
 ### Bittensor
 
