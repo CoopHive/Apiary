@@ -22,12 +22,20 @@ Docs:
 
 ### Bittensor
 
-https://bittensor.com/ 
+Decentralized AI, including data, storage, predictions, and models, by Opentensor.
 
-white paper and consensus-v2 paper
-github: https://github.com/opentensor/bittensor
+Miners (ML engineers), Validators (Sales) and Owner earn TAO for this work. Focused on the overall AI pipeline, recognizes the cost-efficiency introduced by decentralized market systems such as compute and the risk of the recent centralizing tendency of AI.
 
-[TODO: read online material and white paper and put down relevant notes]
+Bittensor is framed like a market, meaning its primitives are about the marketplace of compute, storage, Machine Learning, without specifying the assets or use cases of said market: as Bitcoin is mainly about the equilibrium of its Validation scheme, its implications are left to its users.
+
+Main innovation said to be the Yuma Consensus. It also enables prediction marketplaces: Bittensor seems to include models like Numerai, CrunchDAO, YIEDL, Ocean Protocol.
+
+Links:
+- https://www.bittensor.com/whitepaper
+- https://www.bittensor.com/content/consensus_v2
+- https://github.com/opentensor/bittensor
+
+In other words, the overall network of agents is incentivized to score and price the intelligence of a node. This is also alternative Validation scheme to replication.
 
 ### Cere Networks
 
