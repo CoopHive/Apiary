@@ -21,6 +21,10 @@ Not much more than a nice landing. Nothing to learn, as of July 22nd 2024.
 
 https://dain.org/
 
+## Fluence
+
+https://fluence.network/
+
 ## Galadriel
 
 https://galadriel.com/
