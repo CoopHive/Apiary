@@ -37,6 +37,14 @@ https://docs.gensyn.ai/litepaper
 
 [TODO: read online material and white paper and put down relevant notes]
 
+## Huddle
+
+https://huddle01.com/
+
+[TODO: read online material and lite paper and put down relevant notes]
+
+https://bafkreifg7si3o3g42jqqngpaems4uamvcknnxt3akzvsn4rvvoig33ffnu.ipfs.w3s.link/
+
 ## Inference
 
 https://inferencelabs.com/
