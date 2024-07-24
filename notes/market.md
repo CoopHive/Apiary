@@ -1,6 +1,6 @@
 # Market Research
 
-## Akash
+## Akash Network
 
 https://akash.network/
 
@@ -20,6 +20,10 @@ github: https://github.com/opentensor/bittensor
 Not much more than a nice landing. Nothing to learn, as of July 22nd 2024.
 
 https://dain.org/
+
+## Filecoin
+
+https://filecoin.io/
 
 ## Fluence
 
@@ -90,6 +94,10 @@ https://renderfoundation.com/whitepaper
 https://ritual.net/
 
 [TODO: read online material and put down relevant notes]
+
+## Sia
+
+https://sia.tech/
 
 ## Spectral
 
