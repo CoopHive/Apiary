@@ -61,3 +61,8 @@ class Match(DataAttribute):
         """Set attributes."""
         for key, value in attributes.items():
             setattr(self, key, value)
+
+    def add_data(self, data_field, data_value):
+        """Different API to set attributes."""
+        # TODO: remove this duplicated function.
+        setattr(self, data_field, data_value)

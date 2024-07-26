@@ -107,9 +107,7 @@ class SmartContract(ServiceProvider):
         # TODO: this is for testing purposes, should not be added here manually
         deal.add_data("actual_honest_time_to_completion", 1)
         deal.set_id()
-        logging.info(f"Deal ID after setting: {deal.get_id()}")
         self.deals[deal.get_id()] = deal
-        logging.info(f"Deals dictionary: {self.deals}")
         deal_event = Event(name="deal", data=deal)
         self.emit_event(deal_event)
 

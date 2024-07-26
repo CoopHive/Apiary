@@ -3,6 +3,7 @@
 import logging
 import os
 
+from coophive_simulator.data_attribute import DataAttribute
 from coophive_simulator.deal import Deal
 from coophive_simulator.event import Event
 from coophive_simulator.job_offer import JobOffer
@@ -27,7 +28,7 @@ class Solver(ServiceProvider):
         self.url = url
         self.machine_keys = ["CPU", "RAM"]
         self.smart_contract = None
-        self.deals_made_in_current_step = []
+        self.deals_made_in_current_step: dict[str, Deal] = {}
         self.currently_matched_job_offers = set()
         self.current_matched_resource_offers = set()
 
@@ -36,18 +37,21 @@ class Solver(ServiceProvider):
         self.smart_contract = smart_contract
         smart_contract.subscribe_event(self.handle_smart_contract_event)
 
-    def handle_smart_contract_event(self, event):
+    def handle_smart_contract_event(self, event: Event):
         """Handle events from the smart contract."""
         if event.get_name() == "mediation_random":
             event_name = event.get_name()
-            event_data_id = event.get_data().get_id() if event.get_data() else None
+            event_data_id = (
+                event.get_data().get_id()
+                if isinstance(event.get_data(), DataAttribute)
+                else None
+            )
             log_json(
                 self.logger,
                 "Smart contract event",
                 {"event_name": event_name, "event_data_id": event_data_id},
             )
-            # self.logger.info(f"have smart contract event {event.get_name()}")
-            job_offer_cid = event.get_data()
+            job_offer_cid = event_data_id
             if job_offer_cid not in self.get_local_information().get_job_offers():
                 # solver doesn't have the job offer locally, must retrieve from IPFS
                 job_offer = self.get_local_information().ipfs.get(job_offer_cid)
@@ -57,12 +61,20 @@ class Solver(ServiceProvider):
             event = job_offer
 
         # if deal, remove resource and job offers from list
-        elif event.get_name() == "deal":
+        elif event.get_name() == "deal" and isinstance(event.get_data(), Deal):
             self.logger.info(
                 f"have smart contract event {event.get_name(), event.get_data().get_id()}"
             )
             deal = event.get_data()
-            self.deals_made_in_current_step.append(deal)
+
+            if not isinstance(event.get_data(), DataAttribute):
+                self.logger.warning(
+                    f"Unexpected data type received in solver event: {type(event.get_data())}"
+                )
+
+            self.deals_made_in_current_step[event.get_data().get_id()] = (
+                event.get_data()
+            )
 
     def _remove_offer(self, offers_dict, offer_id):
         """Helper function to remove an offer by ID.
@@ -77,6 +89,10 @@ class Solver(ServiceProvider):
     def remove_outdated_offers(self):
         """Remove outdated offers that have been dealt in the current step."""
         for deal in self.deals_made_in_current_step:
+            if not isinstance(deal, Deal):
+                self.logger.warning(
+                    f"Unexpected data type received in solver event: {type(deal)}"
+                )
             deal_data = deal.get_data()
             # delete resource offer
             resource_offer = deal_data["resource_offer"]
@@ -136,18 +152,25 @@ class Solver(ServiceProvider):
                 resource_offer_id in self.current_matched_resource_offers
             ):
                 continue
+            if not isinstance(resource_offer, ResourceOffer):
+                self.logger.warning(
+                    f"Unexpected data type received in solver event: {type(resource_offer)}"
+                )
+                continue
             resource_offer_data = resource_offer.get_data()
             is_match = True
             for machine_key in self.machine_keys:
                 if resource_offer_data[machine_key] != job_offer_data[machine_key]:
                     is_match = False
+                else:
+                    break
 
             if is_match:
                 return resource_offer
 
         return None
 
-    def add_necessary_match_data(self, match):
+    def add_necessary_match_data(self, match: Match):
         """Add necessary match data to a match."""
         for data_field, data_value in extra_necessary_match_data.items():
             match.add_data(data_field, data_value)
@@ -166,8 +189,8 @@ class Solver(ServiceProvider):
         match = Match()
         job_offer_data = job_offer.get_data()
         resource_offer_data = resource_offer.get_data()
-        match.add_data("resource_provider_address", resource_offer_data["owner"])
-        match.add_data("client_address", job_offer_data["owner"])
+        match.add_data("resource_provider_address", resource_offer_data.get("owner"))
+        match.add_data("client_address", job_offer_data.get("owner"))
         match.add_data("resource_offer", resource_offer.get_id())
         match.add_data("job_offer", job_offer.get_id())
 
