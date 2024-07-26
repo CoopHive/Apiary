@@ -61,6 +61,7 @@ class Service:
     wallet_address: str
 
 
+@dataclass
 class IPFS:
     """Class representing an IPFS system for storing and retrieving data."""
 
