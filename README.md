@@ -4,6 +4,19 @@
 
 CoopHive Simulator is a tool designed to simulate the agent-based and game theory aspects of the CoopHive protocol, a two-sided marketplace for computing resources.
 
+### Related Python Projects
+
+- [PettingZoo](https://github.com/Farama-Foundation/PettingZoo): An API standard for multi-agent reinforcement learning environments, with popular reference environments and related utilities.
+- [Mesa](https://github.com/projectmesa/mesa/): library for agent-based modeling, ideal for simulating complex systems and exploring emergent behaviors.
+- [uAgents](https://github.com/fetchai/uAgents): A fast and lightweight framework for creating decentralized agents with ease.
+- [Mava](https://github.com/instadeepai/Mava): A research-friendly codebase for fast experimentation of multi-agent reinforcement learning in JAX.
+- [meltingpot](https://github.com/google-deepmind/meltingpot): A suite of test scenarios for multi-agent reinforcement learning.
+- [AgentPy](https://github.com/jofmi/agentpy): framework for the development and analysis of agent-based models.
+- [VMAS](https://github.com/proroklab/VectorizedMultiAgentSimulator): vectorized differentiable simulator designed for efficient Multi-Agent Reinforcement Learning benchmarking.
+- [BenchMARL](https://github.com/facebookresearch/BenchMARL): A collection of MARL benchmarks based on TorchRL.
+- [PADE](https://github.com/grei-ufc/pade): Python Agent DEvelopment framework.
+- [Repast](https://github.com/Repast/repast4py): agent-based modeling and simulation software.
+
 ## Installation
 
 ### Requirements

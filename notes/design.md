@@ -1,23 +1,69 @@
-# coophive design doc
+# Coophive Multi-Agent System Design
 
-## context
+## Abstract
 
-The rules of players in the simulated world are:
+This is a document to conceptualize the high-level design choices of Coophive, with regards to its multi-agent systems, data-driven optimal control, agent-to-agent negotiation. It is currently an unstructured set of notes, based on the legacy design, existing documents such as legacy white paper, Figma Compute Market Achitecture. It serves as the reference point to define the building blocks of the agent marketplace. When possible, the discussion is kept general, while when necessary the specificities of the exchanged assets (storage, compute) will be introduced. 
 
- * you must correctly report your wallet address (we're not actually doing cryptography in the simulator)
- * we're ignoring gas
- * we MUST include a TX object with the correct address and value (which can be 0) in every tx call
+The framework is nevertheless defined for "validatable, terminable tasks with collateral transfer after validation". In this context, we talk about "stateless" tasks to stress their inner reproducibility (their lack of dependence against client-specific state variables). The presence of agent-based modeling (whose policy is potentially data-driven, tapping into ML/RL), is motivated by the need to orchestrate a decentralized network of agents in a way that leads to competitive pricing/scheduling, from the user perspective. At the same time, the use of blockchain is motivate by the trustless and automatic transfer of collateral after validation.
 
-## services
+## Introduction
 
-Services:
+The problem statement starts with the presence of a chain-generic/asset generic marketplace to interact optimally against. There are deep implications about going for a chain-generic or more specific marketplace, but this does not seem to have implications on the multi-agent system.
 
- * smart contract
- * resource provider (RP)
- * job creator (JC)
- * solver
- * mediator
- * directory
+The value of the protocol is in recognizing, for example, the existance of idle computational power on the planet and of existing computational tasks that could be interested offering something in exchange for such a task to be performed. This creates an off-chain market of negotiation in which agents compete/cooperate to cut a good deal, i.e., they act optimally with respect to their fitness landscape, their action space and their state space (like in every market, negotiation helps the bid inform a "fair market value").
+
+While the outcome of each negotiation goes on chain, negotiations are performed off-chain, and both on-chain and off-chain data can be used to inform various negotiation strategies.
+
+A big part of the off-chain information are centralized in a pubsub que, a set of recorded messages, more or less public, that every agent can listen to (and store locally for memory). A question is for example how important it is for agents to observe the negotiation dynamics before an agreement vs learning from the final transaction only: this has consequences on the privacy of offers, as it may be valuable to enforce the publicity of intra-negotiation offers for a more transparent auction mechanism. We need to define better the pubsub cue, equivalent in many ways to a broker order book.
+
+On this, see:
+- https://pintu.co.id/en/academy/post/what-is-decentralized-order-book
+- https://github.com/dyn4mik3/OrderBook
+- https://pypi.org/project/sortedcontainers/
+
+A set of environmental variables appear necessary for actors to construct optimal policies. These include:
+
+- L1 and L2 tokens price. We believe the dynamics of the protocol, being based on smart contracts and EVM technology, to be driven by the state of the L1 (Ethereum) and L2 (???) protocols. One proxy for this is the point-in-time price of the two protocols.
+
+- Gas Fees. Because of the need to record the outcome of a negotiation on the blockchain, the point-in-time gas fees is necessary to build policies. It's like having a time-dependent transaction cost model in trad-fi: the profitability of a position is a function of the current transaction costs. Here we are referring to the gas fees of the L2, but the gas fee of Ethereum may be relevant in modeling the dynamics of costs.
+
+- Electricity costs. This is a space-time dependent variable defining the cost of electricity in the world. Agents, aware of their location, are interested in measuring the point-in-time field of the cost of electricity to understand the hedge they may have against other potential agents in different locations. This means that agents may have a module solely focused on the forecasting of the local (or even global) electricity price to enhance the state space and then use that as an input for the optimal controller. On this see, among others: https://arxiv.org/abs/2106.06033
+
+It appears necessary to associate to each block (each deal), the wallet of the address, its hardware specifications, geolocation, timestamp. This means that in the transaction we need to have the IPFS CID, in which the computational cost of a task is specified (to be clarified with which quantitative metrics). A tricky point here is how to verify that the hardware specifications of a given wallet address in a given CID are true. Agents may be interested in hiding this information to other agents, and if they are able to do so, it is meaningless to build a protocol around the truthfulness of this information. About this, see the subject of verifiable provisioning of hardware: https://github.com/orgs/akash-network/discussions/614
+
+One solution could be to enable an emergent secondary marketplace of jobs specifications, in which machines can associate (and this can be verified) their hardware specifications to a given Job. The market is emergent as if agents want to become autonomous and this dataset is valuable, they will create it. We may want to investigate this ourselves. An important point, on this, is that agents an agent looking at a given open job is in principle not able to say exactly its computational cost. It can learn from past data only if they are associated with specific schemas that enable the agent to interpolate the input space of the task for that schema (in the presence of enough datapoints to approximate the cost function).
+
+Some examples of a Job Schema are:
+- A docker image and its input(s);
+- A github repository and an associated command;
+
+Even in the open source (git) case, it makes sense to leverage the secondary marketplace, even if the estimation of the task cost is not done via interpolation of previous runs, but via analysis of the source code of the task (for which even analytical estimates of the cost may exist).
+
+A task offer has to contain the CID of the data needed to perform the task. One could use this as a proxy for the computational cost of a task (even though a task could be associated with light data and be really expensive).
+
+An on-chain recorded transaction can record the final amount payed in exchange for the computational power provided.
+
+Every agent hardware specifications may limit the state space size. For example, some IoT actors would only be able to remember and act based on on-chain data, while others may be able to have a bigger memory and bigger state space. For the same reason, some agents may be unable to perform certain tasks (that may be costly and limited by time, in fact the validation could also check constraints in the tasks like the time it took to complete.). In other words, each agent has different constraints on both their state space and action space.
+
+A task shall be associated with a variable specifying the possibility for it to be distributed. It could also specify the specific/maximum/minimum number of agents to take the task. The minimum case is to enforce federate learning in the case in which sensitive data needs to be broken down (problem, if agents can fake this IP, multiple virtual agents from the same malitious actor could fill up the task. Is this solvable? Similar issue as above). This creates a negotiation with some kind of waiting room in which people can subscribe to participate and can opt-out before the room is full.
+
+A straightforward definition of fitness is profit.
+
+About the integration of bundles of assets in the agent-to-agent negotiation picture, it regardless appears necessary to introduce a [Numéraire](https://en.wikipedia.org/wiki/Num%C3%A9raire) shared by all agents. If different agents have different priors on the value of a given asset, it becomes challanging to have a well posed interaction.
+
+## Network Robustness
+
+Reading “Timing Reliability for Local Schedulers in Multi-Agent Systems”: it seems pretty evident that in the setup of Multi-agent training following greedy policies, the system will end up being more fragile. I don’t think we can avoid an holistic training setup in which a degree of cooperation is instilled in each agent. This will have the consequence of each agent to behave suboptimally, and the system will become subscettible to greedy attacks. I believe the system will need to tollerate a certain degree of corruption/inefficiency in order to gain robustness.
+Analogous situation in which greedy policies don’t work (see Section 5.1): https://web.stanford.edu/~boyd/papers/pdf/cvx_portfolio.pdf
+Even more relevant, the concept of self-organized criticality: https://www.linkedin.com/posts/jean-philippe-bouchaud-bb08a15_how-critical-is-brain-criticality-activity-7000544505359654912-ETjz/
+
+Not clear how to formalize/verify/deal with this point, but worth mentioning.
+
+Reading "Local Scheduling in Multi-Agent Systems: getting ready for safety-critical scenarios”: is is clear that we need a deep conceptual and practical separation between the intelligent/strategic layer. This is a central node interacting with the agents competition pool, making sure agents are able to act and that the CPS as a whole is achieving what it needs to achieve.. This central node can learn general laws of behaviour based on the goals of the overall system and the behaviour of its components. In this sense, the competition sandbox and the brain are close to each other, conceptually. A deeper separation is with the communication layer/middleware. This module ensures the brain and the components access all the information possible.
+
+Agents need to be robust against different kind of non-stationarities: agents could die, new appear, macrovariable drastically change. How to avoid the overall system of lead to an endogenous crisis triggered by a small variation is external variables? In other words, how to ensure a small degree of chaoticity/fragility against external perturbations?
+
+# Legacy Notes to be Integrated in v2.
 
 ## types
 
@@ -47,8 +93,6 @@ This enables resource providers to advertise machine capacity without having to 
  * GPU `uint`
  * RAM `uint`
  * labels `map[string]string`
-
-TODO: do we need fractional CPU values like 0.5?
 
 #### ResourceOffer (RO)
 

@@ -4,8 +4,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "coophive-simulator"
-version = "0.1.1"
-description = "A simulator for the game theory of the CoopHive protocol"
+version = "0.1.2"
+description = "A simulator for the Multi-agent system of the CoopHive protocol"
 authors = ["Levi Rybalov, Matteo Manzi"]
 license = "Apache 2"
 readme = "README.md"
