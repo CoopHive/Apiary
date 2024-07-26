@@ -18,12 +18,14 @@ class Result(DataAttribute):
         self.data_attributes = result_attributes
 
     def get_data(self):
+        """Get data from attributes."""
         data = {}
         for attribute in self.data_attributes:
             data[attribute] = getattr(self, attribute, None)
         return data
 
     def set_attributes(self, attributes):
+        """Set attributes."""
         for key, value in attributes.items():
             if hasattr(self, key) or key in self.data_attributes:
                 setattr(self, key, value)

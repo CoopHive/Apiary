@@ -8,17 +8,17 @@ import logging
 import os
 from collections import deque
 
+from coophive_simulator.deal import Deal
+from coophive_simulator.event import Event
 from coophive_simulator.job import Job
 from coophive_simulator.log_json import log_json
 from coophive_simulator.match import Match
+from coophive_simulator.result import Result
 from coophive_simulator.service_provider import ServiceProvider
 from coophive_simulator.service_provider_local_information import LocalInformation
 from coophive_simulator.smart_contract import SmartContract
 from coophive_simulator.solver import Solver
 from coophive_simulator.utils import Tx
-from coophive_simulator.event import Event
-from coophive_simulator.deal import Deal
-from coophive_simulator.result import Result
 
 
 class Client(ServiceProvider):
@@ -105,7 +105,7 @@ class Client(ServiceProvider):
 
     def _agree_to_match(self, match: Match):
         """Agree to a match."""
-        client_deposit = match.get_data().get('client_deposit')
+        client_deposit = match.get_data().get("client_deposit")
         tx = self._create_transaction(client_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
 
@@ -116,8 +116,14 @@ class Client(ServiceProvider):
         data = event.get_data()
 
         if not isinstance(data, Match):
-            self.logger.warning(f"Unexpected data type received in solver event: {type(data)}")
-            log_json(self.logger, "Received solver event with unexpected data type", {"name": event.get_name()})
+            self.logger.warning(
+                f"Unexpected data type received in solver event: {type(data)}"
+            )
+            log_json(
+                self.logger,
+                "Received solver event with unexpected data type",
+                {"name": event.get_name()},
+            )
             return
 
         # At this point, we know data is of type Match
@@ -128,7 +134,10 @@ class Client(ServiceProvider):
         if event.get_name() == "match":
             match = data
             match_data = match.get_data()
-            if isinstance(match_data, dict) and match_data.get('client_address') == self.get_public_key():
+            if (
+                isinstance(match_data, dict)
+                and match_data.get("client_address") == self.get_public_key()
+            ):
                 self.current_matched_offers.append(match)
 
     def decide_whether_or_not_to_mediate(self, event: Event):
@@ -152,15 +161,21 @@ class Client(ServiceProvider):
         result = event.get_data()
 
         if not isinstance(result, Result):
-            self.logger.warning(f"Unexpected data type received in solver event: {type(result)}")
+            self.logger.warning(
+                f"Unexpected data type received in solver event: {type(result)}"
+            )
         else:
             result_data = result.get_data()
-            deal_id = result_data['deal_id']
+            deal_id = result_data["deal_id"]
             if deal_id in self.current_deals.keys():
                 self.smart_contract.deals[deal_id] = self.current_deals.get(deal_id)
-                result_instruction_count = result_data['instruction_count']
+                result_instruction_count = result_data["instruction_count"]
                 result_instruction_count = float(result_instruction_count)
-                price_per_instruction = self.current_deals.get("deal_123").get_data().get('price_per_instruction')
+                price_per_instruction = (
+                    self.current_deals.get("deal_123")
+                    .get_data()
+                    .get("price_per_instruction")
+                )
                 payment_value = result_instruction_count * price_per_instruction
                 tx = Tx(sender=self.get_public_key(), value=payment_value)
 
@@ -173,25 +188,30 @@ class Client(ServiceProvider):
 
         if isinstance(data, Deal) or isinstance(data, Match):
             event_data = {"name": event.get_name(), "id": data.get_id()}
-            log_json(self.logger, "Received smart contract event", {"event_data": event_data})
+            log_json(
+                self.logger, "Received smart contract event", {"event_data": event_data}
+            )
         else:
-            log_json(self.logger, "Received smart contract event with unexpected data type", {"name": event.get_name()})
+            log_json(
+                self.logger,
+                "Received smart contract event with unexpected data type",
+                {"name": event.get_name()},
+            )
 
         if isinstance(data, Deal):
             deal = data
             deal_data = deal.get_data()
             deal_id = deal.get_id()
-            if deal_data['client_address'] == self.get_public_key():
+            if deal_data["client_address"] == self.get_public_key():
                 self.current_deals[deal_id] = deal
         elif isinstance(data, Match):
-            if event.get_name() == 'result':
+            if event.get_name() == "result":
                 # decide whether to mediate result
                 mediate_flag = self.decide_whether_or_not_to_mediate(event)
                 if mediate_flag:
                     self.request_mediation(event)
                 else:
                     self.pay_compute_node(event)
-
 
     def update_finished_deals(self):  # TODO: code duplication with resource provider?
         """Update the list of finished deals by removing them from current deals."""
@@ -238,7 +258,9 @@ class Client(ServiceProvider):
                     self.reject_match(match)
             else:
                 logging.info("is NOT the only match in accept_reject")
-                best_match = self.find_best_match_for_job(match.get_data().get('job_offer'))
+                best_match = self.find_best_match_for_job(
+                    match.get_data().get("job_offer")
+                )
                 if best_match == match and match_utility > self.T_accept:
                     self._agree_to_match(match)
                 else:
@@ -287,7 +309,9 @@ class Client(ServiceProvider):
             else:
                 logging.info("accept_reject_negotiate and is NOT only match")
                 best_match = self.find_best_match_for_job(match.get_data()["job_offer"])
-                best_match = self.find_best_match_for_job(match.get_data().get('job_offer'))
+                best_match = self.find_best_match_for_job(
+                    match.get_data().get("job_offer")
+                )
                 if best_match == match:
                     utility = self.calculate_utility(match)
                     if utility > self.T_accept:
@@ -315,7 +339,7 @@ class Client(ServiceProvider):
             "number of current matched offers is ", len(self.current_matched_offers)
         )
         for m in self.current_matched_offers:
-            if m != match and m.get_data().get('job_offer') == job_offer_id:
+            if m != match and m.get_data().get("job_offer") == job_offer_id:
                 return False
         return True
 
@@ -325,7 +349,7 @@ class Client(ServiceProvider):
         best_match = None
         highest_utility = -float("inf")
         for match in self.current_matched_offers:
-            if match.get_data().get('job_offer') == job_offer_id:
+            if match.get_data().get("job_offer") == job_offer_id:
                 utility = self.calculate_utility(match)
                 if utility > highest_utility:
                     highest_utility = utility

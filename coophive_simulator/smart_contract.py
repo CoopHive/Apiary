@@ -35,7 +35,7 @@ class SmartContract(ServiceProvider):
             filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
         )
         self.transactions = []
-        self.deals: dict[str, Deal] = {} # type: ignore # mapping from deal id to deal
+        self.deals: dict[str, Deal] = {}  # type: ignore # mapping from deal id to deal
         self.balances = {}  # mapping from public key to balance
         self.balance = 0  # total balance in the contract
         self.matches_made_in_current_step: list[Match] = []
@@ -92,9 +92,9 @@ class SmartContract(ServiceProvider):
             match (Match): The match object.
             tx (Tx): The transaction object.
         """
-        if match.get_data().get('resource_provider_address') == tx.sender:
+        if match.get_data().get("resource_provider_address") == tx.sender:
             self._agree_to_match_resource_provider(match, tx)
-        elif match.get_data().get('client_address') == tx.sender:
+        elif match.get_data().get("client_address") == tx.sender:
             self._agree_to_match_client(match, tx)
         if match.get_resource_provider_signed() and match.get_client_signed():
             self.matches_made_in_current_step.append(match)
@@ -193,10 +193,13 @@ class SmartContract(ServiceProvider):
         for result, tx in self.results_posted_in_current_step:
             if not isinstance(result, Result):
                 raise TypeError("result must be an instance of Result")
-            else: 
-                deal_id = result.get_data().get('deal_id')
-                if self.deals[deal_id].get_data()['resource_provider_address'] == tx.sender:
-                    result_event = Event(name='result', data=result)
+            else:
+                deal_id = result.get_data().get("deal_id")
+                if (
+                    self.deals[deal_id].get_data()["resource_provider_address"]
+                    == tx.sender
+                ):
+                    result_event = Event(name="result", data=result)
                     self.emit_event(result_event)
                     self._refund_timeout_deposit(result)
                     # append to transactions
@@ -213,7 +216,7 @@ class SmartContract(ServiceProvider):
     def _refund_client_deposit(self, deal: Deal):
         """Refund the client's deposit based on the deal."""
         client_address = deal.get_data()["client_address"]
-        client_deposit = deal.get_data().get('client_deposit')
+        client_deposit = deal.get_data().get("client_deposit")
         self.balance -= client_deposit
         self.balances[client_address] += client_deposit
 
@@ -334,6 +337,7 @@ class SmartContract(ServiceProvider):
 
         Args:
             event (Event): The event object.
+            result (Result): The result object.
             tx (Tx, optional): The transaction object. Defaults to None.
         """
         result = event.get_data()
