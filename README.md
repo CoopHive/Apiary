@@ -15,6 +15,7 @@ CoopHive Simulator is a tool designed to simulate the agent-based and game theor
 - [VMAS](https://github.com/proroklab/VectorizedMultiAgentSimulator): vectorized differentiable simulator designed for efficient Multi-Agent Reinforcement Learning benchmarking.
 - [BenchMARL](https://github.com/facebookresearch/BenchMARL): A collection of MARL benchmarks based on TorchRL.
 - [PADE](https://github.com/grei-ufc/pade): Python Agent DEvelopment framework.
+- [Repast](https://github.com/Repast/repast4py): agent-based modeling and simulation software.
 
 ## Installation
 
