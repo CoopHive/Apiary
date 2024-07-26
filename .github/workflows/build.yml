@@ -24,22 +24,22 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-#     - name: Install poetry
-#       run: make poetry-download
+    - name: Install poetry
+      run: make poetry-download
 
-#     - name: Install dependencies
-#       run: |
-#         poetry config virtualenvs.in-project true
-#         poetry install
+    - name: Install dependencies
+      run: |
+        poetry config virtualenvs.in-project true
+        poetry install
 
-#     - name: Run style checks
-#       run: |
-#         make check-codestyle
+    - name: Run style checks
+      run: |
+        make check-codestyle
     
-#     - name: Run docstrings checks
-#       run: |
-#         make docs
+    - name: Run docstrings checks
+      run: |
+        make docs
 
-#     - name: Run tests
-#       run: |
-#         make test
+    - name: Run tests
+      run: |
+        make test
