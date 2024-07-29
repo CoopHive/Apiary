@@ -1,11 +1,13 @@
 import logging
 import os
+import time
 
 from coophive_simulator.client import Client
+from coophive_simulator.globals import global_time
 from coophive_simulator.resource_provider import ResourceProvider
 from coophive_simulator.smart_contract import SmartContract
 from coophive_simulator.solver import Solver
-from coophive_simulator.utils import *
+from coophive_simulator.utils import Tx, create_job_offer, create_resource_offer
 
 logger = logging.getLogger(f"test")
 logging.basicConfig(
@@ -86,6 +88,7 @@ def create_n_job_offers(clients, num_job_offers_per_client, created_at):
 
 
 def main():
+    # TODO: look AA DECOMMITMENT paper and implement basic generate offer and evaluate accept
 
     addresses = Addresses()
     num_resource_providers = 5

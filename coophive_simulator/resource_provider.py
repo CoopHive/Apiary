@@ -5,6 +5,7 @@ import os
 
 import docker
 
+from coophive_simulator.globals import global_time
 from coophive_simulator.log_json import log_json
 from coophive_simulator.machine import Machine
 from coophive_simulator.match import Match
