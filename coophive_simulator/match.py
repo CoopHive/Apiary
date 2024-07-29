@@ -8,12 +8,11 @@ match_attributes = {
     "client_address",
     "resource_offer",
     "job_offer",
-    "price_per_instruction",
-    # TODO: add resource_provider expected number of instructions
-    # TODO: consider adding expected cost to resource provider
-    # TODO: consider adding expected benefit to client
+    "price_per_instruction",  # [USD]
+    "expected_number_of_instructions",
+    "expected_benefit_to_client",  # [USD]
     "client_deposit",
-    "timeout",
+    "timeout",  # [s]
     "timeout_deposit",
     "cheating_collateral_multiplier",
     "verification_method",

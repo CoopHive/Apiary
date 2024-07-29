@@ -145,8 +145,8 @@ class Client(ServiceProvider):
         """P2P handling.
 
         If the client hears about a resource_offer, it should check if its an appropriate match the way handle_solver_event
-        determines that a match exists if all required machine keys (CPU, RAM) have exactly the same values in both the job offer
-        and the resource offer.) -> then create a match and append to current_matched_offers.
+        determines that a match exists (if all required machine keys (CPU, RAM) have exactly the same values in both the job offer
+        and the resource offer) -> then create a match and append to current_matched_offers.
         """
         pass
 
@@ -284,20 +284,7 @@ class Client(ServiceProvider):
         #   Check whether there is already a deal in progress for the current job offer, if yes, reject this match.
         #   Introduce a flexibility factor that allows flexibility for when a cient decides to negotiate or reject (manipulates T_reject or utility somehow).
         #       - It allows for some degree of negotiation, making the client less rigid and more adaptable to market conditions.
-        #   Utility function should be well-defined and customizable, allowing adjustments based on different client requirements.
         #   T_accept and T_reject may be static or dynamically adjusted based on historical data or current market conditions.
-
-    def is_only_match(self, match: Match):
-        """Check if the match is the only match for the job offer."""
-        job_offer_id = match.get_data().get("job_offer")
-        logging.info("job_offer_id is ", job_offer_id)
-        logging.info(
-            "number of current matched offers is ", len(self.current_matched_offers)
-        )
-        for m in self.current_matched_offers:
-            if m != match and m.get_data().get("job_offer") == job_offer_id:
-                return False
-        return True
 
     # Currently, if two or more matches have the same utility, the best_match is the first one in current_matched_offers
     def find_best_match_for_job(self, job_offer_id):
@@ -312,18 +299,55 @@ class Client(ServiceProvider):
                     best_match = match
         return best_match
 
-    # More negative utility = worse for client, Closer to zero utility = better for client
-    # Utility always negative in this calculation, so trying to have utility closest to zero
-    # Thus set T_accept to -15 for some flexibility and T_reject to -30
-    # UPDATE: REFACTOR INTO CURRENCY TERMS: PRICE PER INSTRUCTION X NUMBER OF INSTRUCTIONS
+    def calculate_cost(self, match):
+        """Calculate the cost of a match.
+
+        Args:
+            match: An object containing the match details.
+
+        Returns:
+            float: The cost of the match based on price per instruction and expected number of instructions.
+        """
+        data = match.get_data()
+        price_per_instruction = data.get("price_per_instruction", 0)
+        expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
+        return price_per_instruction * expected_number_of_instructions
+
+    def calculate_time(self, match):
+        """Calculate the time required for a match.
+
+        Args:
+            match: An object containing the match details.
+
+        Returns:
+            int: The timeout value associated with the match.
+        """
+        data = match.get_data()
+        time = data.get("timeout", 0)
+        return time
+
+    def calculate_benefit(self, match):
+        """Calculate the expected benefit of a match to the client.
+
+        Args:
+            match: An object containing the match details.
+
+        Returns:
+            float: The expected benefit to the client from the match.
+        """
+        data = match.get_data()
+        expected_benefit_to_client = data.get("expected_benefit_to_client", 0)
+        return expected_benefit_to_client
+
+    # TODO: Currently T_accept is -15 and T_reject to -30 but that DEFINITELY needs to be changed
     def calculate_utility(self, match: Match):
-        """Calculate the utility of a match based on several factors."""
+        """Calculate the utility of a match based on several factors. COST, BENEFIT, and TIME are the main determiners."""
         # abstract logic into calculate benefit and calculate cost, add necessary attributes to match or job offer or resource offer
         # calculate cost should be number of instructions * price per instruction
         expected_cost = self.calculate_cost(match)
-        # calculate time should be number of instructions * time per instruction
+        # calculate time should be timeout
         expected_time = self.calculate_time(match)
-        # calculate benefit should be number of instructions * benefit per instruction
+        # calculate benefit should be benefit to client from this job
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - (expected_cost + expected_time)
 

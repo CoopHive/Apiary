@@ -167,6 +167,16 @@ class ResourceProvider(ServiceProvider):
             if match.get_data()["resource_provider_address"] == self.get_public_key():
                 self.current_matched_offers.append(match)
 
+    # TODO: Implement this function
+    def handle_p2p_event(self, event):
+        """P2P handling.
+
+        if the resource provider hears about a job_offer, it should check if its an appropriate match the way handle_solver_event
+        determines that a match exists (if all required machine keys (CPU, RAM) have exactly the same values in both the job offer
+        and the resource offer) -> then create a match and append to current_matched_offers.
+        """
+        pass
+
     def handle_smart_contract_event(self, event):
         """Handle events received from the connected smart contract.
 
@@ -272,110 +282,51 @@ class ResourceProvider(ServiceProvider):
             algorithm (str): The algorithm to use for making the decision. Can be "accept_all", "accept_reject", or "accept_reject_negotiate".
         """
         if algorithm == "accept_all":
-            # This is a simple algorithm for testing but in practice, it is not wise for the client to simply accept all
-            # acceptable proposals from resource providers and select the best proposal from them because the client may be forced to
-            # pay a large amount of penalty fees for reneging on many deals
             self._agree_to_match(match)
         elif algorithm == "accept_reject":
-            # If this is the only match for this resource offer:
-            #   Naive Implementation: Accept.
-            #   Complex Implementation: Accept if the utility is acceptable (above a certain threshold T_accept). Utility is some formula comprised of price per instruction,
-            #            client deposit, timeout, timeout deposit, cheating collateral multiplier, verification method, and mediators.
-            #            Reject if the utility is not acceptable (below a certain threshold T_accept).
-            # If this is not the only match for this resource offer:
-            #   Calculate the utility of each match for this resource offer.
-            #   Accept if this match has the highest utility and if the utility is acceptable (above a certain threshold T_accept).
-            #   Reject if this match does not have the highest utility OR it has the highest utility but the utility is not acceptable (below a certain threshold T_accept).
+            #   Calculate the utility of this match
+            #   Find the best match for this resource offer
+            #   Accept if this match has the highest utility of all matches and if the utility is acceptable (above a certain threshold T_accept).
+            #   Reject if this match does not have the highest utility of all matches OR it has the highest utility of all matches but the
+            #   utility is not acceptable (below a certain threshold T_accept).
             match_utility = self.calculate_utility(match)
-            if self.is_only_match(match):
-                if match_utility > self.T_accept:
-                    logging.info(
-                        "Agreeing to match because it is the only match and match's utility is ",
-                        match_utility,
-                        " which is greater than T_accept: ",
-                        self.T_accept,
-                    )
-                    self._agree_to_match(match)
-                else:
-                    logging.info(
-                        "Rejecting match because it is the only match and match's utility is ",
-                        match_utility,
-                        " which is less than T_accept: ",
-                        self.T_accept,
-                    )
-                    self.reject_match(match)
+
+            best_match = self.find_best_match_for_resource_offer(
+                match.get_data()["resource_offer"]
+            )
+            # could also check that match_utility > self.T_reject to make it more flexible (basically accept a match if its utility is over T_reject instead of over T_accept)
+            if best_match == match and match_utility > self.T_accept:
+                self._agree_to_match(match)
             else:
-                logging.info("is NOT the only match in accept_reject")
-                best_match = self.find_best_match_for_resource_offer(
-                    match.get_data()["resource_offer"]
-                )
-                if best_match == match and match_utility > self.T_accept:
-                    self._agree_to_match(match)
-                else:
-                    self.reject_match(match)
+                self.reject_match(match)
         elif algorithm == "accept_reject_negotiate":
-            # If this is the only match for this resource offer:
-            #   Naive Implementation: Accept
-            #   Complex Implementation: Accept if the utility is acceptable (above a certain threshold T_accept). Utility is some formula comprised of price per instruction,
-            #            client deposit, timeout, timeout deposit, cheating collateral multiplier, verification method, and mediators.
-            #            Reject if the utility is not at all acceptable (below a certain threshold T_reject).
-            #            Negotiate if the utility is within range of being acceptable (between T_reject and T_accept). Call some function negotiate_match
-            #                   that takes the match as an input and creates a similar but new match where the utility of the new match is > T_accept.
+            #   Find the best match for this resource offer. If this match is the best, calculate its utility.
+            #   Accept if this match if the utility is acceptable (above a certain threshold T_accept).
+            #   Reject if this match does not have the highest utility of all matches OR it has the highest utility of all matches but the
+            #   utility is not acceptable (below a certain threshold T_accept).
+            #   Negotiate if the utility is within range of being acceptable (between T_reject and T_accept). Call some function negotiate_match
+            #   that takes the match as an input and creates a similar but new match where the utility of the new match is > T_accept.
             #                   Should be able to handle multiple negotiation rounds.
             #                   IMPLEMENT NEGOTIATIONS OVER HTTP: Parameter for how many rounds until negotiation ends (ex: 5).
-            # If this is not the only match for this resource offer:
-            #   Calculate the utility of each match for this resource offer.
-            #   Accept if this match has the highest utility and if the utility is acceptable (above a certain threshold T_accept).
-            #       - Need tie breaking mechanism if tied for highest utility
-            #   Reject this match does not have the highest utility.
-            #   Negotiate if this match has the highest utility but the utility is not acceptable (below a certain threshold T_accept).
-            if self.is_only_match(match):
+            best_match = self.find_best_match_for_resource_offer(
+                match.get_data()["resource_offer"]
+            )
+            if best_match == match:
                 utility = self.calculate_utility(match)
                 if utility > self.T_accept:
-                    logging.info(
-                        "Agreeing to match because it is the only match and match's utility is ",
-                        utility,
-                        " which is greater than T_accept: ",
-                        self.T_accept,
-                    )
                     self._agree_to_match(match)
                 elif utility < self.T_reject:
-                    logging.info(
-                        "Rejecting match because it is the only match and match's utility is ",
-                        utility,
-                        " which is less than T_reject: ",
-                        self.T_reject,
-                    )
                     self.reject_match(match)
                 else:
-                    logging.info(
-                        "Negotiating match because it is the only match and match's utility is ",
-                        utility,
-                        " which is in between T_accept and T_reject.",
-                    )
                     self.negotiate_match(match)
             else:
-                logging.info("accept_reject_negotiate and is NOT only match")
-                best_match = self.find_best_match_for_resource_offer(
-                    match.get_data()["resource_offer"]
-                )
-                if best_match == match:
-                    utility = self.calculate_utility(match)
-                    if utility > self.T_accept:
-                        self._agree_to_match(match)
-                    elif utility < self.T_reject:
-                        self.reject_match(match)
-                    else:
-                        self.negotiate_match(match)
-                else:
-                    self.reject_match(match)
+                self.reject_match(match)
         else:
             raise ValueError(f"Unknown algorithm: {algorithm}")
         # Other considerations:
         #   Check whether there is already a deal in progress for the current resource offer, if yes, reject this match.
         #   Introduce a flexibility factor that allows flexibility for when a cient decides to negotiate or reject (manipulates T_reject or utility somehow).
         #       - It allows for some degree of negotiation, making the client less rigid and more adaptable to market conditions.
-        #   Utility function should be well-defined and customizable, allowing adjustments based on different client requirements.
         #   T_accept and T_reject may be static or dynamically adjusted based on historical data or current market conditions.
 
     def is_only_match(self, match):
@@ -417,38 +368,47 @@ class ResourceProvider(ServiceProvider):
                     best_match = match
         return best_match
 
-    # More negative utility = worse for client, Closer to zero utility = better for client
-    # Utility always negative in this calculation, so trying to have utility closest to zero
-    # Thus set T_accept to -15 for some flexibility and T_reject to -30
-    def calculate_utility(self, match):
-        """Calculate the utility of a match from the perspective of the resource provider based on several factors.
+    def calculate_revenue(self, match):
+        """Calculate the revenue generated from a match.
 
-        COST and TIME are the main determiners.
-         Utility formula:
-        - Higher price per instruction is better (weighted positively).
-        - Higher client deposit is better (weighted positively, with less importance than price).
-        - Longer timeout is better (weighted positively).
-        - Higher timeout deposit is better (weighted positively, with less importance than timeout).
+        Args:
+            match: An object containing the match details.
+
+        Returns:
+            float: The revenue from the match based on some calculation.
         """
         data = match.get_data()
         price_per_instruction = data.get("price_per_instruction", 0)
-        logging.info("price_per_instruction is ", price_per_instruction)
-        client_deposit = data.get("client_deposit", 0)
-        logging.info("client_deposit is ", client_deposit)
-        timeout = data.get("timeout", 0)
-        logging.info("timeout is ", timeout)
-        timeout_deposit = data.get("timeout_deposit", 0)
-        logging.info("timeout_deposit is ", timeout_deposit)
+        expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
+        return price_per_instruction * expected_number_of_instructions
 
-        # Calculate utility with appropriate weights
-        utility = (
-            price_per_instruction * 1
-            + client_deposit * 0.5
-            + timeout * 1
-            + timeout_deposit * 0.3
-        )
+    def calculate_time(self, match):
+        """Calculate the time required for a match.
 
-        return utility
+        Args:
+            match: An object containing the match details.
+
+        Returns:
+            int: The timeout value associated with the match.
+        """
+        data = match.get_data()
+        time = data.get("timeout", 0)
+        return time
+
+    # Currently T_accept is -15 and T_reject to -30 but that DEFINITELY needs to be changed
+    # NOTE: this utility calculation is DIFFERENT for a resource provider than for a client
+    def calculate_utility(self, match):
+        """Calculate the utility of a match based on several factors.
+
+        COST and TIME are the main determiners.
+        """
+        # abstract logic into calculate benefit and calculate cost, add necessary attributes to match or job offer or resource offer
+        # calculate cost should be number of instructions * price per instruction
+        expected_revenue = self.calculate_revenue(match)
+        # calculate time should be timeout
+        expected_time = self.calculate_time(match)
+        # the resource provider wants to maximize revenue while minimizing time required to complete a job
+        return expected_revenue - expected_time
 
     # TODO: Implement rejection logic. If a client or compute node rejects a match, it needs to be offered that match again
     # (either via the solver or p2p negotiation) in order to accept it.
