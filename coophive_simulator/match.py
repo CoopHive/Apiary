@@ -8,31 +8,32 @@ match_attributes = {
     "client_address",
     "resource_offer",
     "job_offer",
-    "price_per_instruction",
+    "price_per_instruction",  # [USD] (TODO: Should this be in the resource_offer?)
+    "expected_number_of_instructions",  # TODO: Should this be in the resource_offer?
+    "expected_benefit_to_client",  # [USD] (TODO: Should this be in the resource_offer?)
     "client_deposit",
-    "timeout",
+    "timeout",  # [s]
     "timeout_deposit",
     "cheating_collateral_multiplier",
     "verification_method",
     "mediators",
+    "T_accept",
+    "T_reject",
 }
 
 
 class Match(DataAttribute):
-    """Represents a match object that inherits from DataAttribute.
+    """Represents a match object that inherits from DataAttribute."""
 
-    Attributes:
-    - data_attributes (dict): Dictionary of match attributes.
-    - client_signed (bool): Flag indicating if client has signed.
-    - resource_provider_signed (bool): Flag indicating if resource provider has signed.
-    """
-
-    def __init__(self):
+    def __init__(self, data=None):
         """Initializes a Match object."""
         super().__init__()
         self.data_attributes = match_attributes
         self.client_signed = False
         self.resource_provider_signed = False
+        if data:
+            for key, value in data.items():
+                self.add_data(key, value)
 
     def get_resource_provider_signed(self):
         """Get the status of resource provider signed flag."""

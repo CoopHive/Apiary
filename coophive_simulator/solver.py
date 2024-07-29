@@ -62,9 +62,15 @@ class Solver(ServiceProvider):
 
         # if deal, remove resource and job offers from list
         elif event.get_name() == "deal" and isinstance(event.get_data(), Deal):
-            self.logger.info(
-                f"have smart contract event {event.get_name(), event.get_data().get_id()}"
+            log_json(
+                self.logger,
+                "Smart contract event",
+                {
+                    "event_name": event.get_name(),
+                    "event_data_id": event.get_data().get_id(),
+                },
             )
+
             deal = event.get_data()
 
             if not isinstance(event.get_data(), DataAttribute):
@@ -111,6 +117,14 @@ class Solver(ServiceProvider):
         self.current_matched_resource_offers.clear()
         # remove outdated job and resource offers
         self.remove_outdated_offers()
+        log_json(
+            self.logger,
+            "Solver cleanup for: ",
+            {
+                "currently_matched_job_offers": self.currently_matched_job_offers,
+                "current_matched_resource_offers": self.current_matched_resource_offers,
+            },
+        )
 
     def solve(self):
         """Solve the current matching problem by matching job offers with resource offers."""
@@ -130,6 +144,11 @@ class Solver(ServiceProvider):
                 match_event = Event(name="match", data=match)
                 # emit match event
                 self.emit_event(match_event)
+                log_json(
+                    self.logger,
+                    "Match event emitted",
+                    {"match_event": match_event.get_data().get_id()},
+                )
                 # go on to the next job offer
                 continue
 

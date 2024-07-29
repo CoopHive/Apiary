@@ -6,6 +6,7 @@ such as Deal, Event, Job, Match, Result, Client, SmartContract, and Tx.
 
 # TODO: integrate them in pytest/CICD
 
+import logging
 import unittest
 
 from coophive_simulator.deal import Deal
@@ -98,7 +99,7 @@ class TestSolver(unittest.TestCase):
             id="resource_123", data=self.resource_offer
         )
 
-        print("zyz", self.solver.get_local_information().ipfs.data)
+        logging.info("zyz", self.solver.get_local_information().ipfs.data)
 
     def test_connect_to_smart_contract(self):
         """Test connection to a smart contract."""
