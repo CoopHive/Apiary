@@ -55,11 +55,8 @@ class Client(ServiceProvider):
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
         self.deals_finished_in_current_step = []
         self.current_matched_offers: list[Match] = []
-        # added for negotiation API
         # TODO: HOW DO WE INTIALIZE THESE?! Maybe each job offer should have its own T_accept, T_reject instead of one overarching one for the client
-        # maybe T_accept should be calculate_utility times 1.05
         self.T_accept = -15
-        # maybe T_reject should be calculate_utility times 2.1
         self.T_reject = -30
 
     def get_solver(self):
@@ -239,17 +236,8 @@ class Client(ServiceProvider):
     def make_match_decision(self, match: Match, algorithm):
         """Make a decision on whether to accept, reject, or negotiate a match."""
         if algorithm == "accept_all":
-            # This is a simple algorithm for testing but in practice, it is not wise for the client to simply accept all
-            # acceptable proposals from resource providers and select the best proposal from them because the client may be forced to
-            # pay a large amount of penalty fees for reneging on many deals
             self._agree_to_match(match)
         elif algorithm == "accept_reject":
-            #   Calculate the utility of this match
-            #   Find the best match for this job offer
-            #   Accept if this match has the highest utility of all matches and if the utility is acceptable (above a certain threshold T_accept).
-            #   Reject if this match does not have the highest utility of all matches OR it has the highest utility of all matches but the
-            #   utility is not acceptable (below a certain threshold T_accept).
-
             match_utility = self.calculate_utility(match)
             if self.is_only_match(match):
                 best_match = self.find_best_match_for_job(match.get_data()["job_offer"])
@@ -259,10 +247,6 @@ class Client(ServiceProvider):
             else:
                 self.reject_match(match)
         elif algorithm == "accept_reject_negotiate":
-            #   Find the best match for this job offer. If this match is the best, calculate its utility.
-            #   Accept if this match if the utility is acceptable (above a certain threshold T_accept).
-            #   Reject if this match does not have the highest utility of all matches OR it has the highest utility of all matches but the
-            #   utility is not acceptable (below a certain threshold T_accept).
             #   Negotiate if the utility is within range of being acceptable (between T_reject and T_accept). Call some function negotiate_match
             #   that takes the match as an input and creates a similar but new match where the utility of the new match is > T_accept.
             #   Should be able to handle multiple negotiation rounds.
@@ -286,7 +270,6 @@ class Client(ServiceProvider):
         #       - It allows for some degree of negotiation, making the client less rigid and more adaptable to market conditions.
         #   T_accept and T_reject may be static or dynamically adjusted based on historical data or current market conditions.
 
-    # Currently, if two or more matches have the same utility, the best_match is the first one in current_matched_offers
     def find_best_match_for_job(self, job_offer_id):
         """Find the best match for a given job offer based on utility."""
         best_match = None
@@ -313,19 +296,6 @@ class Client(ServiceProvider):
         expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
         return price_per_instruction * expected_number_of_instructions
 
-    def calculate_time(self, match):
-        """Calculate the time required for a match.
-
-        Args:
-            match: An object containing the match details.
-
-        Returns:
-            int: The timeout value associated with the match.
-        """
-        data = match.get_data()
-        time = data.get("timeout", 0)
-        return time
-
     def calculate_benefit(self, match):
         """Calculate the expected benefit of a match to the client.
 
@@ -342,14 +312,9 @@ class Client(ServiceProvider):
     # TODO: Currently T_accept is -15 and T_reject to -30 but that DEFINITELY needs to be changed
     def calculate_utility(self, match: Match):
         """Calculate the utility of a match based on several factors. COST, BENEFIT, and TIME are the main determiners."""
-        # abstract logic into calculate benefit and calculate cost, add necessary attributes to match or job offer or resource offer
-        # calculate cost should be number of instructions * price per instruction
         expected_cost = self.calculate_cost(match)
-        # calculate time should be timeout
-        expected_time = self.calculate_time(match)
-        # calculate benefit should be benefit to client from this job
         expected_benefit = self.calculate_benefit(match)
-        return expected_benefit - (expected_cost + expected_time)
+        return expected_benefit - expected_cost
 
     # TODO: Implement rejection logic. If a client or compute node rejects a match, it needs to be offered that match again
     # (either via the solver or p2p negotiation) in order to accept it.
@@ -359,16 +324,69 @@ class Client(ServiceProvider):
         pass
 
     # TODO: Implement negotiation logic. Implement HTTP communication for negotiation
-    def negotiate_match(self, match, maxRounds):
+    def negotiate_match(self, match, max_rounds=5):
         """Negotiate a match."""
         log_json(self.logger, "Negotiating match", {"match_id": match.get_id()})
-        pass
+        for _ in range(max_rounds):
+            new_match_offer = self.create_new_match_offer(match)
+            response = self.communicate_request_to_party(
+                match.get_data()["resource_provider_address"], new_match_offer
+            )
+            if response["accepted"]:
+                self._agree_to_match(response["match"])
+                return
+            match = response["counter_offer"]
+        self.reject_match(match)
 
-    # for each match, call some function with an input comprised of the match and a match algorithm
-    # that decides whether the client should accept, reject, or negotiate the deal
-    # i.e. self.make_match_decision(match, algorithm='accept_all') would call self._agree_to_match(match)
-    # i.e. self.make_match_decision(match, algorithm='accept_reject') would have the client only accept or reject the match, not allowing for negotiations
-    # i.e. self.make_match_decision(match, algorithm='accept_reject_negotiate') would have the client accept, reject, or negotiate the match
+    def create_new_match_offer(self, match):
+        """Create a new match offer with modified terms."""
+        data = match.get_data()
+        new_data = data.copy()
+        new_data["price_per_instruction"] = (
+            data["price_per_instruction"] * 0.95
+        )  # For example, reduce the price
+        new_match = Match(new_data)
+        return new_match
+
+    def communicate_request_to_party(self, party_id, match_offer):
+        """Communicate a match offer request to a specified party.
+
+        Args:
+            party_id: The ID of the party to communicate with.
+            match_offer: The match offer details to be communicated.
+
+        Returns:
+            dict: A response dictionary indicating acceptance and any counter-offer.
+        """
+        # Simulate communication - this would need to be implemented with actual P2P or HTTP communication
+        response = self.simulate_communication(party_id, match_offer)
+        return response
+
+    def simulate_communication(self, party_id, match_offer):
+        """Simulate the communication of a match offer to a party and receive a response.
+
+        Args:
+            party_id: The ID of the party to communicate with.
+            match_offer: The match offer details to be communicated.
+
+        Returns:
+            dict: A simulated response including acceptance status and counter-offer.
+        """
+        log_json(
+            self.logger,
+            "Simulating communication",
+            {"party_id": party_id, "match_offer": match_offer.get_data()},
+        )
+        # In a real implementation, this function would send a request to the party_id and wait for a response.
+        response = {
+            "accepted": False,
+            "counter_offer": self.create_new_match_offer(match_offer),
+        }
+        if self.calculate_utility(match_offer) > self.T_accept:
+            response["accepted"] = True
+            response["match"] = match_offer
+        return response
+
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
         for match in self.current_matched_offers:

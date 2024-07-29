@@ -52,10 +52,8 @@ class ResourceProvider(ServiceProvider):
         self.solver = None
         self.smart_contract = None
         self.current_deals = {}  # maps deal id to deals
-        # changed to simulate running a docker job
         self.current_jobs = {}
         self.docker_client = docker.from_env()
-        # self.current_job_running_times = {}  # maps deal id to how long the resource provider has been running the job
         self.deals_finished_in_current_step = []
         self.current_matched_offers = []
 
@@ -64,11 +62,8 @@ class ResourceProvider(ServiceProvider):
 
         self.login_to_docker()
 
-        # added for negotiation API
-        # HOW DO WE INTIALIZE THESE?! Maybe each job offer should have its own T_accept, T_reject instead of one overarching one for the client
-        # maybe T_accept should be calculate_utility times 1.05
+        # TODO: HOW DO WE INTIALIZE THESE?! Maybe each job offer should have its own T_accept, T_reject instead of one overarching one for the client
         self.T_accept = 15
-        # maybe T_reject should be calculate_utility times 2.1
         self.T_reject = 30
 
     def login_to_docker(self):
@@ -257,7 +252,6 @@ class ResourceProvider(ServiceProvider):
         Args:
             deal_id: The ID of the deal whose job has completed.
         """
-        # added to simulate running a docker job
         container = self.current_jobs[deal_id]
         container.stop()
         container.remove()
@@ -267,7 +261,6 @@ class ResourceProvider(ServiceProvider):
 
     def update_job_running_times(self):
         """Update the running times of current jobs and handle completed jobs."""
-        # changed to simulate running a docker job
         for deal_id, container in self.current_jobs.items():
             container.reload()
             if container.status == "exited":
@@ -284,11 +277,6 @@ class ResourceProvider(ServiceProvider):
         if algorithm == "accept_all":
             self._agree_to_match(match)
         elif algorithm == "accept_reject":
-            #   Calculate the utility of this match
-            #   Find the best match for this resource offer
-            #   Accept if this match has the highest utility of all matches and if the utility is acceptable (above a certain threshold T_accept).
-            #   Reject if this match does not have the highest utility of all matches OR it has the highest utility of all matches but the
-            #   utility is not acceptable (below a certain threshold T_accept).
             match_utility = self.calculate_utility(match)
 
             best_match = self.find_best_match_for_resource_offer(
@@ -300,10 +288,6 @@ class ResourceProvider(ServiceProvider):
             else:
                 self.reject_match(match)
         elif algorithm == "accept_reject_negotiate":
-            #   Find the best match for this resource offer. If this match is the best, calculate its utility.
-            #   Accept if this match if the utility is acceptable (above a certain threshold T_accept).
-            #   Reject if this match does not have the highest utility of all matches OR it has the highest utility of all matches but the
-            #   utility is not acceptable (below a certain threshold T_accept).
             #   Negotiate if the utility is within range of being acceptable (between T_reject and T_accept). Call some function negotiate_match
             #   that takes the match as an input and creates a similar but new match where the utility of the new match is > T_accept.
             #                   Should be able to handle multiple negotiation rounds.
@@ -356,7 +340,6 @@ class ResourceProvider(ServiceProvider):
 
         Returns:
             match: The match with the highest utility for the given resource offer.
-            Currently, if two or more matches have the same utility, the best_match is the first one in current_matched_offers.
         """
         best_match = None
         highest_utility = -float("inf")
@@ -382,19 +365,6 @@ class ResourceProvider(ServiceProvider):
         expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
         return price_per_instruction * expected_number_of_instructions
 
-    def calculate_time(self, match):
-        """Calculate the time required for a match.
-
-        Args:
-            match: An object containing the match details.
-
-        Returns:
-            int: The timeout value associated with the match.
-        """
-        data = match.get_data()
-        time = data.get("timeout", 0)
-        return time
-
     # Currently T_accept is -15 and T_reject to -30 but that DEFINITELY needs to be changed
     # NOTE: this utility calculation is DIFFERENT for a resource provider than for a client
     def calculate_utility(self, match):
@@ -402,13 +372,8 @@ class ResourceProvider(ServiceProvider):
 
         COST and TIME are the main determiners.
         """
-        # abstract logic into calculate benefit and calculate cost, add necessary attributes to match or job offer or resource offer
-        # calculate cost should be number of instructions * price per instruction
         expected_revenue = self.calculate_revenue(match)
-        # calculate time should be timeout
-        expected_time = self.calculate_time(match)
-        # the resource provider wants to maximize revenue while minimizing time required to complete a job
-        return expected_revenue - expected_time
+        return expected_revenue
 
     # TODO: Implement rejection logic. If a client or compute node rejects a match, it needs to be offered that match again
     # (either via the solver or p2p negotiation) in order to accept it.
@@ -418,10 +383,75 @@ class ResourceProvider(ServiceProvider):
         pass
 
     # TODO: Implement negotiation logic. Implement HTTP communication for negotiation
-    def negotiate_match(self, match):
+    def negotiate_match(self, match, max_rounds=5):
         """Negotiate the given match."""
         log_json(self.logger, "Negotiating match", {"match_id": match.get_id()})
-        pass
+        for _ in range(max_rounds):
+            new_match_offer = self.create_new_match_offer(match)
+            response = self.communicate_request_to_party(
+                match.get_data()["client_address"], new_match_offer
+            )
+            if response["accepted"]:
+                self._agree_to_match(response["match"])
+                return
+            match = response["counter_offer"]
+        self.reject_match(match)
+
+    def create_new_match_offer(self, match):
+        """Create a new match offer by modifying the price per instruction.
+
+        Args:
+            match (Match): The match object to base the new offer on.
+
+        Returns:
+            Match: A new match object with the updated price.
+        """
+        data = match.get_data()
+        new_data = data.copy()
+        new_data["price_per_instruction"] = (
+            data["price_per_instruction"] * 1.05
+        )  # For example, increase the price
+        new_match = Match(new_data)
+        return new_match
+
+    def communicate_request_to_party(self, party_id, match_offer):
+        """Communicate a match offer to a specified party and return the response.
+
+        Args:
+            party_id (str): The ID of the party to communicate with.
+            match_offer (Match): The match offer to be communicated.
+
+        Returns:
+            dict: The response from the party.
+        """
+        # Simulate communication - this would need to be implemented with actual P2P or HTTP communication
+        response = self.simulate_communication(party_id, match_offer)
+        return response
+
+    def simulate_communication(self, party_id, match_offer):
+        """Simulate communication with a party to get their response to a match offer.
+
+        Args:
+            party_id (str): The ID of the party to communicate with.
+            match_offer (Match): The match offer being sent.
+
+        Returns:
+            dict: A simulated response from the party, including whether the offer was accepted or a counter-offer.
+        """
+        log_json(
+            self.logger,
+            "Simulating communication",
+            {"party_id": party_id, "match_offer": match_offer.get_data()},
+        )
+        # In a real implementation, this function would send a request to the party_id and wait for a response.
+        response = {
+            "accepted": False,
+            "counter_offer": self.create_new_match_offer(match_offer),
+        }
+        if self.calculate_utility(match_offer) > self.T_accept:
+            response["accepted"] = True
+            response["match"] = match_offer
+        return response
 
     def resource_provider_loop(self):
         """Main loop for the resource provider to process matched offers and update job running times."""
