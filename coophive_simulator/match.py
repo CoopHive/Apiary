@@ -8,9 +8,9 @@ match_attributes = {
     "client_address",
     "resource_offer",
     "job_offer",
-    "price_per_instruction",  # [USD]
-    "expected_number_of_instructions",
-    "expected_benefit_to_client",  # [USD]
+    "price_per_instruction",  # [USD] (TODO: Should this be in the resource_offer?)
+    "expected_number_of_instructions",  # TODO: Should this be in the resource_offer?
+    "expected_benefit_to_client",  # [USD] (TODO: Should this be in the resource_offer?)
     "client_deposit",
     "timeout",  # [s]
     "timeout_deposit",
