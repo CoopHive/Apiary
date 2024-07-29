@@ -11,6 +11,10 @@ license = "Apache 2"
 readme = "README.md"
 packages = [{include = "coophive"}]
 
+[tool.poetry.scripts]
+# Entry points for the package https://python-poetry.org/docs/pyproject/#scripts
+"coophive" = "coophive.__main__:cli"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 click = {version = ">=8.0, <8.1.4"}
