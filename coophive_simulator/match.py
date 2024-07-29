@@ -9,6 +9,9 @@ match_attributes = {
     "resource_offer",
     "job_offer",
     "price_per_instruction",
+    # TODO: add resource_provider expected number of instructions
+    # TODO: consider adding expected cost to resource provider
+    # TODO: consider adding expected benefit to client
     "client_deposit",
     "timeout",
     "timeout_deposit",
