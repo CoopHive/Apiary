@@ -76,16 +76,14 @@ class ResourceProvider(ServiceProvider):
                 message = client_socket.recv(1024)
                 if not message:
                     break
-                message = message.decode(
-                    "utf-8"
-                )  # Decode the message from bytes to string
+                # Decode the message from bytes to string
+                message = message.decode("utf-8")
                 logging.info(f"Received message from client: {message}")
-                match_data = eval(
-                    message.split("New match offer: ")[1]
-                )  # Convert string to dictionary
-                match = Match(match_data)
-                response = self.evaluate_match(match)
-                client_socket.send(response.encode("utf-8"))
+                if "New match offer" in message:
+                    match_data = eval(message.split("New match offer: ")[1])
+                    match = Match(match_data)
+                    response = self.evaluate_match(match)
+                    client_socket.send(response.encode("utf-8"))
             except ConnectionResetError:
                 logging.info("Connection lost. Closing connection.")
                 client_socket.close()
