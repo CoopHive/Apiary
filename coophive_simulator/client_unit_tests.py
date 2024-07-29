@@ -6,6 +6,7 @@ such as Deal, Event, Job, Match, Result, SmartContract, Solver, and Tx.
 
 # TODO: integrate them in pytest/CICD
 
+import logging
 import unittest
 from unittest.mock import MagicMock
 
@@ -144,12 +145,12 @@ class TestClient(unittest.TestCase):
         # Create an event
         event = Event("event_1", data=result)
 
-        print(self.client.smart_contract.balances.get("client_address_123"))
+        logging.info(self.client.smart_contract.balances.get("client_address_123"))
 
         # Call the method
         self.client.pay_compute_node(event=event)
 
-        print(self.client.smart_contract.balances.get("client_address_123"))
+        logging.info(self.client.smart_contract.balances.get("client_address_123"))
 
         # Ensure balances are updated correctly
         self.assertEqual(

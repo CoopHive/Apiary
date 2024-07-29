@@ -2,6 +2,9 @@
 
 import logging
 import os
+import socket
+import threading
+import time
 
 import docker
 
@@ -18,23 +21,7 @@ from coophive_simulator.utils import *
 
 # TODO: centralize logging settings and initialization at the initial setup of the package functionality calls.
 class ResourceProvider(ServiceProvider):
-    """Class representing a resource provider in the CoopHive simulator.
-
-    Attributes:
-        public_key (str): The public key associated with the resource provider.
-        logger (logging.Logger): Logger instance for logging resource provider events.
-        machines (dict): Dictionary mapping machine IDs to machine metadata.
-        solver_url (str): URL of the connected solver.
-        solver (Solver): Instance of the connected solver.
-        smart_contract (SmartContract): Instance of the connected smart contract.
-        current_deals (dict): Dictionary mapping deal IDs to deals.
-        current_jobs (dict): Dictionary mapping deal IDs to running jobs.
-        docker_client (docker.client.DockerClient): Docker client instance.
-        deals_finished_in_current_step (list): List of deal IDs finished in the current simulation step.
-        current_matched_offers (list): List of currently matched offers.
-        docker_username (str): Docker Hub username.
-        docker_password (str): Docker Hub password.
-    """
+    """Class representing a resource provider in the CoopHive simulator."""
 
     def __init__(self, public_key: str):
         """Initialize the ResourceProvider instance.
@@ -57,11 +44,62 @@ class ResourceProvider(ServiceProvider):
         self.docker_client = docker.from_env()
         self.deals_finished_in_current_step = []
         self.current_matched_offers = []
+        self.server_socket = None
+        self.start_server_socket()
 
         self.docker_username = "your_dockerhub_username"
         self.docker_password = "your_dockerhub_password"
 
         self.login_to_docker()
+
+    def start_server_socket(self):
+        """Initializes the server socket, binds it to a local address and port, and starts listening for incoming connections."""
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.bind(("localhost", 1234))
+        self.server_socket.listen(5)
+        logging.info("Server listening on port 1234")
+        threading.Thread(target=self.accept_clients, daemon=True).start()
+
+    def accept_clients(self):
+        """Continuously accepts incoming client connections. For each new connection, a new thread is spawned to handle the client's messages."""
+        while True:
+            client_socket, addr = self.server_socket.accept()
+            logging.info(f"Connection established with {addr}")
+            threading.Thread(
+                target=self.handle_client_messages, args=(client_socket,), daemon=True
+            ).start()
+
+    def handle_client_messages(self, client_socket):
+        """Handles incoming messages from a connected client."""
+        while True:
+            try:
+                message = client_socket.recv(1024)
+                if not message:
+                    break
+                message = message.decode(
+                    "utf-8"
+                )  # Decode the message from bytes to string
+                logging.info(f"Received message from client: {message}")
+                match_data = eval(
+                    message.split("New match offer: ")[1]
+                )  # Convert string to dictionary
+                match = Match(match_data)
+                response = self.evaluate_match(match)
+                client_socket.send(response.encode("utf-8"))
+            except ConnectionResetError:
+                logging.info("Connection lost. Closing connection.")
+                client_socket.close()
+                break
+            except Exception as e:
+                logging.info(f"Error handling message: {e}")
+
+    def evaluate_match(self, match):
+        """Here you evaluate the match and decide whether to accept or counteroffer."""
+        if self.calculate_utility(match) > match.get_data()["T_accept"]:
+            return "accepted"
+        else:
+            counter_offer = self.create_new_match_offer(match)
+            return f"New match offer: {counter_offer.get_data()}"
 
     def login_to_docker(self):
         """Log in to Docker Hub using the provided username and password."""
@@ -314,25 +352,6 @@ class ResourceProvider(ServiceProvider):
         #       - It allows for some degree of negotiation, making the client less rigid and more adaptable to market conditions.
         #   T_accept and T_reject may be static or dynamically adjusted based on historical data or current market conditions.
 
-    def is_only_match(self, match):
-        """Check if the given match is the only match for its resource offer.
-
-        Args:
-            match: The match instance to check.
-
-        Returns:
-            bool: True if the match is the only match for its resource offer, False otherwise.
-        """
-        resource_offer_id = match.get_data()["resource_offer"]
-        logging.info("resource_offer_id is ", resource_offer_id)
-        logging.info(
-            "number of current matched offers is ", len(self.current_matched_offers)
-        )
-        for m in self.current_matched_offers:
-            if m != match and m.get_data()["resource_offer"] == resource_offer_id:
-                return False
-        return True
-
     def find_best_match_for_resource_offer(self, resource_offer_id):
         """Find the best match for a given resource offer based on utility.
 
@@ -412,6 +431,12 @@ class ResourceProvider(ServiceProvider):
         new_data["price_per_instruction"] = (
             data["price_per_instruction"] * 1.05
         )  # For example, increase the price
+        new_data["T_accept"] = data.get(
+            "T_accept", -10
+        )  # Default value if T_accept is not present
+        new_data["T_reject"] = data.get(
+            "T_reject", -20
+        )  # Default value if T_reject is not present
         new_match = Match(new_data)
         return new_match
 
@@ -426,6 +451,11 @@ class ResourceProvider(ServiceProvider):
             dict: The response from the party.
         """
         # Simulate communication - this would need to be implemented with actual P2P or HTTP communication
+        log_json(
+            self.logger,
+            "Communicating request to party",
+            {"party_id": party_id, "match_offer": match_offer.get_data()},
+        )
         response = self.simulate_communication(party_id, match_offer)
         return response
 
@@ -439,20 +469,19 @@ class ResourceProvider(ServiceProvider):
         Returns:
             dict: A simulated response from the party, including whether the offer was accepted or a counter-offer.
         """
+        message = f"New match offer: {match_offer.get_data()}"
+        self.client_socket.send(message.encode("utf-8"))
+        response_message = self.client_socket.recv(1024).decode("utf-8")
         log_json(
             self.logger,
-            "Simulating communication",
-            {"party_id": party_id, "match_offer": match_offer.get_data()},
+            "Received response from server",
+            {"response_message": response_message},
         )
-        # In a real implementation, this function would send a request to the party_id and wait for a response.
+
         response = {
-            "accepted": False,
+            "accepted": "accepted" in response_message,
             "counter_offer": self.create_new_match_offer(match_offer),
         }
-        # TODO: update where T_accept is accessed from if its moved to resource_offer
-        if self.calculate_utility(match_offer) > match_offer.get_data()["T_accept"]:
-            response["accepted"] = True
-            response["match"] = match_offer
         return response
 
     def resource_provider_loop(self):
@@ -464,3 +493,13 @@ class ResourceProvider(ServiceProvider):
 
 
 # TODO: when handling events, add to list to be managed later, i.e. don't start signing stuff immediately
+
+if __name__ == "__main__":
+    public_key = "Your public key here"  # Replace with the actual public key
+    resource_provider = ResourceProvider(public_key)
+    resource_provider.resource_provider_loop()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        logging.info("Server shutting down.")

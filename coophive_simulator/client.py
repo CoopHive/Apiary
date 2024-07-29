@@ -6,6 +6,9 @@ connect to solvers and smart contracts, handle events, and make decisions regard
 
 import logging
 import os
+import socket
+import threading
+import time
 from collections import deque
 
 from coophive_simulator.deal import Deal
@@ -23,20 +26,7 @@ from coophive_simulator.utils import Tx
 
 
 class Client(ServiceProvider):
-    """A client in the coophive simulator that interacts with solvers and smart contracts to manage jobs and deals.
-
-    Attributes:
-        logger (logging.Logger): Logger for the client.
-        current_jobs (deque): Queue of current jobs.
-        local_information (LocalInformation): Local information instance.
-        solver_url (str): URL of the connected solver.
-        solver (Solver): Connected solver instance.
-        current_deals (dict): Mapping of deal IDs to deals.
-        deals_finished_in_current_step (list): List of deals finished in the current step.
-        current_matched_offers (list): List of current matched offers.
-        T_accept (float): Threshold for accepting matches.
-        T_reject (float): Threshold for rejecting matches.
-    """
+    """A client in the coophive simulator that interacts with solvers and smart contracts to manage jobs and deals."""
 
     def __init__(self, address: str):
         """Initialize a new Client instance.
@@ -56,6 +46,29 @@ class Client(ServiceProvider):
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
         self.deals_finished_in_current_step = []
         self.current_matched_offers: list[Match] = []
+        self.client_socket = None
+        self.server_address = ("localhost", 1234)
+        self.start_client_socket()
+
+    def start_client_socket(self):
+        """Start the client socket and connect to the server."""
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client_socket.connect(self.server_address)
+        logging.info("Connected to server")
+        threading.Thread(target=self.handle_server_messages, daemon=True).start()
+
+    def handle_server_messages(self):
+        """Handle incoming messages from the server."""
+        while True:
+            try:
+                message = self.client_socket.recv(1024)
+                if not message:
+                    break
+                logging.info(f"Received message from server: {message.decode('utf-8')}")
+            except ConnectionResetError:
+                logging.info("Connection lost. Closing connection.")
+                self.client_socket.close()
+                break
 
     def get_solver(self):
         """Get the connected solver."""
@@ -345,6 +358,12 @@ class Client(ServiceProvider):
         new_data["price_per_instruction"] = (
             data["price_per_instruction"] * 0.95
         )  # For example, reduce the price
+        new_data["T_accept"] = data.get(
+            "T_accept", -10
+        )  # Default value if T_accept is not present
+        new_data["T_reject"] = data.get(
+            "T_reject", -20
+        )  # Default value if T_reject is not present
         new_match = Match(new_data)
         return new_match
 
@@ -359,6 +378,11 @@ class Client(ServiceProvider):
             dict: A response dictionary indicating acceptance and any counter-offer.
         """
         # Simulate communication - this would need to be implemented with actual P2P or HTTP communication
+        log_json(
+            self.logger,
+            "Communicating request to party",
+            {"party_id": party_id, "match_offer": match_offer.get_data()},
+        )
         response = self.simulate_communication(party_id, match_offer)
         return response
 
@@ -372,25 +396,51 @@ class Client(ServiceProvider):
         Returns:
             dict: A simulated response including acceptance status and counter-offer.
         """
+        message = f"New match offer: {match_offer.get_data()}"
+        self.client_socket.send(message.encode("utf-8"))
+        response_message = self.client_socket.recv(1024).decode("utf-8")
         log_json(
             self.logger,
-            "Simulating communication",
-            {"party_id": party_id, "match_offer": match_offer.get_data()},
+            "Received response from server",
+            {"response_message": response_message},
         )
-        # In a real implementation, this function would send a request to the party_id and wait for a response.
+
         response = {
-            "accepted": False,
+            "accepted": "accepted" in response_message,
             "counter_offer": self.create_new_match_offer(match_offer),
         }
-        # TODO: update where T_accept is accessed from if its moved to job_offer
-        if self.calculate_utility(match_offer) > match_offer.get_data()["T_accept"]:
-            response["accepted"] = True
-            response["match"] = match_offer
+
         return response
 
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
-        for match in self.current_matched_offers:
-            self.make_match_decision(match, algorithm="accept_reject_negotiate")
-        self.update_finished_deals()
-        self.current_matched_offers.clear()
+        example_match_data = {
+            "resource_provider_address": "rp_address",
+            "client_address": "client_address",
+            "resource_offer": "resource_offer_1",
+            "job_offer": "job_offer_1",
+            "price_per_instruction": 0.10,
+            "expected_number_of_instructions": 1000,
+            "expected_benefit_to_client": 200,
+            "client_deposit": 50,
+            "timeout": 100,
+            "timeout_deposit": 20,
+            "cheating_collateral_multiplier": 1.5,
+            "verification_method": "method_1",
+            "mediators": ["mediator_1"],
+            "T_accept": -10,
+            "T_reject": -20,
+        }
+        example_match = Match(example_match_data)
+        self.negotiate_match(example_match)
+
+
+if __name__ == "__main__":
+    address = "Your address here"  # Replace with the actual address
+    client = Client(address)
+    client.client_loop()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        logging.info("Client shutting down.")
