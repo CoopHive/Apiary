@@ -3,16 +3,18 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "coophive-simulator"
-version = "0.1.2"
+name = "coophive"
+version = "0.2.0"
 description = "A simulator for the Multi-agent system of the CoopHive protocol"
 authors = ["Levi Rybalov, Matteo Manzi"]
 license = "Apache 2"
 readme = "README.md"
-packages = [{include = "coophive_simulator"}]
+packages = [{include = "coophive"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+click = {version = ">=8.0, <8.1.4"}
+docker = { version = ">=7.0.0, <7.1.0"}
 numpy = { version = ">=2.0.0, <2.1.0"}
 
 [tool.poetry.dev-dependencies]

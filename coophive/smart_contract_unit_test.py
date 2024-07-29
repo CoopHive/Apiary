@@ -9,11 +9,11 @@ such as Deal, Event, Job, Match, Result, Client, Solver, and Tx.
 import unittest
 from unittest.mock import MagicMock
 
-from coophive_simulator.deal import Deal
-from coophive_simulator.match import Match
-from coophive_simulator.result import Result
-from coophive_simulator.smart_contract import SmartContract
-from coophive_simulator.utils import Tx
+from coophive.deal import Deal
+from coophive.match import Match
+from coophive.result import Result
+from coophive.smart_contract import SmartContract
+from coophive.utils import Tx
 
 
 class TestSmartContract(unittest.TestCase):

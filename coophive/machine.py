@@ -3,7 +3,7 @@
 It provides functionality to manage machine attributes and generate unique machine UUIDs.
 """
 
-from coophive_simulator.data_attribute import DataAttribute
+from coophive.data_attribute import DataAttribute
 
 machine_attributes = {"CPU", "RAM", "GPU", "created_at", "timeout"}
 

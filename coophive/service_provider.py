@@ -5,10 +5,10 @@ It manage service providers, their local information, events, and transactions.
 
 import logging
 
-from coophive_simulator.event import Event
-from coophive_simulator.job_offer import JobOffer
-from coophive_simulator.resource_offer import ResourceOffer
-from coophive_simulator.utils import IPFS, ServiceType, Tx
+from coophive.event import Event
+from coophive.job_offer import JobOffer
+from coophive.resource_offer import ResourceOffer
+from coophive.utils import IPFS, ServiceType, Tx
 
 
 class ServiceProvider:

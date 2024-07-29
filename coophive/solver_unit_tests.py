@@ -9,13 +9,13 @@ such as Deal, Event, Job, Match, Result, Client, SmartContract, and Tx.
 import logging
 import unittest
 
-from coophive_simulator.deal import Deal
-from coophive_simulator.event import Event
-from coophive_simulator.job_offer import JobOffer
-from coophive_simulator.match import Match
-from coophive_simulator.resource_offer import ResourceOffer
-from coophive_simulator.smart_contract import SmartContract
-from coophive_simulator.solver import Solver
+from coophive.deal import Deal
+from coophive.event import Event
+from coophive.job_offer import JobOffer
+from coophive.match import Match
+from coophive.resource_offer import ResourceOffer
+from coophive.smart_contract import SmartContract
+from coophive.solver import Solver
 
 
 class TestSolver(unittest.TestCase):

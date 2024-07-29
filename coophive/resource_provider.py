@@ -8,15 +8,15 @@ import time
 
 import docker
 
-from coophive_simulator.globals import global_time
-from coophive_simulator.log_json import log_json
-from coophive_simulator.machine import Machine
-from coophive_simulator.match import Match
-from coophive_simulator.result import Result
-from coophive_simulator.service_provider import ServiceProvider
-from coophive_simulator.smart_contract import SmartContract
-from coophive_simulator.solver import Solver
-from coophive_simulator.utils import *
+from coophive.globals import global_time
+from coophive.log_json import log_json
+from coophive.machine import Machine
+from coophive.match import Match
+from coophive.result import Result
+from coophive.service_provider import ServiceProvider
+from coophive.smart_contract import SmartContract
+from coophive.solver import Solver
+from coophive.utils import *
 
 
 # TODO: centralize logging settings and initialization at the initial setup of the package functionality calls.

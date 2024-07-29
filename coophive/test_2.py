@@ -1,13 +1,13 @@
 import logging
 import os
 
-from coophive_simulator.client import Client
-from coophive_simulator.job_offer import JobOffer
-from coophive_simulator.resource_offer import ResourceOffer
-from coophive_simulator.resource_provider import ResourceProvider
-from coophive_simulator.smart_contract import SmartContract
-from coophive_simulator.solver import Solver
-from coophive_simulator.utils import *
+from coophive.client import Client
+from coophive.job_offer import JobOffer
+from coophive.resource_offer import ResourceOffer
+from coophive.resource_provider import ResourceProvider
+from coophive.smart_contract import SmartContract
+from coophive.solver import Solver
+from coophive.utils import *
 
 logger = logging.getLogger(f"test")
 logging.basicConfig(

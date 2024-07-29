@@ -1,6 +1,6 @@
 """Define the Result class which extends DataAttribute."""
 
-from coophive_simulator.data_attribute import DataAttribute
+from coophive.data_attribute import DataAttribute
 
 result_attributes = {
     "deal_id",

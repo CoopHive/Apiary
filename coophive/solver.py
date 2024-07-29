@@ -3,16 +3,16 @@
 import logging
 import os
 
-from coophive_simulator.data_attribute import DataAttribute
-from coophive_simulator.deal import Deal
-from coophive_simulator.event import Event
-from coophive_simulator.job_offer import JobOffer
-from coophive_simulator.log_json import log_json
-from coophive_simulator.match import Match
-from coophive_simulator.resource_offer import ResourceOffer
-from coophive_simulator.service_provider import ServiceProvider
-from coophive_simulator.smart_contract import SmartContract
-from coophive_simulator.utils import extra_necessary_match_data
+from coophive.data_attribute import DataAttribute
+from coophive.deal import Deal
+from coophive.event import Event
+from coophive.job_offer import JobOffer
+from coophive.log_json import log_json
+from coophive.match import Match
+from coophive.resource_offer import ResourceOffer
+from coophive.service_provider import ServiceProvider
+from coophive.smart_contract import SmartContract
+from coophive.utils import extra_necessary_match_data
 
 
 class Solver(ServiceProvider):

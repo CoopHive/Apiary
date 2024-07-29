@@ -2,12 +2,12 @@ import logging
 import os
 import time
 
-from coophive_simulator.client import Client
-from coophive_simulator.globals import global_time
-from coophive_simulator.resource_provider import ResourceProvider
-from coophive_simulator.smart_contract import SmartContract
-from coophive_simulator.solver import Solver
-from coophive_simulator.utils import Tx, create_job_offer, create_resource_offer
+from coophive.client import Client
+from coophive.globals import global_time
+from coophive.resource_provider import ResourceProvider
+from coophive.smart_contract import SmartContract
+from coophive.solver import Solver
+from coophive.utils import Tx, create_job_offer, create_resource_offer
 
 logger = logging.getLogger(f"test")
 logging.basicConfig(

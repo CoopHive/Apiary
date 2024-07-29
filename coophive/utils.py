@@ -8,10 +8,10 @@ import logging
 from dataclasses import dataclass
 from enum import Enum
 
-from coophive_simulator.data_attribute import DataAttribute
-from coophive_simulator.hash_dict import hash_dict
-from coophive_simulator.job_offer import JobOffer
-from coophive_simulator.resource_offer import ResourceOffer
+from coophive.data_attribute import DataAttribute
+from coophive.hash_dict import hash_dict
+from coophive.job_offer import JobOffer
+from coophive.resource_offer import ResourceOffer
 
 
 class ServiceType(Enum):

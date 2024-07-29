@@ -6,13 +6,13 @@ It handles the operations and logic associated with smart contracts, including t
 import logging
 import os
 
-from coophive_simulator.deal import Deal
-from coophive_simulator.event import Event
-from coophive_simulator.log_json import log_json
-from coophive_simulator.match import Match
-from coophive_simulator.result import Result
-from coophive_simulator.service_provider import ServiceProvider
-from coophive_simulator.utils import Tx
+from coophive.deal import Deal
+from coophive.event import Event
+from coophive.log_json import log_json
+from coophive.match import Match
+from coophive.result import Result
+from coophive.service_provider import ServiceProvider
+from coophive.utils import Tx
 
 
 class SmartContract(ServiceProvider):

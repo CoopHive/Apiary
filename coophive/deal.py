@@ -1,6 +1,6 @@
 """Define the Deal class which extends DataAttribute."""
 
-from coophive_simulator.data_attribute import DataAttribute
+from coophive.data_attribute import DataAttribute
 
 # TODO: add "job" to deal attributes
 deal_attributes = {

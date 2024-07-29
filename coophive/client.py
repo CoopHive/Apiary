@@ -11,18 +11,18 @@ import threading
 import time
 from collections import deque
 
-from coophive_simulator.deal import Deal
-from coophive_simulator.event import Event
-from coophive_simulator.globals import global_time
-from coophive_simulator.job import Job
-from coophive_simulator.log_json import log_json
-from coophive_simulator.match import Match
-from coophive_simulator.result import Result
-from coophive_simulator.service_provider import ServiceProvider
-from coophive_simulator.service_provider_local_information import LocalInformation
-from coophive_simulator.smart_contract import SmartContract
-from coophive_simulator.solver import Solver
-from coophive_simulator.utils import Tx
+from coophive.deal import Deal
+from coophive.event import Event
+from coophive.globals import global_time
+from coophive.job import Job
+from coophive.log_json import log_json
+from coophive.match import Match
+from coophive.result import Result
+from coophive.service_provider import ServiceProvider
+from coophive.service_provider_local_information import LocalInformation
+from coophive.smart_contract import SmartContract
+from coophive.solver import Solver
+from coophive.utils import Tx
 
 
 class Client(ServiceProvider):
