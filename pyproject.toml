@@ -18,8 +18,9 @@ packages = [{include = "coophive"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 click = {version = ">=8.0, <8.1.4"}
-docker = { version = ">=7.0.0, <7.1.0"}
+docker = { version = ">=7.1.0, <7.2.0"}
 numpy = { version = ">=2.0.0, <2.1.0"}
+tqdm = { version = ">=4.66.0, <4.67.0"}
 
 [tool.poetry.dev-dependencies]
 black = { version = ">=24.3.0, <24.4.0"}

@@ -362,7 +362,7 @@ class Client(ServiceProvider):
         """Negotiate a match."""
         log_json(self.logger, "Negotiating match", {"match_id": match.get_id()})
         for i in range(max_rounds):
-            logging.info("negotiation round: ", i)
+            logging.info(f"Negotiation round: {i}")
             new_match_offer = self.create_new_match_offer(match)
             response = self.communicate_request_to_party(
                 match.get_data()["resource_provider_address"], new_match_offer
@@ -370,7 +370,7 @@ class Client(ServiceProvider):
             if response["accepted"]:
                 self._agree_to_match(response["match"])
                 return
-            logging.info("negotiation failed, creating new match offer")
+            logging.info("Negotiation failed, creating new match offer")
             match = response["counter_offer"]
         self.reject_match(match)
 
@@ -410,12 +410,6 @@ class Client(ServiceProvider):
         new_data["price_per_instruction"] = (
             data["price_per_instruction"] * 0.95
         )  # For example, reduce the price
-        logging.info(
-            "client multiplying price per instruction",
-            data["price_per_instruction"],
-            "by 0.95 to get",
-            new_data["price_per_instruction"],
-        )
         new_match = Match(new_data)
         return new_match
 

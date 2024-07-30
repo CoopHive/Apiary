@@ -4,6 +4,7 @@ import logging
 import os
 
 import click
+from tqdm import tqdm
 
 from coophive.client import Client
 from coophive.job_offer import JobOffer
@@ -189,7 +190,9 @@ def initialize_simulation_environment():
     7. Runs the solver for a specified number of steps, updating resource providers and clients, and performing solver cleanup at each step.
     """
     addresses = Addresses()
-    num_resource_providers = 5
+    num_resource_providers = (
+        1  # TODO: unable to increase this above one for socket port conflicts
+    )
     num_clients = 5
 
     # create smart contract
@@ -241,20 +244,14 @@ def initialize_simulation_environment():
             new_job_offer_id, new_job_offer
         )
 
-    for step in range(2):
-        new_solver.solve()
-        # TODO: iterate over all resource providers
-        for (
-            resource_provider_public_key,
-            resource_provider,
-        ) in resource_providers.items():
-            resource_provider.resource_provider_loop()
-        for client_public_key, client in clients.items():
-            client.client_loop()
-        new_solver.solver_cleanup()
+    new_solver.solve()
+    for (
+        resource_provider_public_key,
+        resource_provider,
+    ) in resource_providers.items():
+        resource_provider.resource_provider_loop()
+    for client_public_key, client in clients.items():
+        client.client_loop()
 
-        logger.info("")
-        logger.info(
-            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop {step} completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-        )
-        logger.info("")
+    new_solver.solver_cleanup()
+    logger.info("initialize_simulation_environment finalized.")

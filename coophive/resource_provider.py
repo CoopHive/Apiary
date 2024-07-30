@@ -57,14 +57,14 @@ class ResourceProvider(ServiceProvider):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind(("localhost", 1234))
         self.server_socket.listen(5)
-        logging.info("Server listening on port 1234")
+        self.logger.info("Server listening on port 1234")
         threading.Thread(target=self.accept_clients, daemon=True).start()
 
     def accept_clients(self):
         """Continuously accepts incoming client connections. For each new connection, a new thread is spawned to handle the client's messages."""
         while True:
             client_socket, addr = self.server_socket.accept()
-            logging.info(f"Connection established with {addr}")
+            self.logger.info(f"Connection established with {addr}")
             threading.Thread(
                 target=self.handle_client_messages, args=(client_socket,), daemon=True
             ).start()
@@ -78,18 +78,18 @@ class ResourceProvider(ServiceProvider):
                     break
                 # Decode the message from bytes to string
                 message = message.decode("utf-8")
-                logging.info(f"Received message from client: {message}")
+                self.logger.info(f"Received message from client: {message}")
                 if "New match offer" in message:
                     match_data = eval(message.split("New match offer: ")[1])
                     match = Match(match_data)
                     response = self.evaluate_match(match)
                     client_socket.send(response.encode("utf-8"))
             except ConnectionResetError:
-                logging.info("Connection lost. Closing connection.")
+                self.logger.info("Connection lost. Closing connection.")
                 client_socket.close()
                 break
             except Exception as e:
-                logging.info(f"Error handling message: {e}")
+                self.logger.info(f"Error handling message: {e}")
 
     def evaluate_match(self, match):
         """Here you evaluate the match and decide whether to accept or counteroffer."""
@@ -104,7 +104,7 @@ class ResourceProvider(ServiceProvider):
         ):
             return "RP rejected from evaluate match"
         else:
-            logging.info("RP sending counteroffer from evaluate match")
+            self.logger.info("RP sending counteroffer from evaluate match")
             counter_offer = self.create_new_match_offer(match)
             return f"New match offer: {counter_offer.get_data()}"
 
@@ -441,12 +441,6 @@ class ResourceProvider(ServiceProvider):
         new_data["price_per_instruction"] = (
             data["price_per_instruction"] * 1.06
         )  # For example, increase the price
-        logging.info(
-            "RP multiplying price per instruction",
-            data["price_per_instruction"],
-            "by 1.06 to get",
-            new_data["price_per_instruction"],
-        )
         new_match = Match(new_data)
         return new_match
 
@@ -512,4 +506,4 @@ if __name__ == "__main__":
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        logging.info("Server shutting down.")
+        self.logger.info("Server shutting down.")

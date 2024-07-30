@@ -117,14 +117,6 @@ class Solver(ServiceProvider):
         self.current_matched_resource_offers.clear()
         # remove outdated job and resource offers
         self.remove_outdated_offers()
-        log_json(
-            self.logger,
-            "Solver cleanup for: ",
-            {
-                "currently_matched_job_offers": self.currently_matched_job_offers,
-                "current_matched_resource_offers": self.current_matched_resource_offers,
-            },
-        )
 
     def solve(self):
         """Solve the current matching problem by matching job offers with resource offers."""
