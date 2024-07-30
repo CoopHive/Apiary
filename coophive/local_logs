@@ -1,4 +1,0 @@
-DEBUG:docker.utils.config:Trying paths: ['/Users/mattettam09/.docker/config.json', '/Users/mattettam09/.dockercfg']
-DEBUG:docker.utils.config:No config file found
-DEBUG:docker.utils.config:Trying paths: ['/Users/mattettam09/.docker/config.json', '/Users/mattettam09/.dockercfg']
-DEBUG:docker.utils.config:No config file found
