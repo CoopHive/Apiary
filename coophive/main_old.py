@@ -6,14 +6,14 @@ resource offers, and job offers, and running the main simulation.
 
 import logging
 
-from coophive_simulator.client import Client
-from coophive_simulator.job import Job
-from coophive_simulator.job_offer import JobOffer
-from coophive_simulator.machine import Machine
-from coophive_simulator.resource_offer import ResourceOffer
-from coophive_simulator.resource_provider import ResourceProvider
-from coophive_simulator.solver import Solver
-from coophive_simulator.utils import CID, ServiceType
+from coophive.client import Client
+from coophive.job import Job
+from coophive.job_offer import JobOffer
+from coophive.machine import Machine
+from coophive.resource_offer import ResourceOffer
+from coophive.resource_provider import ResourceProvider
+from coophive.solver import Solver
+from coophive.utils import CID, ServiceType
 
 
 def main():

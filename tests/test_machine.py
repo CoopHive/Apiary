@@ -1,6 +1,6 @@
 import pytest
 
-from coophive_simulator.machine import Machine
+from coophive.machine import Machine
 
 
 @pytest.fixture(autouse=True)

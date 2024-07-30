@@ -1,6 +1,6 @@
 """Define the JobOffer class which extends DataAttribute."""
 
-from coophive_simulator.data_attribute import DataAttribute
+from coophive.data_attribute import DataAttribute
 
 job_offer_attributes = {
     "owner",
@@ -25,7 +25,7 @@ class JobOffer(DataAttribute):
     def __init__(self):
         """Initializes a JobOffer object."""
         super().__init__()
-        self.data_attributes = job_offer_attributes
+        self.data_attributes = {attribute: None for attribute in job_offer_attributes}
         self.data_attributes["T_accept"] = self.calculate_T_accept()
         self.data_attributes["T_reject"] = self.calculate_T_reject()
 

@@ -4,14 +4,13 @@ It includes classes for service types, IPFS integration, and transaction metadat
 as well as functions to create resource and job offers.
 """
 
-import logging
 from dataclasses import dataclass
 from enum import Enum
 
-from coophive_simulator.data_attribute import DataAttribute
-from coophive_simulator.hash_dict import hash_dict
-from coophive_simulator.job_offer import JobOffer
-from coophive_simulator.resource_offer import ResourceOffer
+from coophive.data_attribute import DataAttribute
+from coophive.hash_dict import hash_dict
+from coophive.job_offer import JobOffer
+from coophive.resource_offer import ResourceOffer
 
 
 class ServiceType(Enum):
@@ -81,7 +80,6 @@ class IPFS:
             self.data[cid_hash] = data
         # check if data is of type dict
         if isinstance(data, dict):
-            logging.info(data)
             cid = CID(hash=hash_dict(data), data=data)
             self.data[cid.hash] = data
 
@@ -105,7 +103,7 @@ extra_necessary_match_data = {
 example_offer_data = {"CPU": 6, "RAM": 3, "GPU": 1}
 
 
-def create_resource_offer(owner_public_key: str, created_at):
+def create_resource_offer(owner_public_key: str, created_at=None):
     """Create a resource offer.
 
     Args:
@@ -119,7 +117,6 @@ def create_resource_offer(owner_public_key: str, created_at):
     resource_offer.add_data("owner", owner_public_key)
     resource_offer.add_data("created_at", created_at)
     for data_field, data_value in example_offer_data.items():
-        logging.info(data_field, data_value)
         resource_offer.add_data(data_field, data_value)
 
     resource_offer.set_id()
@@ -127,7 +124,7 @@ def create_resource_offer(owner_public_key: str, created_at):
     return resource_offer
 
 
-def create_job_offer(owner_public_key: str, created_at):
+def create_job_offer(owner_public_key: str, created_at=None):
     """Create a job offer.
 
     Args:

@@ -9,8 +9,8 @@ We're ignoring gas for now.
 import logging
 from enum import Enum
 
-from coophive_simulator.log_json import log_json
-from coophive_simulator.utils import Service, Tx
+from coophive.log_json import log_json
+from coophive.utils import Service, Tx
 
 
 class ServiceType(Enum):

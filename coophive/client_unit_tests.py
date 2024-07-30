@@ -10,15 +10,15 @@ import logging
 import unittest
 from unittest.mock import MagicMock
 
-from coophive_simulator.client import Client
-from coophive_simulator.deal import Deal
-from coophive_simulator.event import Event
-from coophive_simulator.job import Job
-from coophive_simulator.match import Match
-from coophive_simulator.result import Result
-from coophive_simulator.smart_contract import SmartContract
-from coophive_simulator.solver import Solver
-from coophive_simulator.utils import Tx
+from coophive.client import Client
+from coophive.deal import Deal
+from coophive.event import Event
+from coophive.job import Job
+from coophive.match import Match
+from coophive.result import Result
+from coophive.smart_contract import SmartContract
+from coophive.solver import Solver
+from coophive.utils import Tx
 
 
 class TestClient(unittest.TestCase):

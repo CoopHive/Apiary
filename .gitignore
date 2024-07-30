@@ -143,3 +143,4 @@ dmypy.json
 *.meta
 
 .DS_Store
+local_logs

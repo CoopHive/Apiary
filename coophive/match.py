@@ -1,6 +1,6 @@
 """Define the Match class which extends DataAttribute and provides functionality related to matching attributes and signing."""
 
-from coophive_simulator.data_attribute import DataAttribute
+from coophive.data_attribute import DataAttribute
 
 # TODO: add "job" to match attributes.
 match_attributes = {

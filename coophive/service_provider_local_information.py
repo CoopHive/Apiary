@@ -4,7 +4,7 @@ The LocalInformation class allows adding, removing, and retrieving service provi
 as well as managing resource and job offers.
 """
 
-from coophive_simulator.utils import ServiceType
+from coophive.utils import ServiceType
 
 
 class LocalInformation:
