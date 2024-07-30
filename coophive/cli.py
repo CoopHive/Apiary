@@ -4,15 +4,15 @@ import logging
 import os
 
 import click
-from tqdm import tqdm
 
 from coophive.client import Client
+from coophive.globals import global_time
 from coophive.job_offer import JobOffer
 from coophive.resource_offer import ResourceOffer
 from coophive.resource_provider import ResourceProvider
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
-from coophive.utils import Tx, example_offer_data
+from coophive.utils import Tx, create_job_offer, create_resource_offer
 
 logger = logging.getLogger(f"test")
 logging.basicConfig(
@@ -152,30 +152,6 @@ def fund_smart_contract(service_provider, value: float):
     service_provider.get_smart_contract().fund(tx)
 
 
-def create_resource_offer(owner_public_key: str):
-    """Create a resource offer with example data and an owner public key."""
-    resource_offer = ResourceOffer()
-    resource_offer.add_data("owner", owner_public_key)
-    for data_field, data_value in example_offer_data.items():
-        resource_offer.add_data(data_field, data_value)
-
-    resource_offer.set_id()
-
-    return resource_offer
-
-
-def create_job_offer(owner_public_key: str):
-    """Create a job offer with example data and an owner public key."""
-    job_offer = JobOffer()
-    job_offer.add_data("owner", owner_public_key)
-    for data_field, data_value in example_offer_data.items():
-        job_offer.add_data(data_field, data_value)
-
-    job_offer.set_id()
-
-    return job_offer
-
-
 @cli.command()
 def initialize_simulation_environment():
     """Initializes and runs the simulation environment for the system.
@@ -255,3 +231,180 @@ def initialize_simulation_environment():
 
     new_solver.solver_cleanup()
     logger.info("initialize_simulation_environment finalized.")
+
+
+def create_n_resource_offers(
+    resource_providers, num_resource_offers_per_resource_provider, created_at
+):
+    """Creates a specified number of resource offers for each resource provider."""
+    for _ in range(num_resource_offers_per_resource_provider):
+        logger.info(f"resource test {_}")
+        for (
+            resource_provider_public_key,
+            resource_provider,
+        ) in resource_providers.items():
+            logger.info(resource_provider_public_key, resource_provider)
+            new_resource_offer = create_resource_offer(
+                resource_provider_public_key, created_at
+            )
+            new_resource_offer_id = new_resource_offer.get_id()
+            resource_provider.get_solver().get_local_information().add_resource_offer(
+                new_resource_offer_id, new_resource_offer
+            )
+
+
+def create_n_job_offers(clients, num_job_offers_per_client, created_at):
+    """Creates a specified number of job offers for each client."""
+    for _ in range(num_job_offers_per_client):
+        logger.info(f"job test {_}")
+        for client_public_key, client in clients.items():
+            new_job_offer = create_job_offer(client_public_key, created_at)
+            new_job_offer_id = new_job_offer.get_id()
+            client.get_solver().get_local_information().add_job_offer(
+                new_job_offer_id, new_job_offer
+            )
+
+
+@cli.command()
+def run_test_simulation():
+    """Runs a test simulation for a smart contract and solver interaction with resource providers and clients.
+
+    The function performs the following steps:
+    1. Initializes a smart contract and solver.
+    2. Creates resource providers and clients, each with initial funding.
+    3. Executes multiple test loops where:
+       a. Resource and job offers are created.
+       b. The solver processes the offers.
+       c. Resource providers and clients are updated.
+       d. The smart contract is updated.
+       e. The solver performs cleanup operations.
+    """
+    addresses = Addresses()
+    num_resource_providers = 5
+    num_clients = 5
+
+    # create smart contract
+    new_smart_contract_public_key = addresses.get_current_address()
+    new_smart_contract = SmartContract(new_smart_contract_public_key)
+
+    # create solver
+    new_solver_public_key = addresses.get_current_address()
+    new_solver_url = "http://solver.com"
+    new_solver = Solver(new_solver_public_key, new_solver_url)
+    # solver connects to smart contract
+    new_solver.connect_to_smart_contract(smart_contract=new_smart_contract)
+
+    for _ in range(num_resource_providers):
+        # create resource provider
+        new_resource_provider_public_key = addresses.get_current_address()
+        new_resource_provider = create_resource_provider(
+            new_resource_provider_public_key, new_solver, new_smart_contract
+        )
+        # resource provider adds funds
+        # new_resource_provider_1_initial_fund = 10
+        # new_resource_provider_1_initial_fund = random.randint(0, 1000)
+        new_resource_provider_initial_fund = 200
+        fund_smart_contract(new_resource_provider, new_resource_provider_initial_fund)
+
+    for _ in range(num_clients):
+        # create client
+        new_client_public_key = addresses.get_current_address()
+        new_client = create_client(
+            new_client_public_key, new_solver, new_smart_contract
+        )
+        # client adds funds
+        new_client_initial_fund = 100
+        fund_smart_contract(new_client, new_client_initial_fund)
+
+    num_resource_offers_per_resource_provider = 1
+    resource_providers = new_solver.get_local_information().get_resource_providers()
+
+    num_job_offers_per_client = 1
+    clients = new_solver.get_local_information().get_clients()
+
+    for step in range(5):
+        logger.info("")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop {step} started~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
+        logger.info("")
+        current_time_step_str = str(step)
+        if step < 3:
+            create_n_resource_offers(
+                resource_providers,
+                num_resource_offers_per_resource_provider,
+                current_time_step_str,
+            )
+            create_n_job_offers(
+                clients, num_job_offers_per_client, current_time_step_str
+            )
+        logger.info("")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
+        logger.info("")
+        new_solver.solve()
+        logger.info("")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished solving~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
+        logger.info("")
+
+        logger.info("")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
+        logger.info("")
+        for (
+            resource_provider_public_key,
+            resource_provider,
+        ) in resource_providers.items():
+            resource_provider.resource_provider_loop()
+        logger.info("")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating resource providers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
+        logger.info("")
+
+        logger.info("")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
+        logger.info("")
+        for client_public_key, client in clients.items():
+            client.client_loop()
+        logger.info("")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating clients~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
+        logger.info("")
+
+        logger.info("")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~updating smart contract~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
+        logger.info("")
+        new_smart_contract._smart_contract_loop()
+        logger.info("")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~finished updating smart contract~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
+        logger.info("")
+
+        logger.info("")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
+        logger.info("")
+        new_solver.solver_cleanup()
+        logger.info("")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~solver finished cleaning up~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
+        logger.info("")
+
+        logger.info("")
+        logger.info(
+            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~test loop {step} completed~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        )
+        logger.info("")
