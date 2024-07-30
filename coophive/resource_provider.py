@@ -505,5 +505,6 @@ if __name__ == "__main__":
     try:
         while True:
             time.sleep(1)
+            print("Resource Provider Port Ready...")
     except KeyboardInterrupt:
-        self.logger.info("Server shutting down.")
+        logging.info("Server shutting down.")
