@@ -33,10 +33,6 @@ It appears necessary to associate to each block (each deal), the wallet of the a
 
 One solution could be to enable an emergent secondary marketplace of jobs specifications, in which machines can associate (and this can be verified) their hardware specifications to a given Job. The market is emergent as if agents want to become autonomous and this dataset is valuable, they will create it. We may want to investigate this ourselves. An important point, on this, is that agents an agent looking at a given open job is in principle not able to say exactly its computational cost. It can learn from past data only if they are associated with specific schemas that enable the agent to interpolate the input space of the task for that schema (in the presence of enough datapoints to approximate the cost function).
 
-Some examples of a Job Schema are:
-- A docker image and its input(s);
-- A github repository and an associated command;
-
 Even in the open source (git) case, it makes sense to leverage the secondary marketplace, even if the estimation of the task cost is not done via interpolation of previous runs, but via analysis of the source code of the task (for which even analytical estimates of the cost may exist).
 
 A task offer has to contain the CID of the data needed to perform the task. One could use this as a proxy for the computational cost of a task (even though a task could be associated with light data and be really expensive).
@@ -50,6 +46,42 @@ A task shall be associated with a variable specifying the possibility for it to 
 A straightforward definition of fitness is profit.
 
 About the integration of bundles of assets in the agent-to-agent negotiation picture, it regardless appears necessary to introduce a [Numéraire](https://en.wikipedia.org/wiki/Num%C3%A9raire) shared by all agents. If different agents have different priors on the value of a given asset, it becomes challanging to have a well posed interaction.
+
+## Job
+
+Some examples of a Job Schema are, for compute (stateless) tasks:
+- A docker image and its input(s);
+- A github repository and an associated command;
+
+Because we are interested in storage tasks as well, a valuable perspective is decomposing Jobs into modular pieces associated with each other and creating a [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph). Triggers of modules of purely compute tasks are previous nodes, while for storage tasks sequential nodes are triggered by previous tasks and by a clock. In general, it makes sense to think about jobs using the lenses of MLOps and Orchestration, which are focused on the core part of CoopHive: in fact, once the trustless aspect is solved (blockchain), and once the distributed computing is solved (autonomous agents negotiation), we are back to the world of traditional orchestration of compute and storage tasks. This means there is added value in building things keeping in mind orchestration compatibilities.
+
+Some examples, on this subject, include:
+
+- https://www.prefect.io/opensource
+
+Here there is no need to explicitly define DAGs. An agent-based perspective is maintained within the task: https://www.prefect.io/controlflow
+
+For us, it is more relevant to think about agents when it comes to competition/cooperation when it comes to task allocation and pricing, but with a modularization of compute and storage tasks, it is reasonable to keep in mind the agent-based perspective during the task as well. Collateral could be allocated to specific nodes of a DAG and agents to focus on individual modules of a task.
+
+- https://docs.metaflow.org/metaflow/basics#the-structure-of-metaflow-code
+
+"This is a natural paradigm for expressing data processing pipelines, machine learning in particular."
+
+- https://argo-workflows.readthedocs.io/en/latest/
+
+"Model multi-step workflows as a sequence of tasks or capture the dependencies between tasks using a directed acyclic graph (DAG)."
+
+- https://docs.aws.amazon.com/cli/latest/reference/stepfunctions/
+
+"Step Functions coordinates the components of distributed applications and microservices using visual workflows."
+
+Using the language of MLOps, a Job can be defined by a set of tasks and a DAG.
+
+- https://luigi.readthedocs.io/en/latest/#dependency-graph-example
+
+- https://docs.bentoml.com/en/latest/guides/services.html#service-definitions
+
+- https://docs.ray.io/en/latest/ray-overview/use-cases.html
 
 ## Network Robustness
 
