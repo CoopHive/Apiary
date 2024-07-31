@@ -77,6 +77,12 @@ For us, it is more relevant to think about agents when it comes to competition/c
 
 Using the language of MLOps, a Job can be defined by a set of tasks and a DAG.
 
+- https://luigi.readthedocs.io/en/latest/#dependency-graph-example
+
+- https://docs.bentoml.com/en/latest/guides/services.html#service-definitions
+
+- https://docs.ray.io/en/latest/ray-overview/use-cases.html
+
 ## Network Robustness
 
 Reading “Timing Reliability for Local Schedulers in Multi-Agent Systems”: it seems pretty evident that in the setup of Multi-agent training following greedy policies, the system will end up being more fragile. I don’t think we can avoid an holistic training setup in which a degree of cooperation is instilled in each agent. This will have the consequence of each agent to behave suboptimally, and the system will become subscettible to greedy attacks. I believe the system will need to tollerate a certain degree of corruption/inefficiency in order to gain robustness.
