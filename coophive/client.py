@@ -13,7 +13,6 @@ from collections import deque
 
 from coophive.deal import Deal
 from coophive.event import Event
-from coophive.globals import global_time
 from coophive.job import Job
 from coophive.log_json import log_json
 from coophive.match import Match

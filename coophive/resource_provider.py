@@ -8,7 +8,6 @@ import time
 
 import docker
 
-from coophive.globals import global_time
 from coophive.log_json import log_json
 from coophive.machine import Machine
 from coophive.match import Match

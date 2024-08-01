@@ -2,7 +2,6 @@
 
 A list of the tests we need to run
 
-
 ## registrations of service providers
 
  * register resource provider

@@ -6,12 +6,12 @@ import os
 import click
 
 from coophive.client import Client
-from coophive.globals import global_time
 from coophive.job_offer import JobOffer
 from coophive.resource_offer import ResourceOffer
 from coophive.resource_provider import ResourceProvider
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
+from coophive.state.onchain import Addresses
 from coophive.utils import Tx, create_job_offer, create_resource_offer
 
 logger = logging.getLogger(f"test")
@@ -100,23 +100,6 @@ def initialize_and_connect_entities():
         new_resource_provider_1.update_job_running_times()
 
     logger.info("initialize_and_connect_entities finalized.")
-
-
-class Addresses:
-    """A class to represent and manage addresses."""
-
-    def __init__(self):
-        """Initialize the Addresses class with a starting address."""
-        self.current_address = 0
-
-    def get_current_address(self):
-        """Increment and get the current address as a string."""
-        self.increment_current_address()
-        return str(self.current_address)
-
-    def increment_current_address(self):
-        """Increment the current address counter by 1."""
-        self.current_address += 1
 
 
 def create_resource_provider(
