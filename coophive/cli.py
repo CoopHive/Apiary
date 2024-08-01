@@ -16,6 +16,8 @@ from coophive.utils import (
     Tx,
     create_client,
     create_job_offer,
+    create_n_job_offers,
+    create_n_resource_offers,
     create_resource_offer,
     create_resource_provider,
     fund_smart_contract,
@@ -189,36 +191,6 @@ def initialize_simulation_environment():
 
     new_solver.solver_cleanup()
     logger.info("initialize_simulation_environment finalized.")
-
-
-def create_n_resource_offers(
-    resource_providers, num_resource_offers_per_resource_provider, created_at
-):
-    """Creates a specified number of resource offers for each resource provider."""
-    for _ in range(num_resource_offers_per_resource_provider):
-        logger.info(f"resource test {_}")
-        for (
-            resource_provider_public_key,
-            resource_provider,
-        ) in resource_providers.items():
-            new_resource_offer = create_resource_offer(
-                resource_provider_public_key, created_at
-            )
-            new_resource_offer_id = new_resource_offer.get_id()
-            resource_provider.get_solver().get_local_information().add_resource_offer(
-                new_resource_offer_id, new_resource_offer
-            )
-
-
-def create_n_job_offers(clients, num_job_offers_per_client, created_at):
-    """Creates a specified number of job offers for each client."""
-    for _ in range(num_job_offers_per_client):
-        for client_public_key, client in clients.items():
-            new_job_offer = create_job_offer(client_public_key, created_at)
-            new_job_offer_id = new_job_offer.get_id()
-            client.get_solver().get_local_information().add_job_offer(
-                new_job_offer_id, new_job_offer
-            )
 
 
 @cli.command()
