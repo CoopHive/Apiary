@@ -104,8 +104,6 @@ class SmartContract(ServiceProvider):
         deal = Deal()
         for data_field, data_value in match.get_data().items():
             deal.add_data(data_field, data_value)
-        # TODO: this is for testing purposes, should not be added here manually
-        deal.add_data("actual_honest_time_to_completion", 1)
         deal.set_id()
         self.deals[deal.get_id()] = deal
         deal_event = Event(name="deal", data=deal)

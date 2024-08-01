@@ -15,9 +15,7 @@ deal_attributes = {
     "timeout",
     "timeout_deposit",
     "cheating_collateral_multiplier",
-    "actual_honest_time_to_completion",
-    "actual_cost_to_resource_provider",
-    "actual_benefit_to_client",
+    "benefit_to_client",
     "verification_method",
     "mediators",
 }
