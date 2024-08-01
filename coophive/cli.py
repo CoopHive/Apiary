@@ -12,7 +12,12 @@ from coophive.resource_provider import ResourceProvider
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.state.onchain import Addresses
-from coophive.utils import Tx, create_job_offer, create_resource_offer
+from coophive.utils import (
+    Tx,
+    create_job_offer,
+    create_resource_offer,
+    create_resource_provider,
+)
 
 logger = logging.getLogger(f"test")
 logging.basicConfig(
@@ -100,20 +105,6 @@ def initialize_and_connect_entities():
         new_resource_provider_1.update_job_running_times()
 
     logger.info("initialize_and_connect_entities finalized.")
-
-
-def create_resource_provider(
-    resource_provider_public_key: str, solver: Solver, smart_contract: SmartContract
-):
-    """Create a resource provider and connect it to a solver and a smart contract."""
-    # create resource provider
-    resource_provider = ResourceProvider(resource_provider_public_key)
-    # resource provider connects to solver
-    resource_provider.connect_to_solver(url=solver.get_url(), solver=solver)
-    # resource provider connects to smart contract
-    resource_provider.connect_to_smart_contract(smart_contract=smart_contract)
-
-    return resource_provider
 
 
 def create_client(
