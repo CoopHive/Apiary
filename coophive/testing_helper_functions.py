@@ -1,7 +1,6 @@
 """This module provides helper functions for testing purposes.
 
 Functions:
-    create_client: Create a client and connect it to a solver and a smart contract.
     fund_smart_contract: Fund a smart contract using a transaction from a service provider.
     create_job_offer: Create a job offer with example data.
     create_n_resource_offers: Create a specified number of resource offers for each resource provider.
@@ -13,26 +12,6 @@ from coophive.job_offer import JobOffer
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.utils import Tx, example_offer_data
-
-
-def create_client(
-    client_public_key: str, solver: Solver, smart_contract: SmartContract
-):
-    """Create a client and connect it to a solver and a smart contract.
-
-    Args:
-        client_public_key (str): The public key of the client.
-        solver (Solver): The solver to connect to.
-        smart_contract (SmartContract): The smart contract to connect to.
-
-    Returns:
-        Client: The created client.
-    """
-    client = Client(client_public_key)
-    client.connect_to_solver(url=solver.get_url(), solver=solver)
-    client.connect_to_smart_contract(smart_contract=smart_contract)
-
-    return client
 
 
 def fund_smart_contract(service_provider, value: float):

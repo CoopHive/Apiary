@@ -14,6 +14,7 @@ from coophive.solver import Solver
 from coophive.state.onchain import Addresses
 from coophive.utils import (
     Tx,
+    create_client,
     create_job_offer,
     create_resource_offer,
     create_resource_provider,
@@ -105,19 +106,6 @@ def initialize_and_connect_entities():
         new_resource_provider_1.update_job_running_times()
 
     logger.info("initialize_and_connect_entities finalized.")
-
-
-def create_client(
-    client_public_key: str, solver: Solver, smart_contract: SmartContract
-):
-    """Create a client and connect it to a solver and a smart contract."""
-    client = Client(client_public_key)
-    # client connects to solver
-    client.connect_to_solver(url=solver.get_url(), solver=solver)
-    # client connects to smart contract
-    client.connect_to_smart_contract(smart_contract=smart_contract)
-
-    return client
 
 
 def fund_smart_contract(service_provider, value: float):

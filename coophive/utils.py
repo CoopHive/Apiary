@@ -7,6 +7,7 @@ as well as functions to create resource and job offers.
 from dataclasses import dataclass
 from enum import Enum
 
+from coophive.client import Client
 from coophive.data_attribute import DataAttribute
 from coophive.hash_dict import hash_dict
 from coophive.job_offer import JobOffer
@@ -166,3 +167,23 @@ def create_resource_provider(
     resource_provider.connect_to_smart_contract(smart_contract=smart_contract)
 
     return resource_provider
+
+
+def create_client(
+    client_public_key: str, solver: Solver, smart_contract: SmartContract
+):
+    """Create a client and connect it to a solver and a smart contract.
+
+    Args:
+        client_public_key (str): The public key of the client.
+        solver (Solver): The solver to connect to.
+        smart_contract (SmartContract): The smart contract to connect to.
+
+    Returns:
+        Client: The created client.
+    """
+    client = Client(client_public_key)
+    client.connect_to_solver(url=solver.get_url(), solver=solver)
+    client.connect_to_smart_contract(smart_contract=smart_contract)
+
+    return client
