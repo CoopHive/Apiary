@@ -107,7 +107,7 @@ def create_resource_offer(owner_public_key: str, created_at=None):
     """Create a resource offer.
 
     Args:
-        owner_public_key: The public key of the owner.
+        owner_public_key: The public key of the offer owner.
         created_at: The creation timestamp of the offer.
 
     Returns:
