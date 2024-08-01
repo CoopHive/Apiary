@@ -16,4 +16,10 @@ def log_json(logger, message, data=None):
     log_entry = {"message": message}
     if data:
         log_entry.update(data)
-    logger.info(json.dumps(log_entry))
+
+    try:
+        # Attempt to serialize the entire log_entry and log it
+        logger.info(json.dumps(log_entry))
+    except (TypeError, ValueError) as e:
+        # Log the error if the entire log_entry is not JSON serializable
+        logger.error(f"Logging error: {e}")

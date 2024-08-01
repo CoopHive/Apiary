@@ -27,3 +27,7 @@ def test_unique_uuid_with_more_machines():
     assert len(uuids) == len(set(uuids))
     # Check if the UUIDs are in sequential order
     assert uuids == list(range(100))
+
+
+if __name__ == "__main__":
+    pytest.main()

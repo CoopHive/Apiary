@@ -5,14 +5,21 @@ import os
 
 import click
 
-from coophive.client import Client
+from coophive.client import Client, create_client
 from coophive.job_offer import JobOffer
 from coophive.resource_offer import ResourceOffer
-from coophive.resource_provider import ResourceProvider
+from coophive.resource_provider import ResourceProvider, create_resource_provider
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.state.onchain import Addresses
-from coophive.utils import Tx, create_job_offer, create_resource_offer
+from coophive.utils import (
+    Tx,
+    create_job_offer,
+    create_n_job_offers,
+    create_n_resource_offers,
+    create_resource_offer,
+    fund_smart_contract,
+)
 
 logger = logging.getLogger(f"test")
 logging.basicConfig(
@@ -102,39 +109,6 @@ def initialize_and_connect_entities():
     logger.info("initialize_and_connect_entities finalized.")
 
 
-def create_resource_provider(
-    resource_provider_public_key: str, solver: Solver, smart_contract: SmartContract
-):
-    """Create a resource provider and connect it to a solver and a smart contract."""
-    # create resource provider
-    resource_provider = ResourceProvider(resource_provider_public_key)
-    # resource provider connects to solver
-    resource_provider.connect_to_solver(url=solver.get_url(), solver=solver)
-    # resource provider connects to smart contract
-    resource_provider.connect_to_smart_contract(smart_contract=smart_contract)
-
-    return resource_provider
-
-
-def create_client(
-    client_public_key: str, solver: Solver, smart_contract: SmartContract
-):
-    """Create a client and connect it to a solver and a smart contract."""
-    client = Client(client_public_key)
-    # client connects to solver
-    client.connect_to_solver(url=solver.get_url(), solver=solver)
-    # client connects to smart contract
-    client.connect_to_smart_contract(smart_contract=smart_contract)
-
-    return client
-
-
-def fund_smart_contract(service_provider, value: float):
-    """Fund a smart contract with a specified value."""
-    tx = Tx(sender=service_provider.get_public_key(), value=value)
-    service_provider.get_smart_contract().fund(tx)
-
-
 @cli.command()
 def initialize_simulation_environment():
     """Initializes and runs the simulation environment for the system.
@@ -215,36 +189,6 @@ def initialize_simulation_environment():
 
     new_solver.solver_cleanup()
     logger.info("initialize_simulation_environment finalized.")
-
-
-def create_n_resource_offers(
-    resource_providers, num_resource_offers_per_resource_provider, created_at
-):
-    """Creates a specified number of resource offers for each resource provider."""
-    for _ in range(num_resource_offers_per_resource_provider):
-        logger.info(f"resource test {_}")
-        for (
-            resource_provider_public_key,
-            resource_provider,
-        ) in resource_providers.items():
-            new_resource_offer = create_resource_offer(
-                resource_provider_public_key, created_at
-            )
-            new_resource_offer_id = new_resource_offer.get_id()
-            resource_provider.get_solver().get_local_information().add_resource_offer(
-                new_resource_offer_id, new_resource_offer
-            )
-
-
-def create_n_job_offers(clients, num_job_offers_per_client, created_at):
-    """Creates a specified number of job offers for each client."""
-    for _ in range(num_job_offers_per_client):
-        for client_public_key, client in clients.items():
-            new_job_offer = create_job_offer(client_public_key, created_at)
-            new_job_offer_id = new_job_offer.get_id()
-            client.get_solver().get_local_information().add_job_offer(
-                new_job_offer_id, new_job_offer
-            )
 
 
 @cli.command()

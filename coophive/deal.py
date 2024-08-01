@@ -2,7 +2,6 @@
 
 from coophive.data_attribute import DataAttribute
 
-# TODO: add "job" to deal attributes
 deal_attributes = {
     "resource_provider_address",
     "client_address",
@@ -18,6 +17,8 @@ deal_attributes = {
     "benefit_to_client",
     "verification_method",
     "mediators",
+    "T_accept",
+    "T_reject",
 }
 
 
