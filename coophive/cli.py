@@ -18,6 +18,7 @@ from coophive.utils import (
     create_job_offer,
     create_resource_offer,
     create_resource_provider,
+    fund_smart_contract,
 )
 
 logger = logging.getLogger(f"test")
@@ -106,12 +107,6 @@ def initialize_and_connect_entities():
         new_resource_provider_1.update_job_running_times()
 
     logger.info("initialize_and_connect_entities finalized.")
-
-
-def fund_smart_contract(service_provider, value: float):
-    """Fund a smart contract with a specified value."""
-    tx = Tx(sender=service_provider.get_public_key(), value=value)
-    service_provider.get_smart_contract().fund(tx)
 
 
 @cli.command()

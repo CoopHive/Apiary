@@ -187,3 +187,14 @@ def create_client(
     client.connect_to_smart_contract(smart_contract=smart_contract)
 
     return client
+
+
+def fund_smart_contract(service_provider, value: float):
+    """Fund a smart contract using a transaction from a service provider.
+
+    Args:
+        service_provider (ServiceProvider): The service provider to fund the smart contract.
+        value (float): The value of the transaction.
+    """
+    tx = service_provider._create_transaction(value)
+    service_provider.get_smart_contract().fund(tx)

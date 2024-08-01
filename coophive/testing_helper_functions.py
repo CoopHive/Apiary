@@ -14,17 +14,6 @@ from coophive.solver import Solver
 from coophive.utils import Tx, example_offer_data
 
 
-def fund_smart_contract(service_provider, value: float):
-    """Fund a smart contract using a transaction from a service provider.
-
-    Args:
-        service_provider (ServiceProvider): The service provider to fund the smart contract.
-        value (float): The value of the transaction.
-    """
-    tx = service_provider._create_transaction(value)
-    service_provider.get_smart_contract().fund(tx)
-
-
 def create_job_offer(owner_public_key: str, created_at):
     """Create a job offer with example data.
 
