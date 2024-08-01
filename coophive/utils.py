@@ -129,10 +129,10 @@ def create_resource_offer(owner_public_key: str, created_at=None):
 
 
 def create_job_offer(owner_public_key: str, created_at=None):
-    """Create a job offer.
+    """Create a job offer with example data.
 
     Args:
-        owner_public_key: The public key of the owner.
+        owner_public_key (str): The public key of the job offer owner.
         created_at: The creation timestamp of the offer.
 
     Returns:

@@ -1,38 +1,4 @@
-"""This module provides helper functions for testing purposes.
-
-Functions:
-    fund_smart_contract: Fund a smart contract using a transaction from a service provider.
-    create_job_offer: Create a job offer with example data.
-    create_n_resource_offers: Create a specified number of resource offers for each resource provider.
-    create_n_job_offers: Create a specified number of job offers for each client.
-"""
-
-from coophive.client import Client
-from coophive.job_offer import JobOffer
-from coophive.smart_contract import SmartContract
-from coophive.solver import Solver
-from coophive.utils import Tx, example_offer_data
-
-
-def create_job_offer(owner_public_key: str, created_at):
-    """Create a job offer with example data.
-
-    Args:
-        owner_public_key (str): The public key of the job offer owner.
-        created_at (str): The creation timestamp.
-
-    Returns:
-        JobOffer: The created job offer.
-    """
-    job_offer = JobOffer()
-    job_offer.add_data("owner", owner_public_key)
-    job_offer.add_data("created_at", created_at)
-    for data_field, data_value in example_offer_data.items():
-        job_offer.add_data(data_field, data_value)
-
-    job_offer.set_id()
-
-    return job_offer
+"""This module provides helper functions for testing purposes."""
 
 
 def create_n_resource_offers(
