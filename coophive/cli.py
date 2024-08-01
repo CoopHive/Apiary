@@ -8,7 +8,7 @@ import click
 from coophive.client import Client, create_client
 from coophive.job_offer import JobOffer
 from coophive.resource_offer import ResourceOffer
-from coophive.resource_provider import ResourceProvider
+from coophive.resource_provider import ResourceProvider, create_resource_provider
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.state.onchain import Addresses
@@ -18,7 +18,6 @@ from coophive.utils import (
     create_n_job_offers,
     create_n_resource_offers,
     create_resource_offer,
-    create_resource_provider,
     fund_smart_contract,
 )
 
