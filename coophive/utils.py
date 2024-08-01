@@ -196,7 +196,7 @@ def fund_smart_contract(service_provider, value: float):
         service_provider (ServiceProvider): The service provider to fund the smart contract.
         value (float): The value of the transaction.
     """
-    tx = service_provider._create_transaction(value)
+    tx = Tx(sender=service_provider.get_public_key(), value=value)
     service_provider.get_smart_contract().fund(tx)
 
 
