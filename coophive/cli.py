@@ -5,7 +5,7 @@ import os
 
 import click
 
-from coophive.client import Client
+from coophive.client import Client, create_client
 from coophive.job_offer import JobOffer
 from coophive.resource_offer import ResourceOffer
 from coophive.resource_provider import ResourceProvider
@@ -14,7 +14,6 @@ from coophive.solver import Solver
 from coophive.state.onchain import Addresses
 from coophive.utils import (
     Tx,
-    create_client,
     create_job_offer,
     create_n_job_offers,
     create_n_resource_offers,

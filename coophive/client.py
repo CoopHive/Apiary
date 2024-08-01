@@ -482,6 +482,26 @@ class Client(ServiceProvider):
         self.negotiate_match(example_match)
 
 
+def create_client(
+    client_public_key: str, solver: Solver, smart_contract: SmartContract
+):
+    """Create a client and connect it to a solver and a smart contract.
+
+    Args:
+        client_public_key (str): The public key of the client.
+        solver (Solver): The solver to connect to.
+        smart_contract (SmartContract): The smart contract to connect to.
+
+    Returns:
+        Client: The created client.
+    """
+    client = Client(client_public_key)
+    client.connect_to_solver(url=solver.get_url(), solver=solver)
+    client.connect_to_smart_contract(smart_contract=smart_contract)
+
+    return client
+
+
 if __name__ == "__main__":
     address = "Your address here"  # Replace with the actual address
     client = Client(address)
