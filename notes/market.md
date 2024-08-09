@@ -40,6 +40,10 @@ Links:
 
 In other words, the overall network of agents is incentivized to score and price the intelligence of a node. This is also alternative Validation scheme to replication.
 
+### Ceramic
+
+https://ceramic.network/
+
 ### Cere Networks
 
 https://www.cere.network/
@@ -84,6 +88,10 @@ https://docs.gensyn.ai/litepaper
 
 [TODO: read online material and white paper and put down relevant notes]
 
+### Glacier
+
+https://www.glacier.io/
+
 ### Golem Network
 
 https://www.golem.network/
@@ -121,6 +129,10 @@ https://olas.network/
 [TODO: read online material and white paper and put down relevant notes]
 
 https://olas.network/whitepaper
+
+### Orbis
+
+https://useorbis.com/
 
 ### Origin Trail
 
@@ -169,6 +181,10 @@ https://streamr.network/
 ### SyncFab
 
 https://syncfab.com/
+
+### Tableland
+
+https://tableland.xyz/
 
 ### Theoriq
 
