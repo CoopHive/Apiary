@@ -41,7 +41,7 @@ An on-chain recorded transaction can record the final amount payed in exchange f
 
 Every agent hardware specifications may limit the state space size. For example, some IoT actors would only be able to remember and act based on on-chain data, while others may be able to have a bigger memory and bigger state space. For the same reason, some agents may be unable to perform certain tasks (that may be costly and limited by time, in fact the validation could also check constraints in the tasks like the time it took to complete.). In other words, each agent has different constraints on both their state space and action space.
 
-A task shall be associated with a variable specifying the possibility for it to be distributed. It could also specify the specific/maximum/minimum number of agents to take the task. The minimum case is to enforce federate learning in the case in which sensitive data needs to be broken down (problem, if agents can fake this IP, multiple virtual agents from the same malitious actor could fill up the task. Is this solvable? Similar issue as above). This creates a negotiation with some kind of waiting room in which people can subscribe to participate and can opt-out before the room is full.
+A task shall be associated with a variable specifying the possibility for it to be distributed. It could also specify the specific/maximum/minimum number of agents to take the task. The minimum case is to enforce federate learning in the case in which sensitive data needs to be broken down (problem, if agents can fake this IP, multiple virtual agents from the same malitious actor could fill up the task. Is this solvable? Similar issue as above). This creates a negotiation with some kind of waiting room in which people can subscribe to participate and can opt-out before the room is full. From the resource provider side, the federate learning scenario could also motivate the introduction of a *Swarm* class, combining different agents that decide to cooperate to a certain degree, for example sharing their state space or their policies.
 
 A straightforward definition of fitness is profit.
 
@@ -82,6 +82,23 @@ Using the language of MLOps, a Job can be defined by a set of tasks and a DAG.
 - https://docs.bentoml.com/en/latest/guides/services.html#service-definitions
 
 - https://docs.ray.io/en/latest/ray-overview/use-cases.html
+
+## 1 vs N, N vs 1, N vs N
+
+The most generic case to be considered is an N (clients) vs N (resource providers). While in principle there are aspects of the generic case that are not captured by either kind of stacking of more specific cases, it is reasonable to start thinking about the N vs N as a set of more simple cases. 
+
+In the 1 (agent) vs N (static environment of clients), the problem is mainly scheduling/path planning in the space of tasks. This would basically mean ignore the presence of multiple agents and just ask ourselves how each of them, blind to the presence of their peers, would move in the space of posted jobs.
+
+In the N (agents) vs 1 dynamic client/job offer, the problem is more purely a negotiation problem. 
+
+Matteo's perspective is that we are not ready to attack the N vs N problem from scratch and that there is more value in solving the 1 vs N, compared to the N vs 1.
+
+
+>> Now, not sure what our short term needs are, but I feel the negotiation aspect is less impactful then the scheduling one on the overall optimality of the compute network.
+
+>> This perspective may easily be biased by my skills and background, but in the same way in which we said "let's ignore the history of credible commitments in the definition of the state space", I feel we should rather focus on blind competition, first. We may also gain some advantage over competition by modeling electricity and gas costs dynamics alone.
+
+>>I think we will then be able to understand how certain agent policies are consistently front ran by others, and we'll be able to make use of the messaging to better inform policies.
 
 ## Network Robustness
 

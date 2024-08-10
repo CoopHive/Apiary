@@ -40,6 +40,10 @@ Links:
 
 In other words, the overall network of agents is incentivized to score and price the intelligence of a node. This is also alternative Validation scheme to replication.
 
+### Ceramic
+
+https://ceramic.network/
+
 ### Cere Networks
 
 https://www.cere.network/
@@ -84,6 +88,10 @@ https://docs.gensyn.ai/litepaper
 
 [TODO: read online material and white paper and put down relevant notes]
 
+### Glacier
+
+https://www.glacier.io/
+
 ### Golem Network
 
 https://www.golem.network/
@@ -114,6 +122,10 @@ https://mor.org/
 
 https://mor.org/whitepaper
 
+### MotherDuck
+
+https://motherduck.com/
+
 ### Olas
 
 https://olas.network/
@@ -121,6 +133,10 @@ https://olas.network/
 [TODO: read online material and white paper and put down relevant notes]
 
 https://olas.network/whitepaper
+
+### Orbis
+
+https://useorbis.com/
 
 ### Origin Trail
 
@@ -135,6 +151,10 @@ https://www.primeintellect.ai/blog/opendiloco
 ### PowerLedger
 
 https://www.powerledger.io/
+
+### Redis
+
+https://redis.io/
 
 ### Render Network
 
@@ -170,6 +190,10 @@ https://streamr.network/
 
 https://syncfab.com/
 
+### Tableland
+
+https://tableland.xyz/
+
 ### Theoriq
 
 https://www.theoriq.ai/
@@ -179,6 +203,10 @@ by ChainML: https://www.chainml.net/
 [TODO: read online material and put down relevant notes]
 
 https://truflation.com/blog/theoriq-and-truflation-partner-to-revolutionize-tokenized-real-world-assets
+
+### Upstash
+
+https://upstash.com/
 
 ## Notes
 
