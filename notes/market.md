@@ -122,6 +122,10 @@ https://mor.org/
 
 https://mor.org/whitepaper
 
+### MotherDuck
+
+https://motherduck.com/
+
 ### Olas
 
 https://olas.network/
@@ -147,6 +151,10 @@ https://www.primeintellect.ai/blog/opendiloco
 ### PowerLedger
 
 https://www.powerledger.io/
+
+### Redis
+
+https://redis.io/
 
 ### Render Network
 
@@ -195,6 +203,10 @@ by ChainML: https://www.chainml.net/
 [TODO: read online material and put down relevant notes]
 
 https://truflation.com/blog/theoriq-and-truflation-partner-to-revolutionize-tokenized-real-world-assets
+
+### Upstash
+
+https://upstash.com/
 
 ## Notes
 
