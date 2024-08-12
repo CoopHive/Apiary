@@ -108,7 +108,13 @@ Even more relevant, the concept of self-organized criticality: https://www.linke
 
 Not clear how to formalize/verify/deal with this point, but worth mentioning.
 
-Reading "Local Scheduling in Multi-Agent Systems: getting ready for safety-critical scenarios”: is is clear that we need a deep conceptual and practical separation between the intelligent/strategic layer. This is a central node interacting with the agents competition pool, making sure agents are able to act and that the CPS as a whole is achieving what it needs to achieve.. This central node can learn general laws of behaviour based on the goals of the overall system and the behaviour of its components. In this sense, the competition sandbox and the brain are close to each other, conceptually. A deeper separation is with the communication layer/middleware. This module ensures the brain and the components access all the information possible.
+Related works about the chaotic nature of the learning trajectory, making it necessary for us to start with trivial/underfitted policies and slowly complexify things:
+
+- https://pubmed.ncbi.nlm.nih.gov/11930020/
+- https://pubmed.ncbi.nlm.nih.gov/29559641/
+- https://pubmed.ncbi.nlm.nih.gov/23297213/
+
+Reading "Local Scheduling in Multi-Agent Systems: getting ready for safety-critical scenarios”: is is clear that we need a deep conceptual and practical separation between the intelligent/strategic layer. This is a central node interacting with the agents competition pool, making sure agents are able to act and that the CPS as a whole is achieving what it needs to achieve. This central node can learn general laws of behaviour based on the goals of the overall system and the behaviour of its components. In this sense, the competition sandbox and the brain are close to each other, conceptually. A deeper separation is with the communication layer/middleware. This module ensures the brain and the components access all the information possible. What I called "brain" here could be a centralized solver. These considerations related to the design choice of pure agent-based scheduling/negotiation vs centralized solver for tasks allocation.
 
 Agents need to be robust against different kind of non-stationarities: agents could die, new appear, macrovariable drastically change. How to avoid the overall system of lead to an endogenous crisis triggered by a small variation is external variables? In other words, how to ensure a small degree of chaoticity/fragility against external perturbations?
 
