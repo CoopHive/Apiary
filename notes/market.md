@@ -23,6 +23,12 @@ Docs:
 https://akash.network/docs/getting-started/intro-to-akash/bids-and-leases/
 ]
 
+### Allora
+
+https://www.allora.network/
+
+https://whitepaper.assets.allora.network/whitepaper.pdf
+
 ### Bittensor
 
 Decentralized AI, including data, storage, predictions, and models, by Opentensor.
