@@ -35,7 +35,7 @@ class Client(ServiceProvider):
         """
         super().__init__(address)
         self.current_jobs = deque()  # TODO: determine the best data structure for this
-        
+
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
         self.client_socket = None
         self.server_address = ("localhost", 1234)
