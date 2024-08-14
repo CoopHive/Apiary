@@ -198,12 +198,16 @@ def test_client_loop(setup_client):
             "resource_offer": "offer1",
             "job_offer": "job1",
             "price_per_instruction": 10,
+            "expected_number_of_instructions": 1000,
+            "expected_benefit_to_client": 2000,
             "client_deposit": 100,
             "timeout": 10,
             "timeout_deposit": 15,
             "cheating_collateral_multiplier": 1.5,
             "verification_method": "method1",
             "mediators": ["mediator1", "mediator2"],
+            "T_accept": 50,
+            "T_reject": 20,
         }
     )
 
@@ -216,12 +220,16 @@ def test_client_loop(setup_client):
             "resource_offer": "offer2",
             "job_offer": "job2",
             "price_per_instruction": 50,
+            "expected_number_of_instructions": 2000,
+            "expected_benefit_to_client": 3000,
             "client_deposit": 100,
             "timeout": 12,
             "timeout_deposit": 20,
             "cheating_collateral_multiplier": 1.0,
             "verification_method": "method2",
             "mediators": ["mediator3"],
+            "T_accept": 70,
+            "T_reject": 30,
         }
     )
 
