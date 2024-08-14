@@ -32,11 +32,6 @@ class Solver(ServiceProvider):
         self.currently_matched_job_offers = set()
         self.current_matched_resource_offers = set()
 
-    def connect_to_smart_contract(self, smart_contract: SmartContract):
-        """Connect the solver to a smart contract and subscribe to events."""
-        self.smart_contract = smart_contract
-        smart_contract.subscribe_event(self.handle_smart_contract_event)
-
     def handle_smart_contract_event(self, event: Event):
         """Handle events from the smart contract."""
         if event.get_name() == "mediation_random":

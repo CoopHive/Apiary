@@ -12,7 +12,6 @@ from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
-from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.utils import IPFS, ServiceType, Tx
 
@@ -81,11 +80,11 @@ class ServiceProvider:
         self.solver.get_local_information().add_service_provider(self)
         self.logger.info(f"Connected to solver: {url}")
 
-    def connect_to_smart_contract(self, smart_contract: SmartContract):
+    def connect_to_smart_contract(self, smart_contract):
         """Connect to a smart contract and subscribe to its events.
 
         Args:
-            smart_contract (SmartContract): The smart contract instance to connect to.
+            smart_contract: The smart contract instance to connect to.
         """
         self.smart_contract = smart_contract
         smart_contract.subscribe_event(self.handle_smart_contract_event)
