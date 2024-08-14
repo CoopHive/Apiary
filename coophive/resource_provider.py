@@ -281,23 +281,6 @@ class ResourceProvider(ServiceProvider):
         expected_revenue = self.calculate_revenue(match)
         return expected_revenue
 
-    def create_new_match_offer(self, match):
-        """Create a new match offer by modifying the price per instruction.
-
-        Args:
-            match (Match): The match object to base the new offer on.
-
-        Returns:
-            Match: A new match object with the updated price.
-        """
-        data = match.get_data()
-        new_data = data.copy()
-        new_data["price_per_instruction"] = (
-            data["price_per_instruction"] * 1.06
-        )  # For example, increase the price
-        new_match = Match(new_data)
-        return new_match
-
     def resource_provider_loop(self):
         """Main loop for the resource provider to process matched offers and update job running times."""
         for match in self.current_matched_offers:

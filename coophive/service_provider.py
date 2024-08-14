@@ -10,6 +10,7 @@ from coophive.deal import Deal
 from coophive.event import Event
 from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
+from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
@@ -192,6 +193,24 @@ class ServiceProvider:
             "counter_offer": self.create_new_match_offer(match_offer),
         }
         return response
+
+    def create_new_match_offer(self, match):
+        """Create a new match offer with modified terms.
+
+        Args:
+            match (Match): The match object to base the new offer on.
+
+        Returns:
+            Match: A new match object.
+        """
+        data = match.get_data()
+        new_data = data.copy()
+
+        # Placeholder identity Policy
+        new_data["price_per_instruction"] = data["price_per_instruction"]
+
+        new_match = Match(new_data)
+        return new_match
 
     def update_finished_deals(self):
         """Update the list of finished deals by removing them from the current deals and jobs lists."""

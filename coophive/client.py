@@ -214,16 +214,6 @@ class Client(ServiceProvider):
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
 
-    def create_new_match_offer(self, match):
-        """Create a new match offer with modified terms."""
-        data = match.get_data()
-        new_data = data.copy()
-        new_data["price_per_instruction"] = (
-            data["price_per_instruction"] * 0.95
-        )  # For example, reduce the price
-        new_match = Match(new_data)
-        return new_match
-
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
         example_match_data = {
