@@ -9,8 +9,8 @@ import os
 from coophive.deal import Deal
 from coophive.event import Event
 from coophive.job_offer import JobOffer
+from coophive.log_json import log_json
 from coophive.resource_offer import ResourceOffer
-from coophive.resource_provider import ResourceProvider
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.utils import IPFS, ServiceType, Tx
@@ -158,27 +158,40 @@ class ServiceProvider:
         self.logger.info(f"Negotiating match: {match.get_id()}")
         for _ in range(max_rounds):
             new_match_offer = self.create_new_match_offer(match)
-            response = self.communicate_request_to_party(
-                match.get_data()[
-                    f"{'client' if isinstance(self, ResourceProvider) else 'resource_provider'}_address"
-                ],
-                new_match_offer,
-            )
+            response = self.communicate_request_to_party(new_match_offer)
             if response["accepted"]:
                 self._agree_to_match(response["match"])
                 return
             match = response["counter_offer"]
         self.reject_match(match)
 
-    def communicate_request_to_party(self, party_id, match_offer):
+    def communicate_request_to_party(self, match_offer):
         """Communicate a match offer request to a specified party.
 
         Args:
-            party_id: The ID of the party to communicate with.
             match_offer: The match offer details to be communicated.
         """
-        self.logger.info(f"Communicating request to party: {party_id}")
-        return self.simulate_communication(party_id, match_offer)
+        return self.simulate_communication(match_offer)
+
+    def simulate_communication(self, match_offer):
+        """Simulate communication."""
+        message = f"New match offer: {match_offer.get_data()}"
+
+        # TODO: placeholder, will need to use SDK with messaging,
+        # and be a function of the message string variable above.
+        response_message = "Your offer has been accepted."
+
+        log_json(
+            self.logger,
+            "Received response from server",
+            {"response_message": response_message},
+        )
+
+        response = {
+            "accepted": "accepted" in response_message,
+            "counter_offer": self.create_new_match_offer(match_offer),
+        }
+        return response
 
     def update_finished_deals(self):
         """Update the list of finished deals by removing them from the current deals and jobs lists."""
