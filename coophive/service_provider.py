@@ -111,34 +111,6 @@ class ServiceProvider:
             ):
                 self.current_matched_offers.append(match)
 
-    def make_match_decision(self, match, algorithm):
-        """Make a decision on whether to accept, reject, or negotiate a match."""
-        if algorithm == "accept_all":
-            self._agree_to_match(match)
-        elif algorithm == "accept_reject":
-            match_utility = self.calculate_utility(match)
-            best_match = self.find_best_match(match.get_data().get("job_offer"))
-            if best_match == match and match_utility > match.get_data().get(
-                "job_offer", {}
-            ).get("T_accept", 0):
-                self._agree_to_match(match)
-            else:
-                self.reject_match(match)
-        elif algorithm == "accept_reject_negotiate":
-            best_match = self.find_best_match(match.get_data().get("job_offer"))
-            if best_match == match:
-                utility = self.calculate_utility(match)
-                if utility > match.get_data().get("job_offer", {}).get("T_accept", 0):
-                    self._agree_to_match(match)
-                elif utility < match.get_data().get("job_offer", {}).get("T_reject", 0):
-                    self.reject_match(match)
-                else:
-                    self.negotiate_match(match)
-            else:
-                self.reject_match(match)
-        else:
-            raise ValueError(f"Unknown algorithm: {algorithm}")
-
     def reject_match(self, match):
         """Reject a match."""
         self.logger.info(f"Rejected match: {match.get_id()}")

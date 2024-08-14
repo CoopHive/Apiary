@@ -17,8 +17,6 @@ deal_attributes = {
     "benefit_to_client",
     "verification_method",
     "mediators",
-    "T_accept",
-    "T_reject",
 }
 
 

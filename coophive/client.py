@@ -214,6 +214,32 @@ class Client(ServiceProvider):
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
 
+    def make_match_decision(self, match, algorithm):
+        """Make a decision on whether to accept, reject, or negotiate a match."""
+        if algorithm == "accept_all":
+            self._agree_to_match(match)
+        elif algorithm == "accept_reject":
+            match_utility = self.calculate_utility(match)
+            best_match = self.find_best_match(match.get_data()["job_offer"])
+            if best_match == match and match_utility > match.get_data()["job_offer"]["T_accept"]:
+                self._agree_to_match(match)
+            else:
+                self.reject_match(match)
+        elif algorithm == "accept_reject_negotiate":
+            best_match = self.find_best_match(match.get_data()["job_offer"])
+            if best_match == match:
+                utility = self.calculate_utility(match)
+                if utility > match.get_data()["job_offer"]["T_accept"]:
+                    self._agree_to_match(match)
+                elif utility < match.get_data()["job_offer"]["T_reject"]:
+                    self.reject_match(match)
+                else:
+                    self.negotiate_match(match)
+            else:
+                self.reject_match(match)
+        else:
+            raise ValueError(f"Unknown algorithm: {algorithm}")
+
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
         for match in self.current_matched_offers:

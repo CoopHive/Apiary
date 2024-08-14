@@ -271,7 +271,6 @@ class ResourceProvider(ServiceProvider):
         expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
         return price_per_instruction * expected_number_of_instructions
 
-    # Currently T_accept is -15 and T_reject to -30 but that DEFINITELY needs to be changed
     # NOTE: this utility calculation is DIFFERENT for a resource provider than for a client
     def calculate_utility(self, match):
         """Calculate the utility of a match based on several factors.
@@ -280,6 +279,32 @@ class ResourceProvider(ServiceProvider):
         """
         expected_revenue = self.calculate_revenue(match)
         return expected_revenue
+
+    def make_match_decision(self, match, algorithm):
+        """Make a decision on whether to accept, reject, or negotiate a match."""
+        if algorithm == "accept_all":
+            self._agree_to_match(match)
+        elif algorithm == "accept_reject":
+            match_utility = self.calculate_utility(match)
+            best_match = self.find_best_match(match.get_data().get("job_offer"))
+            if best_match == match and match_utility > match.get_data()["resource_offer"]["T_accept"]:
+                self._agree_to_match(match)
+            else:
+                self.reject_match(match)
+        elif algorithm == "accept_reject_negotiate":
+            best_match = self.find_best_match(match.get_data()["resource_offer"])
+            if best_match == match:
+                utility = self.calculate_utility(match)
+                if utility > match.get_data()["resource_offer"]["T_accept"]
+                    self._agree_to_match(match)
+                elif utility < match.get_data()["resource_offer"]["T_reject"]
+                    self.reject_match(match)
+                else:
+                    self.negotiate_match(match)
+            else:
+                self.reject_match(match)
+        else:
+            raise ValueError(f"Unknown algorithm: {algorithm}")
 
     def resource_provider_loop(self):
         """Main loop for the resource provider to process matched offers and update job running times."""

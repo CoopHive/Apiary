@@ -17,8 +17,6 @@ match_attributes = {
     "cheating_collateral_multiplier",
     "verification_method",
     "mediators",
-    "T_accept",
-    "T_reject",
 }
 
 

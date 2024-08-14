@@ -15,7 +15,7 @@ job_offer_attributes = {
     # TODO: add instruction count
     "verification_method",
     "mediators",
-    # "expected_benefit_to_client" # [USD] (TODO: Should this be in the job_offer?)
+    "benefit_to_client" 
 }
 
 
