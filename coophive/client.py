@@ -216,27 +216,11 @@ class Client(ServiceProvider):
 
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
-        example_match_data = {
-            "resource_provider_address": "rp_address",
-            "client_address": "client_address",
-            "resource_offer": {
-                "T_accept": 100.6,
-                "T_reject": 10,
-                "resource_id": "resource_1",
-            },
-            "job_offer": {"T_accept": 95, "T_reject": 10, "job_id": "job_1"},
-            "price_per_instruction": 0.10,
-            "expected_number_of_instructions": 1000,
-            "expected_benefit_to_client": 190,
-            "client_deposit": 50,
-            "timeout": 100,
-            "timeout_deposit": 20,
-            "cheating_collateral_multiplier": 1.5,
-            "verification_method": "method_1",
-            "mediators": ["mediator_1"],
-        }
-        example_match = Match(example_match_data)
-        self.negotiate_match(example_match)
+        for match in self.current_matched_offers:
+            self.make_match_decision(match, "accept_reject_negotiate")
+    
+        self.update_finished_deals()
+        self.current_matched_offers.clear()
 
 
 def create_client(
