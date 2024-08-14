@@ -5,20 +5,9 @@ We're ignoring gas for now.
 """
 
 import logging
-from enum import Enum
 
 from coophive.log_json import log_json
-from coophive.utils import Service, Tx
-
-
-class ServiceType(Enum):
-    """Enumeration of different service types available in the contract."""
-
-    RESOURCE_PROVIDER = 1
-    CLIENT = 2
-    SOLVER = 3
-    MEDIATOR = 4
-    DIRECTORY = 5
+from coophive.utils import Service, ServiceType, Tx
 
 
 class Contract:

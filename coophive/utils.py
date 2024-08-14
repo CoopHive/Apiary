@@ -1,8 +1,4 @@
-"""This module defines various utility classes and functions for the CoopHive simulator.
-
-It includes classes for service types, IPFS integration, and transaction metadata,
-as well as functions to create resource and job offers.
-"""
+"""This module defines various utility classes and functions for the CoopHive simulator."""
 
 from dataclasses import dataclass
 from enum import Enum
