@@ -218,9 +218,17 @@ class ServiceProvider:
 
 
 class LocalInformation:
-    """A class to represent local information of the service provider.
+    """A class to manage local information of service providers, resource offers, and job offers.
 
-    This class provides methods to manage service providers, resource offers, and job offers.
+    Attributes:
+        block_number (int): The block number for the current state.
+        resource_providers (dict): Mapping from wallet address to resource provider metadata.
+        clients (dict): Mapping from wallet address to client metadata.
+        solvers (dict): Mapping from wallet address to solver metadata.
+        mediators (dict): Mapping from wallet address to mediator metadata.
+        directories (dict): Mapping from wallet address to directory metadata.
+        resource_offers (dict): Mapping from offer ID to resource offer data.
+        job_offers (dict): Mapping from offer ID to job offer data.
     """
 
     ipfs = IPFS()
@@ -236,8 +244,6 @@ class LocalInformation:
         self.directories = {}
         self.resource_offers: dict[str, ResourceOffer] = {}
         self.job_offers: dict[str, JobOffer] = {}
-        # self.active_job_offers = {}
-        # self.active_resource_offers = {}
 
     def add_service_provider(
         self,
@@ -245,7 +251,7 @@ class LocalInformation:
         public_key: str,
         service_provider: ServiceProvider,
     ):
-        """Add a service provider to the local information.
+        """Add a service provider to the appropriate category based on service type.
 
         Args:
             service_type (ServiceType): The type of the service provider.
@@ -264,8 +270,8 @@ class LocalInformation:
             case ServiceType.DIRECTORY:
                 self.directories[public_key] = service_provider
 
-    def remove_service_provider(self, service_type: ServiceType, public_key):
-        """Remove a service provider from the local information.
+    def remove_service_provider(self, service_type: ServiceType, public_key: str):
+        """Remove a service provider from the appropriate category based on service type.
 
         Args:
             service_type (ServiceType): The type of the service provider.
@@ -306,16 +312,16 @@ class LocalInformation:
 
     def add_resource_offer(self, id: str, data):
         """Add a resource offer to the local information and IPFS."""
-        logging.info("adding resource offer locally")
+        logging.info("Adding resource offer locally:")
         self.resource_offers[id] = data
-        logging.info("adding resource offer to IPFS")
+        logging.info("Adding resource offer to IPFS:")
         self.ipfs.add(data)
 
     def add_job_offer(self, id: str, data):
         """Add a job offer to the local information and IPFS."""
-        logging.info("adding job offer locally")
+        logging.info("Adding job offer locally:")
         self.job_offers[id] = data
-        logging.info("adding job offer to IPFS")
+        logging.info("Adding job offer to IPFS:")
         self.ipfs.add(data)
 
     def get_resource_offers(self):
