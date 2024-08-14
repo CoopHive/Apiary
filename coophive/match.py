@@ -17,6 +17,7 @@ match_attributes = {
     "cheating_collateral_multiplier",
     "verification_method",
     "mediators",
+    "rounds_completed",
 }
 
 

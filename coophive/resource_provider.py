@@ -62,8 +62,20 @@ class ResourceProvider(ServiceProvider):
                 if "New match offer" in message:
                     match_data = eval(message.split("New match offer: ")[1])
                     match = Match(match_data)
-                    response = self.evaluate_match(match)
-                    client_socket.send(response.encode("utf-8"))
+                    match_dict = new_match.get_data()
+                    if "rounds_completed" not in match_dict:
+                        new_match.rounds_completed = 0
+                    # Check if the match is already in current_matched_offers by ID
+                    for existing_match in self.current_matched_offers:
+                        if existing_match.get_id() == new_match.get_id():
+                            # Continue negotiating on the existing match
+                            self.negotiate_match(existing_match)
+                            break
+                    else:
+                        # New match, add to current_matched_offers and process
+                        self.current_matched_offers.append(new_match)
+                        response = self.make_match_decision(new_match, algorithm="accept_reject_negotiate")
+                        client_socket.send(response.encode("utf-8"))
             except ConnectionResetError:
                 self.logger.info("Connection lost. Closing connection.")
                 client_socket.close()

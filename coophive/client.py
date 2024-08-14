@@ -58,12 +58,24 @@ class Client(ServiceProvider):
                 if "New match offer" in message:
                     match_data = eval(message.split("New match offer: ")[1])
                     new_match = Match(match_data)
-                    self.negotiate_match(new_match)
-
+                    match_dict = new_match.get_data()
+                    if "rounds_completed" not in match_dict:
+                        new_match["rounds_completed"]= 0
+                    for existing_match in self.current_matched_offers:
+                        if existing_match.get_id() == new_match.get_id():
+                            # Continue negotiating on the existing match
+                            self.negotiate_match(existing_match)
+                            break
+                    else:
+                        # New match, add to current_matched_offers and process
+                        self.current_matched_offers.append(new_match)
+                        self.make_match_decision(new_match, algorithm="accept_reject_negotiate")
             except ConnectionResetError:
                 logging.info("Connection lost. Closing connection.")
                 self.client_socket.close()
                 break
+            except Exception as e:
+                self.logger.info(f"Error handling message: {e}")
 
     def add_job(self, job: Job):
         """Add a job to the client's current jobs."""
