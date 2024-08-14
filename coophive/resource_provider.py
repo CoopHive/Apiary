@@ -21,12 +21,8 @@ from coophive.utils import CID, Tx
 class ResourceProvider(ServiceProvider):
     """Class representing a resource provider in the CoopHive simulator."""
 
-    def __init__(self, public_key: str):
-        """Initialize the ResourceProvider instance.
-
-        Args:
-            public_key (str): The public key associated with the resource provider.
-        """
+    def __init__(self):
+        """Initialize the ResourceProvider instance."""
         # machines maps CIDs -> machine metadata
         self.machines = {}
         self.docker_client = docker.from_env()
@@ -126,10 +122,6 @@ class ResourceProvider(ServiceProvider):
             dict: Dictionary mapping machine IDs to machine instances.
         """
         return self.machines
-
-    def create_resource_offer(self):
-        """Placeholder for resource offer creation."""
-        pass
 
     def _agree_to_match(self, match: Match):
         """Agree to a match and send a transaction to the connected smart contract.
