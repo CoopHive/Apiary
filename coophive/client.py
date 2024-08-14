@@ -60,7 +60,7 @@ class Client(ServiceProvider):
                     new_match = Match(match_data)
                     match_dict = new_match.get_data()
                     if "rounds_completed" not in match_dict:
-                        new_match["rounds_completed"]= 0
+                        new_match["rounds_completed"] = 0
                     for existing_match in self.current_matched_offers:
                         if existing_match.get_id() == new_match.get_id():
                             # Continue negotiating on the existing match
@@ -69,7 +69,9 @@ class Client(ServiceProvider):
                     else:
                         # New match, add to current_matched_offers and process
                         self.current_matched_offers.append(new_match)
-                        self.make_match_decision(new_match, algorithm="accept_reject_negotiate")
+                        self.make_match_decision(
+                            new_match, algorithm="accept_reject_negotiate"
+                        )
             except ConnectionResetError:
                 logging.info("Connection lost. Closing connection.")
                 self.client_socket.close()
@@ -233,7 +235,10 @@ class Client(ServiceProvider):
         elif algorithm == "accept_reject":
             match_utility = self.calculate_utility(match)
             best_match = self.find_best_match(match.get_data()["job_offer"])
-            if best_match == match and match_utility > match.get_data()["job_offer"]["T_accept"]:
+            if (
+                best_match == match 
+                and match_utility > match.get_data()["job_offer"]["T_accept"]
+            ):
                 self._agree_to_match(match)
             else:
                 self.reject_match(match)

@@ -117,8 +117,8 @@ class ServiceProvider:
 
     def negotiate_match(self, match, max_rounds=5):
         """Negotiate a match."""
-        self.logger.info(f"Negotiating match: {match.get_id()} (rounds completed: {match.get_data()["rounds_completed"]})")
         match_dict = match.get_data()
+        self.logger.info(f"Negotiating match: {match.get_id()} (rounds completed: {match_dict["rounds_completed"]})")
         rounds_completed = match_dict["rounds_completed"]
         while rounds_completed < max_rounds:
             new_match_offer = self.create_new_match_offer(match)

@@ -297,19 +297,20 @@ class ResourceProvider(ServiceProvider):
         if algorithm == "accept_all":
             self._agree_to_match(match)
         elif algorithm == "accept_reject":
+            match_dict = match.get_data()
             match_utility = self.calculate_utility(match)
-            best_match = self.find_best_match(match.get_data().get("job_offer"))
-            if best_match == match and match_utility > match.get_data()["resource_offer"]["T_accept"]:
+            best_match = self.find_best_match(match_dict.get("job_offer"))
+            if best_match == match and match_utility > match_dict["resource_offer"]["T_accept"]:
                 self._agree_to_match(match)
             else:
                 self.reject_match(match)
         elif algorithm == "accept_reject_negotiate":
-            best_match = self.find_best_match(match.get_data()["resource_offer"])
+            best_match = self.find_best_match(match_dict["resource_offer"])
             if best_match == match:
                 utility = self.calculate_utility(match)
-                if utility > match.get_data()["resource_offer"]["T_accept"]
+                if utility > match_dict["resource_offer"]["T_accept"]
                     self._agree_to_match(match)
-                elif utility < match.get_data()["resource_offer"]["T_reject"]
+                elif utility < match_dict["resource_offer"]["T_reject"]
                     self.reject_match(match)
                 else:
                     self.negotiate_match(match)
