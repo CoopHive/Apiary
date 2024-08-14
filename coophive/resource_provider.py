@@ -298,31 +298,6 @@ class ResourceProvider(ServiceProvider):
         new_match = Match(new_data)
         return new_match
 
-    def simulate_communication(self, party_id, match_offer):
-        """Simulate communication with a party to get their response to a match offer.
-
-        Args:
-            party_id (str): The ID of the party to communicate with.
-            match_offer (Match): The match offer being sent.
-
-        Returns:
-            dict: A simulated response from the party, including whether the offer was accepted or a counter-offer.
-        """
-        message = f"New match offer: {match_offer.get_data()}"
-        self.client_socket.send(message.encode("utf-8"))
-        response_message = self.client_socket.recv(1024).decode("utf-8")
-        log_json(
-            self.logger,
-            "Received response from server",
-            {"response_message": response_message},
-        )
-
-        response = {
-            "accepted": "accepted" in response_message,
-            "counter_offer": self.create_new_match_offer(match_offer),
-        }
-        return response
-
     def resource_provider_loop(self):
         """Main loop for the resource provider to process matched offers and update job running times."""
         for match in self.current_matched_offers:

@@ -214,35 +214,6 @@ class Client(ServiceProvider):
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
 
-    # example way of integrating current round number and negotiation aggression into generate_offer
-    # def create_new_match_offer(self, match, round_num, max_rounds, strategy_parameter=0.5):
-    #     data = match.get_data()
-    #     current_offer = {key: data[key] for key in data if key in ['price_per_instruction']}
-
-    #     # Define target offer (for simplicity, reduce the price per instruction by 20% as an example)
-    #     target_offer = {key: data[key] * 0.8 for key in current_offer}
-
-    #     # Calculate the concession factor based on the round number, total rounds, and strategy parameter
-    #     concession_factor = (1 - (round_num / max_rounds) ** strategy_parameter)
-
-    #     # Generate new offer based on the concession factor
-    #     new_data = {}
-    #     for key in current_offer:
-    #         if key == 'price_per_instruction':
-    #             new_data[key] = current_offer[key] - (concession_factor * (current_offer[key] - target_offer[key]))
-    #         else:
-    #             new_data[key] = current_offer[key]
-
-    #     # Create a new match object with the updated offer
-    #     new_match = Match()
-    #     for key, value in data.items():
-    #         if key in new_data:
-    #             new_match.add_data(key, new_data[key])
-    #         else:
-    #             new_match.add_data(key, value)
-
-    #     return new_match
-
     def create_new_match_offer(self, match):
         """Create a new match offer with modified terms."""
         data = match.get_data()
@@ -252,32 +223,6 @@ class Client(ServiceProvider):
         )  # For example, reduce the price
         new_match = Match(new_data)
         return new_match
-
-    def simulate_communication(self, party_id, match_offer):
-        """Simulate the communication of a match offer to a party and receive a response.
-
-        Args:
-            party_id: The ID of the party to communicate with.
-            match_offer: The match offer details to be communicated.
-
-        Returns:
-            dict: A simulated response including acceptance status and counter-offer.
-        """
-        message = f"New match offer: {match_offer.get_data()}"
-        self.client_socket.send(message.encode("utf-8"))
-        response_message = self.client_socket.recv(1024).decode("utf-8")
-        log_json(
-            self.logger,
-            "Received response from server",
-            {"response_message": response_message},
-        )
-
-        response = {
-            "accepted": "accepted" in response_message,
-            "counter_offer": self.create_new_match_offer(match_offer),
-        }
-
-        return response
 
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
