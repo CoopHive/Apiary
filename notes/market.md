@@ -176,6 +176,10 @@ https://ritual.net/
 
 [TODO: read online material and put down relevant notes]
 
+### Sahara
+
+https://saharalabs.ai/
+
 ### Sia
 
 https://sia.tech/
@@ -203,6 +207,7 @@ https://tableland.xyz/
 ### Theoriq
 
 https://www.theoriq.ai/
+https://www.theoriq.ai/litepaper
 
 by ChainML: https://www.chainml.net/
 
