@@ -54,7 +54,6 @@ class SmartContract(ServiceProvider):
         self.balances[resource_provider_address] -= timeout_deposit
         self.balance += timeout_deposit
         match.sign_resource_provider()
-        # self.logger.info(f"resource provider {match.get_data()['resource_provider_address']} has signed match {match.get_id()}")
 
         log_data = {
             "resource_provider_address": resource_provider_address,
@@ -80,7 +79,6 @@ class SmartContract(ServiceProvider):
         self.balances[client_address] -= tx.value
         self.balance += tx.value
         match.sign_client()
-        # self.logger.info(f"client {match.get_data()['client_address']} has signed match {match.get_id()}")
 
         log_data = {"client_address": client_address, "match_id": match.get_id()}
         log_json(self.logger, "Client signed match", log_data)
@@ -270,15 +268,8 @@ class SmartContract(ServiceProvider):
         self.balance += intended_cheating_collateral
 
     def ask_consortium_of_mediators(self, event: Event):
-        """Ask a consortium of mediators to check the result.
-
-        Args:
-            event (Event): The event object.
-
-        Returns:
-            bool: True if the result was correct, False otherwise.
-        """
-        return True  # TODO: remove default boolean.
+        """Ask a consortium of mediators to check the result (Placeholder)."""
+        return True
 
     def ask_random_mediator(self, event: Event):
         """Ask a random mediator to check the result.
@@ -361,9 +352,6 @@ class SmartContract(ServiceProvider):
             self.slash_cheating_collateral(event)
 
     def _log_balances(self):
-        # self.logger.info(f"Smart Contract balance: {self.balance}")
-        # self.logger.info(f"Smart Contract balances: {self.balances}")
-
         log_json(self.logger, "Smart Contract balance", {"balance": self.balance})
         log_json(self.logger, "Smart Contract balances", {"balances": self.balances})
 
@@ -389,9 +377,6 @@ class SmartContract(ServiceProvider):
                 {"match_id": match_id, "match_attributes": match_data},
             )
             self._create_deal(match)
-            # self.logger.info(f"both resource provider {match.get_data()['resource_provider_address']} and client {match.get_data()['client_address']} have signed match {match.get_id()}")
-            # self.logger.info(f"match attributes of match {match.get_id()}: {match.get_data()}")
-            # self._create_deal(match)
         self._create_and_emit_result_events()
         self._account_for_cheating_collateral_payments()
         self.matches_made_in_current_step.clear()
