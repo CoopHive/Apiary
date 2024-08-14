@@ -76,7 +76,12 @@ class ServiceProvider:
         self.solver_url = url
         self.solver = solver
         self.solver.subscribe_event(self.handle_solver_event)
-        self.solver.get_local_information().add_service_provider(self)
+
+        self.solver.get_local_information().add_service_provider(
+            service_type=ServiceType.SOLVER,
+            public_key=self.solver.public_key,
+            service_provider=self,
+        )
         self.logger.info(f"Connected to solver: {url}")
 
     def connect_to_smart_contract(self, smart_contract):
