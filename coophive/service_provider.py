@@ -6,9 +6,9 @@ It manage service providers, their local information, events, and transactions.
 import logging
 import os
 
+from coophive.deal import Deal
 from coophive.event import Event
 from coophive.job_offer import JobOffer
-from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
 from coophive.resource_provider import ResourceProvider
 from coophive.smart_contract import SmartContract
@@ -103,12 +103,6 @@ class ServiceProvider:
             ):
                 self.current_matched_offers.append(match)
 
-    def handle_smart_contract_event(self, event):
-        """Placeholder, must be implemented by subclasses."""
-        raise NotImplementedError(
-            "Subclasses must implement handle_smart_contract_event"
-        )
-
     def make_match_decision(self, match, algorithm):
         """Make a decision on whether to accept, reject, or negotiate a match."""
         if algorithm == "accept_all":
@@ -155,10 +149,6 @@ class ServiceProvider:
         else:
             raise ValueError(f"Unknown algorithm: {algorithm}")
 
-    def calculate_utility(self, match):
-        """Placeholder, must be implemented by subclasses."""
-        raise NotImplementedError("Subclasses must implement calculate_utility")
-
     def reject_match(self, match):
         """Reject a match."""
         self.logger.info(f"Rejected match: {match.get_id()}")
@@ -190,33 +180,11 @@ class ServiceProvider:
         self.logger.info(f"Communicating request to party: {party_id}")
         return self.simulate_communication(party_id, match_offer)
 
-    def simulate_communication(self, party_id, match_offer):
-        """Placeholder, must be implemented by subclasses."""
-        raise NotImplementedError("Subclasses must implement simulate_communication")
-
     def update_finished_deals(self):
         """Update the list of finished deals by removing them from the current deals and jobs lists."""
         for deal_id in self.deals_finished_in_current_step:
             del self.current_deals[deal_id]
         self.deals_finished_in_current_step.clear()
-
-    def _agree_to_match(self, match: Match):
-        """Placeholder, must be implemented by subclasses."""
-        raise NotImplementedError("Subclasses must implement _agree_to_match")
-
-    def find_best_match(self, offer_id):
-        """Placeholder, must be implemented by subclasses."""
-        raise NotImplementedError("Subclasses must implement find_best_match")
-
-    def evaluate_match(self, match):
-        """Placeholder, must be implemented by subclasses."""
-        raise NotImplementedError("Subclasses must implement evaluate_match")
-
-    def create_new_match_offer(self, match):
-        """Placeholder, must be implemented by subclasses."""
-        raise NotImplementedError("Subclasses must implement create_new_match_offer")
-
-    # not supporting unsubscribing
 
 
 class LocalInformation:
