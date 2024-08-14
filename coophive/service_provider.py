@@ -52,6 +52,10 @@ class ServiceProvider:
         """Get the events emitted by the service provider."""
         return self.events
 
+    def get_solver(self):
+        """Get the connected solver."""
+        return self.solver
+
     def emit_event(self, event: Event):
         """Emit an event and notify all subscribed event handlers."""
         self.events.append(event)
