@@ -1,7 +1,6 @@
 """Module for defining the ResourceProvider class and its related functionalities."""
 
 import logging
-import os
 import socket
 import threading
 import time
@@ -15,7 +14,7 @@ from coophive.result import Result
 from coophive.service_provider import ServiceProvider
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
-from coophive.utils import *
+from coophive.utils import CID, Tx
 
 
 # TODO: centralize logging settings and initialization at the initial setup of the package functionality calls.

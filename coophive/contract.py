@@ -4,8 +4,6 @@ It also models enough of Ethereum itself, such as wallets.
 We're ignoring gas for now.
 """
 
-# TODO: Matteo question: are we going to need to start modeling gas fees at a certaint point?
-
 import logging
 from enum import Enum
 

@@ -5,7 +5,6 @@ connect to solvers and smart contracts, handle events, and make decisions regard
 """
 
 import logging
-import os
 import socket
 import threading
 import time
@@ -18,7 +17,6 @@ from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.result import Result
 from coophive.service_provider import ServiceProvider
-from coophive.service_provider_local_information import LocalInformation
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.utils import Tx
