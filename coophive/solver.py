@@ -11,7 +11,6 @@ from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
 from coophive.service_provider import ServiceProvider
-from coophive.smart_contract import SmartContract
 from coophive.utils import extra_necessary_match_data
 
 

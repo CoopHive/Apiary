@@ -12,7 +12,6 @@ from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
-from coophive.solver import Solver
 from coophive.utils import IPFS, ServiceType, Tx
 
 
@@ -67,7 +66,7 @@ class ServiceProvider:
         """Helper function to create a reusable transaction object."""
         return Tx(sender=self.get_public_key(), value=value)
 
-    def connect_to_solver(self, url: str, solver: Solver):
+    def connect_to_solver(self, url: str, solver):
         """Connect to a solver and subscribe to its events.
 
         Args:
