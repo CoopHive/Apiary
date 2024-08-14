@@ -218,7 +218,6 @@ class Client(ServiceProvider):
         """Process matched offers and update finished deals for the client."""
         for match in self.current_matched_offers:
             self.make_match_decision(match, "accept_reject_negotiate")
-    
         self.update_finished_deals()
         self.current_matched_offers.clear()
 
