@@ -118,11 +118,7 @@ class ServiceProvider:
         elif algorithm == "accept_reject":
             match_utility = self.calculate_utility(match)
             best_match = self.find_best_match(match.get_data().get("job_offer"))
-            if (
-                best_match == match
-                and match_utility
-                > match.get_data().get("job_offer", {}).get("T_accept", 0)
-            ):
+            if best_match == match and match_utility > match.get_data().get("job_offer", {}).get("T_accept", 0):
                 self._agree_to_match(match)
             else:
                 self.reject_match(match)
