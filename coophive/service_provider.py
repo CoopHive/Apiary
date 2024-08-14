@@ -168,7 +168,7 @@ class ServiceProvider:
             new_match_offer = self.create_new_match_offer(match)
             response = self.communicate_request_to_party(new_match_offer)
             if response["accepted"]:
-                self._agree_to_match(response["match"])
+                self._agree_to_match(response["match_offer"])
                 return
             match = response["counter_offer"]
         self.reject_match(match)
@@ -197,6 +197,7 @@ class ServiceProvider:
 
         response = {
             "accepted": "accepted" in response_message,
+            "match_offer": match_offer,
             "counter_offer": self.create_new_match_offer(match_offer),
         }
         return response
