@@ -140,6 +140,14 @@ https://olas.network/
 
 https://olas.network/whitepaper
 
+### OpenDevin
+
+https://docs.all-hands.dev/
+
+https://github.com/OpenDevin/OpenDevin
+
+https://arxiv.org/abs/2407.16741
+
 ### Orbis
 
 https://useorbis.com/
