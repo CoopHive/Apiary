@@ -236,7 +236,7 @@ class Client(ServiceProvider):
             match_utility = self.calculate_utility(match)
             best_match = self.find_best_match(match.get_data()["job_offer"])
             if (
-                best_match == match 
+                best_match == match
                 and match_utility > match.get_data()["job_offer"]["T_accept"]
             ):
                 self._agree_to_match(match)

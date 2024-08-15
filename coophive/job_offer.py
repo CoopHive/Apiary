@@ -15,7 +15,7 @@ job_offer_attributes = {
     # TODO: add instruction count
     "verification_method",
     "mediators",
-    "benefit_to_client", 
+    "benefit_to_client",
 }
 
 

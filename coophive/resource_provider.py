@@ -74,7 +74,9 @@ class ResourceProvider(ServiceProvider):
                     else:
                         # New match, add to current_matched_offers and process
                         self.current_matched_offers.append(new_match)
-                        response = self.make_match_decision(new_match, algorithm="accept_reject_negotiate")
+                        response = self.make_match_decision(
+                            new_match, algorithm="accept_reject_negotiate"
+                        )
                         client_socket.send(response.encode("utf-8"))
             except ConnectionResetError:
                 self.logger.info("Connection lost. Closing connection.")
@@ -300,7 +302,10 @@ class ResourceProvider(ServiceProvider):
             match_dict = match.get_data()
             match_utility = self.calculate_utility(match)
             best_match = self.find_best_match(match_dict.get("job_offer"))
-            if best_match == match and match_utility > match_dict["resource_offer"]["T_accept"]:
+            if (
+                best_match == match
+                and match_utility > match_dict["resource_offer"]["T_accept"]
+            ):
                 self._agree_to_match(match)
             else:
                 self.reject_match(match)
@@ -308,9 +313,9 @@ class ResourceProvider(ServiceProvider):
             best_match = self.find_best_match(match_dict["resource_offer"])
             if best_match == match:
                 utility = self.calculate_utility(match)
-                if utility > match_dict["resource_offer"]["T_accept"]
+                if utility > match_dict["resource_offer"]["T_accept"]:
                     self._agree_to_match(match)
-                elif utility < match_dict["resource_offer"]["T_reject"]
+                elif utility < match_dict["resource_offer"]["T_reject"]:
                     self.reject_match(match)
                 else:
                     self.negotiate_match(match)
