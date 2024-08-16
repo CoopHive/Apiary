@@ -27,9 +27,3 @@ repos:
         entry: poetry run pydocstyle --convention=google .
         types: [python]
         language: system
-
-      - id: pyreverse
-        name: Generate UML diagrams with pyreverse
-        entry: pyreverse coophive -A --colorized -p coophive -d img -o png
-        language: system
-        types: [python]

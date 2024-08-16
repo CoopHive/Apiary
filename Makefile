@@ -33,3 +33,7 @@ docs:
 .PHONY: test
 test:
 	poetry run pytest -c pyproject.toml tests/
+
+.PHONY: diagrams
+diagrams:
+	pyreverse coophive -A --colorized -p coophive -d img -o png
