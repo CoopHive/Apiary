@@ -30,6 +30,6 @@ repos:
 
       - id: pyreverse
         name: Generate UML diagrams with pyreverse
-        entry: poetry run pyreverse coophive -A --colorized -p coophive -d img -o png
+        entry: pyreverse coophive -A --colorized -p coophive -d img -o png
         language: system
         types: [python]
