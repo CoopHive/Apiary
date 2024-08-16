@@ -27,3 +27,9 @@ repos:
         entry: poetry run pydocstyle --convention=google .
         types: [python]
         language: system
+
+      - id: pylint
+        name: pylint
+        entry: poetry run pylint
+        types: [python]
+        language: system
