@@ -2,7 +2,11 @@
 *.parquet
 *.csv
 *.txt
+
 *.png
+# Except those in the 'img' directory
+!img/*.png
+
 *.pkl
 *.json
 *.sw*

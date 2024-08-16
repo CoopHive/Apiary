@@ -28,8 +28,8 @@ repos:
         types: [python]
         language: system
 
-      - id: pylint
-        name: pylint
-        entry: poetry run pylint
-        types: [python]
+      - id: pyreverse
+        name: Generate UML diagrams with pyreverse
+        entry: poetry run pyreverse coophive -A --colorized -p coophive -d img -o png
         language: system
+        types: [python]
