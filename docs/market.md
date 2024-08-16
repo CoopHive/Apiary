@@ -23,6 +23,12 @@ Docs:
 https://akash.network/docs/getting-started/intro-to-akash/bids-and-leases/
 ]
 
+### Allora
+
+https://www.allora.network/
+
+https://whitepaper.assets.allora.network/whitepaper.pdf
+
 ### Bittensor
 
 Decentralized AI, including data, storage, predictions, and models, by Opentensor.
@@ -134,6 +140,14 @@ https://olas.network/
 
 https://olas.network/whitepaper
 
+### OpenDevin
+
+https://docs.all-hands.dev/
+
+https://github.com/OpenDevin/OpenDevin
+
+https://arxiv.org/abs/2407.16741
+
 ### Orbis
 
 https://useorbis.com/
@@ -170,6 +184,10 @@ https://ritual.net/
 
 [TODO: read online material and put down relevant notes]
 
+### Sahara
+
+https://saharalabs.ai/
+
 ### Sia
 
 https://sia.tech/
@@ -197,6 +215,7 @@ https://tableland.xyz/
 ### Theoriq
 
 https://www.theoriq.ai/
+https://www.theoriq.ai/litepaper
 
 by ChainML: https://www.chainml.net/
 
