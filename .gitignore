@@ -5,7 +5,7 @@
 
 *.png
 # Except those in the 'img' directory
-!img/*.png
+!docs/img/*.png
 
 *.pkl
 *.json
