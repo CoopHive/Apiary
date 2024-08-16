@@ -25,9 +25,7 @@ class ResourceOffer(DataAttribute):
     def __init__(self):
         """Initializes a ResourceOffer object."""
         super().__init__()
-        self.data_attributes = {
-            attribute: None for attribute in resource_offer_attributes
-        }
+        self.data_attributes = {attribute: 0 for attribute in resource_offer_attributes}
         self.data_attributes["T_accept"] = self.calculate_T_accept()
         self.data_attributes["T_reject"] = self.calculate_T_reject()
 
