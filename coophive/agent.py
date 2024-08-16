@@ -1,6 +1,6 @@
-"""This module defines the ServiceProvider and LocalInformation classes.
+"""This module defines the Agent and LocalInformation classes.
 
-It manage service providers, their local information, events, and transactions.
+It manage agents, their local information, events, and transactions.
 """
 
 import logging
@@ -12,23 +12,24 @@ from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
-from coophive.utils import IPFS, ServiceType, Tx
+from coophive.utils import IPFS, AgentType, Tx
 
 
-class ServiceProvider:
-    """A class to represent a service provider.
+class Agent:
+    """A class to represent an Agent.
 
-    This class provides methods to manage the service provider's public key,
-    local information, events, and event handlers.
+    Examples of Agents include Clients, Resource Providers, Solvers.
+    This class provides methods to manage the Agent's local states, global states, policies
+    and training routines.
     """
 
     def __init__(self, public_key: str = None):
-        """Initialize the ServiceProvider with a public key."""
+        """Initialize the Agent with a public key."""
         self.public_key = public_key
         self.local_information = LocalInformation()
         self.events = []
         self.event_handlers = []
-        self.logger = logging.getLogger(f"ServiceProvider {self.public_key}")
+        self.logger = logging.getLogger(f"Agent {self.public_key}")
         logging.basicConfig(
             filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
         )
@@ -41,15 +42,15 @@ class ServiceProvider:
         self.deals_finished_in_current_step = []
 
     def get_public_key(self):
-        """Get the public key of the service provider."""
+        """Get the public key of the agent."""
         return self.public_key
 
     def get_local_information(self):
-        """Get the local information of the service provider."""
+        """Get the local information of the agent."""
         return self.local_information
 
     def get_events(self):
-        """Get the events emitted by the service provider."""
+        """Get the events emitted by the agent."""
         return self.events
 
     def get_solver(self):
@@ -81,10 +82,10 @@ class ServiceProvider:
         self.solver = solver
         self.solver.subscribe_event(self.handle_solver_event)
 
-        self.solver.get_local_information().add_service_provider(
-            service_type=ServiceType.SOLVER,
+        self.solver.get_local_information().add_agent(
+            agent_type=AgentType.SOLVER,
             public_key=self.solver.public_key,
-            service_provider=self,
+            agent=self,
         )
         self.logger.info(f"Connected to solver: {url}")
 
@@ -183,7 +184,7 @@ class ServiceProvider:
 
 
 class LocalInformation:
-    """A class to manage local information of service providers, resource offers, and job offers.
+    """A class to manage local information of agents, resource offers, and job offers.
 
     Attributes:
         block_number (int): The block number for the current state.
@@ -201,7 +202,6 @@ class LocalInformation:
     def __init__(self):
         """Initialize the LocalInformation."""
         self.block_number = 0
-        # For the following service providers, mapping from wallet address -> metadata
         self.resource_providers = {}
         self.clients = {}
         self.solvers = {}
@@ -210,69 +210,69 @@ class LocalInformation:
         self.resource_offers: dict[str, ResourceOffer] = {}
         self.job_offers: dict[str, JobOffer] = {}
 
-    def add_service_provider(
+    def add_agent(
         self,
-        service_type: ServiceType,
+        agent_type: AgentType,
         public_key: str,
-        service_provider: ServiceProvider,
+        agent: Agent,
     ):
-        """Add a service provider to the appropriate category based on service type.
+        """Add an agent to the appropriate category based on its type.
 
         Args:
-            service_type (ServiceType): The type of the service provider.
-            public_key (str): The public key of the service provider.
-            service_provider (ServiceProvider): The service provider to add.
+            agent_type (AgentType): The type of agent.
+            public_key (str): The public key of the agent.
+            agent (Agent): Agent to add.
         """
-        match service_type:
-            case ServiceType.RESOURCE_PROVIDER:
-                self.resource_providers[public_key] = service_provider
-            case ServiceType.CLIENT:
-                self.clients[public_key] = service_provider
-            case ServiceType.SOLVER:
-                self.solvers[public_key] = service_provider
-            case ServiceType.MEDIATOR:
-                self.mediators[public_key] = service_provider
-            case ServiceType.DIRECTORY:
-                self.directories[public_key] = service_provider
+        match agent_type:
+            case AgentType.RESOURCE_PROVIDER:
+                self.resource_providers[public_key] = agent
+            case AgentType.CLIENT:
+                self.clients[public_key] = agent
+            case AgentType.SOLVER:
+                self.solvers[public_key] = agent
+            case AgentType.MEDIATOR:
+                self.mediators[public_key] = agent
+            case AgentType.DIRECTORY:
+                self.directories[public_key] = agent
 
-    def remove_service_provider(self, service_type: ServiceType, public_key: str):
-        """Remove a service provider from the appropriate category based on service type.
+    def remove_agent(self, agent_type: AgentType, public_key: str):
+        """Remove an agent from the appropriate category based on its type.
 
         Args:
-            service_type (ServiceType): The type of the service provider.
-            public_key (str): The public key of the service provider.
+            agent_type (AgentType): The type of agent.
+            public_key (str): The public key of the agent.
         """
-        match service_type:
-            case ServiceType.RESOURCE_PROVIDER:
+        match agent_type:
+            case AgentType.RESOURCE_PROVIDER:
                 self.resource_providers.pop(public_key)
-            case ServiceType.CLIENT:
+            case AgentType.CLIENT:
                 self.clients.pop(public_key)
-            case ServiceType.SOLVER:
+            case AgentType.SOLVER:
                 self.solvers.pop(public_key)
-            case ServiceType.MEDIATOR:
+            case AgentType.MEDIATOR:
                 self.mediators.pop(public_key)
-            case ServiceType.DIRECTORY:
+            case AgentType.DIRECTORY:
                 self.directories.pop(public_key)
 
-    def get_list_of_service_providers(self, service_type: ServiceType):
-        """Get a list of service providers of a specific type.
+    def get_list_of_agents(self, agent_type: AgentType):
+        """Get a list of agents of a specific type.
 
         Args:
-            service_type (ServiceType): The type of the service providers.
+            agent_type (AgentType): The type of agent.
 
         Returns:
-            dict: A dictionary of service providers with public keys.
+            dict: A dictionary of agents with public keys.
         """
-        match service_type:
-            case ServiceType.RESOURCE_PROVIDER:
+        match agent_type:
+            case AgentType.RESOURCE_PROVIDER:
                 return self.resource_providers
-            case ServiceType.CLIENT:
+            case AgentType.CLIENT:
                 return self.clients
-            case ServiceType.SOLVER:
+            case AgentType.SOLVER:
                 return self.solvers
-            case ServiceType.MEDIATOR:
+            case AgentType.MEDIATOR:
                 return self.mediators
-            case ServiceType.DIRECTORY:
+            case AgentType.DIRECTORY:
                 return self.directories
 
     def add_resource_offer(self, id: str, data):

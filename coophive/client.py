@@ -1,6 +1,6 @@
 """This module defines the Client class used for interacting with solvers and smart contracts within the CoopHive simulator.
 
-The Client class extends the ServiceProvider class and provides methods to manage jobs, 
+The Client class extends the Agent class and provides methods to manage jobs, 
 connect to solvers and smart contracts, handle events, and make decisions regarding matches.
 """
 
@@ -10,19 +10,19 @@ import threading
 import time
 from collections import deque
 
+from coophive.agent import Agent
 from coophive.deal import Deal
 from coophive.event import Event
 from coophive.job import Job
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.result import Result
-from coophive.service_provider import ServiceProvider
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.utils import Tx
 
 
-class Client(ServiceProvider):
+class Client(Agent):
     """A client in the coophive simulator that interacts with solvers and smart contracts to manage jobs and deals."""
 
     def __init__(self, address: str):

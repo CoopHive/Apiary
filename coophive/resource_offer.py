@@ -14,7 +14,7 @@ resource_offer_attributes = {
     "prices",
     "verification_method",
     "mediators",
-    "price_per_instruction",  # value in dollars
+    "price_per_instruction",  # [USD]
     "expected_number_of_instructions",
 }
 

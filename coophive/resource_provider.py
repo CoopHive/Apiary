@@ -7,17 +7,17 @@ import time
 
 import docker
 
+from coophive.agent import Agent
 from coophive.log_json import log_json
 from coophive.machine import Machine
 from coophive.match import Match
 from coophive.result import Result
-from coophive.service_provider import ServiceProvider
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.utils import CID, Tx
 
 
-class ResourceProvider(ServiceProvider):
+class ResourceProvider(Agent):
     """Class representing a resource provider in the CoopHive simulator."""
 
     def __init__(self):

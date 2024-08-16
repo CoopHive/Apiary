@@ -6,19 +6,19 @@ It handles the operations and logic associated with smart contracts, including t
 import logging
 import os
 
+from coophive.agent import Agent
 from coophive.deal import Deal
 from coophive.event import Event
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.result import Result
-from coophive.service_provider import ServiceProvider
 from coophive.utils import Tx
 
 
-class SmartContract(ServiceProvider):
+class SmartContract(Agent):
     """A class to represent a smart contract.
 
-    This class extends the ServiceProvider class and provides methods to handle
+    This class extends the Agent class and provides methods to handle
     the lifecycle of a smart contract including creating deals, handling matches,
     posting results, and managing balances.
     """

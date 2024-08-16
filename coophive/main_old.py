@@ -13,7 +13,7 @@ from coophive.machine import Machine
 from coophive.resource_offer import ResourceOffer
 from coophive.resource_provider import ResourceProvider
 from coophive.solver import Solver
-from coophive.utils import CID, ServiceType
+from coophive.utils import CID, AgentType
 
 
 def main():
@@ -62,29 +62,27 @@ def main():
     logging.info(list(new_client_1.get_jobs())[0].get_job_requirements())
 
     # add client and resource provider to each other's local information
-    new_solver_1.local_information.add_service_provider(
-        ServiceType.RESOURCE_PROVIDER,
+    new_solver_1.local_information.add_agent(
+        AgentType.RESOURCE_PROVIDER,
         new_resource_provider_1_public_key,
         new_resource_provider_1,
     )
     # should print public key of first resource provider
     logging.info(
         list(
-            new_solver_1.local_information.get_list_of_service_providers(
-                ServiceType.RESOURCE_PROVIDER
+            new_solver_1.local_information.get_list_of_agents(
+                AgentType.RESOURCE_PROVIDER
             ).values()
         )[0].get_public_key()
     )
 
-    new_solver_1.local_information.add_service_provider(
-        ServiceType.CLIENT, new_client_1_public_key, new_client_1
+    new_solver_1.local_information.add_agent(
+        AgentType.CLIENT, new_client_1_public_key, new_client_1
     )
     # should print public key of first client
     logging.info(
         list(
-            new_solver_1.local_information.get_list_of_service_providers(
-                ServiceType.CLIENT
-            ).values()
+            new_solver_1.local_information.get_list_of_agents(AgentType.CLIENT).values()
         )[0].get_public_key()
     )
 

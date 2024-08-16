@@ -3,14 +3,15 @@
 from dataclasses import dataclass
 from enum import Enum
 
+from coophive.agent import Agent
 from coophive.data_attribute import DataAttribute
 from coophive.hash_dict import hash_dict
 from coophive.job_offer import JobOffer
 from coophive.resource_offer import ResourceOffer
 
 
-class ServiceType(Enum):
-    """Enumeration of different service types available in the CoopHive ecosystem."""
+class AgentType(Enum):
+    """Enumeration of different agent types available in the CoopHive ecosystem."""
 
     RESOURCE_PROVIDER = 1
     CLIENT = 2
@@ -36,23 +37,6 @@ class Tx:
     value: float
     # method: str
     # arguments: []
-
-
-@dataclass
-class Service:
-    """Data class representing a service.
-
-    Attributes:
-        service_type: The type of service.
-        url: The URL of the service.
-        metadata: Metadata of the service stored as an IPFS CID.
-        wallet_address: The wallet address associated with the service.
-    """
-
-    service_type: ServiceType
-    url: str
-    metadata: dict  # metadata will be stored as an IPFS CID
-    wallet_address: str
 
 
 @dataclass
@@ -137,15 +121,15 @@ def create_job_offer(owner_public_key: str, created_at=None):
     return job_offer
 
 
-def fund_smart_contract(service_provider, value: float):
-    """Fund a smart contract using a transaction from a service provider.
+def fund_smart_contract(agent: Agent, value: float):
+    """Fund a smart contract using a transaction from an agent.
 
     Args:
-        service_provider (ServiceProvider): The service provider to fund the smart contract.
+        agent (Agent): The agent to fund the smart contract.
         value (float): The value of the transaction.
     """
-    tx = Tx(sender=service_provider.get_public_key(), value=value)
-    service_provider.get_smart_contract().fund(tx)
+    tx = Tx(sender=agent.get_public_key(), value=value)
+    agent.get_smart_contract().fund(tx)
 
 
 def create_n_resource_offers(

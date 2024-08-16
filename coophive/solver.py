@@ -3,6 +3,7 @@
 import logging
 import os
 
+from coophive.agent import Agent
 from coophive.data_attribute import DataAttribute
 from coophive.deal import Deal
 from coophive.event import Event
@@ -10,11 +11,10 @@ from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
-from coophive.service_provider import ServiceProvider
 from coophive.utils import extra_necessary_match_data
 
 
-class Solver(ServiceProvider):
+class Solver(Agent):
     """Solver class to handle smart contract connections, events, and the matching of job and resource offers."""
 
     def __init__(self, public_key: str, url: str):
