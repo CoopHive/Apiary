@@ -197,6 +197,8 @@ https://tableland.xyz/
 
 ### Theoriq
 
+
+
 https://www.theoriq.ai/
 https://www.theoriq.ai/litepaper
 
