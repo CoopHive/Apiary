@@ -3,7 +3,6 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from coophive.agent import Agent
 from coophive.data_attribute import DataAttribute
 from coophive.hash_dict import hash_dict
 from coophive.job_offer import JobOffer
@@ -121,11 +120,11 @@ def create_job_offer(owner_public_key: str, created_at=None):
     return job_offer
 
 
-def fund_smart_contract(agent: Agent, value: float):
+def fund_smart_contract(agent, value: float):
     """Fund a smart contract using a transaction from an agent.
 
     Args:
-        agent (Agent): The agent to fund the smart contract.
+        agent: The agent to fund the smart contract.
         value (float): The value of the transaction.
     """
     tx = Tx(sender=agent.get_public_key(), value=value)
