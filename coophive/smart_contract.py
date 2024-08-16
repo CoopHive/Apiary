@@ -99,9 +99,11 @@ class SmartContract(ServiceProvider):
 
     def _create_deal(self, match: Match):
         logging.info(f"Match data before setting ID: {match.get_data()}")
+
         deal = Deal()
         for data_field, data_value in match.get_data().items():
-            deal.add_data(data_field, data_value)
+            if data_field in deal.get_data().keys():
+                deal.add_data(data_field, data_value)
         deal.set_id()
         self.deals[deal.get_id()] = deal
         deal_event = Event(name="deal", data=deal)
