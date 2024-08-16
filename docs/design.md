@@ -14,6 +14,48 @@ The value of the protocol is in recognizing, for example, the existance of idle 
 
 While the outcome of each negotiation goes on chain, negotiations are performed off-chain, and both on-chain and off-chain data can be used to inform various negotiation strategies.
 
+## The case for Agent-based modeling
+
+The existance of distributed and heterogenous hardwares and the construction of data-driven policies for optimal decision making does not motivate by itself the usage of an agent-based perspective in the modeling of the system.
+
+For example, a centralized solver could be implemented to distribute jobs efficiently across the network. One conceptual advantage is that with an agent-based perspective nodes participating in the network keep *agency* over themselves, i.e. they are continuously able to accept or reject jobs, and this capatibility is never delegated to a central entity.
+
+### 1 vs N, N vs 1, N vs N
+
+The most generic case to be considered is an N (clients) vs N (resource providers). While in principle there are aspects of the generic case that are not captured by either kind of stacking of more specific cases, it is reasonable to start thinking about the N vs N as a set of more simple cases. 
+
+In the 1 (agent) vs N (static environment of clients), the problem is mainly scheduling/path planning in the space of tasks. This would basically mean ignore the presence of multiple agents and just ask ourselves how each of them, blind to the presence of their peers, would move in the space of posted jobs.
+
+In the N (agents) vs 1 dynamic client/job offer, the problem is more purely a negotiation problem. 
+
+Matteo's perspective is that we are not ready to attack the N vs N problem from scratch and that there is more value in solving the 1 vs N, compared to the N vs 1.
+
+>> Now, not sure what our short term needs are, but I feel the negotiation aspect is less impactful then the scheduling one on the overall optimality of the compute network.
+
+>> This perspective may easily be biased by my skills and background, but in the same way in which we said "let's ignore the history of credible commitments in the definition of the state space", I feel we should rather focus on blind competition, first. We may also gain some advantage over competition by modeling electricity and gas costs dynamics alone.
+
+>>I think we will then be able to understand how certain agent policies are consistently front ran by others, and we'll be able to make use of the messaging to better inform policies.
+
+### Network Robustness
+
+Reading “Timing Reliability for Local Schedulers in Multi-Agent Systems”: it seems pretty evident that in the setup of Multi-agent training following greedy policies, the system will end up being more fragile. I don’t think we can avoid an holistic training setup in which a degree of cooperation is instilled in each agent. This will have the consequence of each agent to behave suboptimally, and the system will become subscettible to greedy attacks. I believe the system will need to tollerate a certain degree of corruption/inefficiency in order to gain robustness.
+Analogous situation in which greedy policies don’t work (see Section 5.1): https://web.stanford.edu/~boyd/papers/pdf/cvx_portfolio.pdf
+Even more relevant, the concept of self-organized criticality: https://www.linkedin.com/posts/jean-philippe-bouchaud-bb08a15_how-critical-is-brain-criticality-activity-7000544505359654912-ETjz/
+
+Not clear how to formalize/verify/deal with this point, but worth mentioning.
+
+Related works about the chaotic nature of the learning trajectory, making it necessary for us to start with trivial/underfitted policies and slowly complexify things:
+
+- https://pubmed.ncbi.nlm.nih.gov/11930020/
+- https://pubmed.ncbi.nlm.nih.gov/29559641/
+- https://pubmed.ncbi.nlm.nih.gov/23297213/
+
+Reading "Local Scheduling in Multi-Agent Systems: getting ready for safety-critical scenarios”: is is clear that we need a deep conceptual and practical separation between the intelligent/strategic layer. This is a central node interacting with the agents competition pool, making sure agents are able to act and that the CPS as a whole is achieving what it needs to achieve. This central node can learn general laws of behaviour based on the goals of the overall system and the behaviour of its components. In this sense, the competition sandbox and the brain are close to each other, conceptually. A deeper separation is with the communication layer/middleware. This module ensures the brain and the components access all the information possible. What I called "brain" here could be a centralized solver. These considerations related to the design choice of pure agent-based scheduling/negotiation vs centralized solver for tasks allocation.
+
+Agents need to be robust against different kind of non-stationarities: agents could die, new appear, macrovariable drastically change. How to avoid the overall system of lead to an endogenous crisis triggered by a small variation is external variables? In other words, how to ensure a small degree of chaoticity/fragility against external perturbations?
+
+## Lower Level Specifications
+
 A big part of the off-chain information are centralized in a pubsub que, a set of recorded messages, more or less public, that every agent can listen to (and store locally for memory). A question is for example how important it is for agents to observe the negotiation dynamics before an agreement vs learning from the final transaction only: this has consequences on the privacy of offers, as it may be valuable to enforce the publicity of intra-negotiation offers for a more transparent auction mechanism. We need to define better the pubsub cue, equivalent in many ways to a broker order book.
 
 On this, see:
@@ -31,7 +73,7 @@ A set of environmental variables appear necessary for actors to construct optima
 
 It appears necessary to associate to each block (each deal), the wallet of the address, its hardware specifications, geolocation, timestamp. This means that in the transaction we need to have the IPFS CID, in which the computational cost of a task is specified (to be clarified with which quantitative metrics). A tricky point here is how to verify that the hardware specifications of a given wallet address in a given CID are true. Agents may be interested in hiding this information to other agents, and if they are able to do so, it is meaningless to build a protocol around the truthfulness of this information. About this, see the subject of verifiable provisioning of hardware: https://github.com/orgs/akash-network/discussions/614
 
-One solution could be to enable an emergent secondary marketplace of jobs specifications, in which machines can associate (and this can be verified) their hardware specifications to a given Job. The market is emergent as if agents want to become autonomous and this dataset is valuable, they will create it. We may want to investigate this ourselves. An important point, on this, is that agents an agent looking at a given open job is in principle not able to say exactly its computational cost. It can learn from past data only if they are associated with specific schemas that enable the agent to interpolate the input space of the task for that schema (in the presence of enough datapoints to approximate the cost function).
+One solution could be to enable an emergent secondary marketplace of jobs specifications, in which machines can associate (and this can be verified) their hardware specifications to a given Job. The market is emergent as if agents want to become autonomous and this dataset is valuable, they will create it. We may want to investigate this ourselves. An important point, on this, is that an agent looking at a given open job is in principle not able to say exactly its computational cost. It can learn from past data only if they are associated with specific schemas that enable the agent to interpolate the input space of the task for that schema (in the presence of enough datapoints to approximate the cost function).
 
 Even in the open source (git) case, it makes sense to leverage the secondary marketplace, even if the estimation of the task cost is not done via interpolation of previous runs, but via analysis of the source code of the task (for which even analytical estimates of the cost may exist).
 
@@ -82,35 +124,6 @@ Using the language of MLOps, a Job can be defined by a set of tasks and a DAG.
 - https://docs.bentoml.com/en/latest/guides/services.html#service-definitions
 
 - https://docs.ray.io/en/latest/ray-overview/use-cases.html
-
-## 1 vs N, N vs 1, N vs N
-
-The most generic case to be considered is an N (clients) vs N (resource providers). While in principle there are aspects of the generic case that are not captured by either kind of stacking of more specific cases, it is reasonable to start thinking about the N vs N as a set of more simple cases. 
-
-In the 1 (agent) vs N (static environment of clients), the problem is mainly scheduling/path planning in the space of tasks. This would basically mean ignore the presence of multiple agents and just ask ourselves how each of them, blind to the presence of their peers, would move in the space of posted jobs.
-
-In the N (agents) vs 1 dynamic client/job offer, the problem is more purely a negotiation problem. 
-
-Matteo's perspective is that we are not ready to attack the N vs N problem from scratch and that there is more value in solving the 1 vs N, compared to the N vs 1.
-
-
->> Now, not sure what our short term needs are, but I feel the negotiation aspect is less impactful then the scheduling one on the overall optimality of the compute network.
-
->> This perspective may easily be biased by my skills and background, but in the same way in which we said "let's ignore the history of credible commitments in the definition of the state space", I feel we should rather focus on blind competition, first. We may also gain some advantage over competition by modeling electricity and gas costs dynamics alone.
-
->>I think we will then be able to understand how certain agent policies are consistently front ran by others, and we'll be able to make use of the messaging to better inform policies.
-
-## Network Robustness
-
-Reading “Timing Reliability for Local Schedulers in Multi-Agent Systems”: it seems pretty evident that in the setup of Multi-agent training following greedy policies, the system will end up being more fragile. I don’t think we can avoid an holistic training setup in which a degree of cooperation is instilled in each agent. This will have the consequence of each agent to behave suboptimally, and the system will become subscettible to greedy attacks. I believe the system will need to tollerate a certain degree of corruption/inefficiency in order to gain robustness.
-Analogous situation in which greedy policies don’t work (see Section 5.1): https://web.stanford.edu/~boyd/papers/pdf/cvx_portfolio.pdf
-Even more relevant, the concept of self-organized criticality: https://www.linkedin.com/posts/jean-philippe-bouchaud-bb08a15_how-critical-is-brain-criticality-activity-7000544505359654912-ETjz/
-
-Not clear how to formalize/verify/deal with this point, but worth mentioning.
-
-Reading "Local Scheduling in Multi-Agent Systems: getting ready for safety-critical scenarios”: is is clear that we need a deep conceptual and practical separation between the intelligent/strategic layer. This is a central node interacting with the agents competition pool, making sure agents are able to act and that the CPS as a whole is achieving what it needs to achieve.. This central node can learn general laws of behaviour based on the goals of the overall system and the behaviour of its components. In this sense, the competition sandbox and the brain are close to each other, conceptually. A deeper separation is with the communication layer/middleware. This module ensures the brain and the components access all the information possible.
-
-Agents need to be robust against different kind of non-stationarities: agents could die, new appear, macrovariable drastically change. How to avoid the overall system of lead to an endogenous crisis triggered by a small variation is external variables? In other words, how to ensure a small degree of chaoticity/fragility against external perturbations?
 
 # Legacy Notes to be Integrated in v2.
 
@@ -213,7 +226,7 @@ For a match to occur - both sides must have an overlap in their trusted director
 
 Nodes can run their own directory services and call `registerServiceProvider` and any other node can change which directory services they trust.
 
-TODO: how do directory serices get paid? (is this v2 protocol?)
+Question: how do directory serices get paid? (is this v2 protocol?)
 
 ## solver
 
@@ -314,7 +327,7 @@ Nodes can run their own mediator services and call `registerServiceProvider` and
    * mediatorService `address`
      * the mutually agreed mediator service used to mediate results
    * timeout `uint`
-     * the agreed upper bounds of time this job can take - TODO: is this in seconds or blocks?
+     * the agreed upper bounds of time this job can take - Question: is this in seconds or blocks?
    * resultsMultiple `uint`
      * the agreed multiple of the fee the resource provider will post when submitting results
    * timeoutDeposit `uint`

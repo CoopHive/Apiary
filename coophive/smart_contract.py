@@ -6,19 +6,19 @@ It handles the operations and logic associated with smart contracts, including t
 import logging
 import os
 
+from coophive.agent import Agent
 from coophive.deal import Deal
 from coophive.event import Event
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.result import Result
-from coophive.service_provider import ServiceProvider
 from coophive.utils import Tx
 
 
-class SmartContract(ServiceProvider):
+class SmartContract(Agent):
     """A class to represent a smart contract.
 
-    This class extends the ServiceProvider class and provides methods to handle
+    This class extends the Agent class and provides methods to handle
     the lifecycle of a smart contract including creating deals, handling matches,
     posting results, and managing balances.
     """
@@ -54,7 +54,6 @@ class SmartContract(ServiceProvider):
         self.balances[resource_provider_address] -= timeout_deposit
         self.balance += timeout_deposit
         match.sign_resource_provider()
-        # self.logger.info(f"resource provider {match.get_data()['resource_provider_address']} has signed match {match.get_id()}")
 
         log_data = {
             "resource_provider_address": resource_provider_address,
@@ -80,7 +79,6 @@ class SmartContract(ServiceProvider):
         self.balances[client_address] -= tx.value
         self.balance += tx.value
         match.sign_client()
-        # self.logger.info(f"client {match.get_data()['client_address']} has signed match {match.get_id()}")
 
         log_data = {"client_address": client_address, "match_id": match.get_id()}
         log_json(self.logger, "Client signed match", log_data)
@@ -101,9 +99,11 @@ class SmartContract(ServiceProvider):
 
     def _create_deal(self, match: Match):
         logging.info(f"Match data before setting ID: {match.get_data()}")
+
         deal = Deal()
         for data_field, data_value in match.get_data().items():
-            deal.add_data(data_field, data_value)
+            if data_field in deal.get_data().keys():
+                deal.add_data(data_field, data_value)
         deal.set_id()
         self.deals[deal.get_id()] = deal
         deal_event = Event(name="deal", data=deal)
@@ -170,7 +170,6 @@ class SmartContract(ServiceProvider):
         self.balances[resource_provider_address] -= tx.value
         self.balance += tx.value
 
-    # TODO: add returning of cheating collateral
     def refund_cheating_collateral(self, result: Result):
         """Refund the cheating collateral based on the result.
 
@@ -270,15 +269,8 @@ class SmartContract(ServiceProvider):
         self.balance += intended_cheating_collateral
 
     def ask_consortium_of_mediators(self, event: Event):
-        """Ask a consortium of mediators to check the result.
-
-        Args:
-            event (Event): The event object.
-
-        Returns:
-            bool: True if the result was correct, False otherwise.
-        """
-        return True  # TODO: remove default boolean.
+        """Ask a consortium of mediators to check the result (Placeholder)."""
+        return True
 
     def ask_random_mediator(self, event: Event):
         """Ask a random mediator to check the result.
@@ -301,8 +293,6 @@ class SmartContract(ServiceProvider):
         job_offer = deal_data["job_offer"]
         logging.info(job_offer)
 
-        # TODO: job offer is just a string, need to get the actual job offer object
-        # otherwise event.get_data().get_id() in e.g. line 30 of solver.py will throw an error
         mediation_request_event = Event(name="mediation_random", data=job_offer)
         self.emit_event(mediation_request_event)
 
@@ -361,9 +351,6 @@ class SmartContract(ServiceProvider):
             self.slash_cheating_collateral(event)
 
     def _log_balances(self):
-        # self.logger.info(f"Smart Contract balance: {self.balance}")
-        # self.logger.info(f"Smart Contract balances: {self.balances}")
-
         log_json(self.logger, "Smart Contract balance", {"balance": self.balance})
         log_json(self.logger, "Smart Contract balances", {"balances": self.balances})
 
@@ -389,9 +376,6 @@ class SmartContract(ServiceProvider):
                 {"match_id": match_id, "match_attributes": match_data},
             )
             self._create_deal(match)
-            # self.logger.info(f"both resource provider {match.get_data()['resource_provider_address']} and client {match.get_data()['client_address']} have signed match {match.get_id()}")
-            # self.logger.info(f"match attributes of match {match.get_id()}: {match.get_data()}")
-            # self._create_deal(match)
         self._create_and_emit_result_events()
         self._account_for_cheating_collateral_payments()
         self.matches_made_in_current_step.clear()

@@ -4,6 +4,9 @@
 
 CoopHive Simulator is a tool designed to simulate the agent-based and game theory aspects of the CoopHive protocol, a two-sided marketplace for computing resources.
 
+![Class Diagram](docs/img/classes_coophive.png)
+![Package Diagram](docs/img/packages_coophive.png)
+
 ### Reference Literature
 
 The Literature that informed this repository can be found at [this ResearchRabbit Public Collection](https://www.researchrabbitapp.com/collection/public/JLNPJ13R6N).
@@ -61,3 +64,7 @@ To check the documentation style, run:
 To run the tests, use:
 
     make test
+
+To upgrade class and package diagrams, use:
+
+    make diagrams

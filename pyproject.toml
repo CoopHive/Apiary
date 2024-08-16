@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "coophive"
-version = "0.2.1"
+version = "0.3.0"
 description = "A simulator for the Multi-agent system of the CoopHive protocol"
 authors = ["Levi Rybalov, Aayushi Jain, Pratham Dave, Matteo Manzi"]
 license = "Apache 2"
@@ -20,7 +20,6 @@ python = "^3.10"
 click = {version = ">=8.0, <8.1.4"}
 docker = { version = ">=7.1.0, <7.2.0"}
 numpy = { version = ">=2.0.0, <2.1.0"}
-tqdm = { version = ">=4.66.0, <4.67.0"}
 
 [tool.poetry.dev-dependencies]
 black = { version = ">=24.3.0, <24.4.0"}
@@ -29,6 +28,7 @@ isort = {extras = ["colors"], version = ">=5.11.0, <5.12.0"}
 pre-commit = { version = ">=3.0.0, <3.3.0"}
 pydocstyle = { version = ">=6.3.0, <6.4.0"}
 pytest = { version = ">=8.3.0, <8.4.0"}
+pylint = { version = ">=3.2, <3.3"}
 
 [tool.black]
 # https://github.com/psf/black

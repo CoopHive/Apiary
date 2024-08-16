@@ -12,10 +12,10 @@ job_offer_attributes = {
     "RAM",
     "module",
     "prices",
-    # TODO: add instruction count
+    "instruction_count",
     "verification_method",
     "mediators",
-    # "expected_benefit_to_client" # [USD] (TODO: Should this be in the job_offer?)
+    "benefit_to_client",
 }
 
 
@@ -25,18 +25,16 @@ class JobOffer(DataAttribute):
     def __init__(self):
         """Initializes a JobOffer object."""
         super().__init__()
-        self.data_attributes = {attribute: None for attribute in job_offer_attributes}
+        self.data_attributes = {attribute: 0 for attribute in job_offer_attributes}
         self.data_attributes["T_accept"] = self.calculate_T_accept()
         self.data_attributes["T_reject"] = self.calculate_T_reject()
 
     def calculate_T_accept(self):
         """Placeholder logic for T_accept."""
-        # TODO: Implement logic for calculating T_accept
         return self.data_attributes.get("benefit_to_client", 0) * 1.05
 
     def calculate_T_reject(self):
         """Placeholder logic for T_reject."""
-        # TODO: Implement logic for calculating T_reject
         return self.data_attributes.get("benefit_to_client", 0) * 0.95
 
     def set_attributes(self, attributes):

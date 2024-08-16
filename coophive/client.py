@@ -1,30 +1,28 @@
 """This module defines the Client class used for interacting with solvers and smart contracts within the CoopHive simulator.
 
-The Client class extends the ServiceProvider class and provides methods to manage jobs, 
+The Client class extends the Agent class and provides methods to manage jobs, 
 connect to solvers and smart contracts, handle events, and make decisions regarding matches.
 """
 
 import logging
-import os
 import socket
 import threading
 import time
 from collections import deque
 
+from coophive.agent import Agent
 from coophive.deal import Deal
 from coophive.event import Event
 from coophive.job import Job
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.result import Result
-from coophive.service_provider import ServiceProvider
-from coophive.service_provider_local_information import LocalInformation
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.utils import Tx
 
 
-class Client(ServiceProvider):
+class Client(Agent):
     """A client in the coophive simulator that interacts with solvers and smart contracts to manage jobs and deals."""
 
     def __init__(self, address: str):
@@ -34,17 +32,9 @@ class Client(ServiceProvider):
             address (str): The address of the client.
         """
         super().__init__(address)
-        self.logger = logging.getLogger(f"Client {self.public_key}")
-        logging.basicConfig(
-            filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
-        )
-        self.current_jobs = deque()  # TODO: determine the best data structure for this
-        self.local_information = LocalInformation()
-        self.solver_url = None
-        self.solver = None
+        self.current_jobs = deque()
+
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
-        self.deals_finished_in_current_step = []
-        self.current_matched_offers: list[Match] = []
         self.client_socket = None
         self.server_address = ("localhost", 1234)
         self.start_client_socket()
@@ -68,45 +58,26 @@ class Client(ServiceProvider):
                 if "New match offer" in message:
                     match_data = eval(message.split("New match offer: ")[1])
                     new_match = Match(match_data)
-                    self.negotiate_match(new_match)
-
+                    match_dict = new_match.get_data()
+                    if "rounds_completed" not in match_dict:
+                        new_match["rounds_completed"] = 0
+                    for existing_match in self.current_matched_offers:
+                        if existing_match.get_id() == new_match.get_id():
+                            # Continue negotiating on the existing match
+                            self.negotiate_match(existing_match)
+                            break
+                    else:
+                        # New match, add to current_matched_offers and process
+                        self.current_matched_offers.append(new_match)
+                        self.make_match_decision(
+                            new_match, algorithm="accept_reject_negotiate"
+                        )
             except ConnectionResetError:
                 logging.info("Connection lost. Closing connection.")
                 self.client_socket.close()
                 break
-
-    def get_solver(self):
-        """Get the connected solver."""
-        return self.solver
-
-    def get_smart_contract(self):
-        """Get the connected smart contract."""
-        return self.smart_contract
-
-    def connect_to_solver(self, url: str, solver: Solver):
-        """Connect to a solver and subscribe to its events.
-
-        Args:
-            url (str): The URL of the solver.
-            solver (Solver): The solver instance to connect to.
-        """
-        self.solver_url = url
-        self.solver = solver
-        self.solver.subscribe_event(self.handle_solver_event)
-        self.solver.get_local_information().add_client(self)
-
-        log_json(self.logger, "Connected to solver", {"solver_url": url})
-
-    def connect_to_smart_contract(self, smart_contract: SmartContract):
-        """Connect to a smart contract and subscribe to its events.
-
-        Args:
-            smart_contract (SmartContract): The smart contract instance to connect to.
-        """
-        self.smart_contract = smart_contract
-        smart_contract.subscribe_event(self.handle_smart_contract_event)
-
-        log_json(self.logger, "Connected to smart contract")
+            except Exception as e:
+                self.logger.info(f"Error handling message: {e}")
 
     def add_job(self, job: Job):
         """Add a job to the client's current jobs."""
@@ -124,36 +95,6 @@ class Client(ServiceProvider):
 
         log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
 
-    def handle_solver_event(self, event: Event):
-        """Handle events from the solver."""
-        data = event.get_data()
-
-        if not isinstance(data, Match):
-            self.logger.warning(
-                f"Unexpected data type received in solver event: {type(data)}"
-            )
-            log_json(
-                self.logger,
-                "Received solver event with unexpected data type",
-                {"name": event.get_name()},
-            )
-            return
-
-        # At this point, we know data is of type Match
-        event_data = {"name": event.get_name(), "id": data.get_id()}
-
-        log_json(self.logger, "Received solver event", {"event_data": event_data})
-
-        if event.get_name() == "match":
-            match = data
-            match_data = match.get_data()
-            if (
-                isinstance(match_data, dict)
-                and match_data.get("client_address") == self.get_public_key()
-            ):
-                self.current_matched_offers.append(match)
-
-    # TODO: Implement this function
     def handle_p2p_event(self, event: Event):
         """P2P handling.
 
@@ -241,58 +182,7 @@ class Client(ServiceProvider):
                 else:
                     self.pay_compute_node(event)
 
-    def update_finished_deals(self):  # TODO: code duplication with resource provider?
-        """Update the list of finished deals by removing them from current deals."""
-        # remove finished deals from list of current deals and running jobs
-        for deal_id in self.deals_finished_in_current_step:
-            del self.current_deals[deal_id]
-        # clear list of deals finished in current step
-        self.deals_finished_in_current_step.clear()
-
-    def make_match_decision(self, match: Match, algorithm):
-        """Make a decision on whether to accept, reject, or negotiate a match."""
-        if algorithm == "accept_all":
-            self._agree_to_match(match)
-        elif algorithm == "accept_reject":
-            match_utility = self.calculate_utility(match)
-            if self.is_only_match(match):
-                best_match = self.find_best_match_for_job(match.get_data()["job_offer"])
-                # could also check that match_utility > self.T_reject to make it more flexible (basically accept a match if its utility is over T_reject instead of over T_accept)
-                # TODO: update where T_accept is accessed from if its moved to job_offer
-                if (
-                    best_match == match
-                    and match_utility > match.get_data()["job_offer"]["T_accept"]
-                ):
-                    self._agree_to_match(match)
-            else:
-                self.reject_match(match)
-        elif algorithm == "accept_reject_negotiate":
-            #   Negotiate if the utility is within range of being acceptable (between T_reject and T_accept). Call some function negotiate_match
-            #   that takes the match as an input and creates a similar but new match where the utility of the new match is > T_accept.
-            #   Should be able to handle multiple negotiation rounds.
-            #   IMPLEMENT NEGOTIATIONS OVER HTTP: Parameter for how many rounds until negotiation ends (ex: 5).
-            best_match = self.find_best_match_for_job(match.get_data()["job_offer"])
-            if best_match == match:
-                utility = self.calculate_utility(match)
-                # TODO: update where T_accept is accessed from if its moved to job_offer
-                if utility > match.get_data()["job_offer"]["T_accept"]:
-                    self._agree_to_match(match)
-                # TODO: update where T_reject is accessed from if its moved to job_offer
-                elif utility < match.get_data()["job_offer"]["T_reject"]:
-                    self.reject_match(match)
-                else:
-                    self.negotiate_match(match)
-            else:
-                self.reject_match(match)
-        else:
-            raise ValueError(f"Unknown algorithm: {algorithm}")
-        # Other considerations:
-        #   Check whether there is already a deal in progress for the current job offer, if yes, reject this match.
-        #   Introduce a flexibility factor that allows flexibility for when a cient decides to negotiate or reject (manipulates T_reject or utility somehow).
-        #       - It allows for some degree of negotiation, making the client less rigid and more adaptable to market conditions.
-        #   T_accept and T_reject may be static or dynamically adjusted based on historical data or current market conditions.
-
-    def find_best_match_for_job(self, job_offer_id):
+    def find_best_match(self, job_offer_id):
         """Find the best match for a given job offer based on utility."""
         best_match = None
         highest_utility = -float("inf")
@@ -337,149 +227,41 @@ class Client(ServiceProvider):
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
 
-    # TODO: Implement rejection logic. If a client or compute node rejects a match, it needs to be offered that match again
-    # (either via the solver or p2p negotiation) in order to accept it.
-    def reject_match(self, match):
-        """Reject a match."""
-        log_json(self.logger, "Rejected match", {"match_id": match.get_id()})
-        pass
-
-    # def negotiate_match(self, match, max_rounds=5, strategy_parameter=0.5):
-    #     log_json(self.logger, "Negotiating match", {"match_id": match.get_id()})
-    #     for round in range(1, max_rounds + 1):
-    #         print('Negotiation round:', round)
-    #         new_match_offer = self.create_new_match_offer(match, round, max_rounds, strategy_parameter)
-    #         response = self.communicate_request_to_party(match.get_data()['resource_provider_address'], new_match_offer)
-
-    #         if self.evaluate_accept(match, new_match_offer, response['match'], strategy_parameter):
-    #             self._agree_to_match(response['match'])
-    #             return
-    #         match = response['counter_offer']
-    #     self.reject_match(match)
-
-    def negotiate_match(self, match, max_rounds=5):
-        """Negotiate a match."""
-        log_json(self.logger, "Negotiating match", {"match_id": match.get_id()})
-        for i in range(max_rounds):
-            logging.info(f"Negotiation round: {i}")
-            new_match_offer = self.create_new_match_offer(match)
-            response = self.communicate_request_to_party(
-                match.get_data()["resource_provider_address"], new_match_offer
-            )
-            if response["accepted"]:
-                self._agree_to_match(response["match"])
-                return
-            logging.info("Negotiation failed, creating new match offer")
-            match = response["counter_offer"]
-        self.reject_match(match)
-
-    # example way of integrating current round number and negotiation aggression into generate_offer
-    # def create_new_match_offer(self, match, round_num, max_rounds, strategy_parameter=0.5):
-    #     data = match.get_data()
-    #     current_offer = {key: data[key] for key in data if key in ['price_per_instruction']}
-
-    #     # Define target offer (for simplicity, reduce the price per instruction by 20% as an example)
-    #     target_offer = {key: data[key] * 0.8 for key in current_offer}
-
-    #     # Calculate the concession factor based on the round number, total rounds, and strategy parameter
-    #     concession_factor = (1 - (round_num / max_rounds) ** strategy_parameter)
-
-    #     # Generate new offer based on the concession factor
-    #     new_data = {}
-    #     for key in current_offer:
-    #         if key == 'price_per_instruction':
-    #             new_data[key] = current_offer[key] - (concession_factor * (current_offer[key] - target_offer[key]))
-    #         else:
-    #             new_data[key] = current_offer[key]
-
-    #     # Create a new match object with the updated offer
-    #     new_match = Match()
-    #     for key, value in data.items():
-    #         if key in new_data:
-    #             new_match.add_data(key, new_data[key])
-    #         else:
-    #             new_match.add_data(key, value)
-
-    #     return new_match
-
-    def create_new_match_offer(self, match):
-        """Create a new match offer with modified terms."""
-        data = match.get_data()
-        new_data = data.copy()
-        new_data["price_per_instruction"] = (
-            data["price_per_instruction"] * 0.95
-        )  # For example, reduce the price
-        new_match = Match(new_data)
-        return new_match
-
-    def communicate_request_to_party(self, party_id, match_offer):
-        """Communicate a match offer request to a specified party.
-
-        Args:
-            party_id: The ID of the party to communicate with.
-            match_offer: The match offer details to be communicated.
-
-        Returns:
-            dict: A response dictionary indicating acceptance and any counter-offer.
-        """
-        # Simulate communication - this would need to be implemented with actual P2P or HTTP communication
-        log_json(
-            self.logger,
-            "Communicating request to party",
-            {"party_id": party_id, "match_offer": match_offer.get_data()},
-        )
-        response = self.simulate_communication(party_id, match_offer)
-        return response
-
-    def simulate_communication(self, party_id, match_offer):
-        """Simulate the communication of a match offer to a party and receive a response.
-
-        Args:
-            party_id: The ID of the party to communicate with.
-            match_offer: The match offer details to be communicated.
-
-        Returns:
-            dict: A simulated response including acceptance status and counter-offer.
-        """
-        message = f"New match offer: {match_offer.get_data()}"
-        self.client_socket.send(message.encode("utf-8"))
-        response_message = self.client_socket.recv(1024).decode("utf-8")
-        log_json(
-            self.logger,
-            "Received response from server",
-            {"response_message": response_message},
-        )
-
-        response = {
-            "accepted": "accepted" in response_message,
-            "counter_offer": self.create_new_match_offer(match_offer),
-        }
-
-        return response
+    def make_match_decision(self, match, algorithm):
+        """Make a decision on whether to accept, reject, or negotiate a match."""
+        if algorithm == "accept_all":
+            self._agree_to_match(match)
+        elif algorithm == "accept_reject":
+            match_utility = self.calculate_utility(match)
+            best_match = self.find_best_match(match.get_data()["job_offer"])
+            if (
+                best_match == match
+                and match_utility > match.get_data()["job_offer"]["T_accept"]
+            ):
+                self._agree_to_match(match)
+            else:
+                self.reject_match(match)
+        elif algorithm == "accept_reject_negotiate":
+            best_match = self.find_best_match(match.get_data()["job_offer"])
+            if best_match == match:
+                utility = self.calculate_utility(match)
+                if utility > match.get_data()["job_offer"]["T_accept"]:
+                    self._agree_to_match(match)
+                elif utility < match.get_data()["job_offer"]["T_reject"]:
+                    self.reject_match(match)
+                else:
+                    self.negotiate_match(match)
+            else:
+                self.reject_match(match)
+        else:
+            raise ValueError(f"Unknown algorithm: {algorithm}")
 
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
-        example_match_data = {
-            "resource_provider_address": "rp_address",
-            "client_address": "client_address",
-            "resource_offer": {
-                "T_accept": 100.6,
-                "T_reject": 10,
-                "resource_id": "resource_1",
-            },
-            "job_offer": {"T_accept": 95, "T_reject": 10, "job_id": "job_1"},
-            "price_per_instruction": 0.10,
-            "expected_number_of_instructions": 1000,
-            "expected_benefit_to_client": 190,
-            "client_deposit": 50,
-            "timeout": 100,
-            "timeout_deposit": 20,
-            "cheating_collateral_multiplier": 1.5,
-            "verification_method": "method_1",
-            "mediators": ["mediator_1"],
-        }
-        example_match = Match(example_match_data)
-        self.negotiate_match(example_match)
+        for match in self.current_matched_offers:
+            self.make_match_decision(match, "accept_reject_negotiate")
+        self.update_finished_deals()
+        self.current_matched_offers.clear()
 
 
 def create_client(

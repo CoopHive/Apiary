@@ -19,9 +19,14 @@ Interestingly, they develped a decentralized version of AI, such as Stable Diffu
 Docs:
 - https://akash.network/docs/
 
-[TODO looking into Akash network docs, with focus on
+
 https://akash.network/docs/getting-started/intro-to-akash/bids-and-leases/
-]
+
+### Allora
+
+https://www.allora.network/
+
+https://whitepaper.assets.allora.network/whitepaper.pdf
 
 ### Bittensor
 
@@ -76,8 +81,6 @@ https://fluence.network/
 
 https://galadriel.com/
 
-[TODO: read online material and lite paper and put down relevant notes]
-
 https://docs.galadriel.com/litepaper
 
 ### Gensyn
@@ -85,8 +88,6 @@ https://docs.galadriel.com/litepaper
 https://www.gensyn.ai/
 
 https://docs.gensyn.ai/litepaper
-
-[TODO: read online material and white paper and put down relevant notes]
 
 ### Glacier
 
@@ -104,8 +105,6 @@ https://www.helium.com/
 
 https://huddle01.com/
 
-[TODO: read online material and lite paper and put down relevant notes]
-
 https://bafkreifg7si3o3g42jqqngpaems4uamvcknnxt3akzvsn4rvvoig33ffnu.ipfs.w3s.link/
 
 ### Inference
@@ -118,8 +117,6 @@ https://public.inferencelabs.com/sertn-whitepaper.pdf
 
 https://mor.org/
 
-[TODO: read online material and white paper and put down relevant notes]
-
 https://mor.org/whitepaper
 
 ### MotherDuck
@@ -130,9 +127,15 @@ https://motherduck.com/
 
 https://olas.network/
 
-[TODO: read online material and white paper and put down relevant notes]
-
 https://olas.network/whitepaper
+
+### OpenDevin
+
+https://docs.all-hands.dev/
+
+https://github.com/OpenDevin/OpenDevin
+
+https://arxiv.org/abs/2407.16741
 
 ### Orbis
 
@@ -160,15 +163,15 @@ https://redis.io/
 
 https://rendernetwork.com/
 
-[TODO: read online material and white paper and put down relevant notes]
-
 https://renderfoundation.com/whitepaper
 
 ### Ritual
 
 https://ritual.net/
 
-[TODO: read online material and put down relevant notes]
+### Sahara
+
+https://saharalabs.ai/
 
 ### Sia
 
@@ -177,8 +180,6 @@ https://sia.tech/
 ### Spectral
 
 In Spectral, Agents are on chain.
-
-[TODO: read online material and white paper and put down relevant notes]
 
 https://www.spectrallabs.xyz/whitepaper
 
@@ -196,11 +197,12 @@ https://tableland.xyz/
 
 ### Theoriq
 
+
+
 https://www.theoriq.ai/
+https://www.theoriq.ai/litepaper
 
 by ChainML: https://www.chainml.net/
-
-[TODO: read online material and put down relevant notes]
 
 https://truflation.com/blog/theoriq-and-truflation-partner-to-revolutionize-tokenized-real-world-assets
 

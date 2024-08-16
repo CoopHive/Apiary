@@ -3,6 +3,7 @@
 import logging
 import os
 
+from coophive.agent import Agent
 from coophive.data_attribute import DataAttribute
 from coophive.deal import Deal
 from coophive.event import Event
@@ -10,12 +11,10 @@ from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
-from coophive.service_provider import ServiceProvider
-from coophive.smart_contract import SmartContract
 from coophive.utils import extra_necessary_match_data
 
 
-class Solver(ServiceProvider):
+class Solver(Agent):
     """Solver class to handle smart contract connections, events, and the matching of job and resource offers."""
 
     def __init__(self, public_key: str, url: str):
@@ -31,11 +30,6 @@ class Solver(ServiceProvider):
         self.deals_made_in_current_step: dict[str, Deal] = {}
         self.currently_matched_job_offers = set()
         self.current_matched_resource_offers = set()
-
-    def connect_to_smart_contract(self, smart_contract: SmartContract):
-        """Connect the solver to a smart contract and subscribe to events."""
-        self.smart_contract = smart_contract
-        smart_contract.subscribe_event(self.handle_smart_contract_event)
 
     def handle_smart_contract_event(self, event: Event):
         """Handle events from the smart contract."""

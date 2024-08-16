@@ -190,38 +190,100 @@ def test_client_loop(setup_client):
     """Test the client_loop method."""
     client, _, _ = setup_client
     match1 = Match()
-
     match1.set_attributes(
         {
             "resource_provider_address": "provider1",
             "client_address": "client1",
-            "resource_offer": "offer1",
-            "job_offer": "job1",
+            "resource_offer": {
+                "owner": "provider1",
+                "machine_id": "machine1",
+                "target_client": "client1",
+                "created_at": "2024-08-15",
+                "timeout": 10,
+                "CPU": 4,
+                "GPU": 1,
+                "RAM": 16,
+                "prices": [10, 20, 30],
+                "verification_method": "method1",
+                "mediators": ["mediator1", "mediator2"],
+                "price_per_instruction": 10,
+                "expected_number_of_instructions": 1000,
+                "T_accept": 50,
+                "T_reject": 20,
+            },
+            "job_offer": {
+                "owner": "client1",
+                "target_client": "client1",
+                "created_at": "2024-08-15",
+                "timeout": 10,
+                "CPU": 4,
+                "GPU": 1,
+                "RAM": 16,
+                "module": "module1",
+                "prices": [15, 25, 35],
+                "instruction_count": 100,
+                "verification_method": "method1",
+                "mediators": ["mediator1", "mediator2"],
+                "benefit_to_client": 2000,
+                "T_accept": 50,
+                "T_reject": 20,
+            },
             "price_per_instruction": 10,
+            "expected_number_of_instructions": 1000,
+            "expected_benefit_to_client": 2000,
             "client_deposit": 100,
             "timeout": 10,
             "timeout_deposit": 15,
             "cheating_collateral_multiplier": 1.5,
-            "verification_method": "method1",
-            "mediators": ["mediator1", "mediator2"],
         }
     )
 
     match2 = Match()
-
     match2.set_attributes(
         {
             "resource_provider_address": "provider2",
             "client_address": "client2",
-            "resource_offer": "offer2",
-            "job_offer": "job2",
+            "resource_offer": {
+                "owner": "provider2",
+                "machine_id": "machine2",
+                "target_client": "client2",
+                "created_at": "2024-08-15",
+                "timeout": 12,
+                "CPU": 8,
+                "GPU": 2,
+                "RAM": 32,
+                "prices": [20, 40, 60],
+                "verification_method": "method2",
+                "mediators": ["mediator3"],
+                "price_per_instruction": 50,
+                "expected_number_of_instructions": 2000,
+                "T_accept": 70,
+                "T_reject": 30,
+            },
+            "job_offer": {
+                "owner": "client2",
+                "target_client": "client2",
+                "created_at": "2024-08-15",
+                "timeout": 12,
+                "CPU": 8,
+                "GPU": 2,
+                "RAM": 32,
+                "module": "module2",
+                "prices": [25, 50, 75],
+                "instruction_count": 100,
+                "verification_method": "method2",
+                "mediators": ["mediator3"],
+                "benefit_to_client": 3000,
+                "T_accept": 70,
+                "T_reject": 30,
+            },
             "price_per_instruction": 50,
+            "expected_number_of_instructions": 2000,
+            "expected_benefit_to_client": 3000,
             "client_deposit": 100,
             "timeout": 12,
             "timeout_deposit": 20,
             "cheating_collateral_multiplier": 1.0,
-            "verification_method": "method2",
-            "mediators": ["mediator3"],
         }
     )
 
@@ -234,8 +296,8 @@ def test_client_loop(setup_client):
     client.client_loop()
 
     assert client._agree_to_match.call_count == 0
-    assert client.update_finished_deals.call_count == 0
-    assert len(client.current_matched_offers) == 2
+    assert client.update_finished_deals.call_count == 1
+    assert len(client.current_matched_offers) == 0
 
 
 if __name__ == "__main__":
