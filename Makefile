@@ -36,4 +36,4 @@ test:
 
 .PHONY: diagrams
 diagrams:
-	pyreverse coophive -A --colorized -p coophive -d img -o png
+	pyreverse coophive -A --colorized -p coophive -d docs/img -o png
