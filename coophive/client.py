@@ -32,7 +32,7 @@ class Client(ServiceProvider):
             address (str): The address of the client.
         """
         super().__init__(address)
-        self.current_jobs = deque()  # TODO: determine the best data structure for this
+        self.current_jobs = deque()
 
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
         self.client_socket = None
@@ -95,7 +95,6 @@ class Client(ServiceProvider):
 
         log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
 
-    # TODO: Implement this function
     def handle_p2p_event(self, event: Event):
         """P2P handling.
 

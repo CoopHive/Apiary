@@ -92,9 +92,6 @@ extra_necessary_match_data = {
     "verification_method": "random",
 }
 
-
-# TODO: make this a generator that generates realistic values
-# pull from existing databases online?
 example_offer_data = {"CPU": 6, "RAM": 3, "GPU": 1}
 
 

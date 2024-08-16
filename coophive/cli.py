@@ -124,9 +124,6 @@ def initialize_simulation_environment():
     """
     addresses = Addresses()
 
-    # TODO: unable to increase this above one for socket port conflicts
-    num_resource_providers = 1
-
     num_clients = 5
 
     # create smart contract
@@ -140,17 +137,16 @@ def initialize_simulation_environment():
     # solver connects to smart contract
     new_solver.connect_to_smart_contract(smart_contract=new_smart_contract)
 
-    for _ in range(num_resource_providers):
-        # create resource provider
-        new_resource_provider_public_key = addresses.get_current_address()
-        new_resource_provider = create_resource_provider(
-            new_resource_provider_public_key, new_solver, new_smart_contract
-        )
-        # resource provider adds funds
-        # new_resource_provider_1_initial_fund = 10
-        # new_resource_provider_1_initial_fund = random.randint(0, 1000)
-        new_resource_provider_initial_fund = 100
-        fund_smart_contract(new_resource_provider, new_resource_provider_initial_fund)
+    # create resource provider
+    new_resource_provider_public_key = addresses.get_current_address()
+    new_resource_provider = create_resource_provider(
+        new_resource_provider_public_key, new_solver, new_smart_contract
+    )
+    # resource provider adds funds
+    # new_resource_provider_1_initial_fund = 10
+    # new_resource_provider_1_initial_fund = random.randint(0, 1000)
+    new_resource_provider_initial_fund = 100
+    fund_smart_contract(new_resource_provider, new_resource_provider_initial_fund)
 
     for _ in range(num_clients):
         # create client
@@ -207,9 +203,6 @@ def run_test_simulation():
     """
     addresses = Addresses()
 
-    # TODO: unable to increase this above one for socket port conflicts
-    num_resource_providers = 1
-
     num_clients = 5
 
     # create smart contract
@@ -223,17 +216,16 @@ def run_test_simulation():
     # solver connects to smart contract
     new_solver.connect_to_smart_contract(smart_contract=new_smart_contract)
 
-    for _ in range(num_resource_providers):
-        # create resource provider
-        new_resource_provider_public_key = addresses.get_current_address()
-        new_resource_provider = create_resource_provider(
-            new_resource_provider_public_key, new_solver, new_smart_contract
-        )
-        # resource provider adds funds
-        # new_resource_provider_1_initial_fund = 10
-        # new_resource_provider_1_initial_fund = random.randint(0, 1000)
-        new_resource_provider_initial_fund = 200
-        fund_smart_contract(new_resource_provider, new_resource_provider_initial_fund)
+    # create resource provider
+    new_resource_provider_public_key = addresses.get_current_address()
+    new_resource_provider = create_resource_provider(
+        new_resource_provider_public_key, new_solver, new_smart_contract
+    )
+    # resource provider adds funds
+    # new_resource_provider_1_initial_fund = 10
+    # new_resource_provider_1_initial_fund = random.randint(0, 1000)
+    new_resource_provider_initial_fund = 200
+    fund_smart_contract(new_resource_provider, new_resource_provider_initial_fund)
 
     for _ in range(num_clients):
         # create client

@@ -142,8 +142,6 @@ class ServiceProvider:
         """Simulate communication."""
         message = f"New match offer: {match_offer.get_data()}"
 
-        # TODO: placeholder, will need to use SDK with messaging,
-        # and be a function of the message string variable above.
         response_message = "Your offer has been accepted."
 
         log_json(

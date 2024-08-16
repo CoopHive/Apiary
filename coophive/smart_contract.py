@@ -170,7 +170,6 @@ class SmartContract(ServiceProvider):
         self.balances[resource_provider_address] -= tx.value
         self.balance += tx.value
 
-    # TODO: add returning of cheating collateral
     def refund_cheating_collateral(self, result: Result):
         """Refund the cheating collateral based on the result.
 
@@ -294,8 +293,6 @@ class SmartContract(ServiceProvider):
         job_offer = deal_data["job_offer"]
         logging.info(job_offer)
 
-        # TODO: job offer is just a string, need to get the actual job offer object
-        # otherwise event.get_data().get_id() in e.g. line 30 of solver.py will throw an error
         mediation_request_event = Event(name="mediation_random", data=job_offer)
         self.emit_event(mediation_request_event)
 

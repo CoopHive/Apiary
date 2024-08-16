@@ -17,7 +17,6 @@ from coophive.solver import Solver
 from coophive.utils import CID, Tx
 
 
-# TODO: centralize logging settings and initialization at the initial setup of the package functionality calls.
 class ResourceProvider(ServiceProvider):
     """Class representing a resource provider in the CoopHive simulator."""
 
@@ -148,7 +147,6 @@ class ResourceProvider(ServiceProvider):
         self.get_smart_contract().agree_to_match(match, tx)
         log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
 
-    # TODO: Implement this function
     def handle_p2p_event(self, event):
         """P2P handling.
 
@@ -351,8 +349,6 @@ def create_resource_provider(
 
     return resource_provider
 
-
-# TODO: when handling events, add to list to be managed later, i.e. don't start signing stuff immediately
 
 if __name__ == "__main__":
     public_key = "Your public key here"  # Replace with the actual public key

@@ -226,7 +226,7 @@ For a match to occur - both sides must have an overlap in their trusted director
 
 Nodes can run their own directory services and call `registerServiceProvider` and any other node can change which directory services they trust.
 
-TODO: how do directory serices get paid? (is this v2 protocol?)
+Question: how do directory serices get paid? (is this v2 protocol?)
 
 ## solver
 
@@ -327,7 +327,7 @@ Nodes can run their own mediator services and call `registerServiceProvider` and
    * mediatorService `address`
      * the mutually agreed mediator service used to mediate results
    * timeout `uint`
-     * the agreed upper bounds of time this job can take - TODO: is this in seconds or blocks?
+     * the agreed upper bounds of time this job can take - Question: is this in seconds or blocks?
    * resultsMultiple `uint`
      * the agreed multiple of the fee the resource provider will post when submitting results
    * timeoutDeposit `uint`
