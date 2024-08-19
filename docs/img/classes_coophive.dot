@@ -30,6 +30,4 @@ charset="utf-8"
 "coophive.result.Result" -> "coophive.data_attribute.DataAttribute" [arrowhead="empty", arrowtail="none"];
 "coophive.smart_contract.SmartContract" -> "coophive.agent.Agent" [arrowhead="empty", arrowtail="none"];
 "coophive.solver.Solver" -> "coophive.agent.Agent" [arrowhead="empty", arrowtail="none"];
-"coophive.agent.LocalInformation" -> "coophive.agent.Agent" [arrowhead="diamond", arrowtail="none", fontcolor="green", label="local_information", style="solid"];
-"coophive.utils.IPFS" -> "coophive.agent.LocalInformation" [arrowhead="diamond", arrowtail="none", fontcolor="green", label="ipfs", style="solid"];
 }
