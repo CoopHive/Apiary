@@ -2,39 +2,35 @@
 
 ## Abstract
 
-This is a document to conceptualize the high-level design choices of Coophive, with regards to its multi-agent systems, data-driven optimal control, agent-to-agent negotiation. It is currently an unstructured set of notes, based on the legacy design, existing documents such as legacy white paper, Figma Compute Market Achitecture. It serves as the reference point to define the building blocks of the agent marketplace. When possible, the discussion is kept general, while when necessary the specificities of the exchanged assets (storage, compute) will be introduced. 
+This is a document to conceptualize the high-level design choices of Coophive, with regards to its multi-agent systems, data-driven optimal control, agent-to-agent negotiation and scheduling. It serves as the reference point to define the building blocks of the agent marketplace and its APIs to both on-chain and other off-chain modules of the protocol. When possible, the discussion is kept general, while when necessary the specificities of the exchanged assets (storage, compute) will be introduced. 
 
 The framework is nevertheless defined for "validatable, terminable tasks with collateral transfer after validation". In this context, we talk about "stateless" tasks to stress their inner reproducibility (their lack of dependence against client-specific state variables). The presence of agent-based modeling (whose policy is potentially data-driven, tapping into ML/RL), is motivated by the need to orchestrate a decentralized network of agents in a way that leads to competitive pricing/scheduling, from the user perspective. At the same time, the use of blockchain is motivate by the trustless and automatic transfer of collateral after validation.
 
 ## Introduction
 
-The problem statement starts with the presence of a chain-generic/asset generic marketplace to interact optimally against. There are deep implications about going for a chain-generic or more specific marketplace, but this does not seem to have implications on the multi-agent system.
+The problem statement starts with the presence of a chain-generic/asset generic marketplace to interact optimally against. There are deep implications about going for a chain-generic or more specific marketplace, but this does not seem to have implications on the multi-agent module of the protocol.
 
-The value of the protocol is in recognizing, for example, the existance of idle computational power on the planet and of existing computational tasks that could be interested offering something in exchange for such a task to be performed. This creates an off-chain market of negotiation in which agents compete/cooperate to cut a good deal, i.e., they act optimally with respect to their fitness landscape, their action space and their state space (like in every market, negotiation helps the bid inform a "fair market value").
+The value of this protocol lies in, for example, identifying idle computational resources around the world and potential tasks that might be willing to trade something in exchange for utilizing those resources. This landscape creates an off-chain market of negotiations in which agents compete/cooperate to cut a good deal, i.e., they act optimally with respect to their fitness landscape, their action space and their state space (like in every market, negotiation helps the bid inform a "fair market value").
 
 While the outcome of each negotiation goes on chain, negotiations are performed off-chain, and both on-chain and off-chain data can be used to inform various negotiation strategies.
 
 ## The case for Agent-based modeling
 
-The existance of distributed and heterogenous hardwares and the construction of data-driven policies for optimal decision making does not motivate by itself the usage of an agent-based perspective in the modeling of the system.
+The existance of distributed and heterogenous hardwares and the construction of data-driven policies for optimal decision making does not motivate by itself the usage of an agent-based perspective in the modeling of the system. For example, a centralized solver could be implemented to distribute jobs efficiently across the network. 
 
-For example, a centralized solver could be implemented to distribute jobs efficiently across the network. One conceptual advantage is that with an agent-based perspective nodes participating in the network keep *agency* over themselves, i.e. they are continuously able to accept or reject jobs, and this capatibility is never delegated to a central entity.
+However, one conceptual advantage is that with an agent-based perspective nodes participating in the network keep *agency* over themselves, i.e. they are continuously able to accept or reject jobs, and this capatibility is never delegated to a central entity.
+
+Moreover, an [agent-based perspective](https://www.doynefarmer.com/publications) can be used to relax conventional assumptions in standard models and, in the spirit of [complex systems theory](https://www.econophysix.com/publications), views marco phenomena such as centralized solvers and order books, in our context, as *emerging properties* of the atomic units of behaviour. This perspective has the potential to avoid the suboptimality following the choice of a misspecificed macro model.
 
 ### 1 vs N, N vs 1, N vs N
 
 The most generic case to be considered is an N (clients) vs N (resource providers). While in principle there are aspects of the generic case that are not captured by either kind of stacking of more specific cases, it is reasonable to start thinking about the N vs N as a set of more simple cases. 
 
-In the 1 (agent) vs N (static environment of clients), the problem is mainly scheduling/path planning in the space of tasks. This would basically mean ignore the presence of multiple agents and just ask ourselves how each of them, blind to the presence of their peers, would move in the space of posted jobs.
+In the 1 (agent) vs N (static environment of clients), the problem is mainly scheduling/path planning in the space of tasks. This would basically mean ignoring the presence of multiple agents and just ask ourselves how each of them, blind to the presence of their peers, would move in the space of posted jobs to maximize their utility.
 
-In the N (agents) vs 1 dynamic client/job offer, the problem is more purely a negotiation problem. 
+In the N (agents) vs 1 dynamic client/job offer, the problem is more purely a negotiation problem.
 
-Matteo's perspective is that we are not ready to attack the N vs N problem from scratch and that there is more value in solving the 1 vs N, compared to the N vs 1.
-
->> Now, not sure what our short term needs are, but I feel the negotiation aspect is less impactful then the scheduling one on the overall optimality of the compute network.
-
->> This perspective may easily be biased by my skills and background, but in the same way in which we said "let's ignore the history of credible commitments in the definition of the state space", I feel we should rather focus on blind competition, first. We may also gain some advantage over competition by modeling electricity and gas costs dynamics alone.
-
->>I think we will then be able to understand how certain agent policies are consistently front ran by others, and we'll be able to make use of the messaging to better inform policies.
+It is reasonable to assume optimal policies will be characterized by a trade-off between negotiation and scheduling, related to the concept of [Explore-exploit dilemma](https://ml-compiled.readthedocs.io/en/latest/explore_exploit.html).
 
 ### Network Robustness
 
