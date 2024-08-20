@@ -10,23 +10,19 @@ Cost-effective supercloud, more than 80% cheaper than AWS, GPC, Azure.
 
 Providers deploy standardized (Kubernetes) infrastructure, tenants define Docker containers of jobs and they deploy them using the network, functioning as some kind of broker of jobs and resources. The value proposition is the distruction of monolith acting as monopolies (AWS) with less competitive pricing and less infrastructural flexibility. The main challange is the managing of an heterogeneus and non-stationary system.
 
-Interestingly, they develped a decentralized version of AI, such as Stable Diffusion and LLMs:
-
-- https://sdxl.akash.network/
-- https://chat.akash.network/
-
-
-Docs:
 - https://akash.network/docs/
-
-
-https://akash.network/docs/getting-started/intro-to-akash/bids-and-leases/
+- https://akash.network/docs/getting-started/intro-to-akash/bids-and-leases/
 
 ### Allora
 
-https://www.allora.network/
+Allora is an open-source, decentralized marketplace for intelligence.
 
-https://whitepaper.assets.allora.network/whitepaper.pdf
+Allora's self-improving, decentralized AI network outperforms traditional monolithic models
+
+Links:
+- https://www.allora.network/
+- https://docs.allora.network/home/explore
+- https://whitepaper.assets.allora.network/whitepaper.pdf
 
 ### Bittensor
 
@@ -45,23 +41,12 @@ Links:
 
 In other words, the overall network of agents is incentivized to score and price the intelligence of a node. This is also alternative Validation scheme to replication.
 
-### Ceramic
-
-https://ceramic.network/
-
-### Cere Networks
-
-https://www.cere.network/
-
 ### DAIN
 
-Not much more than a nice landing. Nothing to learn, as of July 22nd 2024.
+Building the global infrastructure for autonomous systems to seamlessly collaborate, interact and transact.
 
-https://dain.org/
-
-### EverLedger
-
-https://everledger.io/
+Links:
+- https://dain.org/
 
 ### Energy Web
 
