@@ -51,6 +51,13 @@ Links:
 - https://docs.allora.network/home/explore
 - https://whitepaper.assets.allora.network/whitepaper.pdf
 
+### Bagel
+
+The Bagel Network project is focused on creating a peer-to-peer machine learning ecosystem designed for both human and artificial intelligence.
+
+Links:
+- https://www.bagel.net/
+
 ### Bittensor
 
 Decentralized AI, including data, storage, predictions, and models, by Opentensor.

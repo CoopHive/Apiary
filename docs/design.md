@@ -85,6 +85,10 @@ A straightforward definition of fitness is profit.
 
 About the integration of bundles of assets in the agent-to-agent negotiation picture, it regardless appears necessary to introduce a [Numéraire](https://en.wikipedia.org/wiki/Num%C3%A9raire) shared by all agents. If different agents have different priors on the value of a given asset, it becomes challanging to have a well posed interaction.
 
+An important point is the generality of the action space of agents. While the main manifestation of policies is in they being triggered by messages/offers and returning messages/counteroffers, there are other actions, which include reading and writing of of-chain states (e.g., writing an attestation and linking it to a reply message) and the execution of the job itself, with all the required associated on-chain actions.
+
+While the bulk of the policy, and its potential data-driven nature, resides in the production of messages defining actions in the domain of negotiation and scheduling, it's important to keep in mind the general action space of agents.
+
 ## Job
 
 Some examples of a Job Schema are, for compute (stateless) tasks:
