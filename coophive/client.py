@@ -70,7 +70,7 @@ class Client(Agent):
                         # New match, add to current_matched_offers and process
                         self.current_matched_offers.append(new_match)
                         self.make_match_decision(
-                            new_match, algorithm="accept_reject_negotiate"
+                            new_match, policy="accept_reject_negotiate"
                         )
             except ConnectionResetError:
                 logging.info("Connection lost. Closing connection.")
@@ -227,11 +227,11 @@ class Client(Agent):
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
 
-    def make_match_decision(self, match, algorithm):
+    def make_match_decision(self, match, policy):
         """Make a decision on whether to accept, reject, or negotiate a match."""
-        if algorithm == "accept_all":
+        if policy == "accept_all":
             self._agree_to_match(match)
-        elif algorithm == "accept_reject":
+        elif policy == "accept_reject":
             match_utility = self.calculate_utility(match)
             best_match = self.find_best_match(match.get_data()["job_offer"])
             if (
@@ -241,7 +241,7 @@ class Client(Agent):
                 self._agree_to_match(match)
             else:
                 self.reject_match(match)
-        elif algorithm == "accept_reject_negotiate":
+        elif policy == "accept_reject_negotiate":
             best_match = self.find_best_match(match.get_data()["job_offer"])
             if best_match == match:
                 utility = self.calculate_utility(match)
@@ -254,7 +254,7 @@ class Client(Agent):
             else:
                 self.reject_match(match)
         else:
-            raise ValueError(f"Unknown algorithm: {algorithm}")
+            raise ValueError(f"Unknown policy: {policy}")
 
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""

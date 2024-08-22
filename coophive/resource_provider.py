@@ -61,20 +61,20 @@ class ResourceProvider(Agent):
                 if "New match offer" in message:
                     match_data = eval(message.split("New match offer: ")[1])
                     match = Match(match_data)
-                    match_dict = new_match.get_data()
+                    match_dict = match.get_data()
                     if "rounds_completed" not in match_dict:
-                        new_match.rounds_completed = 0
+                        match.rounds_completed = 0
                     # Check if the match is already in current_matched_offers by ID
                     for existing_match in self.current_matched_offers:
-                        if existing_match.get_id() == new_match.get_id():
+                        if existing_match.get_id() == match.get_id():
                             # Continue negotiating on the existing match
                             self.negotiate_match(existing_match)
                             break
                     else:
                         # New match, add to current_matched_offers and process
-                        self.current_matched_offers.append(new_match)
+                        self.current_matched_offers.append(match)
                         response = self.make_match_decision(
-                            new_match, algorithm="accept_reject_negotiate"
+                            match, policy="accept_reject_negotiate"
                         )
                         client_socket.send(response.encode("utf-8"))
             except ConnectionResetError:
@@ -292,11 +292,11 @@ class ResourceProvider(Agent):
         expected_revenue = self.calculate_revenue(match)
         return expected_revenue
 
-    def make_match_decision(self, match, algorithm):
+    def make_match_decision(self, match, policy):
         """Make a decision on whether to accept, reject, or negotiate a match."""
-        if algorithm == "accept_all":
+        if policy == "accept_all":
             self._agree_to_match(match)
-        elif algorithm == "accept_reject":
+        elif policy == "accept_reject":
             match_dict = match.get_data()
             match_utility = self.calculate_utility(match)
             best_match = self.find_best_match(match_dict.get("job_offer"))
@@ -307,7 +307,7 @@ class ResourceProvider(Agent):
                 self._agree_to_match(match)
             else:
                 self.reject_match(match)
-        elif algorithm == "accept_reject_negotiate":
+        elif policy == "accept_reject_negotiate":
             best_match = self.find_best_match(match_dict["resource_offer"])
             if best_match == match:
                 utility = self.calculate_utility(match)
@@ -320,12 +320,12 @@ class ResourceProvider(Agent):
             else:
                 self.reject_match(match)
         else:
-            raise ValueError(f"Unknown algorithm: {algorithm}")
+            raise ValueError(f"Unknown algorithm: {policy}")
 
     def resource_provider_loop(self):
         """Main loop for the resource provider to process matched offers and update job running times."""
         for match in self.current_matched_offers:
-            self.make_match_decision(match, algorithm="accept_reject_negotiate")
+            self.make_match_decision(match, policy="accept_reject_negotiate")
         self.update_job_running_times()
         self.current_matched_offers.clear()
 
