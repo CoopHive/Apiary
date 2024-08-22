@@ -16,11 +16,11 @@ from coophive.event import Event
 from coophive.job import Job
 from coophive.log_json import log_json
 from coophive.match import Match
+from coophive.policy import Policy
 from coophive.result import Result
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.utils import Tx
-from coophive.policy import Policy
 
 
 class Client(Agent):
