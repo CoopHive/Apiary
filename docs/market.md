@@ -95,6 +95,13 @@ Links:
 - https://docs.galadriel.com/overview
 - https://docs.galadriel.com/litepaper
 
+### GenLayer
+
+GenLayer is a decentralized blockchain platform designed to execute AI-powered smart contracts called Intelligent Contracts that uses AI models to search the web and process natural language instructions.
+
+Links:
+- https://www.genlayer.com/
+
 ### Gensyn
 
 Gensyn is a decentralized computing network that aims to provide scalable, cost-effective, and accessible machine learning (ML) and artificial intelligence (AI) compute resources. The platform connects unused computational power from around the world to a decentralized network, enabling anyone to contribute and monetize their hardware by participating in the global AI and ML computation market.
