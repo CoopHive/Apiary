@@ -50,36 +50,35 @@ Reading "Local Scheduling in Multi-Agent Systems: getting ready for safety-criti
 
 Agents need to be robust against different kind of non-stationarities: agents could die, new appear, macrovariable drastically change. How to avoid the overall system of lead to an endogenous crisis triggered by a small variation is external variables? In other words, how to ensure a small degree of chaoticity/fragility against external perturbations?
 
-## Lower Level Specifications
+## State Space
 
-A big part of the off-chain information are centralized in a pubsub que, a set of recorded messages, more or less public, that every agent can listen to (and store locally for memory). A question is for example how important it is for agents to observe the negotiation dynamics before an agreement vs learning from the final transaction only: this has consequences on the privacy of offers, as it may be valuable to enforce the publicity of intra-negotiation offers for a more transparent auction mechanism. We need to define better the pubsub cue, equivalent in many ways to a broker order book.
+Autonomous Agents are associated with policies why are defined in conjunction with a state space. The dimensions of such state space can be categorized in different ways. One way is distinguishing between both local states (i.e., variables associated with agents themselves) and global information (i.e., global, environmental variables which are not a function of the agent). Another categorization is distinguishing between off-chain and on-chain states.
 
-On this, see:
-- https://pintu.co.id/en/academy/post/what-is-decentralized-order-book
-- https://github.com/dyn4mik3/OrderBook
-- https://pypi.org/project/sortedcontainers/
+### Messaging
 
-A set of environmental variables appear necessary for actors to construct optimal policies. These include:
+A central piece, in the definition of global, off-chain states of agents is the centralized messaging node, the [PubSub](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern). This node contains a set of recorded messages, that every agent can listen to (and decide to store locally, to go back to a [Markovian framework](https://en.wikipedia.org/wiki/Markov_decision_process) in informing the policies, if necessary). A question is for example how important it is for agents to observe the negotiation dynamics before an agreement vs learning from final transactions only: this has consequences on the privacy of offers, as it may be valuable to enforce the publicity of intra-negotiation offers for a more transparent auction mechanism. The messaging scheme defines the most important block of the state space, informing negotiations and scheduling, and also defines part of the action space of agents.
 
-- L1 and L2 tokens price. We believe the dynamics of the protocol, being based on smart contracts and EVM technology, to be driven by the state of the L1 (Ethereum) and L2 (???) protocols. One proxy for this is the point-in-time price of the two protocols.
+### Global States
 
-- Gas Fees. Because of the need to record the outcome of a negotiation on the blockchain, the point-in-time gas fees is necessary to build policies. It's like having a time-dependent transaction cost model in trad-fi: the profitability of a position is a function of the current transaction costs. Here we are referring to the gas fees of the L2, but the gas fee of Ethereum may be relevant in modeling the dynamics of costs.
+A set of environmental variables appearing necessary for actors to construct optimal policies include:
 
-- Electricity costs. This is a space-time dependent variable defining the cost of electricity in the world. Agents, aware of their location, are interested in measuring the point-in-time field of the cost of electricity to understand the hedge they may have against other potential agents in different locations. This means that agents may have a module solely focused on the forecasting of the local (or even global) electricity price to enhance the state space and then use that as an input for the optimal controller. On this see, among others: https://arxiv.org/abs/2106.06033
+- L1 and L2 tokens price. We believe the dynamics of the protocol, being based on smart contracts and EVM technology, to be driven by the state of the L1 (Ethereum) and L2 protocol. One shallow proxy for this is the point-in-time price of the two protocols. A deeper understanding of the protocol dynamics could inform the modeling of payment token prices forecasting, informing the optimal behaviour of agents in this blockchain-based marketplace.
 
-It appears necessary to associate to each block (each deal), the wallet of the address, its hardware specifications, geolocation, timestamp. This means that in the transaction we need to have the IPFS CID, in which the computational cost of a task is specified (to be clarified with which quantitative metrics). A tricky point here is how to verify that the hardware specifications of a given wallet address in a given CID are true. Agents may be interested in hiding this information to other agents, and if they are able to do so, it is meaningless to build a protocol around the truthfulness of this information. About this, see the subject of verifiable provisioning of hardware: https://github.com/orgs/akash-network/discussions/614
+- Gas Fees: because of the need to record the outcome of a negotiation on the blockchain, the point-in-time gas fees of the protocol blockchain is necessary to build policies. This is akin to a time-dependent transaciton cost model in trad-fi: the profitability of a position is a function of the (current) transaction costs. Here we refer to the gas fees of the L2 associated with CoopHive; as per prices, the gas fee time series of Ethereum may be relevant in modeling the dynamics of costs for agents recording states on-chain in the interaction with the protocol.
 
-One solution could be to enable an emergent secondary marketplace of jobs specifications, in which machines can associate (and this can be verified) their hardware specifications to a given Job. The market is emergent as if agents want to become autonomous and this dataset is valuable, they will create it. We may want to investigate this ourselves. An important point, on this, is that an agent looking at a given open job is in principle not able to say exactly its computational cost. It can learn from past data only if they are associated with specific schemas that enable the agent to interpolate the input space of the task for that schema (in the presence of enough datapoints to approximate the cost function).
+- Electricity costs. This is a space-time dependent variable defining the cost of electricity in the world. Agents, aware of their own location, are interested in measuring the point-in-time field of the cost of electricity to understand the hedge they may have against other potential agents in different locations. This means that agents may have a module solely focused on the [modeling, forecasting and uncertainty quantification](https://arxiv.org/abs/2106.06033) of electricity prices to enhance the state space and then use that as an input for the optimal controller.
 
-Even in the open source (git) case, it makes sense to leverage the secondary marketplace, even if the estimation of the task cost is not done via interpolation of previous runs, but via analysis of the source code of the task (for which even analytical estimates of the cost may exist).
+- On-chain states: the history of credible commitments recorded on chain is a valuable information to inform policies. While agents cannot be forced to share their local states on chain, one solution could be to enable an emergent secondary marketplace of jobs specifications, in which machines can associate (and this can be verified) their hardware specifications to a given job. The market is emergent as if agents want to become autonomous and this dataset is valuable, they will create it. An important point, on this, is that an agent looking at a given open job is in principle not able to say exactly its computational cost. It can learn from past data only if they are associated with specific schemas that enable the agent to interpolate the input space of the task for that schema (in the presence of enough datapoints to approximate the cost function).
+
+### Local States
 
 A task offer has to contain the CID of the data needed to perform the task. One could use this as a proxy for the computational cost of a task (even though a task could be associated with light data and be really expensive).
 
-An on-chain recorded transaction can record the final amount payed in exchange for the computational power provided.
+Every agent hardware specifications may limit the state space size. For example, some IoT actors would only be able to remember and act based on on-chain data, while others may be able to have a bigger memory and bigger state space. For the same reason, some agents may be unable to perform certain tasks (that may be costly and limited by time, in fact the validation could also check constraints in the tasks, like the time it took to complete.). In other words, each agent has different constraints on both their state space and action space.
 
-Every agent hardware specifications may limit the state space size. For example, some IoT actors would only be able to remember and act based on on-chain data, while others may be able to have a bigger memory and bigger state space. For the same reason, some agents may be unable to perform certain tasks (that may be costly and limited by time, in fact the validation could also check constraints in the tasks like the time it took to complete.). In other words, each agent has different constraints on both their state space and action space.
+A task shall be associated with a variable specifying the possibility for it to be distributed. It could also specify the specific/maximum/minimum number of agents to take the task. The minimum case is to enforce federate learning in the case in which sensitive data needs to be broken down. This creates a negotiation with some kind of waiting room in which people can subscribe to participate and can opt-out before the room is full. From the resource provider side, the federate learning scenario could also motivate the introduction of a *Swarm* abstraction, combining different agents that decide to cooperate to a certain degree, for example sharing their state space or their policies.
 
-A task shall be associated with a variable specifying the possibility for it to be distributed. It could also specify the specific/maximum/minimum number of agents to take the task. The minimum case is to enforce federate learning in the case in which sensitive data needs to be broken down (problem, if agents can fake this IP, multiple virtual agents from the same malitious actor could fill up the task. Is this solvable? Similar issue as above). This creates a negotiation with some kind of waiting room in which people can subscribe to participate and can opt-out before the room is full. From the resource provider side, the federate learning scenario could also motivate the introduction of a *Swarm* class, combining different agents that decide to cooperate to a certain degree, for example sharing their state space or their policies.
+### Additional Considerations
 
 A straightforward definition of fitness is profit.
 
@@ -95,35 +94,13 @@ Some examples of a Job Schema are, for compute (stateless) tasks:
 - A docker image and its input(s);
 - A github repository and an associated command;
 
-Because we are interested in storage tasks as well, a valuable perspective is decomposing Jobs into modular pieces associated with each other and creating a [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph). Triggers of modules of purely compute tasks are previous nodes, while for storage tasks sequential nodes are triggered by previous tasks and by a clock. In general, it makes sense to think about jobs using the lenses of MLOps and Orchestration, which are focused on the core part of CoopHive: in fact, once the trustless aspect is solved (blockchain), and once the distributed computing is solved (autonomous agents negotiation), we are back to the world of traditional orchestration of compute and storage tasks. This means there is added value in building things keeping in mind orchestration compatibilities.
+Because we are interested in storage tasks as well, a valuable perspective is decomposing Jobs into modular pieces associated with each other and creating a [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph). This is a natural paradigm for expressing data processing pipelines, machine learning in particular.
 
-Some examples, on this subject, include:
+ Triggers of modules of purely compute tasks are previous nodes, while for storage tasks sequential nodes are triggered by previous tasks and/or by a clock. In general, it makes sense to think about jobs using the lenses of MLOps and Orchestration, which are focused on the core part of CoopHive: in fact, once the trustless aspect is solved (blockchain), and once the distributed computing is solved (autonomous agents negotiation), we are back to the world of [traditional orchestration](https://www.prefect.io/opensource) of compute and storage tasks. This means there is added value in building things keeping in mind [orchestration compatibilities](https://docs.metaflow.org/metaflow/basics#the-structure-of-metaflow-code).
 
-- https://www.prefect.io/opensource
+Here there is no need to explicitly define DAGs. An [agent-based perspective](https://www.prefect.io/controlflow) is maintained within the task framework.
 
-Here there is no need to explicitly define DAGs. An agent-based perspective is maintained within the task: https://www.prefect.io/controlflow
-
-For us, it is more relevant to think about agents when it comes to competition/cooperation when it comes to task allocation and pricing, but with a modularization of compute and storage tasks, it is reasonable to keep in mind the agent-based perspective during the task as well. Collateral could be allocated to specific nodes of a DAG and agents to focus on individual modules of a task.
-
-- https://docs.metaflow.org/metaflow/basics#the-structure-of-metaflow-code
-
-"This is a natural paradigm for expressing data processing pipelines, machine learning in particular."
-
-- https://argo-workflows.readthedocs.io/en/latest/
-
-"Model multi-step workflows as a sequence of tasks or capture the dependencies between tasks using a directed acyclic graph (DAG)."
-
-- https://docs.aws.amazon.com/cli/latest/reference/stepfunctions/
-
-"Step Functions coordinates the components of distributed applications and microservices using visual workflows."
-
-Using the language of MLOps, a Job can be defined by a set of tasks and a DAG.
-
-- https://luigi.readthedocs.io/en/latest/#dependency-graph-example
-
-- https://docs.bentoml.com/en/latest/guides/services.html#service-definitions
-
-- https://docs.ray.io/en/latest/ray-overview/use-cases.html
+For us, it is more relevant to think about agents when it comes to competition/cooperation when it comes to task allocation and pricing; nevertheless, with a modularization of compute and storage tasks, it is reasonable to keep in mind the agent-based perspective during the task as well. Collateral could be allocated to specific nodes of a DAG and agents to focus on individual modules of a task.
 
 # Legacy Notes to be Integrated in v2.
 
