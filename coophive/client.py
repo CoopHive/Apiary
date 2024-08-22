@@ -229,32 +229,17 @@ class Client(Agent):
 
     def make_match_decision(self, match, policy):
         """Make a decision on whether to accept, reject, or negotiate a match."""
-        if policy == "accept_all":
+        result = policy.calculate_result(match, self.get_local_information)
+        if result == "accept":
             self._agree_to_match(match)
-        elif policy == "accept_reject":
-            match_utility = self.calculate_utility(match)
-            best_match = self.find_best_match(match.get_data()["job_offer"])
-            if (
-                best_match == match
-                and match_utility > match.get_data()["job_offer"]["T_accept"]
-            ):
-                self._agree_to_match(match)
-            else:
-                self.reject_match(match)
-        elif policy == "accept_reject_negotiate":
-            best_match = self.find_best_match(match.get_data()["job_offer"])
-            if best_match == match:
-                utility = self.calculate_utility(match)
-                if utility > match.get_data()["job_offer"]["T_accept"]:
-                    self._agree_to_match(match)
-                elif utility < match.get_data()["job_offer"]["T_reject"]:
-                    self.reject_match(match)
-                else:
-                    self.negotiate_match(match)
-            else:
-                self.reject_match(match)
+        elif result == "reject":
+            self.reject_match(match)
+        elif result == "negotiate":
+            # policy.calculate_result should return a counteroffer object if calculate_result returns "negotiate" 
+            # this is what can be communicated to the party in negotiate_match 
+            self.negotiate_match(match)
         else:
-            raise ValueError(f"Unknown policy: {policy}")
+            raise ValueError(f"Unknown policy result: {policy.result}")
 
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
