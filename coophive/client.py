@@ -20,12 +20,13 @@ from coophive.result import Result
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.utils import Tx
+from coophive.policy import Policy
 
 
 class Client(Agent):
     """A client in the coophive simulator that interacts with solvers and smart contracts to manage jobs and deals."""
 
-    def __init__(self, address: str):
+    def __init__(self, address: str, policy: Policy):
         """Initialize a new Client instance.
 
         Args:
@@ -33,6 +34,7 @@ class Client(Agent):
         """
         super().__init__(address)
         self.current_jobs = deque()
+        self.policy = policy
 
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
         self.client_socket = None
@@ -227,19 +229,21 @@ class Client(Agent):
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
 
-    def make_match_decision(self, match, policy):
+    def make_match_decision(self, match):
         """Make a decision on whether to accept, reject, or negotiate a match."""
-        result = policy.calculate_result(match, self.get_local_information)
-        if result == "accept":
+        local_info = self.get_local_information()
+        decision = self.policy.make_decision(match, local_info)
+        if decision == "accept":
             self._agree_to_match(match)
-        elif result == "reject":
+        elif decision == "reject":
             self.reject_match(match)
-        elif result == "negotiate":
+        elif decision == "negotiate":
             # policy.calculate_result should return a counteroffer object if calculate_result returns "negotiate" 
-            # this is what can be communicated to the party in negotiate_match 
+            # this is what can be communicated to the party in negotiate_match
             self.negotiate_match(match)
         else:
-            raise ValueError(f"Unknown policy result: {policy.result}")
+            raise ValueError(f"Unknown policy decision: {decision}")
+        
 
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
