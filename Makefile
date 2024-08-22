@@ -37,4 +37,6 @@ test:
 .PHONY: diagrams
 diagrams:
 	pyreverse coophive -A --colorized -p coophive -d docs/img -o dot
-	pyreverse coophive -A --colorized -p coophive -d docs/img -o png
+	python3 docs/classes_filter.py
+	dot -Tpng docs/img/classes_coophive.dot -o docs/img/classes_coophive.png
+	dot -Tpng docs/img/packages_coophive.dot -o docs/img/packages_coophive.png
