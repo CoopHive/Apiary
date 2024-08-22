@@ -6,21 +6,21 @@ class Policy:
     def make_decision(self, match, local_info):
         """
         Make a decision based on the current state and the chosen algorithm.
-        
+
         Args:
             match: The current Match object being considered
             local_info: Local information available to the agent
-            
+
         Returns:
             str: 'accept', 'reject', or 'negotiate'
         """
         message_history = match.get_message_history()
-        
-        if self.algorithm == 'fit/predict':
+
+        if self.algorithm == "fit/predict":
             return self._fit_predict_decision(match, local_info, message_history)
-        elif self.algorithm == 'train/infer':
+        elif self.algorithm == "train/infer":
             return self._train_infer_decision(match, local_info, message_history)
-        elif self.algorithm == 'train/evaluate':
+        elif self.algorithm == "train/evaluate":
             return self._train_evaluate_decision(match, local_info, message_history)
         else:
             raise ValueError(f"Unknown algorithm: {self.algorithm}")

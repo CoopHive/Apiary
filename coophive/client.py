@@ -238,12 +238,11 @@ class Client(Agent):
         elif decision == "reject":
             self.reject_match(match)
         elif decision == "negotiate":
-            # policy.calculate_result should return a counteroffer object if calculate_result returns "negotiate" 
+            # policy.calculate_result should return a counteroffer object if calculate_result returns "negotiate"
             # this is what can be communicated to the party in negotiate_match
             self.negotiate_match(match)
         else:
             raise ValueError(f"Unknown policy decision: {decision}")
-        
 
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
