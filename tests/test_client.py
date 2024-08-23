@@ -12,7 +12,6 @@ from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.utils import Tx
 
-
 @pytest.fixture
 def setup_client():
     """Fixture to set up the test environment."""

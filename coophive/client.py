@@ -31,6 +31,7 @@ class Client(Agent):
 
         Args:
             address (str): The address of the client.
+            policy (Policy): The policy of the client.
         """
         super().__init__(address)
         self.current_jobs = deque()
