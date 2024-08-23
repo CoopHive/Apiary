@@ -1,10 +1,11 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
 import docker
+import pytest
 from coophive.client import Client
-from coophive.resource_provider import ResourceProvider
-from coophive.policy import Policy
 from coophive.match import Match
+from coophive.policy import Policy
+from coophive.resource_provider import ResourceProvider
 
 
 @pytest.fixture
