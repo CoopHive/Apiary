@@ -291,7 +291,7 @@ class ResourceProvider(Agent):
         """
         expected_revenue = self.calculate_revenue(match)
         return expected_revenue
-    
+
     def make_match_decision(self, match):
         """Make a decision on whether to accept, reject, or negotiate a match."""
         localInfo = self.get_local_information()
@@ -305,7 +305,6 @@ class ResourceProvider(Agent):
         else:
             raise ValueError(f"Unknown policy decision: {decision}")
 
-    
     def resource_provider_loop(self):
         """Main loop for the resource provider to process matched offers and update job running times."""
         for match in self.current_matched_offers:
@@ -327,7 +326,7 @@ def create_resource_provider(
     Returns:
         ResourceProvider: The created resource provider.
     """
-    policy = Policy('a')
+    policy = Policy("a")
     resource_provider = ResourceProvider(resource_provider_public_key, policy)
     resource_provider.connect_to_solver(url=solver.get_url(), solver=solver)
     resource_provider.connect_to_smart_contract(smart_contract=smart_contract)
@@ -337,7 +336,7 @@ def create_resource_provider(
 
 if __name__ == "__main__":
     public_key = "Your public key here"  # Replace with the actual public key
-    policy = Policy('b')
+    policy = Policy("b")
     resource_provider = ResourceProvider(public_key, policy)
     resource_provider.resource_provider_loop()
     try:

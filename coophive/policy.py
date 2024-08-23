@@ -1,15 +1,15 @@
-class Policy():
-    
+class Policy:
+
     def __init__(self, type):
         self.type = type
 
     def make_decision(self, match, localInformation):
         # return "accept", "reject", or "negotiate" after accounting for the match, the local information, and the global information
-        if self.type == 'a':
+        if self.type == "a":
             return "accept", None
-        elif self.type == 'b':
+        elif self.type == "b":
             return "reject", None
-        elif self.type == 'c':
+        elif self.type == "c":
             counteroffer = match
             return "negotiate", counteroffer
 

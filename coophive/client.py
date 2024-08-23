@@ -238,7 +238,7 @@ class Client(Agent):
             self.negotiate_match(match)
         else:
             raise ValueError(f"Unknown policy decision: {decision}")
-            
+
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
         for match in self.current_matched_offers:
@@ -260,7 +260,7 @@ def create_client(
     Returns:
         Client: The created client.
     """
-    policy = Policy('a')
+    policy = Policy("a")
     client = Client(client_public_key, policy)
     client.connect_to_solver(url=solver.get_url(), solver=solver)
     client.connect_to_smart_contract(smart_contract=smart_contract)
@@ -270,7 +270,7 @@ def create_client(
 
 if __name__ == "__main__":
     address = "Your address here"  # Replace with the actual address
-    policy = Policy('b')
+    policy = Policy("b")
     client = Client(address, policy)
     client.client_loop()
     try:
