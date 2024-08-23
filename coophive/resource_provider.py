@@ -20,7 +20,7 @@ from coophive.utils import CID, Tx
 class ResourceProvider(Agent):
     """Class representing a resource provider in the CoopHive simulator."""
 
-    def __init__(self):
+    def __init__(self, policy):
         """Initialize the ResourceProvider instance."""
         # machines maps CIDs -> machine metadata
         self.machines = {}
