@@ -1,7 +1,10 @@
 """This module defines the Policy class used when clients/resource_providers make decisions on a match within the CoopHive simulator.
 """
+
+
 class Policy:
     """A policy in the coophive simulator that interacts with clients and resource providers to accept, reject, or negotiate a match."""
+
     def __init__(self, type):
         """Initialize a new Policy instance.
 
@@ -11,7 +14,7 @@ class Policy:
         self.type = type
 
     def make_decision(self, match, localInformation):
-        """ Return "accept", "reject", or "negotiate" after accounting for the match, the local information, and the global information."""
+        """Return "accept", "reject", or "negotiate" after accounting for the match, the local information, and the global information."""
         if self.type == "a":
             return "accept", None
         elif self.type == "b":

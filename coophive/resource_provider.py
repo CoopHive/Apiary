@@ -21,9 +21,10 @@ from coophive.utils import CID, Tx
 class ResourceProvider(Agent):
     """Class representing a resource provider in the CoopHive simulator."""
 
-    def __init__(self, policy: Policy):
+    def __init__(self, address: str, policy: Policy):
         """Initialize the ResourceProvider instance."""
         # machines maps CIDs -> machine metadata
+        super().__init__(address)
         self.machines = {}
         self.policy = policy
         self.docker_client = docker.from_env()
@@ -295,7 +296,7 @@ class ResourceProvider(Agent):
     def make_match_decision(self, match):
         """Make a decision on whether to accept, reject, or negotiate a match."""
         localInfo = self.get_local_information()
-        decision = self.policy.make_decision(match, localInfo)
+        decision, counter = self.policy.make_decision(match, localInfo)
         if decision == "accept":
             self._agree_to_match(match)
         elif decision == "reject":
