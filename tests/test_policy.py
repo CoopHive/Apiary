@@ -2,6 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import docker
 import pytest
+
 from coophive.client import Client
 from coophive.match import Match
 from coophive.policy import Policy
