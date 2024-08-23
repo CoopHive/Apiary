@@ -1,5 +1,4 @@
-"""This module defines the Policy class used when clients/resource_providers make decisions on a match within the CoopHive simulator.
-"""
+"""This module defines the Policy class used when clients/resource_providers make decisions on a match within the CoopHive simulator."""
 
 
 class Policy:
