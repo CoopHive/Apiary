@@ -6,6 +6,7 @@
 *.png
 # Except those in the 'img' directory
 !docs/img/*.png
+!docs/img/related_python_projects/*
 
 *.pkl
 *.json
