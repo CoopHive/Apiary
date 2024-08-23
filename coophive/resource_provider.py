@@ -11,6 +11,7 @@ from coophive.agent import Agent
 from coophive.log_json import log_json
 from coophive.machine import Machine
 from coophive.match import Match
+from coophive.policy import Policy
 from coophive.result import Result
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
@@ -20,10 +21,11 @@ from coophive.utils import CID, Tx
 class ResourceProvider(Agent):
     """Class representing a resource provider in the CoopHive simulator."""
 
-    def __init__(self):
+    def __init__(self, policy: Policy):
         """Initialize the ResourceProvider instance."""
         # machines maps CIDs -> machine metadata
         self.machines = {}
+        self.policy = policy
         self.docker_client = docker.from_env()
         self.server_socket = None
         self.start_server_socket()
@@ -61,21 +63,19 @@ class ResourceProvider(Agent):
                 if "New match offer" in message:
                     match_data = eval(message.split("New match offer: ")[1])
                     match = Match(match_data)
-                    match_dict = new_match.get_data()
+                    match_dict = match.get_data()
                     if "rounds_completed" not in match_dict:
-                        new_match.rounds_completed = 0
+                        match.rounds_completed = 0
                     # Check if the match is already in current_matched_offers by ID
                     for existing_match in self.current_matched_offers:
-                        if existing_match.get_id() == new_match.get_id():
+                        if existing_match.get_id() == match.get_id():
                             # Continue negotiating on the existing match
                             self.negotiate_match(existing_match)
                             break
                     else:
                         # New match, add to current_matched_offers and process
-                        self.current_matched_offers.append(new_match)
-                        response = self.make_match_decision(
-                            new_match, algorithm="accept_reject_negotiate"
-                        )
+                        self.current_matched_offers.append(match)
+                        response = self.make_match_decision(match)
                         client_socket.send(response.encode("utf-8"))
             except ConnectionResetError:
                 self.logger.info("Connection lost. Closing connection.")
@@ -291,41 +291,25 @@ class ResourceProvider(Agent):
         """
         expected_revenue = self.calculate_revenue(match)
         return expected_revenue
-
-    def make_match_decision(self, match, algorithm):
+    
+    def make_match_decision(self, match):
         """Make a decision on whether to accept, reject, or negotiate a match."""
-        if algorithm == "accept_all":
+        localInfo = self.get_local_information()
+        decision = self.policy.make_decision(match, localInfo)
+        if decision == "accept":
             self._agree_to_match(match)
-        elif algorithm == "accept_reject":
-            match_dict = match.get_data()
-            match_utility = self.calculate_utility(match)
-            best_match = self.find_best_match(match_dict.get("job_offer"))
-            if (
-                best_match == match
-                and match_utility > match_dict["resource_offer"]["T_accept"]
-            ):
-                self._agree_to_match(match)
-            else:
-                self.reject_match(match)
-        elif algorithm == "accept_reject_negotiate":
-            best_match = self.find_best_match(match_dict["resource_offer"])
-            if best_match == match:
-                utility = self.calculate_utility(match)
-                if utility > match_dict["resource_offer"]["T_accept"]:
-                    self._agree_to_match(match)
-                elif utility < match_dict["resource_offer"]["T_reject"]:
-                    self.reject_match(match)
-                else:
-                    self.negotiate_match(match)
-            else:
-                self.reject_match(match)
+        elif decision == "reject":
+            self.reject_match(match)
+        elif decision == "negotiate":
+            self.negotiate_match(match)
         else:
-            raise ValueError(f"Unknown algorithm: {algorithm}")
+            raise ValueError(f"Unknown policy decision: {decision}")
 
+    
     def resource_provider_loop(self):
         """Main loop for the resource provider to process matched offers and update job running times."""
         for match in self.current_matched_offers:
-            self.make_match_decision(match, algorithm="accept_reject_negotiate")
+            self.make_match_decision(match)
         self.update_job_running_times()
         self.current_matched_offers.clear()
 
@@ -343,7 +327,8 @@ def create_resource_provider(
     Returns:
         ResourceProvider: The created resource provider.
     """
-    resource_provider = ResourceProvider(resource_provider_public_key)
+    policy = Policy('a')
+    resource_provider = ResourceProvider(resource_provider_public_key, policy)
     resource_provider.connect_to_solver(url=solver.get_url(), solver=solver)
     resource_provider.connect_to_smart_contract(smart_contract=smart_contract)
 
@@ -352,7 +337,8 @@ def create_resource_provider(
 
 if __name__ == "__main__":
     public_key = "Your public key here"  # Replace with the actual public key
-    resource_provider = ResourceProvider(public_key)
+    policy = Policy('b')
+    resource_provider = ResourceProvider(public_key, policy)
     resource_provider.resource_provider_loop()
     try:
         while True:

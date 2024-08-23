@@ -16,6 +16,7 @@ from coophive.event import Event
 from coophive.job import Job
 from coophive.log_json import log_json
 from coophive.match import Match
+from coophive.policy import Policy
 from coophive.result import Result
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
@@ -25,7 +26,7 @@ from coophive.utils import Tx
 class Client(Agent):
     """A client in the coophive simulator that interacts with solvers and smart contracts to manage jobs and deals."""
 
-    def __init__(self, address: str):
+    def __init__(self, address: str, policy: Policy):
         """Initialize a new Client instance.
 
         Args:
@@ -33,7 +34,7 @@ class Client(Agent):
         """
         super().__init__(address)
         self.current_jobs = deque()
-
+        self.policy = policy
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
         self.client_socket = None
         self.server_address = ("localhost", 1234)
@@ -69,9 +70,7 @@ class Client(Agent):
                     else:
                         # New match, add to current_matched_offers and process
                         self.current_matched_offers.append(new_match)
-                        self.make_match_decision(
-                            new_match, algorithm="accept_reject_negotiate"
-                        )
+                        self.make_match_decision(new_match)
             except ConnectionResetError:
                 logging.info("Connection lost. Closing connection.")
                 self.client_socket.close()
@@ -227,39 +226,23 @@ class Client(Agent):
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
 
-    def make_match_decision(self, match, algorithm):
+    def make_match_decision(self, match):
         """Make a decision on whether to accept, reject, or negotiate a match."""
-        if algorithm == "accept_all":
+        localInfo = self.get_local_information()
+        decision = self.policy.make_decision(match, localInfo)
+        if decision == "accept":
             self._agree_to_match(match)
-        elif algorithm == "accept_reject":
-            match_utility = self.calculate_utility(match)
-            best_match = self.find_best_match(match.get_data()["job_offer"])
-            if (
-                best_match == match
-                and match_utility > match.get_data()["job_offer"]["T_accept"]
-            ):
-                self._agree_to_match(match)
-            else:
-                self.reject_match(match)
-        elif algorithm == "accept_reject_negotiate":
-            best_match = self.find_best_match(match.get_data()["job_offer"])
-            if best_match == match:
-                utility = self.calculate_utility(match)
-                if utility > match.get_data()["job_offer"]["T_accept"]:
-                    self._agree_to_match(match)
-                elif utility < match.get_data()["job_offer"]["T_reject"]:
-                    self.reject_match(match)
-                else:
-                    self.negotiate_match(match)
-            else:
-                self.reject_match(match)
+        elif decision == "reject":
+            self.reject_match(match)
+        elif decision == "negotiate":
+            self.negotiate_match(match)
         else:
-            raise ValueError(f"Unknown algorithm: {algorithm}")
-
+            raise ValueError(f"Unknown policy decision: {decision}")
+            
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
         for match in self.current_matched_offers:
-            self.make_match_decision(match, "accept_reject_negotiate")
+            self.make_match_decision(match)
         self.update_finished_deals()
         self.current_matched_offers.clear()
 
@@ -277,7 +260,8 @@ def create_client(
     Returns:
         Client: The created client.
     """
-    client = Client(client_public_key)
+    policy = Policy('a')
+    client = Client(client_public_key, policy)
     client.connect_to_solver(url=solver.get_url(), solver=solver)
     client.connect_to_smart_contract(smart_contract=smart_contract)
 
@@ -286,7 +270,8 @@ def create_client(
 
 if __name__ == "__main__":
     address = "Your address here"  # Replace with the actual address
-    client = Client(address)
+    policy = Policy('b')
+    client = Client(address, policy)
     client.client_loop()
     try:
         while True:
