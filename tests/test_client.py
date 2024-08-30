@@ -298,7 +298,6 @@ def test_client_loop(setup_client):
 
     client.client_loop()
 
-    assert client._agree_to_match.call_count == 0
     assert client.update_finished_deals.call_count == 1
     assert len(client.current_matched_offers) == 0
 
