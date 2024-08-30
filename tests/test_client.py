@@ -21,7 +21,7 @@ def setup_client():
     with patch("socket.socket") as mock_socket:
         mock_socket_instance = MagicMock()
         mock_socket.return_value = mock_socket_instance
-        policy_a = Policy("a")
+        policy_a = Policy("naive_accepter")
         client = Client("client_key", policy_a)
         smart_contract = SmartContract(public_key="smart_contract_key")
         client.get_smart_contract = lambda: smart_contract
