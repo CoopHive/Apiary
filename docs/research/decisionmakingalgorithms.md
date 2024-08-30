@@ -62,4 +62,31 @@ These are Aayushi Jain’s notes on the book “Algorithms for Decision Making�
   - **Von Neumann-Morgenstern utility assignment**: If you're indifferent between a certain outcome and a gamble between the best and worst outcomes, the probability of getting the best outcome in that gamble represents your utility for the certain outcome.
     - This approach ensures that utilities are on a scale from 0 to 1.
 - **Utility of wealth**:
-  - Tempting
+  - Tempting to use monetary values to infer utility functions, but the utility of wealth is not linear.
+  - We generally want to maximize the expected utility of wealth where different people have different utility functions.
+  - **Risk neutral vs. risk seeking vs. risk averse**:
+    - Common functional forms for modeling risk aversion of scalar quantities like wealth: quadratic utility, exponential utility, or power/logarithmic utility.
+- **Maximum expected utility principle**: A rational agent should choose the action that maximizes expected utility.
+- **Decision networks/influence diagrams**: Generalization of Bayesian networks to include action and utility nodes so we can represent probability and utility models defining a decision problem:
+  - **Chance node** corresponds to a random variable (RV).
+  - **Action node** corresponds to a decision variable.
+  - **Utility node** corresponds to a utility variable and cannot have children.
+  - **Conditional edge**: Ends in a chance node and indicates uncertainty that the chance node is conditioned on the values of its parents.
+  - **Informational edge**: Ends in an action node and indicates that the decision associated with that node is made with knowledge of the values of its parents.
+  - **Functional edge**: Ends in a utility node and indicates that the utility node is determined by the outcomes of its parents.
+  - Cannot have cycles; utility of an action = sum of values at all utility nodes.
+- **Value of information**: The increase in expected utility if that variable is observed.
+  - Never negative.
+  - The expected utility can increase only if additional observations can lead to different optimal decisions.
+  - If observing a new variable \(O′\) makes no difference in the choice of action, then \(EU∗(o, o′) = EU∗(o)\) for all \(o′\), in which case equation (6.9) evaluates to 0.
+  - For example, if the optimal decision is to treat the disease regardless of the outcome of the diagnostic test, then the value of observing the outcome of the test is 0.
+  - The value of information is an important metric for choosing what to observe (greedy selection of observations).
+- **Irrationality**:
+  - A smaller gain that is certain is often preferred over a much greater gain that is only probable, in a way that the axioms of rationality are necessarily violated.
+- Solving a simple decision involves inference in Bayesian networks and is thus NP-hard.
+
+---
+
+### Chapter 7: [TODO]
+### Chapter 24: [TODO]
+### Chapter 25: [TODO]
