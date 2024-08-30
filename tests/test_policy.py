@@ -23,9 +23,9 @@ def setup_agents_with_policies():
         mock_docker_client = MagicMock()
         mock_docker_from_env.return_value = mock_docker_client
 
-        policy_a = Policy("a")
-        policy_b = Policy("b")
-        policy_c = Policy("c")
+        policy_a = Policy("naive_accepter")
+        policy_b = Policy("naive_rejecter")
+        policy_c = Policy("identity_negotiator")
 
         client = Client("client_address", policy_a)
         resource_provider = ResourceProvider("resource_provider_address", policy_b)
@@ -71,16 +71,16 @@ def test_make_match_decision_with_policies(setup_agents_with_policies):
     client.negotiate_match.reset_mock()
 
     # Test that local information is passed to policy
-    def mock_make_decision(match, local_info):
+    def mock_infer(match, local_info):
         assert local_info == {"some": "info"}
         return "accept", None
 
-    client.policy.make_decision = MagicMock(side_effect=mock_make_decision)
+    client.policy.infer = MagicMock(side_effect=mock_infer)
     client.get_local_information = MagicMock(return_value={"some": "info"})
 
     client.make_match_decision(mock_match)
 
-    client.policy.make_decision.assert_called_once()
+    client.policy.infer.assert_called_once()
     client.get_local_information.assert_called_once()
     client._agree_to_match.assert_called_once_with(mock_match)
 

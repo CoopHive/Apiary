@@ -296,7 +296,7 @@ class ResourceProvider(Agent):
     def make_match_decision(self, match):
         """Make a decision on whether to accept, reject, or negotiate a match."""
         localInfo = self.get_local_information()
-        decision, counter = self.policy.make_decision(match, localInfo)
+        decision, counter = self.policy.infer(match, localInfo)
         if decision == "accept":
             self._agree_to_match(match)
         elif decision == "reject":

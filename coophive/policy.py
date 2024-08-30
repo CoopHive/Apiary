@@ -1,35 +1,31 @@
-"""This module defines the Policy class used when clients/resource_providers make decisions on a match within the CoopHive simulator."""
+"""This module defines the Policy class used when agents, in general, make decisions within the CoopHive simulator."""
 
 
 class Policy:
-    """A policy in the coophive simulator that interacts with clients and resource providers to accept, reject, or negotiate a match."""
+    """A policy in the Coophive simulator that defines the modes of behaviour of Agents with respect to the Schema.
+    While the policy class is agnostic to the nature of the agent, because the action space is defined by the agent type,
+    Specific policies are usable only by specific Agent types (e.g., Solvers and Clients have a different action space)."""
 
-    def __init__(self, type):
+    def __init__(self, policy_name):
         """Initialize a new Policy instance.
 
         Args:
-            type (str): The type of policy.
+            policy_name (str): The name of the policy.
         """
-        self.type = type
+        self.policy_name = policy_name
+    
+    def train():
+        """Train the policy function using stastistical learning techniques."""
+        raise NotImplementedError
 
-    def make_decision(self, match, localInformation):
-        """Return "accept", "reject", or "negotiate" after accounting for the match, the local information, and the global information."""
-        if self.type == "a":
+    def infer(self, match, localInformation):
+        """Evaluate the policy, following the (message, context) => message structure, and compute the message to be returned."""
+        # TODO: policies shall act against message (here called match) and context (that I would call State). Fix API.
+        
+        if self.policy_name == "naive_accepter":
             return "accept", None
-        elif self.type == "b":
+        elif self.policy_name == "naive_rejecter":
             return "reject", None
-        elif self.type == "c":
+        elif self.policy_name == "identity_negotiator":
             counteroffer = match
             return "negotiate", counteroffer
-
-            # best_match = self.find_best_match(match.get_data()["job_offer"])
-            # if best_match == match:
-            #     utility = self.calculate_utility(match)
-            #     if utility > match.get_data()["job_offer"]["T_accept"]:
-            #         self._agree_to_match(match)
-            #     elif utility < match.get_data()["job_offer"]["T_reject"]:
-            #         self.reject_match(match)
-            #     else:
-            #         self.negotiate_match(match)
-            # else:
-            #     self.reject_match(match)
