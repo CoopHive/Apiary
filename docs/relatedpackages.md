@@ -1,3 +1,7 @@
+### OVERVIEW
+After reviewing several related autonomous agent/AI projects, there seems to be a trend of a scheduler/agent set superclass as well as a resource/grid/action space/state superclass. Can also sometimes be a policy superclass that drives agents.
+
+
 ### classes_crewai.png (https://docs.crewai.com/)
 - **Crew class**: Each crew is comprised of multiple base agents. Each agent is a subclass of `BaseAgent` and has a `CrewAgentExecutor` which logs, iterates, and calls the LLM.
 - Each crew also has a list of tasks, where each task has:
