@@ -1,4 +1,4 @@
-"""This module defines the SmartContract class.
+"""This module defines the SmartContract and LocalInformation classes.
 
 It handles the operations and logic associated with smart contracts, including transactions, deals, matches, and results.
 """
