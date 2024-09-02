@@ -81,6 +81,4 @@ charset="utf-8"
 "coophive.solver" -> "coophive.utils" [arrowhead="open", arrowtail="none"];
 "coophive.utils" -> "coophive.data_attribute" [arrowhead="open", arrowtail="none"];
 "coophive.utils" -> "coophive.hash_dict" [arrowhead="open", arrowtail="none"];
-"coophive.utils" -> "coophive.job_offer" [arrowhead="open", arrowtail="none"];
-"coophive.utils" -> "coophive.resource_offer" [arrowhead="open", arrowtail="none"];
 }
