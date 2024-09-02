@@ -99,6 +99,12 @@ class SmartContract:
         if match.get_resource_provider_signed() and match.get_client_signed():
             self.matches_made_in_current_step.append(match)
 
+    def emit_event(self, event: Event):
+        """Emit an event and notify all subscribed event handlers."""
+        self.events.append(event)
+        for event_handler in self.event_handlers:
+            event_handler(event)
+
     def _create_deal(self, match: Match):
         logging.info(f"Match data before setting ID: {match.get_data()}")
 
