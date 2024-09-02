@@ -1,4 +1,4 @@
-"""This module defines the SmartContract and LocalInformation classes.
+"""This module defines the SmartContract class.
 
 It handles the operations and logic associated with smart contracts, including transactions, deals, matches, and results.
 """
@@ -6,15 +6,13 @@ It handles the operations and logic associated with smart contracts, including t
 import logging
 import os
 
-from coophive.agent import Agent, LocalInformation
+from coophive.agent import LocalInformation
 from coophive.deal import Deal
 from coophive.event import Event
-from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
 from coophive.match import Match
-from coophive.resource_offer import ResourceOffer
 from coophive.result import Result
-from coophive.utils import IPFS, AgentType, Tx
+from coophive.utils import Tx
 
 
 class SmartContract:
@@ -100,6 +98,10 @@ class SmartContract:
             self._agree_to_match_client(match, tx)
         if match.get_resource_provider_signed() and match.get_client_signed():
             self.matches_made_in_current_step.append(match)
+
+    def subscribe_event(self, handler):
+        """Subscribe an event handler to receive emitted events."""
+        self.event_handlers.append(handler)
 
     def emit_event(self, event: Event):
         """Emit an event and notify all subscribed event handlers."""
@@ -391,134 +393,3 @@ class SmartContract:
         self.matches_made_in_current_step.clear()
         self.results_posted_in_current_step.clear()
         self._log_balances()
-
-
-class LocalInformation:
-    """A class to manage local information of agents, resource offers, and job offers.
-
-    Attributes:
-        block_number (int): The block number for the current state.
-        resource_providers (dict): Mapping from wallet address to resource provider metadata.
-        clients (dict): Mapping from wallet address to client metadata.
-        solvers (dict): Mapping from wallet address to solver metadata.
-        mediators (dict): Mapping from wallet address to mediator metadata.
-        directories (dict): Mapping from wallet address to directory metadata.
-        resource_offers (dict): Mapping from offer ID to resource offer data.
-        job_offers (dict): Mapping from offer ID to job offer data.
-    """
-
-    ipfs = IPFS()
-
-    def __init__(self):
-        """Initialize the LocalInformation."""
-        self.block_number = 0
-        self.resource_providers = {}
-        self.clients = {}
-        self.solvers = {}
-        self.mediators = {}
-        self.directories = {}
-        self.resource_offers: dict[str, ResourceOffer] = {}
-        self.job_offers: dict[str, JobOffer] = {}
-
-    def add_agent(
-        self,
-        agent_type: AgentType,
-        public_key: str,
-        agent: Agent,
-    ):
-        """Add an agent to the appropriate category based on its type.
-
-        Args:
-            agent_type (AgentType): The type of agent.
-            public_key (str): The public key of the agent.
-            agent (Agent): Agent to add.
-        """
-        match agent_type:
-            case AgentType.RESOURCE_PROVIDER:
-                self.resource_providers[public_key] = agent
-            case AgentType.CLIENT:
-                self.clients[public_key] = agent
-            case AgentType.SOLVER:
-                self.solvers[public_key] = agent
-            case AgentType.MEDIATOR:
-                self.mediators[public_key] = agent
-            case AgentType.DIRECTORY:
-                self.directories[public_key] = agent
-
-    def remove_agent(self, agent_type: AgentType, public_key: str):
-        """Remove an agent from the appropriate category based on its type.
-
-        Args:
-            agent_type (AgentType): The type of agent.
-            public_key (str): The public key of the agent.
-        """
-        match agent_type:
-            case AgentType.RESOURCE_PROVIDER:
-                self.resource_providers.pop(public_key)
-            case AgentType.CLIENT:
-                self.clients.pop(public_key)
-            case AgentType.SOLVER:
-                self.solvers.pop(public_key)
-            case AgentType.MEDIATOR:
-                self.mediators.pop(public_key)
-            case AgentType.DIRECTORY:
-                self.directories.pop(public_key)
-
-    def get_list_of_agents(self, agent_type: AgentType):
-        """Get a list of agents of a specific type.
-
-        Args:
-            agent_type (AgentType): The type of agent.
-
-        Returns:
-            dict: A dictionary of agents with public keys.
-        """
-        match agent_type:
-            case AgentType.RESOURCE_PROVIDER:
-                return self.resource_providers
-            case AgentType.CLIENT:
-                return self.clients
-            case AgentType.SOLVER:
-                return self.solvers
-            case AgentType.MEDIATOR:
-                return self.mediators
-            case AgentType.DIRECTORY:
-                return self.directories
-
-    def add_resource_offer(self, id: str, data):
-        """Add a resource offer to the local information and IPFS."""
-        logging.info("Adding resource offer locally:")
-        self.resource_offers[id] = data
-        logging.info("Adding resource offer to IPFS:")
-        self.ipfs.add(data)
-
-    def add_job_offer(self, id: str, data):
-        """Add a job offer to the local information and IPFS."""
-        logging.info("Adding job offer locally:")
-        self.job_offers[id] = data
-        logging.info("Adding job offer to IPFS:")
-        self.ipfs.add(data)
-
-    def get_resource_offers(self):
-        """Get the resource offers in the local information."""
-        return self.resource_offers
-
-    def get_job_offers(self):
-        """Get the job offers in the local information."""
-        return self.job_offers
-
-    def add_resource_provider(self, resource_provider):
-        """Add a resource provider to the local information."""
-        self.resource_providers[resource_provider.get_public_key()] = resource_provider
-
-    def get_resource_providers(self):
-        """Get the resource providers in the local information."""
-        return self.resource_providers
-
-    def add_client(self, client):
-        """Add a client to the local information."""
-        self.clients[client.get_public_key()] = client
-
-    def get_clients(self):
-        """Get the clients in the local information."""
-        return self.clients
