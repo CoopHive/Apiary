@@ -10,6 +10,7 @@ from coophive.event import Event
 from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
 from coophive.match import Match
+from coophive.policy import Policy
 from coophive.resource_offer import ResourceOffer
 from coophive.utils import extra_necessary_match_data
 
@@ -17,14 +18,25 @@ from coophive.utils import extra_necessary_match_data
 class Solver(Agent):
     """Solver class to handle smart contract connections, events, and the matching of job and resource offers."""
 
-    def __init__(self, public_key: str, url: str):
-        """Initialize the Solver with a public key and URL."""
-        super().__init__(public_key)
+    def __init__(
+        self,
+        private_key: str,
+        public_key: str,
+        policy: Policy,
+        solver_url: str,
+        auxiliary_states: dict = {},
+    ):
+        """Initialize the Solver."""
+        super().__init__(
+            private_key=private_key,
+            public_key=public_key,
+            auxiliary_states=auxiliary_states,
+        )
         self.logger = logging.getLogger(f"Solver {self.public_key}")
         logging.basicConfig(
             filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
         )
-        self.url = url
+        self.solver_url = solver_url
         self.machine_keys = ["CPU", "RAM"]
         self.smart_contract = None
         self.deals_made_in_current_step: dict[str, Deal] = {}
@@ -211,7 +223,7 @@ class Solver(Agent):
 
     def get_url(self):
         """Get the URL of the solver."""
-        return self.url
+        return self.solver_url
 
     def add_deal_to_smart_contract(self, deal: Deal):
         """Add a deal to the smart contract."""

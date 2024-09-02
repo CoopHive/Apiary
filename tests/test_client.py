@@ -13,6 +13,11 @@ from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 from coophive.utils import Tx
 
+mock_private_key = "0x4c0883a69102937d6231471b5dbb6204fe512961708279a4a6075d78d6d3721b"
+mock_public_key = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57"
+policy_a = Policy("naive_accepter")
+solver_url = "http://solver.com"
+
 
 @pytest.fixture
 def setup_client():
@@ -21,8 +26,9 @@ def setup_client():
     with patch("socket.socket") as mock_socket:
         mock_socket_instance = MagicMock()
         mock_socket.return_value = mock_socket_instance
-        policy_a = Policy("naive_accepter")
-        client = Client("client_key", policy_a)
+        client = Client(
+            private_key=mock_private_key, public_key=mock_public_key, policy=policy_a
+        )
         smart_contract = SmartContract(public_key="smart_contract_key")
         client.get_smart_contract = lambda: smart_contract
         match = Match()
@@ -36,8 +42,13 @@ def setup_client():
 def test_get_solver(setup_client):
     """Test the get_solver method."""
     client, _, _ = setup_client
-    solver = Solver(public_key="solver_key", url="http://solver.com")
-    client.connect_to_solver(url="http://solver.com", solver=solver)
+    solver = Solver(
+        private_key=mock_private_key,
+        public_key=mock_public_key,
+        policy=policy_a,
+        solver_url=solver_url,
+    )
+    client.connect_to_solver(url="solver_url", solver=solver)
     assert client.get_solver() == solver
 
 
@@ -50,9 +61,9 @@ def test_get_smart_contract(setup_client):
 def test_connect_to_solver(setup_client):
     """Test the connect_to_solver method."""
     client, _, _ = setup_client
-    solver = Solver(public_key="solver_key", url="http://solver.com")
-    client.connect_to_solver(url="http://solver.com", solver=solver)
-    assert client.solver_url == "http://solver.com"
+    solver = Solver(public_key="solver_key", url="solver_url")
+    client.connect_to_solver(url="solver_url", solver=solver)
+    assert client.solver_url == "solver_url"
     assert client.solver == solver
 
 
@@ -124,7 +135,6 @@ def test_pay_compute_node():
     with patch("socket.socket") as mock_socket:
         mock_socket_instance = MagicMock()
         mock_socket.return_value = mock_socket_instance
-        policy_a = Policy("a")
         client = Client("client_address_123", policy_a)
         client.smart_contract = SmartContract("public_key_123")
         client.smart_contract.balances = {

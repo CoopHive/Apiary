@@ -26,14 +26,19 @@ from coophive.utils import Tx
 class Client(Agent):
     """A client in the coophive simulator that interacts with solvers and smart contracts to manage jobs and deals."""
 
-    def __init__(self, address: str, policy: Policy):
-        """Initialize a new Client instance.
-
-        Args:
-            address (str): The address of the client.
-            policy (Policy): The policy of the client.
-        """
-        super().__init__(address)
+    def __init__(
+        self,
+        private_key: str,
+        public_key: str,
+        policy: Policy,
+        auxiliary_states: dict = {},
+    ):
+        """Initialize a new Client instance."""
+        super().__init__(
+            private_key=private_key,
+            public_key=public_key,
+            auxiliary_states=auxiliary_states,
+        )
         self.current_jobs = deque()
         self.policy = policy
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
@@ -267,15 +272,3 @@ def create_client(
     client.connect_to_smart_contract(smart_contract=smart_contract)
 
     return client
-
-
-if __name__ == "__main__":
-    address = "Your address here"  # Replace with the actual address
-    policy = Policy("b")
-    client = Client(address, policy)
-    client.client_loop()
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        logging.info("Client shutting down.")
