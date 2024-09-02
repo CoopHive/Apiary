@@ -312,37 +312,3 @@ class ResourceProvider(Agent):
             self.make_match_decision(match)
         self.update_job_running_times()
         self.current_matched_offers.clear()
-
-
-def create_resource_provider(
-    resource_provider_public_key: str, solver: Solver, smart_contract: SmartContract
-):
-    """Create a resource provider and connect it to a solver and a smart contract.
-
-    Args:
-        resource_provider_public_key (str): The public key of the resource provider.
-        solver (Solver): The solver to connect to.
-        smart_contract (SmartContract): The smart contract to connect to.
-
-    Returns:
-        ResourceProvider: The created resource provider.
-    """
-    policy = Policy("a")
-    resource_provider = ResourceProvider(resource_provider_public_key, policy)
-    resource_provider.connect_to_solver(url=solver.get_url(), solver=solver)
-    resource_provider.connect_to_smart_contract(smart_contract=smart_contract)
-
-    return resource_provider
-
-
-if __name__ == "__main__":
-    public_key = "Your public key here"  # Replace with the actual public key
-    policy = Policy("b")
-    resource_provider = ResourceProvider(public_key, policy)
-    resource_provider.resource_provider_loop()
-    try:
-        while True:
-            time.sleep(1)
-            print("Resource Provider Port Ready...")
-    except KeyboardInterrupt:
-        logging.info("Server shutting down.")
