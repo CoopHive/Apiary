@@ -5,13 +5,15 @@ It manage agents, their policies, their states and their actions.
 
 import logging
 import os
+from dataclasses import dataclass
 
+from coophive.data_attribute import DataAttribute
 from coophive.deal import Deal
 from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
-from coophive.utils import IPFS, AgentType, Tx
+from coophive.utils import AgentType, Tx, hash_dict
 
 
 class Agent:
@@ -22,9 +24,13 @@ class Agent:
     and training routines.
     """
 
-    def __init__(self, public_key: str = None):
-        """Initialize the Agent with a public key."""
+    def __init__(self, private_key: str, public_key: str, auxiliary_states: dict = {}):
+        """Initialize the Agent with required and auxiliary states."""
+        self.private_key = private_key
+        # https://web3py.readthedocs.io/en/stable/web3.eth.account.html#reading-a-private-key-from-an-environment-variable
         self.public_key = public_key
+        self.auxiliary_states = auxiliary_states
+
         self.local_information = LocalInformation()
         self.events = []
         self.event_handlers = []
@@ -174,6 +180,42 @@ class Agent:
         for deal_id in self.deals_finished_in_current_step:
             del self.current_deals[deal_id]
         self.deals_finished_in_current_step.clear()
+
+
+@dataclass
+class CID:
+    """IPFS CID."""
+
+    hash: str
+    data: dict
+
+
+@dataclass
+class IPFS:
+    """Class representing an IPFS system for storing and retrieving data."""
+
+    def __init__(self):
+        """Initialize the IPFS system with an empty data store."""
+        self.data = {}
+
+    def add(self, data):
+        """Add data to the IPFS system.
+
+        Args:
+            data: The data to add, which can be of type DataAttribute or dict.
+        """
+        # check if data is of type DataAttribute
+        if isinstance(data, DataAttribute):
+            cid_hash = data.get_id()
+            self.data[cid_hash] = data
+        # check if data is of type dict
+        if isinstance(data, dict):
+            cid = CID(hash=hash_dict(data), data=data)
+            self.data[cid.hash] = data
+
+    def get(self, cid_hash):
+        """Retrieve data from the IPFS system by its CID hash."""
+        return self.data[cid_hash]
 
 
 class LocalInformation:
