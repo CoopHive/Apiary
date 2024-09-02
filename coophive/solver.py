@@ -112,6 +112,12 @@ class Solver(Agent):
         # remove outdated job and resource offers
         self.remove_outdated_offers()
 
+    def emit_event(self, event: Event):
+        """Emit an event and notify all subscribed event handlers."""
+        self.events.append(event)
+        for event_handler in self.event_handlers:
+            event_handler(event)
+
     def solve(self):
         """Solve the current matching problem by matching job offers with resource offers."""
         for job_offer_id, job_offer in (

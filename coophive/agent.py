@@ -1,13 +1,12 @@
-"""This module defines the Agent and LocalInformation classes.
+"""This module defines the Agent class.
 
-It manage agents, their local information, events, and transactions.
+It manage agents, their policies, their states and their actions.
 """
 
 import logging
 import os
 
 from coophive.deal import Deal
-from coophive.event import Event
 from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
 from coophive.match import Match
@@ -56,12 +55,6 @@ class Agent:
     def get_solver(self):
         """Get the connected solver."""
         return self.solver
-
-    def emit_event(self, event: Event):
-        """Emit an event and notify all subscribed event handlers."""
-        self.events.append(event)
-        for event_handler in self.event_handlers:
-            event_handler(event)
 
     def subscribe_event(self, handler):
         """Subscribe an event handler to receive emitted events."""
@@ -184,7 +177,7 @@ class Agent:
 
 
 class LocalInformation:
-    """A class to manage local information of agents, resource offers, and job offers.
+    """A class to manage local information.
 
     Attributes:
         block_number (int): The block number for the current state.

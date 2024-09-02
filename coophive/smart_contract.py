@@ -6,7 +6,7 @@ It handles the operations and logic associated with smart contracts, including t
 import logging
 import os
 
-from coophive.agent import Agent
+from coophive.agent import LocalInformation
 from coophive.deal import Deal
 from coophive.event import Event
 from coophive.log_json import log_json
@@ -15,12 +15,11 @@ from coophive.result import Result
 from coophive.utils import Tx
 
 
-class SmartContract(Agent):
+class SmartContract:
     """A class to represent a smart contract.
 
-    This class extends the Agent class and provides methods to handle
-    the lifecycle of a smart contract including creating deals, handling matches,
-    posting results, and managing balances.
+    This class provides methods to handle the lifecycle of a smart contract
+    including creating deals, handling matches, posting results, and managing balances.
     """
 
     def __init__(self, public_key: str):
@@ -29,7 +28,10 @@ class SmartContract(Agent):
         Args:
             public_key (str): The public key for the smart contract.
         """
-        super().__init__(public_key)
+        self.public_key = public_key
+        self.local_information = LocalInformation()
+        self.events = []
+        self.event_handlers = []
         self.logger = logging.getLogger(f"Smart Contract {self.public_key}")
         logging.basicConfig(
             filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
@@ -96,6 +98,16 @@ class SmartContract(Agent):
             self._agree_to_match_client(match, tx)
         if match.get_resource_provider_signed() and match.get_client_signed():
             self.matches_made_in_current_step.append(match)
+
+    def subscribe_event(self, handler):
+        """Subscribe an event handler to receive emitted events."""
+        self.event_handlers.append(handler)
+
+    def emit_event(self, event: Event):
+        """Emit an event and notify all subscribed event handlers."""
+        self.events.append(event)
+        for event_handler in self.event_handlers:
+            event_handler(event)
 
     def _create_deal(self, match: Match):
         logging.info(f"Match data before setting ID: {match.get_data()}")
