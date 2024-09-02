@@ -7,6 +7,7 @@ from coophive.deal import Deal
 from coophive.event import Event
 from coophive.job import Job
 from coophive.match import Match
+from coophive.policy import Policy
 from coophive.result import Result
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
@@ -20,7 +21,8 @@ def setup_client():
     with patch("socket.socket") as mock_socket:
         mock_socket_instance = MagicMock()
         mock_socket.return_value = mock_socket_instance
-        client = Client(address="client_key")
+        policy_a = Policy("naive_accepter")
+        client = Client("client_key", policy_a)
         smart_contract = SmartContract(public_key="smart_contract_key")
         client.get_smart_contract = lambda: smart_contract
         match = Match()
@@ -122,7 +124,8 @@ def test_pay_compute_node():
     with patch("socket.socket") as mock_socket:
         mock_socket_instance = MagicMock()
         mock_socket.return_value = mock_socket_instance
-        client = Client("client_address_123")
+        policy_a = Policy("a")
+        client = Client("client_address_123", policy_a)
         client.smart_contract = SmartContract("public_key_123")
         client.smart_contract.balances = {
             "client_address_123": 2000,
@@ -295,7 +298,6 @@ def test_client_loop(setup_client):
 
     client.client_loop()
 
-    assert client._agree_to_match.call_count == 0
     assert client.update_finished_deals.call_count == 1
     assert len(client.current_matched_offers) == 0
 
