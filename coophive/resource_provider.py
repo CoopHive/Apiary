@@ -1,21 +1,17 @@
 """Module for defining the ResourceProvider class and its related functionalities."""
 
-import logging
 import socket
 import threading
-import time
 
 import docker
 
-from coophive.agent import Agent
+from coophive.agent import CID, Agent
 from coophive.log_json import log_json
 from coophive.machine import Machine
 from coophive.match import Match
 from coophive.policy import Policy
 from coophive.result import Result
-from coophive.smart_contract import SmartContract
-from coophive.solver import Solver
-from coophive.utils import CID, Tx
+from coophive.utils import Tx
 
 
 class ResourceProvider(Agent):

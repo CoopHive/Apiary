@@ -5,8 +5,6 @@ import json
 from dataclasses import dataclass
 from enum import Enum
 
-from coophive.data_attribute import DataAttribute
-
 
 class AgentType(Enum):
     """Enumeration of different agent types available in the CoopHive ecosystem."""
@@ -14,16 +12,7 @@ class AgentType(Enum):
     RESOURCE_PROVIDER = 1
     CLIENT = 2
     SOLVER = 3
-    MEDIATOR = 4
-    DIRECTORY = 5
-
-
-@dataclass
-class CID:
-    """IPFS CID."""
-
-    hash: str
-    data: dict
+    VALIDATOR = 4
 
 
 @dataclass
@@ -31,38 +20,7 @@ class Tx:
     """Ethereum transaction metadata."""
 
     sender: str
-    # how many wei
-    value: float
-    # method: str
-    # arguments: []
-
-
-@dataclass
-class IPFS:
-    """Class representing an IPFS system for storing and retrieving data."""
-
-    def __init__(self):
-        """Initialize the IPFS system with an empty data store."""
-        self.data = {}
-
-    def add(self, data):
-        """Add data to the IPFS system.
-
-        Args:
-            data: The data to add, which can be of type DataAttribute or dict.
-        """
-        # check if data is of type DataAttribute
-        if isinstance(data, DataAttribute):
-            cid_hash = data.get_id()
-            self.data[cid_hash] = data
-        # check if data is of type dict
-        if isinstance(data, dict):
-            cid = CID(hash=hash_dict(data), data=data)
-            self.data[cid.hash] = data
-
-    def get(self, cid_hash):
-        """Retrieve data from the IPFS system by its CID hash."""
-        return self.data[cid_hash]
+    value: float  # [wei]
 
 
 extra_necessary_match_data = {
