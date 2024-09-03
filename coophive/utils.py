@@ -3,16 +3,6 @@
 import hashlib
 import json
 from dataclasses import dataclass
-from enum import Enum
-
-
-class AgentType(Enum):
-    """Enumeration of different agent types available in the CoopHive ecosystem."""
-
-    RESOURCE_PROVIDER = 1
-    CLIENT = 2
-    SOLVER = 3
-    VALIDATOR = 4
 
 
 @dataclass
