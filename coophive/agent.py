@@ -13,7 +13,7 @@ from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
-from coophive.utils import AgentType, Tx, hash_dict
+from coophive.utils import Tx, hash_dict
 
 
 class Agent:
