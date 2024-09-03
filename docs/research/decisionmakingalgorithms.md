@@ -130,11 +130,37 @@ Sequential decision problems in stochastic environments. General formulation of 
 - **Method**: A way to compute an optimal policy. Iterate between policy evaluation and policy improvement through a greedy policy. Guaranteed to converge because there are finitely many policies, and every iteration improves the policy if it can be improved. It is an expensive process.
 
 ### Value Iteration
-- **Method**: Updates the value function directly. Starts with any bounded value function \( U \), where \( |U(s)| < \infty \) for all \( s \). One common initialization is \( U(s) = 0 \) for all \( s \).
-- **Bellman Backup/Update**: The value function can be improved by applying the Bellman backup/Bellman update:
+- **Updates the Value Function Directly**:  
+  It begins with any bounded value function \( U \), meaning that \( |U(s)| < \infty \) for all \( s \). One common initialization is \( U(s) = 0 \) for all \( s \).
+  
+- **Bellman Backup/Bellman Update**:  
+  The value function can be improved by applying the Bellman backup/Bellman update:
   \[
-  U(s) = \max \left( R(s,a) + \gamma \sum_{s'} T(s' | s,a) U(s') \right)
+  U(s) = \max \left( R(s,a) + \gamma \sum_{s'} T(s' | s,a)U(s') \right)
   \]
+
+### Computationally Intensive -> Async Value Iteration
+- **Asynchronous Value Iteration**:  
+  Only a subset of the states are updated with each iteration.
+  
+- **Gauss-Seidel Value Iteration**:  
+  Does not require constructing a second value function in memory with each iteration.
+
+### Linear Program Formulation
+- **Convert Bellman Optimality Equation into a Linear Program**:  
+  The number of variables is equal to the number of states, and the number of constraints is equal to the number of states times the number of actions.
+
+### Linear Systems with Quadratic Rewards
+- **Not Applicable to Us**
+
+### Summary
+- Discrete MDPs with bounded rewards can be solved exactly through dynamic programming.
+- Policy evaluation for such problems can be done exactly through matrix inversion or can be approximated by an iterative algorithm.
+- Policy iteration can be used to solve for optimal policies by iterating between policy evaluation and policy improvement.
+- Value iteration and asynchronous value iteration save computation by directly iterating the value function.
+- The problem of finding an optimal policy can be framed as a linear program and solved in polynomial time.
+- Continuous problems with linear transition functions and quadratic rewards can be solved exactly.
+
 
 
 ### Chapter 24: [TODO]
