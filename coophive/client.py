@@ -7,7 +7,6 @@ connect to solvers and smart contracts, handle events, and make decisions regard
 import logging
 import socket
 import threading
-import time
 from collections import deque
 
 from coophive.agent import Agent
@@ -18,8 +17,6 @@ from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.policy import Policy
 from coophive.result import Result
-from coophive.smart_contract import SmartContract
-from coophive.solver import Solver
 from coophive.utils import Tx
 
 
