@@ -31,7 +31,6 @@ class Solver(Agent):
         private_key: str,
         public_key: str,
         policy: Policy,
-        solver_url: str,
         auxiliary_states: dict = {},
     ):
         """Initialize the Solver."""
@@ -44,7 +43,6 @@ class Solver(Agent):
         logging.basicConfig(
             filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
         )
-        self.solver_url = solver_url
         self.machine_keys = ["CPU", "RAM"]
         self.smart_contract = None
         self.deals_made_in_current_step: dict[str, Deal] = {}

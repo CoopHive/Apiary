@@ -16,10 +16,19 @@ from coophive.utils import Tx
 class ResourceProvider(Agent):
     """Class representing a resource provider in the CoopHive simulator."""
 
-    def __init__(self, address: str, policy: Policy):
+    def __init__(
+        self,
+        private_key: str,
+        public_key: str,
+        policy: Policy,
+        auxiliary_states: dict = {},
+    ):
         """Initialize the ResourceProvider instance."""
-        # machines maps CIDs -> machine metadata
-        super().__init__(address)
+        super().__init__(
+            private_key=private_key,
+            public_key=public_key,
+            auxiliary_states=auxiliary_states,
+        )
         self.machines = {}
         self.policy = policy
         self.docker_client = docker.from_env()
