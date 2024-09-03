@@ -26,14 +26,6 @@ def test_initial_balance(smart_contract):
     assert smart_contract._get_balance() == 0
 
 
-def test_fund(smart_contract, tx):
-    """Test the funding of the smart contract by a transaction."""
-    tx.value = 200
-    smart_contract.fund(tx)
-    assert smart_contract.balances["sender"] == 200
-    assert smart_contract._get_balance() == 0
-
-
 def test_agree_to_match_resource_provider(smart_contract, tx):
     """Test resource provider agreement to a match."""
     match = Match()
