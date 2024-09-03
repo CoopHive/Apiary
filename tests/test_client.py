@@ -45,22 +45,6 @@ def test_get_smart_contract(setup_client):
     assert client.get_smart_contract() == smart_contract
 
 
-def test_connect_to_solver(setup_client):
-    """Test the connect_to_solver method."""
-    client, _, _ = setup_client
-
-    solver = Solver(
-        private_key=mock_private_key,
-        public_key=mock_public_key,
-        policy=policy_a,
-        solver_url=solver_url,
-    )
-
-    client.connect_to_solver(solver_url=solver_url, solver=solver)
-    assert client.solver_url == solver_url
-    assert client.solver == solver
-
-
 def test_add_job(setup_client):
     """Test the add_job method."""
     client, _, _ = setup_client
