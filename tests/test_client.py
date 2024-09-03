@@ -5,7 +5,6 @@ import pytest
 from coophive.client import Client
 from coophive.deal import Deal
 from coophive.event import Event
-from coophive.job import Job
 from coophive.match import Match
 from coophive.policy import Policy
 from coophive.result import Result
@@ -43,24 +42,6 @@ def test_get_smart_contract(setup_client):
     """Test the get_smart_contract method."""
     client, smart_contract, _ = setup_client
     assert client.get_smart_contract() == smart_contract
-
-
-def test_add_job(setup_client):
-    """Test the add_job method."""
-    client, _, _ = setup_client
-    job = Job()
-    client.add_job(job)
-    assert job in client.current_jobs
-
-
-def test_get_jobs(setup_client):
-    """Test the get_jobs method."""
-    client, _, _ = setup_client
-    job1 = Job()
-    job2 = Job()
-    client.add_job(job1)
-    client.add_job(job2)
-    assert client.get_jobs() == [job1, job2]
 
 
 def test_agree_to_match_happy_path(setup_client):

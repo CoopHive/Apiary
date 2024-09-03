@@ -144,15 +144,6 @@ class ResourceProvider(Agent):
         self.get_smart_contract().agree_to_match(match, tx)
         log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
 
-    def handle_p2p_event(self, event):
-        """P2P handling.
-
-        if the resource provider hears about a job_offer, it should check if its an appropriate match the way handle_solver_event
-        determines that a match exists (if all required machine keys (CPU, RAM) have exactly the same values in both the job offer
-        and the resource offer) -> then create a match and append to current_matched_offers.
-        """
-        pass
-
     def handle_smart_contract_event(self, event):
         """Handle events received from the connected smart contract.
 
@@ -247,6 +238,7 @@ class ResourceProvider(Agent):
                 self.handle_completed_job(deal_id)
         self.update_finished_deals()
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
     def find_best_match(self, resource_offer_id):
         """Find the best match for a given resource offer based on utility.
 
@@ -280,6 +272,7 @@ class ResourceProvider(Agent):
         expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
         return price_per_instruction * expected_number_of_instructions
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
     # NOTE: this utility calculation is DIFFERENT for a resource provider than for a client
     def calculate_utility(self, match):
         """Calculate the utility of a match based on several factors.
