@@ -33,10 +33,10 @@ class Client(Agent):
         super().__init__(
             private_key=private_key,
             public_key=public_key,
+            policy=policy,
             auxiliary_states=auxiliary_states,
         )
         self.current_jobs = deque()
-        self.policy = policy
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
         self.client_socket = None
         self.server_address = ("localhost", 1234)

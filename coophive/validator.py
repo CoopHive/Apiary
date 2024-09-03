@@ -1,9 +1,7 @@
 """Module for defining the Validator class and its related functionalities."""
 
 from coophive.agent import Agent
-from coophive.log_json import log_json
-from coophive.match import Match
-
+from coophive.policy import Policy
 
 class Validator(Agent):
     """Class representing a validator in the CoopHive simulator."""
@@ -12,12 +10,14 @@ class Validator(Agent):
         self,
         private_key: str,
         public_key: str,
+        policy: Policy,
         auxiliary_states: dict = {},
     ):
-        """Initialize the ResourceProvider instance."""
+        """Initialize the Validator instance."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
+            policy=policy,
             auxiliary_states=auxiliary_states,
         )
 

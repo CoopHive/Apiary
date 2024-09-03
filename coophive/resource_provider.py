@@ -27,10 +27,10 @@ class ResourceProvider(Agent):
         super().__init__(
             private_key=private_key,
             public_key=public_key,
+            policy=policy,
             auxiliary_states=auxiliary_states,
         )
         self.machines = {}
-        self.policy = policy
         self.docker_client = docker.from_env()
         self.server_socket = None
         self.start_server_socket()

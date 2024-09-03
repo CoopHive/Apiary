@@ -37,6 +37,7 @@ class Solver(Agent):
         super().__init__(
             private_key=private_key,
             public_key=public_key,
+            policy=policy,
             auxiliary_states=auxiliary_states,
         )
         self.logger = logging.getLogger(f"Solver {self.public_key}")
