@@ -133,18 +133,6 @@ def test_remove_outdated_offers(setup_solver):
     )
 
 
-def test_solver_cleanup(setup_solver):
-    """Test solver cleanup process."""
-    solver = setup_solver["solver"]
-    solver.currently_matched_job_offers = {"job_offer_123"}
-    solver.current_matched_resource_offers = {"resource_offer_123"}
-    solver.deals_made_in_current_step = [setup_solver["deal"]]
-    solver.solver_cleanup()
-    assert not solver.currently_matched_job_offers
-    assert not solver.current_matched_resource_offers
-    assert not solver.deals_made_in_current_step
-
-
 def test_solve(setup_solver):
     """Test the solve method of the solver."""
     solver = setup_solver["solver"]

@@ -117,19 +117,14 @@ class Solver(Agent):
         # clear list of deals made in current step
         self.deals_made_in_current_step.clear()
 
-    def solver_cleanup(self):
-        """Perform cleanup operations for the solver."""
-        self.currently_matched_job_offers.clear()
-        self.current_matched_resource_offers.clear()
-        # remove outdated job and resource offers
-        self.remove_outdated_offers()
-
     def emit_event(self, event: Event):
         """Emit an event and notify all subscribed event handlers."""
         self.events.append(event)
         for event_handler in self.event_handlers:
             event_handler(event)
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
+    # This is a solver-specific policy, but still a policy.
     def solve(self):
         """Solve the current matching problem by matching job offers with resource offers."""
         for job_offer_id, job_offer in (
