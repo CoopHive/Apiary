@@ -220,11 +220,3 @@ class Solver(Agent):
         self.add_necessary_match_data(match)
 
         return match
-
-    def get_url(self):
-        """Get the URL of the solver."""
-        return self.solver_url
-
-    def add_deal_to_smart_contract(self, deal: Deal):
-        """Add a deal to the smart contract."""
-        pass

@@ -70,14 +70,14 @@ class Agent:
         """Helper function to create a reusable transaction object."""
         return Tx(sender=self.get_public_key(), value=value)
 
-    def connect_to_solver(self, url: str, solver):
+    def connect_to_solver(self, solver_url: str, solver):
         """Connect to a solver and subscribe to its events.
 
         Args:
-            url (str): The URL of the solver.
+            solver_url (str): The URL of the solver.
             solver (Solver): The solver instance to connect to.
         """
-        self.solver_url = url
+        self.solver_url = solver_url
         self.solver = solver
         self.solver.subscribe_event(self.handle_solver_event)
 
@@ -86,7 +86,7 @@ class Agent:
             public_key=self.solver.public_key,
             agent=self,
         )
-        self.logger.info(f"Connected to solver: {url}")
+        self.logger.info(f"Connected to solver: {solver_url}")
 
     def connect_to_smart_contract(self, smart_contract):
         """Connect to a smart contract and subscribe to its events.

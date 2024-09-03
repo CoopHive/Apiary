@@ -251,24 +251,3 @@ class Client(Agent):
             self.make_match_decision(match)
         self.update_finished_deals()
         self.current_matched_offers.clear()
-
-
-def create_client(
-    client_public_key: str, solver: Solver, smart_contract: SmartContract
-):
-    """Create a client and connect it to a solver and a smart contract.
-
-    Args:
-        client_public_key (str): The public key of the client.
-        solver (Solver): The solver to connect to.
-        smart_contract (SmartContract): The smart contract to connect to.
-
-    Returns:
-        Client: The created client.
-    """
-    policy = Policy("a")
-    client = Client(client_public_key, policy)
-    client.connect_to_solver(url=solver.get_url(), solver=solver)
-    client.connect_to_smart_contract(smart_contract=smart_contract)
-
-    return client
