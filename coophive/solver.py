@@ -12,7 +12,15 @@ from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.policy import Policy
 from coophive.resource_offer import ResourceOffer
-from coophive.utils import extra_necessary_match_data
+
+extra_necessary_match_data = {
+    "client_deposit": 5,
+    "timeout": 10,
+    "timeout_deposit": 3,
+    "cheating_collateral_multiplier": 50,
+    "price_per_instruction": 1,
+    "verification_method": "random",
+}
 
 
 class Solver(Agent):

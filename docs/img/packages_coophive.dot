@@ -65,5 +65,4 @@ charset="utf-8"
 "coophive.solver" -> "coophive.match" [arrowhead="open", arrowtail="none"];
 "coophive.solver" -> "coophive.policy" [arrowhead="open", arrowtail="none"];
 "coophive.solver" -> "coophive.resource_offer" [arrowhead="open", arrowtail="none"];
-"coophive.solver" -> "coophive.utils" [arrowhead="open", arrowtail="none"];
 }

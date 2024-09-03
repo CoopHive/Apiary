@@ -13,16 +13,6 @@ class Tx:
     value: float  # [wei]
 
 
-extra_necessary_match_data = {
-    "client_deposit": 5,
-    "timeout": 10,
-    "timeout_deposit": 3,
-    "cheating_collateral_multiplier": 50,
-    "price_per_instruction": 1,
-    "verification_method": "random",
-}
-
-
 def hash_dict(dict) -> str:
     """Generate a SHA-256 hash of a dictionary.
 
