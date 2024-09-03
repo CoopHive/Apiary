@@ -13,7 +13,9 @@ from coophive.solver import Solver
 from coophive.utils import Tx
 
 mock_private_key = "0x4c0883a69102937d6231471b5dbb6204fe512961708279a4a6075d78d6d3721b"
-mock_public_key = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57"
+mock_public_key_client = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57"
+mock_public_key_resource = "0x627306090abaB3A6e1400e9345bC60c78a8BEf56"
+
 policy_a = Policy("naive_accepter")
 solver_url = "http://solver.com"
 
@@ -26,12 +28,17 @@ def setup_client():
         mock_socket_instance = MagicMock()
         mock_socket.return_value = mock_socket_instance
         client = Client(
-            private_key=mock_private_key, public_key=mock_public_key, policy=policy_a
+            private_key=mock_private_key,
+            public_key=mock_public_key_client,
+            policy=policy_a,
         )
         smart_contract = SmartContract(public_key="smart_contract_key")
         client.get_smart_contract = lambda: smart_contract
         match = Match()
-        smart_contract.balances = {"client_key": 1000, "resource_key": 500}
+        smart_contract.balances = {
+            mock_public_key_client: 1000,
+            mock_public_key_resource: 500,
+        }
         client._create_transaction = lambda value: Tx(
             sender=client.get_public_key(), value=value
         )
@@ -50,14 +57,15 @@ def test_agree_to_match_happy_path(setup_client):
     match.set_attributes(
         {
             "client_deposit": 100,
-            "client_address": "client_key",
-            "resource_provider_address": "resource_key",
+            "client_address": mock_public_key_client,
+            "resource_provider_address": mock_public_key_resource,
         }
     )
 
     client._agree_to_match(match)
 
-    assert smart_contract.balances["client_key"] == 900
+    assert smart_contract.balances[mock_public_key_client] == 900
+    assert smart_contract.balances[mock_public_key_resource] == 500
     assert smart_contract.balance == 100
     assert match.get_client_signed()
     assert not match.get_resource_provider_signed()
@@ -69,8 +77,8 @@ def test_agree_to_match_client_deposit_exceeds_balance(setup_client):
     match.set_attributes(
         {
             "client_deposit": 2000,
-            "client_address": "client_key",
-            "resource_provider_address": "resource_key",
+            "client_address": mock_public_key_client,
+            "resource_provider_address": mock_public_key_resource,
         }
     )
 
@@ -82,7 +90,7 @@ def test_handle_solver_event(setup_client):
     """Test the handle_solver_event method."""
     client, _, _ = setup_client
     match = Match()
-    match.set_attributes({"client_address": "client_key"})
+    match.set_attributes({"client_address": mock_public_key_client})
     event = Event(name="match", data=match)
     client.handle_solver_event(event)
     assert match in client.current_matched_offers
