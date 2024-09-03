@@ -83,10 +83,12 @@ class Agent:
             ):
                 self.current_matched_offers.append(match)
 
+    # TODO: transfer functionality inside policy evaluation
     def reject_match(self, match):
         """Reject a match."""
         self.logger.info(f"Rejected match: {match.get_id()}")
 
+    # TODO: transfer functionality inside policy evaluation
     def negotiate_match(self, match, max_rounds=5):
         """Negotiate a match."""
         match_dict = match.get_data()
@@ -217,71 +219,6 @@ class LocalInformation:
         self.resource_offers: dict[str, ResourceOffer] = {}
         self.job_offers: dict[str, JobOffer] = {}
 
-    def add_agent(
-        self,
-        agent_type: AgentType,
-        public_key: str,
-        agent: Agent,
-    ):
-        """Add an agent to the appropriate category based on its type.
-
-        Args:
-            agent_type (AgentType): The type of agent.
-            public_key (str): The public key of the agent.
-            agent (Agent): Agent to add.
-        """
-        match agent_type:
-            case AgentType.RESOURCE_PROVIDER:
-                self.resource_providers[public_key] = agent
-            case AgentType.CLIENT:
-                self.clients[public_key] = agent
-            case AgentType.SOLVER:
-                self.solvers[public_key] = agent
-            case AgentType.MEDIATOR:
-                self.mediators[public_key] = agent
-            case AgentType.DIRECTORY:
-                self.directories[public_key] = agent
-
-    def remove_agent(self, agent_type: AgentType, public_key: str):
-        """Remove an agent from the appropriate category based on its type.
-
-        Args:
-            agent_type (AgentType): The type of agent.
-            public_key (str): The public key of the agent.
-        """
-        match agent_type:
-            case AgentType.RESOURCE_PROVIDER:
-                self.resource_providers.pop(public_key)
-            case AgentType.CLIENT:
-                self.clients.pop(public_key)
-            case AgentType.SOLVER:
-                self.solvers.pop(public_key)
-            case AgentType.MEDIATOR:
-                self.mediators.pop(public_key)
-            case AgentType.DIRECTORY:
-                self.directories.pop(public_key)
-
-    def get_list_of_agents(self, agent_type: AgentType):
-        """Get a list of agents of a specific type.
-
-        Args:
-            agent_type (AgentType): The type of agent.
-
-        Returns:
-            dict: A dictionary of agents with public keys.
-        """
-        match agent_type:
-            case AgentType.RESOURCE_PROVIDER:
-                return self.resource_providers
-            case AgentType.CLIENT:
-                return self.clients
-            case AgentType.SOLVER:
-                return self.solvers
-            case AgentType.MEDIATOR:
-                return self.mediators
-            case AgentType.DIRECTORY:
-                return self.directories
-
     def add_resource_offer(self, id: str, data):
         """Add a resource offer to the local information and IPFS."""
         logging.info("Adding resource offer locally:")
@@ -303,19 +240,3 @@ class LocalInformation:
     def get_job_offers(self):
         """Get the job offers in the local information."""
         return self.job_offers
-
-    def add_resource_provider(self, resource_provider):
-        """Add a resource provider to the local information."""
-        self.resource_providers[resource_provider.get_public_key()] = resource_provider
-
-    def get_resource_providers(self):
-        """Get the resource providers in the local information."""
-        return self.resource_providers
-
-    def add_client(self, client):
-        """Add a client to the local information."""
-        self.clients[client.get_public_key()] = client
-
-    def get_clients(self):
-        """Get the clients in the local information."""
-        return self.clients
