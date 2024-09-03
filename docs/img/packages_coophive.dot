@@ -44,7 +44,6 @@ charset="utf-8"
 "coophive.resource_offer" -> "coophive.data_attribute" [arrowhead="open", arrowtail="none"];
 "coophive.resource_provider" -> "coophive.agent" [arrowhead="open", arrowtail="none"];
 "coophive.resource_provider" -> "coophive.log_json" [arrowhead="open", arrowtail="none"];
-"coophive.resource_provider" -> "coophive.machine" [arrowhead="open", arrowtail="none"];
 "coophive.resource_provider" -> "coophive.match" [arrowhead="open", arrowtail="none"];
 "coophive.resource_provider" -> "coophive.policy" [arrowhead="open", arrowtail="none"];
 "coophive.resource_provider" -> "coophive.result" [arrowhead="open", arrowtail="none"];

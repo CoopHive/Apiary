@@ -237,8 +237,6 @@ class Client(Agent):
             raise ValueError(f"Unknown policy decision: {decision}")
 
     # TODO: move this functionality in the networking model, at the agent level
-    # Also resource providers need to be able to filter into the pubsub and
-    # act on it.
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
         for match in self.current_matched_offers:

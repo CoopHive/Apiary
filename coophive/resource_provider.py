@@ -5,9 +5,8 @@ import threading
 
 import docker
 
-from coophive.agent import CID, Agent
+from coophive.agent import Agent
 from coophive.log_json import log_json
-from coophive.machine import Machine
 from coophive.match import Match
 from coophive.policy import Policy
 from coophive.result import Result
@@ -81,6 +80,7 @@ class ResourceProvider(Agent):
             except Exception as e:
                 self.logger.info(f"Error handling message: {e}")
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
     def evaluate_match(self, match):
         """Here you evaluate the match and decide whether to accept or counteroffer."""
         if (
@@ -107,31 +107,6 @@ class ResourceProvider(Agent):
             log_json(self.logger, "Logged into Docker Hub successfully")
         except docker.errors.APIError as e:
             log_json(self.logger, f"Failed to log into Docker Hub: {e}")
-
-    def add_machine(self, machine_id: CID, machine: Machine):
-        """Add a machine to the resource provider.
-
-        Args:
-            machine_id (CID): The ID of the machine to add.
-            machine (Machine): The machine instance to add.
-        """
-        self.machines[machine_id.hash] = machine
-
-    def remove_machine(self, machine_id):
-        """Remove a machine from the resource provider.
-
-        Args:
-            machine_id: The ID of the machine to remove.
-        """
-        self.machines.pop(machine_id)
-
-    def get_machines(self):
-        """Get all machines associated with the resource provider.
-
-        Returns:
-            dict: Dictionary mapping machine IDs to machine instances.
-        """
-        return self.machines
 
     def _agree_to_match(self, match: Match):
         """Agree to a match and send a transaction to the connected smart contract.
@@ -258,6 +233,7 @@ class ResourceProvider(Agent):
                     best_match = match
         return best_match
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
     def calculate_revenue(self, match):
         """Calculate the revenue generated from a match.
 
@@ -295,6 +271,7 @@ class ResourceProvider(Agent):
         else:
             raise ValueError(f"Unknown policy decision: {decision}")
 
+    # TODO: move this functionality in the networking model, at the agent level
     def resource_provider_loop(self):
         """Main loop for the resource provider to process matched offers and update job running times."""
         for match in self.current_matched_offers:
