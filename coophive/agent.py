@@ -38,8 +38,6 @@ class Agent:
         logging.basicConfig(
             filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
         )
-        self.solver = None
-        self.solver_url = None
         self.smart_contract = None
         self.current_deals: dict[str, Deal] = {}
         self.current_jobs = {}
@@ -53,14 +51,6 @@ class Agent:
     def get_local_information(self):
         """Get the local information of the agent."""
         return self.local_information
-
-    def get_events(self):
-        """Get the events emitted by the agent."""
-        return self.events
-
-    def get_solver(self):
-        """Get the connected solver."""
-        return self.solver
 
     def subscribe_event(self, handler):
         """Subscribe an event handler to receive emitted events."""

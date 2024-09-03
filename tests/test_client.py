@@ -39,20 +39,6 @@ def setup_client():
         return client, smart_contract, match
 
 
-def test_get_solver(setup_client):
-    """Test the get_solver method."""
-    client, _, _ = setup_client
-    solver = Solver(
-        private_key=mock_private_key,
-        public_key=mock_public_key,
-        policy=policy_a,
-        solver_url=solver_url,
-    )
-
-    client.connect_to_solver(solver_url=solver_url, solver=solver)
-    assert client.get_solver() == solver
-
-
 def test_get_smart_contract(setup_client):
     """Test the get_smart_contract method."""
     client, smart_contract, _ = setup_client
