@@ -1,30 +1,34 @@
 """Module for defining the ResourceProvider class and its related functionalities."""
 
-import logging
 import socket
 import threading
-import time
 
 import docker
 
 from coophive.agent import Agent
 from coophive.log_json import log_json
-from coophive.machine import Machine
 from coophive.match import Match
 from coophive.policy import Policy
 from coophive.result import Result
-from coophive.smart_contract import SmartContract
-from coophive.solver import Solver
-from coophive.utils import CID, Tx
+from coophive.utils import Tx
 
 
 class ResourceProvider(Agent):
     """Class representing a resource provider in the CoopHive simulator."""
 
-    def __init__(self, address: str, policy: Policy):
+    def __init__(
+        self,
+        private_key: str,
+        public_key: str,
+        policy: Policy,
+        auxiliary_states: dict = {},
+    ):
         """Initialize the ResourceProvider instance."""
-        # machines maps CIDs -> machine metadata
-        super().__init__(address)
+        super().__init__(
+            private_key=private_key,
+            public_key=public_key,
+            auxiliary_states=auxiliary_states,
+        )
         self.machines = {}
         self.policy = policy
         self.docker_client = docker.from_env()
@@ -85,6 +89,7 @@ class ResourceProvider(Agent):
             except Exception as e:
                 self.logger.info(f"Error handling message: {e}")
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
     def evaluate_match(self, match):
         """Here you evaluate the match and decide whether to accept or counteroffer."""
         if (
@@ -112,31 +117,6 @@ class ResourceProvider(Agent):
         except docker.errors.APIError as e:
             log_json(self.logger, f"Failed to log into Docker Hub: {e}")
 
-    def add_machine(self, machine_id: CID, machine: Machine):
-        """Add a machine to the resource provider.
-
-        Args:
-            machine_id (CID): The ID of the machine to add.
-            machine (Machine): The machine instance to add.
-        """
-        self.machines[machine_id.hash] = machine
-
-    def remove_machine(self, machine_id):
-        """Remove a machine from the resource provider.
-
-        Args:
-            machine_id: The ID of the machine to remove.
-        """
-        self.machines.pop(machine_id)
-
-    def get_machines(self):
-        """Get all machines associated with the resource provider.
-
-        Returns:
-            dict: Dictionary mapping machine IDs to machine instances.
-        """
-        return self.machines
-
     def _agree_to_match(self, match: Match):
         """Agree to a match and send a transaction to the connected smart contract.
 
@@ -147,15 +127,6 @@ class ResourceProvider(Agent):
         tx = self._create_transaction(timeout_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
         log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
-
-    def handle_p2p_event(self, event):
-        """P2P handling.
-
-        if the resource provider hears about a job_offer, it should check if its an appropriate match the way handle_solver_event
-        determines that a match exists (if all required machine keys (CPU, RAM) have exactly the same values in both the job offer
-        and the resource offer) -> then create a match and append to current_matched_offers.
-        """
-        pass
 
     def handle_smart_contract_event(self, event):
         """Handle events received from the connected smart contract.
@@ -251,6 +222,7 @@ class ResourceProvider(Agent):
                 self.handle_completed_job(deal_id)
         self.update_finished_deals()
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
     def find_best_match(self, resource_offer_id):
         """Find the best match for a given resource offer based on utility.
 
@@ -270,6 +242,7 @@ class ResourceProvider(Agent):
                     best_match = match
         return best_match
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
     def calculate_revenue(self, match):
         """Calculate the revenue generated from a match.
 
@@ -284,6 +257,7 @@ class ResourceProvider(Agent):
         expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
         return price_per_instruction * expected_number_of_instructions
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
     # NOTE: this utility calculation is DIFFERENT for a resource provider than for a client
     def calculate_utility(self, match):
         """Calculate the utility of a match based on several factors.
@@ -306,6 +280,7 @@ class ResourceProvider(Agent):
         else:
             raise ValueError(f"Unknown policy decision: {decision}")
 
+    # TODO: move this functionality in the networking model, at the agent level
     def resource_provider_loop(self):
         """Main loop for the resource provider to process matched offers and update job running times."""
         for match in self.current_matched_offers:

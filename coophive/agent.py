@@ -5,13 +5,15 @@ It manage agents, their policies, their states and their actions.
 
 import logging
 import os
+from dataclasses import dataclass
 
+from coophive.data_attribute import DataAttribute
 from coophive.deal import Deal
 from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
-from coophive.utils import IPFS, AgentType, Tx
+from coophive.utils import Tx, hash_dict
 
 
 class Agent:
@@ -22,9 +24,12 @@ class Agent:
     and training routines.
     """
 
-    def __init__(self, public_key: str = None):
-        """Initialize the Agent with a public key."""
+    def __init__(self, private_key: str, public_key: str, auxiliary_states: dict = {}):
+        """Initialize the Agent with required and auxiliary states."""
+        self.private_key = private_key  # https://web3py.readthedocs.io/en/stable/web3.eth.account.html#reading-a-private-key-from-an-environment-variable
         self.public_key = public_key
+        self.auxiliary_states = auxiliary_states
+
         self.local_information = LocalInformation()
         self.events = []
         self.event_handlers = []
@@ -32,8 +37,6 @@ class Agent:
         logging.basicConfig(
             filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
         )
-        self.solver = None
-        self.solver_url = None
         self.smart_contract = None
         self.current_deals: dict[str, Deal] = {}
         self.current_jobs = {}
@@ -48,14 +51,6 @@ class Agent:
         """Get the local information of the agent."""
         return self.local_information
 
-    def get_events(self):
-        """Get the events emitted by the agent."""
-        return self.events
-
-    def get_solver(self):
-        """Get the connected solver."""
-        return self.solver
-
     def subscribe_event(self, handler):
         """Subscribe an event handler to receive emitted events."""
         self.event_handlers.append(handler)
@@ -63,24 +58,6 @@ class Agent:
     def _create_transaction(self, value):
         """Helper function to create a reusable transaction object."""
         return Tx(sender=self.get_public_key(), value=value)
-
-    def connect_to_solver(self, url: str, solver):
-        """Connect to a solver and subscribe to its events.
-
-        Args:
-            url (str): The URL of the solver.
-            solver (Solver): The solver instance to connect to.
-        """
-        self.solver_url = url
-        self.solver = solver
-        self.solver.subscribe_event(self.handle_solver_event)
-
-        self.solver.get_local_information().add_agent(
-            agent_type=AgentType.SOLVER,
-            public_key=self.solver.public_key,
-            agent=self,
-        )
-        self.logger.info(f"Connected to solver: {url}")
 
     def connect_to_smart_contract(self, smart_contract):
         """Connect to a smart contract and subscribe to its events.
@@ -105,10 +82,12 @@ class Agent:
             ):
                 self.current_matched_offers.append(match)
 
+    # TODO: transfer functionality inside policy evaluation
     def reject_match(self, match):
         """Reject a match."""
         self.logger.info(f"Rejected match: {match.get_id()}")
 
+    # TODO: transfer functionality inside policy evaluation
     def negotiate_match(self, match, max_rounds=5):
         """Negotiate a match."""
         match_dict = match.get_data()
@@ -176,6 +155,42 @@ class Agent:
         self.deals_finished_in_current_step.clear()
 
 
+@dataclass
+class CID:
+    """IPFS CID."""
+
+    hash: str
+    data: dict
+
+
+@dataclass
+class IPFS:
+    """Class representing an IPFS system for storing and retrieving data."""
+
+    def __init__(self):
+        """Initialize the IPFS system with an empty data store."""
+        self.data = {}
+
+    def add(self, data):
+        """Add data to the IPFS system.
+
+        Args:
+            data: The data to add, which can be of type DataAttribute or dict.
+        """
+        # check if data is of type DataAttribute
+        if isinstance(data, DataAttribute):
+            cid_hash = data.get_id()
+            self.data[cid_hash] = data
+        # check if data is of type dict
+        if isinstance(data, dict):
+            cid = CID(hash=hash_dict(data), data=data)
+            self.data[cid.hash] = data
+
+    def get(self, cid_hash):
+        """Retrieve data from the IPFS system by its CID hash."""
+        return self.data[cid_hash]
+
+
 class LocalInformation:
     """A class to manage local information.
 
@@ -203,71 +218,6 @@ class LocalInformation:
         self.resource_offers: dict[str, ResourceOffer] = {}
         self.job_offers: dict[str, JobOffer] = {}
 
-    def add_agent(
-        self,
-        agent_type: AgentType,
-        public_key: str,
-        agent: Agent,
-    ):
-        """Add an agent to the appropriate category based on its type.
-
-        Args:
-            agent_type (AgentType): The type of agent.
-            public_key (str): The public key of the agent.
-            agent (Agent): Agent to add.
-        """
-        match agent_type:
-            case AgentType.RESOURCE_PROVIDER:
-                self.resource_providers[public_key] = agent
-            case AgentType.CLIENT:
-                self.clients[public_key] = agent
-            case AgentType.SOLVER:
-                self.solvers[public_key] = agent
-            case AgentType.MEDIATOR:
-                self.mediators[public_key] = agent
-            case AgentType.DIRECTORY:
-                self.directories[public_key] = agent
-
-    def remove_agent(self, agent_type: AgentType, public_key: str):
-        """Remove an agent from the appropriate category based on its type.
-
-        Args:
-            agent_type (AgentType): The type of agent.
-            public_key (str): The public key of the agent.
-        """
-        match agent_type:
-            case AgentType.RESOURCE_PROVIDER:
-                self.resource_providers.pop(public_key)
-            case AgentType.CLIENT:
-                self.clients.pop(public_key)
-            case AgentType.SOLVER:
-                self.solvers.pop(public_key)
-            case AgentType.MEDIATOR:
-                self.mediators.pop(public_key)
-            case AgentType.DIRECTORY:
-                self.directories.pop(public_key)
-
-    def get_list_of_agents(self, agent_type: AgentType):
-        """Get a list of agents of a specific type.
-
-        Args:
-            agent_type (AgentType): The type of agent.
-
-        Returns:
-            dict: A dictionary of agents with public keys.
-        """
-        match agent_type:
-            case AgentType.RESOURCE_PROVIDER:
-                return self.resource_providers
-            case AgentType.CLIENT:
-                return self.clients
-            case AgentType.SOLVER:
-                return self.solvers
-            case AgentType.MEDIATOR:
-                return self.mediators
-            case AgentType.DIRECTORY:
-                return self.directories
-
     def add_resource_offer(self, id: str, data):
         """Add a resource offer to the local information and IPFS."""
         logging.info("Adding resource offer locally:")
@@ -289,19 +239,3 @@ class LocalInformation:
     def get_job_offers(self):
         """Get the job offers in the local information."""
         return self.job_offers
-
-    def add_resource_provider(self, resource_provider):
-        """Add a resource provider to the local information."""
-        self.resource_providers[resource_provider.get_public_key()] = resource_provider
-
-    def get_resource_providers(self):
-        """Get the resource providers in the local information."""
-        return self.resource_providers
-
-    def add_client(self, client):
-        """Add a client to the local information."""
-        self.clients[client.get_public_key()] = client
-
-    def get_clients(self):
-        """Get the clients in the local information."""
-        return self.clients

@@ -7,33 +7,34 @@ connect to solvers and smart contracts, handle events, and make decisions regard
 import logging
 import socket
 import threading
-import time
 from collections import deque
 
 from coophive.agent import Agent
 from coophive.deal import Deal
 from coophive.event import Event
-from coophive.job import Job
 from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.policy import Policy
 from coophive.result import Result
-from coophive.smart_contract import SmartContract
-from coophive.solver import Solver
 from coophive.utils import Tx
 
 
 class Client(Agent):
     """A client in the coophive simulator that interacts with solvers and smart contracts to manage jobs and deals."""
 
-    def __init__(self, address: str, policy: Policy):
-        """Initialize a new Client instance.
-
-        Args:
-            address (str): The address of the client.
-            policy (Policy): The policy of the client.
-        """
-        super().__init__(address)
+    def __init__(
+        self,
+        private_key: str,
+        public_key: str,
+        policy: Policy,
+        auxiliary_states: dict = {},
+    ):
+        """Initialize a new Client instance."""
+        super().__init__(
+            private_key=private_key,
+            public_key=public_key,
+            auxiliary_states=auxiliary_states,
+        )
         self.current_jobs = deque()
         self.policy = policy
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
@@ -79,10 +80,6 @@ class Client(Agent):
             except Exception as e:
                 self.logger.info(f"Error handling message: {e}")
 
-    def add_job(self, job: Job):
-        """Add a job to the client's current jobs."""
-        self.current_jobs.append(job)
-
     def get_jobs(self):
         """Get the client's current jobs."""
         return list(self.current_jobs)
@@ -95,15 +92,8 @@ class Client(Agent):
 
         log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
 
-    def handle_p2p_event(self, event: Event):
-        """P2P handling.
-
-        If the client hears about a resource_offer, it should check if its an appropriate match the way handle_solver_event
-        determines that a match exists (if all required machine keys (CPU, RAM) have exactly the same values in both the job offer
-        and the resource offer) -> then create a match and append to current_matched_offers.
-        """
-        pass
-
+    # TODO: transfer functionality inside policy evaluation,
+    # the mediation strategy is part of the agent policy.
     def decide_whether_or_not_to_mediate(self, event: Event):
         """Decide whether to mediate based on the event.
 
@@ -115,6 +105,8 @@ class Client(Agent):
         """
         return True  # for now, always mediate
 
+    # TODO: transfer functionality inside policy evaluation,
+    # the mediation strategy is part of the agent policy.
     def request_mediation(self, event: Event):
         """Request mediation for an event."""
         log_json(self.logger, "Requesting mediation", {"event_name": event.get_name()})
@@ -182,6 +174,7 @@ class Client(Agent):
                 else:
                     self.pay_compute_node(event)
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
     def find_best_match(self, job_offer_id):
         """Find the best match for a given job offer based on utility."""
         best_match = None
@@ -194,6 +187,7 @@ class Client(Agent):
                     best_match = match
         return best_match
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
     def calculate_cost(self, match):
         """Calculate the cost of a match.
 
@@ -208,6 +202,7 @@ class Client(Agent):
         expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
         return price_per_instruction * expected_number_of_instructions
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
     def calculate_benefit(self, match):
         """Calculate the expected benefit of a match to the client.
 
@@ -221,6 +216,7 @@ class Client(Agent):
         expected_benefit_to_client = data.get("expected_benefit_to_client", 0)
         return expected_benefit_to_client
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
     def calculate_utility(self, match: Match):
         """Calculate the utility of a match based on several factors."""
         expected_cost = self.calculate_cost(match)
@@ -230,7 +226,7 @@ class Client(Agent):
     def make_match_decision(self, match):
         """Make a decision on whether to accept, reject, or negotiate a match."""
         localInfo = self.get_local_information()
-        decision, counter = self.policy.infer(match, localInfo)
+        decision, counteroffer = self.policy.infer(match, localInfo)
         if decision == "accept":
             self._agree_to_match(match)
         elif decision == "reject":
@@ -240,42 +236,10 @@ class Client(Agent):
         else:
             raise ValueError(f"Unknown policy decision: {decision}")
 
+    # TODO: move this functionality in the networking model, at the agent level
     def client_loop(self):
         """Process matched offers and update finished deals for the client."""
         for match in self.current_matched_offers:
             self.make_match_decision(match)
         self.update_finished_deals()
         self.current_matched_offers.clear()
-
-
-def create_client(
-    client_public_key: str, solver: Solver, smart_contract: SmartContract
-):
-    """Create a client and connect it to a solver and a smart contract.
-
-    Args:
-        client_public_key (str): The public key of the client.
-        solver (Solver): The solver to connect to.
-        smart_contract (SmartContract): The smart contract to connect to.
-
-    Returns:
-        Client: The created client.
-    """
-    policy = Policy("a")
-    client = Client(client_public_key, policy)
-    client.connect_to_solver(url=solver.get_url(), solver=solver)
-    client.connect_to_smart_contract(smart_contract=smart_contract)
-
-    return client
-
-
-if __name__ == "__main__":
-    address = "Your address here"  # Replace with the actual address
-    policy = Policy("b")
-    client = Client(address, policy)
-    client.client_loop()
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        logging.info("Client shutting down.")

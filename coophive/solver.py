@@ -10,21 +10,39 @@ from coophive.event import Event
 from coophive.job_offer import JobOffer
 from coophive.log_json import log_json
 from coophive.match import Match
+from coophive.policy import Policy
 from coophive.resource_offer import ResourceOffer
-from coophive.utils import extra_necessary_match_data
+
+extra_necessary_match_data = {
+    "client_deposit": 5,
+    "timeout": 10,
+    "timeout_deposit": 3,
+    "cheating_collateral_multiplier": 50,
+    "price_per_instruction": 1,
+    "verification_method": "random",
+}
 
 
 class Solver(Agent):
     """Solver class to handle smart contract connections, events, and the matching of job and resource offers."""
 
-    def __init__(self, public_key: str, url: str):
-        """Initialize the Solver with a public key and URL."""
-        super().__init__(public_key)
+    def __init__(
+        self,
+        private_key: str,
+        public_key: str,
+        policy: Policy,
+        auxiliary_states: dict = {},
+    ):
+        """Initialize the Solver."""
+        super().__init__(
+            private_key=private_key,
+            public_key=public_key,
+            auxiliary_states=auxiliary_states,
+        )
         self.logger = logging.getLogger(f"Solver {self.public_key}")
         logging.basicConfig(
             filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
         )
-        self.url = url
         self.machine_keys = ["CPU", "RAM"]
         self.smart_contract = None
         self.deals_made_in_current_step: dict[str, Deal] = {}
@@ -105,19 +123,14 @@ class Solver(Agent):
         # clear list of deals made in current step
         self.deals_made_in_current_step.clear()
 
-    def solver_cleanup(self):
-        """Perform cleanup operations for the solver."""
-        self.currently_matched_job_offers.clear()
-        self.current_matched_resource_offers.clear()
-        # remove outdated job and resource offers
-        self.remove_outdated_offers()
-
     def emit_event(self, event: Event):
         """Emit an event and notify all subscribed event handlers."""
         self.events.append(event)
         for event_handler in self.event_handlers:
             event_handler(event)
 
+    # TODO: transfer functionality inside policy evaluation at the agent level.
+    # This is a solver-specific policy, but still a policy.
     def solve(self):
         """Solve the current matching problem by matching job offers with resource offers."""
         for job_offer_id, job_offer in (
@@ -208,11 +221,3 @@ class Solver(Agent):
         self.add_necessary_match_data(match)
 
         return match
-
-    def get_url(self):
-        """Get the URL of the solver."""
-        return self.url
-
-    def add_deal_to_smart_contract(self, deal: Deal):
-        """Add a deal to the smart contract."""
-        pass

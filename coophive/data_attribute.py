@@ -5,7 +5,7 @@ The DataAttribute class provides methods to add data, retrieve data, set a uniqu
 
 import logging
 
-from coophive.hash_dict import hash_dict
+from coophive.utils import hash_dict
 
 
 class DataAttribute:

@@ -21,7 +21,3 @@ class Machine(DataAttribute):
         self.uuid = Machine.static_uuid
         # increment universal uuid counter
         Machine.static_uuid += 1
-
-    def get_machine_uuid(self):
-        """Return the unique UUID of the machine."""
-        return self.uuid

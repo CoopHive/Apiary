@@ -8,13 +8,23 @@ from coophive.resource_offer import ResourceOffer
 from coophive.smart_contract import SmartContract
 from coophive.solver import Solver
 
+private_key_solver = (
+    "0x4c0883a69102937d6231471b5dbb6204fe512961708279a4a6075d78d6d3721b"
+)
+public_key_solver = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57"
+policy_solver = "mock_policy"
+
 
 @pytest.fixture
 def setup_solver():
     """Fixture to set up the Solver and related objects."""
-    public_key = "test_public_key"
-    url = "http://test_url"
-    solver = Solver(public_key, url)
+
+    solver = Solver(
+        private_key=private_key_solver,
+        public_key=public_key_solver,
+        policy=policy_solver,
+    )
+
     smart_contract = SmartContract("public_key_123")
     solver.connect_to_smart_contract(smart_contract)
 
@@ -131,18 +141,6 @@ def test_remove_outdated_offers(setup_solver):
     assert (
         "resource_offer_123" not in solver.get_local_information().get_resource_offers()
     )
-
-
-def test_solver_cleanup(setup_solver):
-    """Test solver cleanup process."""
-    solver = setup_solver["solver"]
-    solver.currently_matched_job_offers = {"job_offer_123"}
-    solver.current_matched_resource_offers = {"resource_offer_123"}
-    solver.deals_made_in_current_step = [setup_solver["deal"]]
-    solver.solver_cleanup()
-    assert not solver.currently_matched_job_offers
-    assert not solver.current_matched_resource_offers
-    assert not solver.deals_made_in_current_step
 
 
 def test_solve(setup_solver):

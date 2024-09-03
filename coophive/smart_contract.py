@@ -182,23 +182,6 @@ class SmartContract:
         self.balances[resource_provider_address] -= tx.value
         self.balance += tx.value
 
-    def refund_cheating_collateral(self, result: Result):
-        """Refund the cheating collateral based on the result.
-
-        Args:
-            result (Result): The result object.
-        """
-        deal_id = result.get_data()["deal_id"]
-        deal_data = self.deals[deal_id].get_data()
-        cheating_collateral_multiplier = deal_data["cheating_collateral_multiplier"]
-        instruction_count = result.get_data()["instruction_count"]
-        intended_cheating_collateral = (
-            cheating_collateral_multiplier * instruction_count
-        )
-        resource_provider_address = deal_data["resource_provider_address"]
-        self.balances[resource_provider_address] += intended_cheating_collateral
-        self.balance -= intended_cheating_collateral
-
     def _create_and_emit_result_events(self):
         for result, tx in self.results_posted_in_current_step:
             if not isinstance(result, Result):
@@ -262,10 +245,6 @@ class SmartContract:
         self.balance -= tx.value
         # refund client deposit
         self._refund_client_deposit(deal)
-
-    def fund(self, tx: Tx):
-        """Fund the smart contract with a transaction."""
-        self.balances[tx.sender] = self.balances.get(tx.sender, 0) + tx.value
 
     def slash_cheating_collateral(self, event: Event, result: Result):
         """Slash the cheating collateral based on an event."""
@@ -366,30 +345,5 @@ class SmartContract:
         log_json(self.logger, "Smart Contract balance", {"balance": self.balance})
         log_json(self.logger, "Smart Contract balances", {"balances": self.balances})
 
-    def _get_balances(self):
-        return self.balances
-
     def _get_balance(self):
         return self.balance
-
-    def _smart_contract_loop(self):
-        for match in self.matches_made_in_current_step:
-            resource_provider_address = match.get_data()["resource_provider_address"]
-            client_address = match.get_data()["client_address"]
-            match_id = match.get_id()
-            match_data = match.get_data()
-            self.logger.info(
-                f"Both resource provider {resource_provider_address} and client {client_address} have signed match {match_id}"
-            )
-
-            log_json(
-                self.logger,
-                "Match attributes",
-                {"match_id": match_id, "match_attributes": match_data},
-            )
-            self._create_deal(match)
-        self._create_and_emit_result_events()
-        self._account_for_cheating_collateral_payments()
-        self.matches_made_in_current_step.clear()
-        self.results_posted_in_current_step.clear()
-        self._log_balances()
