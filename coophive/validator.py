@@ -3,6 +3,7 @@
 from coophive.agent import Agent
 from coophive.policy import Policy
 
+
 class Validator(Agent):
     """Class representing a validator in the CoopHive simulator."""
 

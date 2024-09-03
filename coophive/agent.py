@@ -25,7 +25,13 @@ class Agent:
     and training routines.
     """
 
-    def __init__(self, private_key: str, public_key: str, policy: Policy, auxiliary_states: dict = {}):
+    def __init__(
+        self,
+        private_key: str,
+        public_key: str,
+        policy: Policy,
+        auxiliary_states: dict = {},
+    ):
         """Initialize the Agent with required and auxiliary states."""
         self.private_key = private_key  # https://web3py.readthedocs.io/en/stable/web3.eth.account.html#reading-a-private-key-from-an-environment-variable
         self.public_key = public_key
