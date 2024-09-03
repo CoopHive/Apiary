@@ -85,8 +85,57 @@ These are Aayushi Jain’s notes on the book “Algorithms for Decision Making�
   - A smaller gain that is certain is often preferred over a much greater gain that is only probable, in a way that the axioms of rationality are necessarily violated.
 - Solving a simple decision involves inference in Bayesian networks and is thus NP-hard.
 
----
+## SEQUENTIAL PROBLEMS
 
-### Chapter 7: [TODO]
+Sequential decision problems in stochastic environments. General formulation of sequential decision problems under the assumption that the model is known and that the environment is fully observable.
+
+### Chapter 7: Exact Solution Methods
+
+**Markov Decision Processes (MDPs)**
+- **Model**: Represents sequential decision problems where effects of actions are uncertain.
+- **A**: Set of possible actions/action space (not required to be finite).
+- **S**: State space/set of possible states (not required to be finite).
+- **Markov Assumption**: The next state depends only on the current state and action, not on any prior state or action.
+- **Utility Function**: Decomposed into rewards \( R_1 - R_t \). The reward function \( R(s, a) \) represents the expected reward when executing action \( a \) from state \( s \). It is a deterministic function of \( s \) and \( a \) because it represents an expectation.
+- **Discount Factor**: Used in infinite horizon problems where the discount factor \( \gamma \) is between 0 and 1. The utility is given by \( \sum_{t=1}^{\infty} \gamma^{t-1} r_t \). This value is sometimes called the discounted return. As long as \( 0 \leq \gamma < 1 \) and the rewards are finite, the utility will be finite. The discount factor makes rewards in the present worth more than those in the future. A discount factor close to 1 is desirable.
+- **Policy**: Defines what action to select given the past history of states and actions. The action to select at time \( t \), given the history \( h_t = (s_{1:t}, a_{1:t-1}) \), is written \( \pi_t(h_t) \). Since future states and rewards depend only on the current state and action, policies can be restricted to depend only on the current state.
+- **Stationary Policy**: Does not depend on time.
+- **Finite Horizon Problems**: It can be beneficial to select different actions depending on how many time steps remain. For example, attempting a half-court shot in basketball is generally only a good strategy if there are only a few seconds remaining. Stationary policies can account for time by incorporating time as a state variable.
+
+### Policy Evaluation
+- **Value Function**: \( U_\pi \) is the value function associated with an optimal policy \( \pi^* \). It can be computed iteratively.
+- **Single-Step Utility**: If the policy is executed for a single step, the utility is \( U_1^\pi(s) = R(s, \pi(s)) \).
+- **Lookahead State-Action Function**: Computed for further steps from a state \( s \) given an action \( a \), using an estimate of the value function \( U \) for the MDP \( \mathcal{P} \).
+- **Iterative Computation**: Compute the value function for a policy \( \pi \) for MDP \( \mathcal{P} \) with discrete state and action spaces using \( k_{max} \) iterations with the lookahead function.
+- **Direct Evaluation**: Policy evaluation can be done without iteration by solving the system of equations in the Bellman expectation equation directly.
+
+### Value Function Policies
+- **Value Function**: Tells us how good it is to be in a particular state.
+- **Policy**: Tells us what action to take in a given state.
+
+### Extracting a Policy from a Value Function
+- **Greedy Policy**: Create a policy by always choosing the action that leads to the best expected outcome.
+
+### Action Value Function (Q-function)
+- **Q-function**: Calculates the value of taking a specific action in a state. It considers the immediate reward of the action plus the expected future value.
+- **Using the Q-function**:
+  - The value of a state is the maximum Q-value for any action in that state.
+  - The best action to take is the one with the highest Q-value.
+
+### Advantage Function
+- **Advantage Function**: Tells us how much better (or worse) an action is compared to the best action.
+- **Calculation**: Subtract the state value from the action value. The best action always has an advantage of zero, while worse actions have negative advantages.
+
+### Policy Iteration
+- **Method**: A way to compute an optimal policy. Iterate between policy evaluation and policy improvement through a greedy policy. Guaranteed to converge because there are finitely many policies, and every iteration improves the policy if it can be improved. It is an expensive process.
+
+### Value Iteration
+- **Method**: Updates the value function directly. Starts with any bounded value function \( U \), where \( |U(s)| < \infty \) for all \( s \). One common initialization is \( U(s) = 0 \) for all \( s \).
+- **Bellman Backup/Update**: The value function can be improved by applying the Bellman backup/Bellman update:
+  \[
+  U(s) = \max \left( R(s,a) + \gamma \sum_{s'} T(s' | s,a) U(s') \right)
+  \]
+
+
 ### Chapter 24: [TODO]
 ### Chapter 25: [TODO]
