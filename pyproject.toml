@@ -16,7 +16,7 @@ packages = [{include = "coophive"}]
 "coophive" = "coophive.__main__:cli"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.12"
 click = {version = ">=8.0, <8.1.4"}
 docker = { version = ">=7.1.0, <7.2.0"}
 numpy = { version = ">=2.0.0, <2.1.0"}
