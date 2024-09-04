@@ -4,17 +4,15 @@ It manage agents, their policies, their states and their actions.
 """
 
 import logging
-import os
 from dataclasses import dataclass
 
 from coophive.data_attribute import DataAttribute
 from coophive.deal import Deal
 from coophive.job_offer import JobOffer
-from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.policy import Policy
 from coophive.resource_offer import ResourceOffer
-from coophive.utils import Tx, hash_dict
+from coophive.utils import Tx, hash_dict, log_json
 
 
 class Agent:
@@ -42,19 +40,16 @@ class Agent:
         self.public_key = public_key
         self.policy = policy
         self.auxiliary_states = auxiliary_states
-
         self.local_information = LocalInformation()
         self.events = []
         self.event_handlers = []
-        self.logger = logging.getLogger(f"Agent {self.public_key}")
-        logging.basicConfig(
-            filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
-        )
         self.smart_contract = None
         self.current_deals: dict[str, Deal] = {}
         self.current_jobs = {}
         self.current_matched_offers = []
         self.deals_finished_in_current_step = []
+
+        logging.info(f"Agent {self.public_key} initialized.")
 
     def get_public_key(self):
         """Get the public key of the agent."""
@@ -80,12 +75,12 @@ class Agent:
         """
         self.smart_contract = smart_contract
         smart_contract.subscribe_event(self.handle_smart_contract_event)
-        self.logger.info("Connected to smart contract")
+        logging.info("Connected to smart contract")
 
     def handle_solver_event(self, event):
         """Handle events from the solver."""
         event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
-        self.logger.info(f"Received solver event: {event_data}")
+        logging.info(f"Received solver event: {event_data}")
 
         if event.get_name() == "match":
             match = event.get_data()
@@ -98,7 +93,7 @@ class Agent:
     # TODO: transfer functionality inside policy evaluation
     def reject_match(self, match):
         """Reject a match."""
-        self.logger.info(f"Rejected match: {match.get_id()}")
+        logging.info(f"Rejected match: {match.get_id()}")
 
     # TODO: transfer functionality inside policy evaluation
     def negotiate_match(self, match, max_rounds=5):
@@ -130,8 +125,8 @@ class Agent:
 
         response_message = "Your offer has been accepted."
 
+        logging.info("Received response from server")
         log_json(
-            self.logger,
             "Received response from server",
             {"response_message": response_message},
         )

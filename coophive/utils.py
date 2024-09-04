@@ -66,6 +66,27 @@ def setup_logger(logs_path, verbose, no_color):
     return logger
 
 
+def log_json(message, data=None):
+    """Log a message and optional data in JSON format.
+
+    Args:
+        message (str): The logging message.
+        data (dict, optional): A dictionary of additional data to be logged. Defaults to None.
+
+    The function combines the message and data into a single JSON object and logs it using the provided logger.
+    """
+    log_entry = {"message": message}
+    if data:
+        log_entry.update(data)
+
+    try:
+        # Attempt to serialize the entire log_entry and log it
+        logging.info(json.dumps(log_entry))
+    except (TypeError, ValueError) as e:
+        # Log the error if the entire log_entry is not JSON serializable
+        logging.error(f"Logging error: {e}")
+
+
 @dataclass
 class Tx:
     """Ethereum transaction metadata."""
