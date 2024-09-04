@@ -47,13 +47,8 @@ class ResourceProvider(Agent):
         threading.Thread(target=self.accept_clients, daemon=True).start()
 
     def accept_clients(self):
-        """Continuously accepts incoming client connections. For each new connection, a new thread is spawned to handle the client's messages."""
-        while True:
-            client_socket, addr = self.server_socket.accept()
-            self.logger.info(f"Connection established with {addr}")
-            threading.Thread(
-                target=self.handle_client_messages, args=(client_socket,), daemon=True
-            ).start()
+        """Continuously accepts incoming client connections. The use of intermediary schemes deprecates this function."""
+        pass
 
     def handle_client_messages(self, client_socket):
         """Handles incoming messages from a connected client."""

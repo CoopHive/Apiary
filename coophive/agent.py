@@ -20,9 +20,14 @@ from coophive.utils import Tx, hash_dict
 class Agent:
     """A class to represent an Agent.
 
-    Examples of Agents include Clients, Resource Providers, Solvers.
-    This class provides methods to manage the Agent's local states, global states, policies
-    and training routines.
+    Examples of Agents include Clients, Resource Providers, Solvers and Validators.
+    This class provides methods to manage the Agent's:
+        - Mandatory States;
+            Mandatory States are hard coded in the Agents API.
+        - Additional States;
+            Additional States are passed as a generic dictionary {"additional_state_1_name": additional_state_1_value}
+        - Schemes;
+        - Policies.
     """
 
     def __init__(
@@ -32,7 +37,7 @@ class Agent:
         policy: Policy,
         auxiliary_states: dict = {},
     ):
-        """Initialize the Agent with required and auxiliary states."""
+        """Initialize the Agent."""
         self.private_key = private_key  # https://web3py.readthedocs.io/en/stable/web3.eth.account.html#reading-a-private-key-from-an-environment-variable
         self.public_key = public_key
         self.policy = policy
