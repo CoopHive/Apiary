@@ -61,6 +61,7 @@ class Agent:
         return self.local_information
 
     def get_states(self):
+        """Get the auxiliary states of the agent."""
         return self.auxiliary_states
 
     def subscribe_event(self, handler):
