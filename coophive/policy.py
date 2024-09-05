@@ -22,12 +22,12 @@ class Policy:
 
     def infer(self, match, states):
         """Evaluate the policy, following the (message, context) => message structure, and compute the message to be returned."""
-        # TODO: policies shall act against message (here called match) and context (that I would call State). Fix API.
-        if self.policy_name == "naive_accepter" and states:
+        # TODO: policies shall act against message (here called match) and context (that I would call State). Fix API to use states.
+        if self.policy_name == "naive_accepter":
             return ("accept", None)
-        elif self.policy_name == "naive_rejecter" and states:
+        elif self.policy_name == "naive_rejecter":
             return ("reject", None)
-        elif self.policy_name == "identity_negotiator" and states:
+        elif self.policy_name == "identity_negotiator":
             # TODO: return an actual counteroffer
             counteroffer = match
             return ("negotiate", counteroffer)
