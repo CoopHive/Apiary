@@ -269,13 +269,15 @@ class ResourceProvider(Agent):
 
     def make_match_decision(self, match):
         """Make a decision on whether to accept, reject, or negotiate a match."""
-        localInfo = self.get_local_information()
-        decision, counter = self.policy.infer(match, localInfo)
+        # deprecate: localInfo = self.get_local_information()
+        states = self.get_states()
+        decision, counteroffer = self.policy.infer(match, states)
         if decision == "accept":
             self._agree_to_match(match)
         elif decision == "reject":
             self.reject_match(match)
         elif decision == "negotiate":
+            # TODO: need to use counteroffer here
             self.negotiate_match(match)
         else:
             raise ValueError(f"Unknown policy decision: {decision}")

@@ -54,10 +54,14 @@ class Agent:
     def get_public_key(self):
         """Get the public key of the agent."""
         return self.public_key
-
+    
+    # TODO: deprecate local information
     def get_local_information(self):
         """Get the local information of the agent."""
         return self.local_information
+    
+    def get_states(self):
+        return self.auxiliary_states
 
     def subscribe_event(self, handler):
         """Subscribe an event handler to receive emitted events."""
