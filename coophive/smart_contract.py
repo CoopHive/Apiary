@@ -4,15 +4,13 @@ It handles the operations and logic associated with smart contracts, including t
 """
 
 import logging
-import os
 
 from coophive.agent import LocalInformation
 from coophive.deal import Deal
 from coophive.event import Event
-from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.result import Result
-from coophive.utils import Tx
+from coophive.utils import Tx, log_json
 
 
 class SmartContract:
@@ -32,10 +30,6 @@ class SmartContract:
         self.local_information = LocalInformation()
         self.events = []
         self.event_handlers = []
-        self.logger = logging.getLogger(f"Smart Contract {self.public_key}")
-        logging.basicConfig(
-            filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
-        )
         self.transactions = []
         self.deals: dict[str, Deal] = {}  # type: ignore # mapping from deal id to deal
         self.balances = {}  # mapping from public key to balance
@@ -61,7 +55,7 @@ class SmartContract:
             "resource_provider_address": resource_provider_address,
             "match_id": match.get_id(),
         }
-        log_json(self.logger, "Resource provider signed match", log_data)
+        log_json("Resource provider signed match", log_data)
 
     def _agree_to_match_client(self, match: Match, tx: Tx):
         """Handle the client's agreement to a match."""
@@ -83,7 +77,7 @@ class SmartContract:
         match.sign_client()
 
         log_data = {"client_address": client_address, "match_id": match.get_id()}
-        log_json(self.logger, "Client signed match", log_data)
+        log_json("Client signed match", log_data)
 
     def agree_to_match(self, match: Match, tx: Tx):
         """Handle agreement to a match by either the resource provider or client.
@@ -121,11 +115,8 @@ class SmartContract:
         deal_event = Event(name="deal", data=deal)
         self.emit_event(deal_event)
 
-        log_json(
-            self.logger,
-            "Deal created",
-            {"deal_id": deal.get_id(), "deal_attributes": deal.get_data()},
-        )
+        log_data = {"deal_id": deal.get_id(), "deal_attributes": deal.get_data()}
+        log_json("Deal created", log_data)
         # append to transactions
         self.transactions.append(deal_event)
 
@@ -137,7 +128,6 @@ class SmartContract:
         self.balances[resource_provider_address] += timeout_deposit
         self.balance -= timeout_deposit
         log_json(
-            self.logger,
             "Timeout deposit refunded",
             {
                 "timeout_deposit": timeout_deposit,
@@ -155,7 +145,6 @@ class SmartContract:
         )
         if intended_cheating_collateral != tx.value:
             log_json(
-                self.logger,
                 "Cheating collateral deposit does not match needed",
                 {
                     "transaction_value": tx.value,
@@ -168,7 +157,6 @@ class SmartContract:
         resource_provider_address = deal_data["resource_provider_address"]
         if intended_cheating_collateral > self.balances[resource_provider_address]:
             log_json(
-                self.logger,
                 "Transaction value exceeds resource provider balance",
                 {
                     "transaction_value": tx.value,
@@ -340,10 +328,6 @@ class SmartContract:
         elif mediation_flag == False:
             # if result was incorrect, then client gets returned its collateral, and compute node gets slashed
             self.slash_cheating_collateral(event)
-
-    def _log_balances(self):
-        log_json(self.logger, "Smart Contract balance", {"balance": self.balance})
-        log_json(self.logger, "Smart Contract balances", {"balances": self.balances})
 
     def _get_balance(self):
         return self.balance

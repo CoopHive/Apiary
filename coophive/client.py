@@ -12,11 +12,10 @@ from collections import deque
 from coophive.agent import Agent
 from coophive.deal import Deal
 from coophive.event import Event
-from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.policy import Policy
 from coophive.result import Result
-from coophive.utils import Tx
+from coophive.utils import Tx, log_json
 
 
 class Client(Agent):
@@ -36,6 +35,7 @@ class Client(Agent):
             policy=policy,
             auxiliary_states=auxiliary_states,
         )
+
         self.current_jobs = deque()
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
         self.client_socket = None
@@ -78,7 +78,7 @@ class Client(Agent):
                 self.client_socket.close()
                 break
             except Exception as e:
-                self.logger.info(f"Error handling message: {e}")
+                logging.info(f"Error handling message: {e}")
 
     def get_jobs(self):
         """Get the client's current jobs."""
@@ -90,7 +90,7 @@ class Client(Agent):
         tx = self._create_transaction(client_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
 
-        log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
+        log_json("Agreed to match", {"match_id": match.get_id()})
 
     # TODO: transfer functionality inside policy evaluation,
     # the mediation strategy is part of the agent policy.
@@ -109,7 +109,7 @@ class Client(Agent):
     # the mediation strategy is part of the agent policy.
     def request_mediation(self, event: Event):
         """Request mediation for an event."""
-        log_json(self.logger, "Requesting mediation", {"event_name": event.get_name()})
+        log_json("Requesting mediation", {"event_name": event.get_name()})
         self.smart_contract.mediate_result(event)
 
     def pay_compute_node(self, event: Event):
@@ -117,7 +117,7 @@ class Client(Agent):
         result = event.get_data()
 
         if not isinstance(result, Result):
-            self.logger.warning(
+            logging.warning(
                 f"Unexpected data type received in solver event: {type(result)}"
             )
         else:
@@ -134,7 +134,6 @@ class Client(Agent):
                 )
                 payment_value = result_instruction_count * price_per_instruction
                 log_json(
-                    self.logger,
                     "Paying compute node",
                     {"deal_id": deal_id, "payment_value": payment_value},
                 )
@@ -149,12 +148,9 @@ class Client(Agent):
 
         if isinstance(data, Deal) or isinstance(data, Match):
             event_data = {"name": event.get_name(), "id": data.get_id()}
-            log_json(
-                self.logger, "Received smart contract event", {"event_data": event_data}
-            )
+            log_json("Received smart contract event", {"event_data": event_data})
         else:
             log_json(
-                self.logger,
                 "Received smart contract event with unexpected data type",
                 {"name": event.get_name()},
             )

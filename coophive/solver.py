@@ -8,10 +8,10 @@ from coophive.data_attribute import DataAttribute
 from coophive.deal import Deal
 from coophive.event import Event
 from coophive.job_offer import JobOffer
-from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.policy import Policy
 from coophive.resource_offer import ResourceOffer
+from coophive.utils import log_json
 
 extra_necessary_match_data = {
     "client_deposit": 5,
@@ -40,10 +40,7 @@ class Solver(Agent):
             policy=policy,
             auxiliary_states=auxiliary_states,
         )
-        self.logger = logging.getLogger(f"Solver {self.public_key}")
-        logging.basicConfig(
-            filename=f"{os.getcwd()}/local_logs", filemode="w", level=logging.DEBUG
-        )
+
         self.machine_keys = ["CPU", "RAM"]
         self.smart_contract = None
         self.deals_made_in_current_step: dict[str, Deal] = {}
@@ -60,7 +57,6 @@ class Solver(Agent):
                 else None
             )
             log_json(
-                self.logger,
                 "Smart contract event",
                 {"event_name": event_name, "event_data_id": event_data_id},
             )
@@ -76,7 +72,6 @@ class Solver(Agent):
         # if deal, remove resource and job offers from list
         elif event.get_name() == "deal" and isinstance(event.get_data(), Deal):
             log_json(
-                self.logger,
                 "Smart contract event",
                 {
                     "event_name": event.get_name(),
@@ -87,7 +82,7 @@ class Solver(Agent):
             deal = event.get_data()
 
             if not isinstance(event.get_data(), DataAttribute):
-                self.logger.warning(
+                logging.warning(
                     f"Unexpected data type received in solver event: {type(event.get_data())}"
                 )
 
@@ -109,7 +104,7 @@ class Solver(Agent):
         """Remove outdated offers that have been dealt in the current step."""
         for deal in self.deals_made_in_current_step:
             if not isinstance(deal, Deal):
-                self.logger.warning(
+                logging.warning(
                     f"Unexpected data type received in solver event: {type(deal)}"
                 )
             deal_data = deal.get_data()
@@ -151,7 +146,6 @@ class Solver(Agent):
                 # emit match event
                 self.emit_event(match_event)
                 log_json(
-                    self.logger,
                     "Match event emitted",
                     {"match_event": match_event.get_data().get_id()},
                 )
@@ -178,7 +172,7 @@ class Solver(Agent):
             ):
                 continue
             if not isinstance(resource_offer, ResourceOffer):
-                self.logger.warning(
+                logging.warning(
                     f"Unexpected data type received in solver event: {type(resource_offer)}"
                 )
                 continue

@@ -1,16 +1,16 @@
 """Module for defining the ResourceProvider class and its related functionalities."""
 
+import logging
 import socket
 import threading
 
 import docker
 
 from coophive.agent import Agent
-from coophive.log_json import log_json
 from coophive.match import Match
 from coophive.policy import Policy
 from coophive.result import Result
-from coophive.utils import Tx
+from coophive.utils import Tx, log_json
 
 
 class ResourceProvider(Agent):
@@ -43,7 +43,7 @@ class ResourceProvider(Agent):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind(("localhost", 1234))
         self.server_socket.listen(5)
-        self.logger.info("Server listening on port 1234")
+        logging.info("Server listening on port 1234")
         threading.Thread(target=self.accept_clients, daemon=True).start()
 
     def accept_clients(self):
@@ -59,7 +59,7 @@ class ResourceProvider(Agent):
                     break
                 # Decode the message from bytes to string
                 message = message.decode("utf-8")
-                self.logger.info(f"Received message from client: {message}")
+                logging.info(f"Received message from client: {message}")
                 if "New match offer" in message:
                     match_data = eval(message.split("New match offer: ")[1])
                     match = Match(match_data)
@@ -78,11 +78,11 @@ class ResourceProvider(Agent):
                         response = self.make_match_decision(match)
                         client_socket.send(response.encode("utf-8"))
             except ConnectionResetError:
-                self.logger.info("Connection lost. Closing connection.")
+                logging.info("Connection lost. Closing connection.")
                 client_socket.close()
                 break
             except Exception as e:
-                self.logger.info(f"Error handling message: {e}")
+                logging.info(f"Error handling message: {e}")
 
     # TODO: transfer functionality inside policy evaluation at the agent level.
     def evaluate_match(self, match):
@@ -98,7 +98,7 @@ class ResourceProvider(Agent):
         ):
             return "RP rejected from evaluate match"
         else:
-            self.logger.info("RP sending counteroffer from evaluate match")
+            logging.info("RP sending counteroffer from evaluate match")
             counter_offer = self.create_new_match_offer(match)
             return f"New match offer: {counter_offer.get_data()}"
 
@@ -108,9 +108,9 @@ class ResourceProvider(Agent):
             self.docker_client.login(
                 username=self.docker_username, password=self.docker_password
             )
-            log_json(self.logger, "Logged into Docker Hub successfully")
+            logging.info("Logged into Docker Hub successfully")
         except docker.errors.APIError as e:
-            log_json(self.logger, f"Failed to log into Docker Hub: {e}")
+            logging.info(f"Failed to log into Docker Hub: {e}")
 
     def _agree_to_match(self, match: Match):
         """Agree to a match and send a transaction to the connected smart contract.
@@ -121,7 +121,7 @@ class ResourceProvider(Agent):
         timeout_deposit = match.get_data()["timeout_deposit"]
         tx = self._create_transaction(timeout_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
-        log_json(self.logger, "Agreed to match", {"match_id": match.get_id()})
+        log_json("Agreed to match", {"match_id": match.get_id()})
 
     def handle_smart_contract_event(self, event):
         """Handle events received from the connected smart contract.
@@ -132,15 +132,11 @@ class ResourceProvider(Agent):
         if event.get_name() == "mediation_random":
 
             event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
-            log_json(
-                self.logger, "Received smart contract event", {"event_data": event_data}
-            )
+            log_json("Received smart contract event", {"event_data": event_data})
         elif event.get_name() == "deal":
 
             event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
-            log_json(
-                self.logger, "Received smart contract event", {"event_data": event_data}
-            )
+            log_json("Received smart contract event", {"event_data": event_data})
             deal = event.get_data()
             deal_data = deal.get_data()
             deal_id = deal.get_id()
@@ -161,7 +157,7 @@ class ResourceProvider(Agent):
             tx (Tx): The transaction metadata associated with the posting.
         """
         self.get_smart_contract().post_result(result, tx)
-        log_json(self.logger, "Posted result", {"result_id": result.get_id()})
+        log_json("Posted result", {"result_id": result.get_id()})
 
     def create_result(self, deal_id):
         """Create a result for the specified deal ID.
@@ -172,8 +168,7 @@ class ResourceProvider(Agent):
         Returns:
             Tuple[Result, Tx]: The created result object and associated transaction metadata.
         """
-        result_log_data = {"deal_id": deal_id}
-        log_json(self.logger, "Creating result", result_log_data)
+        log_json("Creating result", {"deal_id": deal_id})
         result = Result()
         result.add_data("deal_id", deal_id)
         instruction_count = 1
