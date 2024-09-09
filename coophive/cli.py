@@ -8,7 +8,7 @@ import pandas as pd
 
 from coophive import constants, utils
 
-CLI_TIME = str(pd.Timestamp.now().floor("T")).replace(":", "-").replace(" ", "_")
+CLI_TIME = str(pd.Timestamp.now().floor("min")).replace(":", "-").replace(" ", "_")
 output_path: str
 
 
