@@ -102,34 +102,34 @@ Sequential decision problems in stochastic environments. General formulation of 
 - **Stationary Policy**: Does not depend on time.
 - **Finite Horizon Problems**: It can be beneficial to select different actions depending on how many time steps remain. For example, attempting a half-court shot in basketball is generally only a good strategy if there are only a few seconds remaining. Stationary policies can account for time by incorporating time as a state variable.
 
-### Policy Evaluation
+#### Policy Evaluation
 - **Value Function**: \( U_\pi \) is the value function associated with an optimal policy \( \pi^* \). It can be computed iteratively.
 - **Single-Step Utility**: If the policy is executed for a single step, the utility is \( U_1^\pi(s) = R(s, \pi(s)) \).
 - **Lookahead State-Action Function**: Computed for further steps from a state \( s \) given an action \( a \), using an estimate of the value function \( U \) for the MDP \( \mathcal{P} \).
 - **Iterative Computation**: Compute the value function for a policy \( \pi \) for MDP \( \mathcal{P} \) with discrete state and action spaces using \( k_{max} \) iterations with the lookahead function.
 - **Direct Evaluation**: Policy evaluation can be done without iteration by solving the system of equations in the Bellman expectation equation directly.
 
-### Value Function Policies
+#### Value Function Policies
 - **Value Function**: Tells us how good it is to be in a particular state.
 - **Policy**: Tells us what action to take in a given state.
 
-### Extracting a Policy from a Value Function
+#### Extracting a Policy from a Value Function
 - **Greedy Policy**: Create a policy by always choosing the action that leads to the best expected outcome.
 
-### Action Value Function (Q-function)
+#### Action Value Function (Q-function)
 - **Q-function**: Calculates the value of taking a specific action in a state. It considers the immediate reward of the action plus the expected future value.
 - **Using the Q-function**:
   - The value of a state is the maximum Q-value for any action in that state.
   - The best action to take is the one with the highest Q-value.
 
-### Advantage Function
+#### Advantage Function
 - **Advantage Function**: Tells us how much better (or worse) an action is compared to the best action.
 - **Calculation**: Subtract the state value from the action value. The best action always has an advantage of zero, while worse actions have negative advantages.
 
-### Policy Iteration
+#### Policy Iteration
 - **Method**: A way to compute an optimal policy. Iterate between policy evaluation and policy improvement through a greedy policy. Guaranteed to converge because there are finitely many policies, and every iteration improves the policy if it can be improved. It is an expensive process.
 
-### Value Iteration
+#### Value Iteration
 - **Updates the Value Function Directly**:  
   It begins with any bounded value function \( U \), meaning that \( |U(s)| < \infty \) for all \( s \). One common initialization is \( U(s) = 0 \) for all \( s \).
   
@@ -139,21 +139,21 @@ Sequential decision problems in stochastic environments. General formulation of 
   U(s) = \max \left( R(s,a) + \gamma \sum_{s'} T(s' | s,a)U(s') \right)
   \]
 
-### Computationally Intensive -> Async Value Iteration
+#### Computationally Intensive -> Async Value Iteration
 - **Asynchronous Value Iteration**:  
   Only a subset of the states are updated with each iteration.
   
 - **Gauss-Seidel Value Iteration**:  
   Does not require constructing a second value function in memory with each iteration.
 
-### Linear Program Formulation
+#### Linear Program Formulation
 - **Convert Bellman Optimality Equation into a Linear Program**:  
   The number of variables is equal to the number of states, and the number of constraints is equal to the number of states times the number of actions.
 
-### Linear Systems with Quadratic Rewards
+#### Linear Systems with Quadratic Rewards
 - **Not Applicable to Us**
 
-### Summary
+#### Summary
 - Discrete MDPs with bounded rewards can be solved exactly through dynamic programming.
 - Policy evaluation for such problems can be done exactly through matrix inversion or can be approximated by an iterative algorithm.
 - Policy iteration can be used to solve for optimal policies by iterating between policy evaluation and policy improvement.
