@@ -1,5 +1,6 @@
 """This module defines the CLI (Command Line Interface) for the Coophive application."""
 
+import logging
 import os
 
 import click
@@ -17,7 +18,7 @@ output_path: str
 @click.option("--logs-filename", default="coophive-{time}.log")
 @click.option(
     "--output-path",
-    default="../coophive_output/",
+    default="./coophive_output/",
 )
 def cli(
     verbose: bool,
@@ -37,6 +38,13 @@ def cli(
     logs_path = os.path.join(output_dir, logs_filename)
 
     utils.setup_logger(logs_path=logs_path, verbose=verbose, no_color=no_color)
+
+
+@cli.command()
+@click.option("--policy-name", required=True, help="Agent Policy.")
+def seller(policy_name: str):
+    """Seller."""
+    logging.info(f"Policy name: {policy_name}")
 
 
 # cli.command('seller'):

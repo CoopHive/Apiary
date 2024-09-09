@@ -53,6 +53,14 @@ In order of Stars:
     make install
 ## Usage
 
+Example command:
+
+```bash
+coophive --verbose seller --policy-name naive_accepter
+```
+
+### Make
+
 To format the code according to the project's style guidelines, run:
 
     make codestyle
