@@ -161,7 +161,87 @@ Sequential decision problems in stochastic environments. General formulation of 
 - The problem of finding an optimal policy can be framed as a linear program and solved in polynomial time.
 - Continuous problems with linear transition functions and quadratic rewards can be solved exactly.
 
+### Chapter 24: Multiagent Reasoning
 
+#### Simple Games
+- **γ** = discount factor, **I** = agents, **𝒜** = joint action space, **R** = joint reward function
+- Example: Prisoner’s dilemma is a two-agent two-action game.
+- Joint policy **π** specifies a probability distribution over joint actions taken by agents.
+- Probability that agent **i** selects action **a** is given by **πi(a)**.
+  - **Deterministic policy** = pure strategy
+  - **Stochastic policy** = mixed strategy
+  - Can be broken down into individual policies.
 
-### Chapter 24: [TODO]
-### Chapter 25: [TODO]
+#### Zero-Sum Game
+- Sum of rewards across agents is 0. Any gain of one agent results in a loss to the other agents.
+- A zero-sum game with two agents has opposing reward functions.
+
+#### Response Models
+- Model the response of a single agent **i**, given fixed policies for the other agents.
+  - **Best response** = policy where there is no incentive to change the policy, given a fixed set of other agents' policies (multiple best responses can exist).
+  - **Deterministic best response**: Iterate over all of agent **i**’s actions and return the one that maximizes utility **Ui(ai, π−i)**.
+  - **Softmax response**: Given precision parameter **λ**, action **a** is selected according to **πi(ai) ∝ exp(λUi(ai, π−i))**.
+    - As **λ** approaches 0, the agent is insensitive to utility differences and selects actions uniformly at random.
+    - As **λ** approaches infinity, the policy converges to a deterministic best response.
+
+#### Dominant Strategy Equilibrium
+- **Dominant strategy**: Policy that is a best response against all other possible agent policies.
+- **Dominant strategy equilibrium**: All agents use dominant strategies.
+
+#### Nash Equilibrium
+- Always exists for games with a finite action space.
+- Joint policy where all agents follow a best response, and no agent has an incentive to unilaterally switch their policy.
+- We aim to find strategies for all players (**π**) and their expected payoffs (**U**).
+  - Minimize the difference between actual and expected payoffs.
+  - Constraints ensure no player can improve by changing their strategy alone.
+  - Strategies must be valid (probabilities sum to 1 and are non-negative).
+- **Nash Equilibrium**: Mutual best responses based on others' strategies.
+- **Dominant Strategy Equilibrium**: Requires each player to have a dominant strategy, independent of others' strategies.
+
+#### Correlated Equilibrium
+- Agents do not necessarily act independently.
+- **Correlated joint policy π(a)** is a single distribution over joint actions, so agent policies may be correlated.
+- A correlated equilibrium is a joint policy where no agent can increase their expected utility by deviating from their action **ai**.
+  - Every Nash equilibrium is a correlated equilibrium since we can form a joint policy from independent policies.
+  - **Example**: This could resemble the SOLVER in the **coophive-simulator**.
+
+#### Objective Functions for Correlated Equilibria
+- **Utilitarian**: Maximize net utility.
+- **Egalitarian**: Maximize the minimum utility among agents.
+- **Plutocratic**: Maximize the maximum utility among agents.
+- **Dictatorial**: Maximize a specific agent's utility.
+
+#### Alternative to Computing Nash Equilibrium
+- **Iterated best response**: Repeatedly apply best responses in a series of games. Randomly cycle between agents, solving for each agent’s best response policy in turn.
+- **Hierarchical softmax**: Models agents in terms of their depth of rationality and precision, learnable from past joint actions.
+- **Fictitious play**: A learning algorithm that uses maximum-likelihood action models for other agents to find best response policies, potentially converging to a Nash equilibrium.
+- **Gradient ascent**: Followed by projection onto the probability simplex, can be used to learn policies.
+
+### Chapter 25: Sequential Problems
+
+#### Markov Game
+- Extends simple games to a sequential context with multiple states.
+- **Markov Game**: A Markov decision process with multiple agents, each with their own reward function.
+  - Transitions depend on joint actions, and all agents aim to maximize their own rewards.
+  - Shared state **s**, with transition distribution **T(s′ | s, a)**.
+  - Each agent **i** receives a reward according to its reward function **Ri(s, a)**, which depends on the state.
+  - Example: **Traffic routing**.
+  - We do not know other agents' behavior, only their rewards.
+  - **Coophive-simulator**: A Markov game where agents are resource providers and clients; states are offers/information variables, and actions are agent decisions.
+
+#### Response Models
+- A response policy for agent **i** is a policy **πi** that maximizes expected utility, given fixed policies of other agents **π−i**. This reduces to an MDP for agent **i**.
+  - Solve MDP for a best response policy for each agent.
+  - **Softmax response**: Assign stochastic responses to other agents’ policies at each state, using a one-step lookahead with the action value function **Q(s, a)**.
+  - **Nash equilibrium**: Generalized to Markov Games, where all agents perform a best response and have no incentive to deviate.
+  
+#### Fictitious Play
+- Maintains a maximum-likelihood model over other agents' policies, tracking state and actions.
+  - Track how often agent **j** takes action **a** in state **s**, storing it in table **N(j, aj, s)**, initialized to 1.
+  - Use this to compute the best response.
+  - Utilities in Markov Games are harder to compute than in simple games due to state dependency.
+
+#### Gradient Ascent
+
+#### Nash Q-Learning
+
