@@ -37,3 +37,17 @@ def cli(
     logs_path = os.path.join(output_dir, logs_filename)
 
     utils.setup_logger(logs_path=logs_path, verbose=verbose, no_color=no_color)
+
+
+# cli.command('seller'):
+# agent = Agent(policy='ridge_regressor')
+# states = LoadStates()
+# agent.train(states=states)
+# def ():
+# Clarify the relationship between these two steps:
+# uvicorn.run(agent)
+# agent.infer(received_message)
+
+# cli.command('buyer'):
+# agent = Agent(policy='naive_accepter')
+# ...
