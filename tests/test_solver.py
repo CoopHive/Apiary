@@ -22,7 +22,7 @@ def setup_solver():
     solver = Solver(
         private_key=private_key_solver,
         public_key=public_key_solver,
-        policy=policy_solver,
+        policy_name=policy_solver,
     )
 
     smart_contract = SmartContract("public_key_123")

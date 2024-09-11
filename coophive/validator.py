@@ -1,7 +1,6 @@
 """Module for defining the Validator class and its related functionalities."""
 
 from coophive.agent import Agent
-from coophive.policy import Policy
 
 
 class Validator(Agent):
@@ -11,14 +10,14 @@ class Validator(Agent):
         self,
         private_key: str,
         public_key: str,
-        policy: Policy,
+        policy_name: str,
         auxiliary_states: dict = {},
     ):
         """Initialize the Validator instance."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
-            policy=policy,
+            policy_name=policy_name,
             auxiliary_states=auxiliary_states,
         )
 

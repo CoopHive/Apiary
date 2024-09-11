@@ -61,9 +61,14 @@ def seller(policy_name: str):
     # In the same way in which the inference is separate from the update of the policy state, as more messages flow in,
     # the policy train/infer are both separate from the population of the environmental state, both historical and point-in-time.
 
-    # seller_agent = ResourceProvider(private_key=privkey, public_key=pubkey, policy=policy_name)
+    seller_agent = ResourceProvider(
+        private_key=privkey, public_key=pubkey, policy_name=policy_name
+    )
+    tmp = seller_agent.policy.infer(
+        "a", "b"
+    )  # TODO: infer API to be fixed, returned value scheme-compliant.
 
-    # TODO: migrate these functionalities within the agent.
+    # TODO: migrate these functionalities within the agent above.
     command = "cd ../redis-scheme-client/example-agent && bun run index.ts"
     subprocess.run(command, shell=True, text=True)
 
@@ -84,8 +89,13 @@ def buyer(initial_offer: str, policy_name: str):
     pubkey = initial_offer["pubkey"]
     privkey = pubkey  # TODO: placeholder, abstract to cli input.
 
-    # buyer_agent = Client(private_key=privkey, public_key=pubkey, policy=policy_name)
+    buyer_agent = Client(
+        private_key=privkey, public_key=pubkey, policy_name=policy_name
+    )
+    tmp = buyer_agent.policy.infer(
+        "a", "b"
+    )  # TODO: infer API to be fixed, returned value scheme-compliant.
 
-    # TODO: migrate these functionalities within the agent.
+    # TODO: migrate these functionalities within the agent above.
     command = "cd ../redis-scheme-client/src && bun run runner.ts seller localhost:3000"
     subprocess.run(command, shell=True, text=True)

@@ -1,14 +1,9 @@
 """Module for defining the ResourceProvider class and its related functionalities."""
 
 import logging
-import socket
-import threading
-
-import docker
 
 from coophive.agent import Agent
 from coophive.match import Match
-from coophive.policy import Policy
 from coophive.result import Result
 from coophive.utils import Tx, log_json
 
@@ -20,35 +15,16 @@ class ResourceProvider(Agent):
         self,
         private_key: str,
         public_key: str,
-        policy: Policy,
+        policy_name: str,
         auxiliary_states: dict = {},
     ):
         """Initialize the ResourceProvider instance."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
-            policy=policy,
+            policy_name=policy_name,
             auxiliary_states=auxiliary_states,
         )
-        self.machines = {}
-        self.docker_client = docker.from_env()
-        self.server_socket = None
-        self.start_server_socket()
-        self.docker_username = "your_dockerhub_username"
-        self.docker_password = "your_dockerhub_password"
-        self.login_to_docker()
-
-    def start_server_socket(self):
-        """Initializes the server socket, binds it to a local address and port, and starts listening for incoming connections."""
-        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_socket.bind(("localhost", 1234))
-        self.server_socket.listen(5)
-        logging.info("Server listening on port 1234")
-        threading.Thread(target=self.accept_clients, daemon=True).start()
-
-    def accept_clients(self):
-        """Continuously accepts incoming client connections. The use of intermediary schemes deprecates this function."""
-        pass
 
     def handle_client_messages(self, client_socket):
         """Handles incoming messages from a connected client."""
@@ -101,16 +77,6 @@ class ResourceProvider(Agent):
             logging.info("RP sending counteroffer from evaluate match")
             counter_offer = self.create_new_match_offer(match)
             return f"New match offer: {counter_offer.get_data()}"
-
-    def login_to_docker(self):
-        """Log in to Docker Hub using the provided username and password."""
-        try:
-            self.docker_client.login(
-                username=self.docker_username, password=self.docker_password
-            )
-            logging.info("Logged into Docker Hub successfully")
-        except docker.errors.APIError as e:
-            logging.info(f"Failed to log into Docker Hub: {e}")
 
     def _agree_to_match(self, match: Match):
         """Agree to a match and send a transaction to the connected smart contract.

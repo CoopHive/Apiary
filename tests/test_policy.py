@@ -31,20 +31,20 @@ def setup_agents_with_policies():
         mock_docker_client = MagicMock()
         mock_docker_from_env.return_value = mock_docker_client
 
-        policy_a = Policy("naive_accepter")
-        policy_b = Policy("naive_rejecter")
-        policy_c = Policy("identity_negotiator")
+        policy_a = "naive_accepter"
+        policy_b = "naive_rejecter"
+        policy_c = "identity_negotiator"
 
         client = Client(
             private_key=private_key_client,
             public_key=public_key_client,
-            policy=policy_a,
+            policy_name=policy_a,
         )
 
         resource_provider = ResourceProvider(
             private_key=private_key_resource,
             public_key=public_key_resource,
-            policy=policy_b,
+            policy_name=policy_b,
         )
 
         return client, resource_provider, policy_c
@@ -73,7 +73,7 @@ def test_make_match_decision_with_policies(setup_agents_with_policies):
     resource_provider.make_match_decision(mock_match)
     resource_provider.reject_match.assert_called_once_with(mock_match)
 
-    client.policy = policy_c
+    client.policy = Policy(policy_name=policy_c)
     client.negotiate_match = MagicMock()
     client.make_match_decision(mock_match)
     client.negotiate_match.assert_called_once_with(mock_match)

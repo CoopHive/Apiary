@@ -1,7 +1,6 @@
 """This module defines the Solver class which is responsible for connecting to smart contracts, handling events, and managing job and resource offers."""
 
 import logging
-import os
 
 from coophive.agent import Agent
 from coophive.data_attribute import DataAttribute
@@ -9,7 +8,6 @@ from coophive.deal import Deal
 from coophive.event import Event
 from coophive.job_offer import JobOffer
 from coophive.match import Match
-from coophive.policy import Policy
 from coophive.resource_offer import ResourceOffer
 from coophive.utils import log_json
 
@@ -30,14 +28,14 @@ class Solver(Agent):
         self,
         private_key: str,
         public_key: str,
-        policy: Policy,
+        policy_name: str,
         auxiliary_states: dict = {},
     ):
         """Initialize the Solver."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
-            policy=policy,
+            policy_name=policy_name,
             auxiliary_states=auxiliary_states,
         )
 

@@ -5,15 +5,12 @@ connect to solvers and smart contracts, handle events, and make decisions regard
 """
 
 import logging
-import socket
-import threading
 from collections import deque
 
 from coophive.agent import Agent
 from coophive.deal import Deal
 from coophive.event import Event
 from coophive.match import Match
-from coophive.policy import Policy
 from coophive.result import Result
 from coophive.utils import Tx, log_json
 
@@ -25,37 +22,30 @@ class Client(Agent):
         self,
         private_key: str,
         public_key: str,
-        policy: Policy,
+        policy_name: str,
         auxiliary_states: dict = {},
     ):
         """Initialize a new Client instance."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
-            policy=policy,
+            policy_name=policy_name,
             auxiliary_states=auxiliary_states,
         )
 
         self.current_jobs = deque()
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
         self.client_socket = None
-        self.server_address = ("localhost", 1234)
-        self.start_client_socket()
-
-    def start_client_socket(self):
-        """Start the client socket and connect to the server."""
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect(self.server_address)
-        logging.info("Connected to server")
-        threading.Thread(target=self.handle_server_messages, daemon=True).start()
+        self.server_address = (
+            "localhost",
+            1234,
+        )  # TODO: pass this as mandatory state to every agent. Scheme client url.
 
     def handle_server_messages(self):
         """Handle incoming messages from the server."""
         while True:
             try:
-                message = self.client_socket.recv(1024)
-                if not message:
-                    break
+                break
                 message = message.decode("utf-8")
                 logging.info(f"Received message from server: {message}")
                 if "New match offer" in message:
@@ -73,10 +63,6 @@ class Client(Agent):
                         # New match, add to current_matched_offers and process
                         self.current_matched_offers.append(new_match)
                         self.make_match_decision(new_match)
-            except ConnectionResetError:
-                logging.info("Connection lost. Closing connection.")
-                self.client_socket.close()
-                break
             except Exception as e:
                 logging.info(f"Error handling message: {e}")
 

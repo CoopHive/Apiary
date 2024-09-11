@@ -6,7 +6,6 @@ from coophive.client import Client
 from coophive.deal import Deal
 from coophive.event import Event
 from coophive.match import Match
-from coophive.policy import Policy
 from coophive.result import Result
 from coophive.smart_contract import SmartContract
 from coophive.utils import Tx
@@ -17,7 +16,7 @@ private_key_client = (
 public_key_client = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57"
 public_key_resource = "0x627306090abaB3A6e1400e9345bC60c78a8BEf56"
 
-policy_a = Policy("naive_accepter")
+policy_a = "naive_accepter"
 
 
 @pytest.fixture
@@ -30,7 +29,7 @@ def setup_client():
         client = Client(
             private_key=private_key_client,
             public_key=public_key_client,
-            policy=policy_a,
+            policy_name=policy_a,
         )
         smart_contract = SmartContract(public_key="smart_contract_key")
         client.get_smart_contract = lambda: smart_contract
@@ -106,7 +105,7 @@ def test_pay_compute_node():
         client = Client(
             private_key=private_key_client,
             public_key=public_key_client,
-            policy=policy_a,
+            policy_name=policy_a,
         )
 
         client.smart_contract = SmartContract("public_key_123")
