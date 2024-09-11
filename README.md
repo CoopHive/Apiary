@@ -57,6 +57,7 @@ Example command:
 
 ```bash
 coophive --verbose seller --policy-name naive_accepter
+coophive --verbose buyer --initial-offer '{"pubkey": "0x123","offerId": "offer_0","initial": true,"data": {"_tag": "offer","query": "hello","price": ["0x100", 200]}}' --policy-name naive_accepter
 ```
 
 ### Make

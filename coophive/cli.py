@@ -1,12 +1,16 @@
 """This module defines the CLI (Command Line Interface) for the Coophive application."""
 
+import json
 import logging
 import os
+import subprocess
 from datetime import datetime
 
 import click
 
 from coophive import constants, utils
+from coophive.client import Client
+from coophive.resource_provider import ResourceProvider
 
 current_time = datetime.now().replace(second=0, microsecond=0)
 
@@ -48,16 +52,40 @@ def seller(policy_name: str):
     """Seller."""
     logging.info(f"Policy name: {policy_name}")
 
+    pubkey = "0x222"  # TODO: placeholder, abstract to cli input.
+    privkey = pubkey
 
-# cli.command('seller'):
-# agent = Agent(policy='ridge_regressor')
-# states = LoadStates()
-# agent.train(states=states)
-# def ():
-# Clarify the relationship between these two steps:
-# uvicorn.run(agent)
-# agent.infer(received_message)
+    # additionalstates = LoadAdditionalStates(policy=policy_name)
+    # TODO: given we are going for a stateless implementation, also the environmental states are stored and
+    # either loaded only at inference time or loaded to train.
+    # In the same way in which the inference is separate from the update of the policy state, as more messages flow in,
+    # the policy train/infer are both separate from the population of the environmental state, both historical and point-in-time.
 
-# cli.command('buyer'):
-# agent = Agent(policy='naive_accepter')
-# ...
+    # seller_agent = ResourceProvider(private_key=privkey, public_key=pubkey, policy=policy_name)
+
+    # TODO: migrate these functionalities within the agent.
+    command = "cd ../redis-scheme-client/example-agent && bun run index.ts"
+    subprocess.run(command, shell=True, text=True)
+
+
+@cli.command()
+@click.option("--initial-offer", required=True, help="Buyer Agent Initial Policy.")
+@click.option("--policy-name", required=True, help="Agent Policy.")
+def buyer(initial_offer: str, policy_name: str):
+    """Buyer."""
+    logging.info(f"Initial Offer: {initial_offer}")
+    logging.info(f"Policy name: {policy_name}")
+
+    command = f"redis-cli publish initial_offers '{initial_offer}'"
+    subprocess.run(command, shell=True, text=True)
+
+    initial_offer = json.loads(initial_offer)
+
+    pubkey = initial_offer["pubkey"]
+    privkey = pubkey  # TODO: placeholder, abstract to cli input.
+
+    # buyer_agent = Client(private_key=privkey, public_key=pubkey, policy=policy_name)
+
+    # TODO: migrate these functionalities within the agent.
+    command = "cd ../redis-scheme-client/src && bun run runner.ts seller localhost:3000"
+    subprocess.run(command, shell=True, text=True)
