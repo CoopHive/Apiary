@@ -35,6 +35,12 @@ class Agent:
             models. They are again stored outside the Agent.
 
     The responsibility for managing the history and updates of these states, if necessary, is on the Agent itself.
+
+    Tradeoff Consideration:
+        - Disk Space vs. RAM: While stateless design offloads memory usage by storing and retrieving data externally,
+          there is a tradeoff when considering the amount of space consumed. Over time, the volume of stored states
+          (especially environmental states and policy histories) can grow significantly, requiring more storage.
+          This has relevant implications for more lightweight devices like IoT sensors, which may have limited storage and RAM.
     """
 
     def __init__(
