@@ -64,23 +64,20 @@ def seller(
     logging.info(f"Messaging client: {messaging_client_url}")
     logging.info(f"Policy name: {policy_name}")
 
-    # additionalstates = LoadAdditionalStates(policy=policy_name)
-    # TODO: given we are going for a stateless implementation, also the environmental states are stored and
-    # either loaded only at inference time or loaded to train.
-    # In the same way in which the inference is separate from the update of the policy state, as more messages flow in,
-    # the policy train/infer are both separate from the population of the environmental state, both historical and point-in-time.
+    if True:
+        # def http_server():
+        seller_agent = ResourceProvider(
+            private_key=private_key,
+            public_key=public_key,
+            messaging_client_url=messaging_client_url,
+            policy_name=policy_name,
+        )
+        tmp = seller_agent.policy.infer("Some scheme-compliant message from buyer.")
 
-    seller_agent = ResourceProvider(
-        private_key=private_key,
-        public_key=public_key,
-        messaging_client_url=messaging_client_url,
-        policy_name=policy_name,
-    )
-    tmp = seller_agent.policy.infer("Some scheme-compliant message from buyer.")
-
-    # TODO: migrate these functionalities within the agent above.
-    command = "cd ../redis-scheme-client/example-agent && bun run index.ts"
-    subprocess.run(command, shell=True, text=True)
+        # TODO: migrate these functionalities within the agent above.
+        command = "cd ../redis-scheme-client/example-agent && bun run index.ts"
+        subprocess.run(command, shell=True, text=True)
+        # return tmp
 
 
 @cli.command()
