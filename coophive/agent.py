@@ -47,20 +47,19 @@ class Agent:
         self,
         private_key: str,
         public_key: str,
+        messagin_client_address: str,
         policy_name: str,
-        auxiliary_states: dict = {},
     ):
         """Initialize the Agent."""
         self.private_key = private_key  # https://web3py.readthedocs.io/en/stable/web3.eth.account.html#reading-a-private-key-from-an-environment-variable
         self.public_key = public_key
+        self.messagin_client_address = messagin_client_address
         self.policy = Policy(policy_name=policy_name)
-        self.auxiliary_states = auxiliary_states
+
         self.local_information = LocalInformation()
         self.events = []
-        self.event_handlers = []
         self.smart_contract = None
         self.current_deals: dict[str, Deal] = {}
-        self.current_jobs = {}
         self.current_matched_offers = []
         self.deals_finished_in_current_step = []
 
@@ -73,10 +72,6 @@ class Agent:
     def get_local_information(self):
         """Get the local information of the agent."""
         return self.local_information
-
-    def subscribe_event(self, handler):
-        """Subscribe an event handler to receive emitted events."""
-        self.event_handlers.append(handler)
 
     def _create_transaction(self, value):
         """Helper function to create a reusable transaction object."""

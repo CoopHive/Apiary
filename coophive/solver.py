@@ -28,19 +28,18 @@ class Solver(Agent):
         self,
         private_key: str,
         public_key: str,
+        messagin_client_address: str,
         policy_name: str,
-        auxiliary_states: dict = {},
     ):
         """Initialize the Solver."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
+            messagin_client_address=messagin_client_address,
             policy_name=policy_name,
-            auxiliary_states=auxiliary_states,
         )
 
         self.machine_keys = ["CPU", "RAM"]
-        self.smart_contract = None
         self.deals_made_in_current_step: dict[str, Deal] = {}
         self.currently_matched_job_offers = set()
         self.current_matched_resource_offers = set()

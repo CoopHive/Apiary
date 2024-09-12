@@ -22,24 +22,19 @@ class Client(Agent):
         self,
         private_key: str,
         public_key: str,
+        messagin_client_address: str,
         policy_name: str,
-        auxiliary_states: dict = {},
     ):
         """Initialize a new Client instance."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
+            messagin_client_address=messagin_client_address,
             policy_name=policy_name,
-            auxiliary_states=auxiliary_states,
         )
 
         self.current_jobs = deque()
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
-        self.client_socket = None
-        self.server_address = (
-            "localhost",
-            1234,
-        )  # TODO: pass this as mandatory state to every agent. Scheme client url.
 
     def handle_server_messages(self):
         """Handle incoming messages from the server."""

@@ -23,28 +23,18 @@ def agent_public_key():
 
 
 @pytest.fixture
-def auxiliary_states():
-    return {"state_1": "value_1", "state_2": "value_2"}
-
-
-@pytest.fixture
-def agent(setup_private_key, agent_public_key, agent_policy, auxiliary_states):
+def agent(setup_private_key, agent_public_key, agent_policy):
     return Agent(
         private_key=setup_private_key,
         public_key=agent_public_key,
         policy_name=agent_policy,
-        auxiliary_states=auxiliary_states,
     )
 
 
-def test_agent_initialization(
-    agent, setup_private_key, agent_public_key, agent_policy, auxiliary_states
-):
+def test_agent_initialization(agent, setup_private_key, agent_public_key):
     assert agent.private_key == setup_private_key
     assert agent.public_key == agent_public_key
     assert isinstance(agent.policy, Policy)
-    assert isinstance(agent.auxiliary_states, dict)
-    assert agent.auxiliary_states == auxiliary_states
 
 
 if __name__ == "__main__":

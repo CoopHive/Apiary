@@ -10,15 +10,15 @@ class Validator(Agent):
         self,
         private_key: str,
         public_key: str,
+        messagin_client_address: str,
         policy_name: str,
-        auxiliary_states: dict = {},
     ):
         """Initialize the Validator instance."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
+            messagin_client_address=messagin_client_address,
             policy_name=policy_name,
-            auxiliary_states=auxiliary_states,
         )
 
     def verify_result(event):
