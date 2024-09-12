@@ -1,5 +1,7 @@
 """This module defines the Policy class used when agents, in general, make decisions within the CoopHive simulator."""
 
+import pandas as pd
+
 
 class Policy:
     """Defines the behavior of Agents based on a predefined policy within the CoopHive simulator.
@@ -39,18 +41,46 @@ class Policy:
         """
         self.policy_name = policy_name
 
-    def train():
+    def load_states(self):
+        """Get the states for the agent policy to be trained/evaluated, if needed.
+
+        States are loaded at training/inference time only.
+        """
+        auxiliary_states = pd.read_parquet(
+            f"auxiliary_states_{self.policy_name}.parquet"
+        )
+        messaging_states = pd.read_parquet(
+            f"messaging_states_{self.policy_name}.parquet"
+        )
+        policy_states = pd.read_parquet(f"policy_states_{self.policy_name}.parquet")
+        return [auxiliary_states, messaging_states, policy_states]
+
+    def train(self):
         """Train the policy function using stastistical learning techniques."""
-        raise NotImplementedError
+        # TODO: load states here if necessary:
+        # X = self.load_states()
+        # because of the stateless nature, train is responsible fro loading auxiliary_states, messaging_states
+        # and potentially (historical) policy_states and update the policy_states file.
+        raise NotImplementedError(self.policy_name)
 
-    def infer(self, match, localInformation):
-        """Evaluate the policy, following the (message, context) => message structure, and compute the message to be returned."""
-        # TODO: policies shall act against message (here called match) and context (that I would call State). Fix API.
+    def infer(self, message):
+        """Evaluate the policy, following the (message, context) => message structure, and compute the message to be returned.
 
+        Context/states are loaded here, if necessary.
+        """
         if self.policy_name == "naive_accepter":
-            return "accept", None
+            # TODO: fix, this policy is not scheme compliant.
+            return "accept"
         elif self.policy_name == "naive_rejecter":
-            return "reject", None
+            # TODO: fix, this policy is not scheme compliant.
+            return "reject"
         elif self.policy_name == "identity_negotiator":
-            counteroffer = match
-            return "negotiate", counteroffer
+            # TODO: fix, this policy is not correct, even if scheme-compliant
+            # as it uses the received message address, instead of the submitter.
+            return message
+        elif self.policy_name == "useless_state_loader":
+            # TODO: fix, this policy is not scheme compliant.
+            context = self.load_states()
+            return "accept"
+        else:
+            raise NotImplementedError(f"Policy {self.policy_name} is not implemented.")

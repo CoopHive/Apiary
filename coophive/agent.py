@@ -69,6 +69,7 @@ class Agent:
         """Get the public key of the agent."""
         return self.public_key
 
+    # TODO: deprecate local information
     def get_local_information(self):
         """Get the local information of the agent."""
         return self.local_information
