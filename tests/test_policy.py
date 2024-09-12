@@ -82,17 +82,14 @@ def test_make_match_decision_with_policies(setup_agents_with_policies):
     resource_provider.reject_match.reset_mock()
     client.negotiate_match.reset_mock()
 
-    def mock_infer(match, states):
-        assert states == {"some": "state"}
-        return "accept", None
+    def mock_infer(message):
+        return "accept"
 
     client.policy.infer = MagicMock(side_effect=mock_infer)
-    client.get_states = MagicMock(return_value={"some": "state"})
 
     client.make_match_decision(mock_match)
 
     client.policy.infer.assert_called_once()
-    client.get_states.assert_called_once()
     client._agree_to_match.assert_called_once_with(mock_match)
 
 

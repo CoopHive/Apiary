@@ -223,20 +223,13 @@ class Client(Agent):
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
 
+    # TODO: the policy inference function shall interact directly with the messaging client.
+    # Everything in the make_match_decision should happen inside the policy inference,
+    # which is also responsible for outputs to be scheme-compliant.
+    # This will deprecate the make_match_decision function.
     def make_match_decision(self, match):
         """Make a decision on whether to accept, reject, or negotiate a match."""
-        # deprecate: localInfo = self.get_local_information()
-        states = self.get_states()
-        decision, counteroffer = self.policy.infer(match, states)
-        if decision == "accept":
-            self._agree_to_match(match)
-        elif decision == "reject":
-            self.reject_match(match)
-        elif decision == "negotiate":
-            # TODO: need to use counteroffer here
-            self.negotiate_match(match)
-        else:
-            raise ValueError(f"Unknown policy decision: {decision}")
+        output_message = self.policy.infer(match)
 
     # TODO: move this functionality in the networking model, at the agent level
     def client_loop(self):
