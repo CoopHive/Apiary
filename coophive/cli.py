@@ -47,13 +47,22 @@ def cli(
 
 
 @cli.command()
+@click.option(
+    "--private-key",
+    required=True,
+)
+@click.option(
+    "--public-key",
+    required=True,
+)
+@click.option("--messaging-client-url", required=True, help="Agent Policy.")
 @click.option("--policy-name", required=True, help="Agent Policy.")
-def seller(policy_name: str):
+def seller(
+    private_key: str, public_key: str, messaging_client_url: str, policy_name: str
+):
     """Seller."""
+    logging.info(f"Messaging client: {messaging_client_url}")
     logging.info(f"Policy name: {policy_name}")
-
-    pubkey = "0x222"  # TODO: placeholder, abstract to cli input.
-    privkey = pubkey
 
     # additionalstates = LoadAdditionalStates(policy=policy_name)
     # TODO: given we are going for a stateless implementation, also the environmental states are stored and
@@ -62,11 +71,12 @@ def seller(policy_name: str):
     # the policy train/infer are both separate from the population of the environmental state, both historical and point-in-time.
 
     seller_agent = ResourceProvider(
-        private_key=privkey, public_key=pubkey, policy_name=policy_name
+        private_key=private_key,
+        public_key=public_key,
+        messaging_client_url=messaging_client_url,
+        policy_name=policy_name,
     )
-    tmp = seller_agent.policy.infer(
-        "a", "b"
-    )  # TODO: infer API to be fixed, returned value scheme-compliant.
+    tmp = seller_agent.policy.infer("Some scheme-compliant message from buyer.")
 
     # TODO: migrate these functionalities within the agent above.
     command = "cd ../redis-scheme-client/example-agent && bun run index.ts"
@@ -75,10 +85,26 @@ def seller(policy_name: str):
 
 @cli.command()
 @click.option("--initial-offer", required=True, help="Buyer Agent Initial Policy.")
+@click.option(
+    "--private-key",
+    required=True,
+)
+@click.option(
+    "--public-key",
+    required=True,
+)
+@click.option("--messaging-client-url", required=True, help="Agent Policy.")
 @click.option("--policy-name", required=True, help="Agent Policy.")
-def buyer(initial_offer: str, policy_name: str):
+def buyer(
+    initial_offer: str,
+    private_key: str,
+    public_key: str,
+    messaging_client_url: str,
+    policy_name: str,
+):
     """Buyer."""
     logging.info(f"Initial Offer: {initial_offer}")
+    logging.info(f"Messaging client: {messaging_client_url}")
     logging.info(f"Policy name: {policy_name}")
 
     command = f"redis-cli publish initial_offers '{initial_offer}'"
@@ -87,14 +113,15 @@ def buyer(initial_offer: str, policy_name: str):
     initial_offer = json.loads(initial_offer)
 
     pubkey = initial_offer["pubkey"]
-    privkey = pubkey  # TODO: placeholder, abstract to cli input.
 
     buyer_agent = Client(
-        private_key=privkey, public_key=pubkey, policy_name=policy_name
+        private_key=private_key,
+        public_key=public_key,
+        messaging_client_url=messaging_client_url,
+        policy_name=policy_name,
     )
-    tmp = buyer_agent.policy.infer(
-        "a", "b"
-    )  # TODO: infer API to be fixed, returned value scheme-compliant.
+
+    tmp = buyer_agent.policy.infer("Some scheme-compliant message from seller.")
 
     # TODO: migrate these functionalities within the agent above.
     command = "cd ../redis-scheme-client/src && bun run runner.ts seller localhost:3000"

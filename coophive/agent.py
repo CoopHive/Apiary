@@ -47,13 +47,13 @@ class Agent:
         self,
         private_key: str,
         public_key: str,
-        messagin_client_address: str,
+        messaging_client_url: str,
         policy_name: str,
     ):
         """Initialize the Agent."""
         self.private_key = private_key  # https://web3py.readthedocs.io/en/stable/web3.eth.account.html#reading-a-private-key-from-an-environment-variable
         self.public_key = public_key
-        self.messagin_client_address = messagin_client_address
+        self.messaging_client_url = messaging_client_url
         self.policy = Policy(policy_name=policy_name)
 
         self.local_information = LocalInformation()
