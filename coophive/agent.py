@@ -18,14 +18,23 @@ from coophive.utils import Tx, hash_dict, log_json
 class Agent:
     """A class to represent an Agent.
 
-    Examples of Agents include Clients, Resource Providers, Solvers and Validators.
-    This class provides methods to manage the Agent's:
-        - Mandatory States;
-            Mandatory States are hard coded in the Agents API.
-        - Additional States;
-            Additional States are passed as a generic dictionary {"additional_state_1_name": additional_state_1_value}
-        - Schemes;
-        - Policies.
+    Agents are entities such as Clients, Resource Providers, Solvers, and Validators.
+
+    The Agent is designed to be stateless, meaning that its states (messages, policy states, and environmental states)
+    are loaded at inference time rather than being stored in memory. The history of these states is managed externally
+    via storage mechanisms like databases or flatfiles (e.g., PostgreSQL, .parquet).
+
+    Key Concepts:
+        - Messages: Communication exchanged by the Agent, handled by connecting with a messaging client (e.g., Redis).
+        - Environmental States: These represent external factors that influence the Agent's decisions. Environmental states
+          are updated using independent data pipelines and stored externally.
+            - Mandatory States are hard coded in the Agents API.
+            - Additional States are passed as a generic dictionary {"additional_state_1_name": additional_state_1_value}.
+        - Policies: The Agent's behavior is defined by its policiy, which in turn is determined by a set of parameters,
+            defining the internal state/policy state of the agent, which can be dynamically updated using machine learning
+            models. They are again stored outside the Agent.
+
+    The responsibility for managing the history and updates of these states, if necessary, is on the Agent itself.
     """
 
     def __init__(
