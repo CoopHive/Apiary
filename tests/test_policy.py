@@ -82,6 +82,8 @@ def test_make_match_decision_with_policies(setup_agents_with_policies):
     resource_provider.reject_match.reset_mock()
     client.negotiate_match.reset_mock()
 
+    # TODO: make this scheme-compliant
+    # TODO: in general, test the scheme compliance of policies.
     def mock_infer(message):
         return "accept"
 

@@ -210,6 +210,9 @@ class IPFS:
         return self.data[cid_hash]
 
 
+# TODO: deprecate, digital twin of functionalities now responsibility of the messaging client.
+# solver.py and test_solver.py still uses local_information, given their need to
+# have a global description of the order book.
 class LocalInformation:
     """A class to manage local information.
 

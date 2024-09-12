@@ -27,7 +27,6 @@ class SmartContract:
             public_key (str): The public key for the smart contract.
         """
         self.public_key = public_key
-        self.local_information = LocalInformation()
         self.events = []
         self.event_handlers = []
         self.transactions = []

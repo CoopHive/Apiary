@@ -41,10 +41,13 @@ class Policy:
         """
         self.policy_name = policy_name
 
+    # TODO: make this loading more modular.
+    # some policies may train on the auxiliary states history only,
+    # others on a combination.
     def load_states(self):
         """Get the states for the agent policy to be trained/evaluated, if needed.
 
-        States are loaded at training/inference time only.
+        States are (optionally) loaded at training/inference time only.
         """
         auxiliary_states = pd.read_parquet(
             f"auxiliary_states_{self.policy_name}.parquet"
