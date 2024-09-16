@@ -3,7 +3,7 @@
 from coophive.data_attribute import DataAttribute
 
 deal_attributes = {
-    "seller_provider_address",
+    "seller_address",
     "buyer_address",
     "resource_offer",
     "job_offer",

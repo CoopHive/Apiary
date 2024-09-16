@@ -116,12 +116,6 @@ class Solver(Agent):
         # clear list of deals made in current step
         self.deals_made_in_current_step.clear()
 
-    def emit_event(self, event: Event):
-        """Emit an event and notify all subscribed event handlers."""
-        self.events.append(event)
-        for event_handler in self.event_handlers:
-            event_handler(event)
-
     # TODO: transfer functionality inside policy evaluation at the agent level.
     # This is a solver-specific policy, but still a policy.
     def solve(self):
@@ -140,8 +134,6 @@ class Solver(Agent):
                 match.set_id()
                 # create match event
                 match_event = Event(name="match", data=match)
-                # emit match event
-                self.emit_event(match_event)
                 log_json(
                     "Match event emitted",
                     {"match_event": match_event.get_data().get_id()},

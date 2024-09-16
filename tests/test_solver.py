@@ -12,6 +12,9 @@ private_key_solver = (
     "0x4c0883a69102937d6231471b5dbb6204fe512961708279a4a6075d78d6d3721b"
 )
 public_key_solver = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57"
+
+messaging_client_url = "coophive.network.redis"
+
 policy_solver = "mock_policy"
 
 
@@ -22,6 +25,7 @@ def setup_solver():
     solver = Solver(
         private_key=private_key_solver,
         public_key=public_key_solver,
+        messaging_client_url=messaging_client_url,
         policy_name=policy_solver,
     )
 

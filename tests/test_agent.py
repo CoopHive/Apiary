@@ -5,6 +5,8 @@ import pytest
 from coophive.agent import Agent
 from coophive.policy import Policy
 
+messaging_client_url = "coophive.network.redis"
+
 
 @pytest.fixture
 def setup_private_key(monkeypatch):
@@ -27,6 +29,7 @@ def agent(setup_private_key, agent_public_key, agent_policy):
     return Agent(
         private_key=setup_private_key,
         public_key=agent_public_key,
+        messaging_client_url=messaging_client_url,
         policy_name=agent_policy,
     )
 

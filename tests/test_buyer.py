@@ -14,6 +14,8 @@ private_key_buyer = "0x4c0883a69102937d6231471b5dbb6204fe512961708279a4a6075d78d
 public_key_buyer = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57"
 public_key_seller = "0x627306090abaB3A6e1400e9345bC60c78a8BEf56"
 
+messaging_client_url = "coophive.network.redis"
+
 policy_a = "naive_accepter"
 
 
@@ -27,6 +29,7 @@ def setup_buyer():
         buyer = Buyer(
             private_key=private_key_buyer,
             public_key=public_key_buyer,
+            messaging_client_url=messaging_client_url,
             policy_name=policy_a,
         )
         smart_contract = SmartContract(public_key="smart_contract_key")
@@ -103,6 +106,7 @@ def test_pay_compute_node():
         buyer = Buyer(
             private_key=private_key_buyer,
             public_key=public_key_buyer,
+            messaging_client_url=messaging_client_url,
             policy_name=policy_a,
         )
 
