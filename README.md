@@ -56,8 +56,8 @@ In order of Stars:
 Example command:
 
 ```bash
-coophive --verbose seller --private-key 0x222 --public-key 0x222 --messaging-client-url coophive.network --policy-name naive_accepter
-coophive --verbose buyer --initial-offer '{"pubkey": "0x123","offerId": "offer_0","initial": true,"data": {"_tag": "offer","query": "hello","price": ["0x100", 200]}}' --private-key 0x222 --public-key 0x222 --messaging-client-url coophive.network --policy-name naive_accepter
+coophive --verbose sell --private-key 0x222 --public-key 0x222 --policy-name naive_accepter
+coophive --verbose buy --initial-offer '{"pubkey": "0x123","offerId": "offer_0","initial": true,"data": {"_tag": "offer","query": "hello","price": ["0x100", 200]}}' --private-key 0x222 --public-key 0x222 --policy-name naive_accepter
 ```
 
 ### Make

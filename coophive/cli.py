@@ -55,7 +55,7 @@ def cli(
     "--public-key",
     required=True,
 )
-@click.option("--messaging-client-url", required=True, help="Agent Policy.")
+@click.option("--messaging-client-url", default="redis://localhost:6379")
 @click.option("--policy-name", required=True, help="Agent Policy.")
 def sell(
     private_key: str, public_key: str, messaging_client_url: str, policy_name: str
@@ -63,21 +63,7 @@ def sell(
     """Sell."""
     logging.info(f"Messaging client: {messaging_client_url}")
     logging.info(f"Policy name: {policy_name}")
-
-    if True:
-        # def http_server():
-        seller = Seller(
-            private_key=private_key,
-            public_key=public_key,
-            messaging_client_url=messaging_client_url,
-            policy_name=policy_name,
-        )
-        tmp = seller.policy.infer("Some scheme-compliant message from buyer.")
-
-        # TODO: migrate these functionalities within the agent above.
-        command = "cd ../redis-scheme-client/example-agent && bun run index.ts"
-        subprocess.run(command, shell=True, text=True)
-        # return tmp
+    subprocess.run(["uvicorn", "coophive.fastapi_app:app", "--reload"], check=True)
 
 
 @cli.command()
@@ -90,7 +76,7 @@ def sell(
     "--public-key",
     required=True,
 )
-@click.option("--messaging-client-url", required=True, help="Agent Policy.")
+@click.option("--messaging-client-url", default="redis://localhost:6379")
 @click.option("--policy-name", required=True, help="Agent Policy.")
 def buy(
     initial_offer: str,
@@ -99,7 +85,7 @@ def buy(
     messaging_client_url: str,
     policy_name: str,
 ):
-    """Buyer."""
+    """Buy."""
     logging.info(f"Initial Offer: {initial_offer}")
     logging.info(f"Messaging client: {messaging_client_url}")
     logging.info(f"Policy name: {policy_name}")

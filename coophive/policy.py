@@ -1,5 +1,7 @@
 """This module defines the Policy class used when agents, in general, make decisions within the CoopHive simulator."""
 
+import json
+
 import pandas as pd
 
 
@@ -33,12 +35,9 @@ class Policy:
         infer: Evaluate the current state and return an action/message based on the loaded state and policy.
     """
 
-    def __init__(self, policy_name):
-        """Initialize a new Policy instance.
-
-        Args:
-            policy_name (str): The name of the policy.
-        """
+    def __init__(self, public_key: str, policy_name: str):
+        """Initialize a new Policy instance."""
+        self.public_key = public_key
         self.policy_name = policy_name
 
     # TODO: make this loading more modular.
@@ -71,6 +70,11 @@ class Policy:
 
         Context/states are loaded here, if necessary.
         """
+        if (
+            json.loads(message).get("pubkey") == self.public_key
+        ):  # if transmitter same as receiver
+            return "noop"
+
         if self.policy_name == "naive_accepter":
             # TODO: fix, this policy is not scheme compliant.
             return "accept"
