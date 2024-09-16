@@ -9,8 +9,8 @@ from datetime import datetime
 import click
 
 from coophive import constants, utils
-from coophive.client import Client
-from coophive.resource_provider import ResourceProvider
+from coophive.buyer import Buyer
+from coophive.seller import Seller
 
 current_time = datetime.now().replace(second=0, microsecond=0)
 
@@ -57,22 +57,22 @@ def cli(
 )
 @click.option("--messaging-client-url", required=True, help="Agent Policy.")
 @click.option("--policy-name", required=True, help="Agent Policy.")
-def seller(
+def sell(
     private_key: str, public_key: str, messaging_client_url: str, policy_name: str
 ):
-    """Seller."""
+    """Sell."""
     logging.info(f"Messaging client: {messaging_client_url}")
     logging.info(f"Policy name: {policy_name}")
 
     if True:
         # def http_server():
-        seller_agent = ResourceProvider(
+        seller = Seller(
             private_key=private_key,
             public_key=public_key,
             messaging_client_url=messaging_client_url,
             policy_name=policy_name,
         )
-        tmp = seller_agent.policy.infer("Some scheme-compliant message from buyer.")
+        tmp = seller.policy.infer("Some scheme-compliant message from buyer.")
 
         # TODO: migrate these functionalities within the agent above.
         command = "cd ../redis-scheme-client/example-agent && bun run index.ts"
@@ -92,7 +92,7 @@ def seller(
 )
 @click.option("--messaging-client-url", required=True, help="Agent Policy.")
 @click.option("--policy-name", required=True, help="Agent Policy.")
-def buyer(
+def buy(
     initial_offer: str,
     private_key: str,
     public_key: str,
@@ -111,15 +111,19 @@ def buyer(
 
     pubkey = initial_offer["pubkey"]
 
-    buyer_agent = Client(
+    buyer = Buyer(
         private_key=private_key,
         public_key=public_key,
         messaging_client_url=messaging_client_url,
         policy_name=policy_name,
     )
 
-    tmp = buyer_agent.policy.infer("Some scheme-compliant message from seller.")
+    tmp = buyer.policy.infer(
+        "Some scheme-compliant message from seller, read by buyer."
+    )
 
     # TODO: migrate these functionalities within the agent above.
+    # TODO: bug: this cli is wrong, in the example the message represented the buyer,
+    # the agent here is seller. Fix.
     command = "cd ../redis-scheme-client/src && bun run runner.ts seller localhost:3000"
     subprocess.run(command, shell=True, text=True)

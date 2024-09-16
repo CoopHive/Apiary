@@ -3,14 +3,14 @@
 from coophive.data_attribute import DataAttribute
 
 match_attributes = {
-    "resource_provider_address",
-    "client_address",
+    "seller_address",
+    "buyer_address",
     "resource_offer",
     "job_offer",
     "price_per_instruction",  # [USD]
     "expected_number_of_instructions",
-    "expected_benefit_to_client",  # [USD]
-    "client_deposit",
+    "expected_benefit_to_buyer",  # [USD]
+    "buyer_deposit",
     "timeout",  # [s]
     "timeout_deposit",
     "cheating_collateral_multiplier",
@@ -27,27 +27,27 @@ class Match(DataAttribute):
         """Initializes a Match object."""
         super().__init__()
         self.data_attributes = match_attributes
-        self.client_signed = False
-        self.resource_provider_signed = False
+        self.buyer_signed = False
+        self.seller_signed = False
         if data:
             for key, value in data.items():
                 self.add_data(key, value)
 
-    def get_resource_provider_signed(self):
-        """Get the status of resource provider signed flag."""
-        return self.resource_provider_signed
+    def get_seller_signed(self):
+        """Get the status of seller signed flag."""
+        return self.seller_signed
 
-    def get_client_signed(self):
-        """Get the status of client signed flag."""
-        return self.client_signed
+    def get_buyer_signed(self):
+        """Get the status of buyer signed flag."""
+        return self.buyer_signed
 
-    def sign_resource_provider(self):
-        """Set the resource provider signed flag to True."""
-        self.resource_provider_signed = True
+    def sign_seller(self):
+        """Set the seller signed flag to True."""
+        self.seller_signed = True
 
-    def sign_client(self):
-        """Set the client signed flag to True."""
-        self.client_signed = True
+    def sign_buyer(self):
+        """Set the buyer signed flag to True."""
+        self.buyer_signed = True
 
     def get_data(self):
         """Get data from attributes."""

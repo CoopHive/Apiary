@@ -5,7 +5,6 @@ It handles the operations and logic associated with smart contracts, including t
 
 import logging
 
-from coophive.agent import LocalInformation
 from coophive.deal import Deal
 from coophive.event import Event
 from coophive.match import Match
@@ -36,8 +35,8 @@ class SmartContract:
         self.matches_made_in_current_step: list[Match] = []
         self.results_posted_in_current_step = []
 
-    def _agree_to_match_resource_provider(self, match: Match, tx: Tx):
-        """Handle the resource provider's agreement to a match."""
+    def _agree_to_match_seller(self, match: Match, tx: Tx):
+        """Handle the seller's agreement to a match."""
         match_data = match.get_data()
         timeout_deposit = match_data["timeout_deposit"]
         if tx.value != timeout_deposit:
@@ -45,51 +44,51 @@ class SmartContract:
                 f'transaction value of {tx.value} does not match timeout deposit {match_data["timeout_deposit"]}'
             )
             raise Exception("transaction value does not match timeout deposit")
-        resource_provider_address = match_data["resource_provider_address"]
-        self.balances[resource_provider_address] -= timeout_deposit
+        seller_address = match_data["seller_address"]
+        self.balances[seller_address] -= timeout_deposit
         self.balance += timeout_deposit
-        match.sign_resource_provider()
+        match.sign_seller()
 
         log_data = {
-            "resource_provider_address": resource_provider_address,
+            "seller_address": seller_address,
             "match_id": match.get_id(),
         }
         log_json("Resource provider signed match", log_data)
 
-    def _agree_to_match_client(self, match: Match, tx: Tx):
-        """Handle the client's agreement to a match."""
+    def _agree_to_match_buyer(self, match: Match, tx: Tx):
+        """Handle the buyer's agreement to a match."""
         match_data = match.get_data()
-        client_deposit = match_data["client_deposit"]
-        if tx.value != client_deposit:
+        buyer_deposit = match_data["buyer_deposit"]
+        if tx.value != buyer_deposit:
             logging.info(
-                f'transaction value of {tx.value} does not match client deposit {match_data["client_deposit"]}'
+                f'transaction value of {tx.value} does not match buyer deposit {match_data["buyer_deposit"]}'
             )
             raise Exception("transaction value does not match timeout deposit")
-        client_address = match_data["client_address"]
-        if client_deposit > self.balances[client_address]:
+        buyer_address = match_data["buyer_address"]
+        if buyer_deposit > self.balances[buyer_address]:
             logging.info(
-                f"transaction value of {tx.value} exceeds client balance of {self.balances[client_address]}"
+                f"transaction value of {tx.value} exceeds buyer balance of {self.balances[buyer_address]}"
             )
             raise Exception("transaction value exceeds balance")
-        self.balances[client_address] -= tx.value
+        self.balances[buyer_address] -= tx.value
         self.balance += tx.value
-        match.sign_client()
+        match.sign_buyer()
 
-        log_data = {"client_address": client_address, "match_id": match.get_id()}
+        log_data = {"buyer_address": buyer_address, "match_id": match.get_id()}
         log_json("Client signed match", log_data)
 
     def agree_to_match(self, match: Match, tx: Tx):
-        """Handle agreement to a match by either the resource provider or client.
+        """Handle agreement to a match by either the seller or buyer.
 
         Args:
             match (Match): The match object.
             tx (Tx): The transaction object.
         """
-        if match.get_data().get("resource_provider_address") == tx.sender:
-            self._agree_to_match_resource_provider(match, tx)
-        elif match.get_data().get("client_address") == tx.sender:
-            self._agree_to_match_client(match, tx)
-        if match.get_resource_provider_signed() and match.get_client_signed():
+        if match.get_data().get("seller_address") == tx.sender:
+            self._agree_to_match_seller(match, tx)
+        elif match.get_data().get("buyer_address") == tx.sender:
+            self._agree_to_match_buyer(match, tx)
+        if match.get_seller_signed() and match.get_buyer_signed():
             self.matches_made_in_current_step.append(match)
 
     def subscribe_event(self, handler):
@@ -123,14 +122,14 @@ class SmartContract:
         deal_id = result.get_data()["deal_id"]
         deal_data = self.deals[deal_id].get_data()
         timeout_deposit = deal_data["timeout_deposit"]
-        resource_provider_address = deal_data["resource_provider_address"]
-        self.balances[resource_provider_address] += timeout_deposit
+        seller_address = deal_data["seller_address"]
+        self.balances[seller_address] += timeout_deposit
         self.balance -= timeout_deposit
         log_json(
             "Timeout deposit refunded",
             {
                 "timeout_deposit": timeout_deposit,
-                "resource_provider_address": resource_provider_address,
+                "seller_address": seller_address,
             },
         )
 
@@ -153,20 +152,18 @@ class SmartContract:
             raise Exception(
                 "transaction value does not match needed cheating collateral"
             )
-        resource_provider_address = deal_data["resource_provider_address"]
-        if intended_cheating_collateral > self.balances[resource_provider_address]:
+        seller_address = deal_data["seller_address"]
+        if intended_cheating_collateral > self.balances[seller_address]:
             log_json(
-                "Transaction value exceeds resource provider balance",
+                "Transaction value exceeds seller balance",
                 {
                     "transaction_value": tx.value,
-                    "resource_provider_balance": self.balances[
-                        resource_provider_address
-                    ],
-                    "resource_provider_address": resource_provider_address,
+                    "seller_balance": self.balances[seller_address],
+                    "seller_address": seller_address,
                 },
             )
             raise Exception("transaction value exceeds balance")
-        self.balances[resource_provider_address] -= tx.value
+        self.balances[seller_address] -= tx.value
         self.balance += tx.value
 
     def _create_and_emit_result_events(self):
@@ -175,10 +172,7 @@ class SmartContract:
                 raise TypeError("result must be an instance of Result")
             else:
                 deal_id = result.get_data().get("deal_id")
-                if (
-                    self.deals[deal_id].get_data()["resource_provider_address"]
-                    == tx.sender
-                ):
+                if self.deals[deal_id].get_data()["seller_address"] == tx.sender:
                     result_event = Event(name="result", data=result)
                     self.emit_event(result_event)
                     self._refund_timeout_deposit(result)
@@ -193,15 +187,15 @@ class SmartContract:
         """Post a result and add it to the results posted in the current step."""
         self.results_posted_in_current_step.append([result, tx])
 
-    def _refund_client_deposit(self, deal: Deal):
-        """Refund the client's deposit based on the deal."""
-        client_address = deal.get_data()["client_address"]
-        client_deposit = deal.get_data().get("client_deposit")
-        self.balance -= client_deposit
-        self.balances[client_address] += client_deposit
+    def _refund_buyer_deposit(self, deal: Deal):
+        """Refund the buyer's deposit based on the deal."""
+        buyer_address = deal.get_data()["buyer_address"]
+        buyer_deposit = deal.get_data().get("buyer_deposit")
+        self.balance -= buyer_deposit
+        self.balances[buyer_address] += buyer_deposit
 
-    def post_client_payment(self, result: Result, tx: Tx):
-        """Post a payment from the client based on the result."""
+    def post_buyer_payment(self, result: Result, tx: Tx):
+        """Post a payment from the buyer based on the result."""
         result_data = result.get_data()
         result_instruction_count = result_data["instruction_count"]
         result_instruction_count = float(result_instruction_count)
@@ -214,24 +208,24 @@ class SmartContract:
                 f"transaction value of {tx.value} does not match expected payment value {expected_payment_value}"
             )
             raise Exception("transaction value does not match expected payment value")
-        client_address = deal_data["client_address"]
-        if expected_payment_value > self.balances[client_address]:
+        buyer_address = deal_data["buyer_address"]
+        if expected_payment_value > self.balances[buyer_address]:
             logging.info(
-                f"transaction value of {tx.value} exceeds client balance of {self.balances[client_address]}"
+                f"transaction value of {tx.value} exceeds buyer balance of {self.balances[buyer_address]}"
             )
             raise Exception("transaction value exceeds balance")
-        # subtract from client's deposit
-        self.balances[client_address] -= tx.value
+        # subtract from buyer's deposit
+        self.balances[buyer_address] -= tx.value
         # add transaction value to smart contract balance
         self.balance += tx.value
         deal = self.deals[deal_id]
-        resource_provider_address = deal.get_data()["resource_provider_address"]
-        # pay resource provider
-        self.balances[resource_provider_address] += tx.value
+        seller_address = deal.get_data()["seller_address"]
+        # pay seller
+        self.balances[seller_address] += tx.value
         # subtract from smart contract balance
         self.balance -= tx.value
-        # refund client deposit
-        self._refund_client_deposit(deal)
+        # refund buyer deposit
+        self._refund_buyer_deposit(deal)
 
     def slash_cheating_collateral(self, event: Event, result: Result):
         """Slash the cheating collateral based on an event."""
@@ -242,8 +236,8 @@ class SmartContract:
         intended_cheating_collateral = (
             cheating_collateral_multiplier * instruction_count
         )
-        resource_provider_address = deal_data["resource_provider_address"]
-        self.balances[resource_provider_address] -= intended_cheating_collateral
+        seller_address = deal_data["seller_address"]
+        self.balances[seller_address] -= intended_cheating_collateral
         self.balance += intended_cheating_collateral
 
     def ask_consortium_of_mediators(self, event: Event):
@@ -254,11 +248,11 @@ class SmartContract:
         """Ask a random mediator to check the result.
 
         In order to check result, some entity needs to submit the job offer
-        this can be any of the client, the compute node, the solver, or the smart contract
+        this can be any of the buyer, the seller, the solver, or the smart contract
         doesn't make sense for it to be the solver
         if the smart contract does it, then it needs to know the method of verification beforehand,
         meaning that the verification method needs to be described in the deal
-        the alternative is that either the client or compute node call the verification, but in that case,
+        the alternative is that either the buyer or compute node call the verification, but in that case,
         they need to agree anyway, and it makes sense for the smart contract to be doing the call.
 
         In order to create a job, the smart contract must extract the job spec from the deal data,
@@ -322,10 +316,10 @@ class SmartContract:
 
         if mediation_flag == True:
             # if result was correct, then compute node gets paid and returned its collateral,
-            # client gets paid back its deposit, but pays for the mediation
+            # buyer gets paid back its deposit, but pays for the mediation
             pass
         elif mediation_flag == False:
-            # if result was incorrect, then client gets returned its collateral, and compute node gets slashed
+            # if result was incorrect, then buyer gets returned its collateral, and compute node gets slashed
             self.slash_cheating_collateral(event)
 
     def _get_balance(self):

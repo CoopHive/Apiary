@@ -1,8 +1,4 @@
-"""This module defines the Client class used for interacting with solvers and smart contracts within the CoopHive simulator.
-
-The Client class extends the Agent class and provides methods to manage jobs, 
-connect to solvers and smart contracts, handle events, and make decisions regarding matches.
-"""
+"""This module defines the Buyer class used for interacting with solvers and smart contracts within the CoopHive simulator."""
 
 import logging
 from collections import deque
@@ -15,8 +11,8 @@ from coophive.result import Result
 from coophive.utils import Tx, log_json
 
 
-class Client(Agent):
-    """A client in the coophive simulator that interacts with solvers and smart contracts to manage jobs and deals."""
+class Buyer(Agent):
+    """A Buyer in the coophive protocol."""
 
     def __init__(
         self,
@@ -25,7 +21,7 @@ class Client(Agent):
         messaging_client_url: str,
         policy_name: str,
     ):
-        """Initialize a new Client instance."""
+        """Initialize a new Buyer instance."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
@@ -62,13 +58,13 @@ class Client(Agent):
                 logging.info(f"Error handling message: {e}")
 
     def get_jobs(self):
-        """Get the client's current jobs."""
+        """Get the Buyer's current jobs."""
         return list(self.current_jobs)
 
     def _agree_to_match(self, match: Match):
         """Agree to a match."""
-        client_deposit = match.get_data().get("client_deposit")
-        tx = self._create_transaction(client_deposit)
+        buyer_deposit = match.get_data().get("buyer_deposit")
+        tx = self._create_transaction(buyer_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
 
         log_json("Agreed to match", {"match_id": match.get_id()})
@@ -120,7 +116,7 @@ class Client(Agent):
                 )
                 tx = Tx(sender=self.get_public_key(), value=payment_value)
 
-                self.smart_contract.post_client_payment(result, tx)
+                self.smart_contract.post_buyer_payment(result, tx)
                 self.deals_finished_in_current_step.append(deal_id)
 
     def handle_smart_contract_event(self, event: Event):
@@ -140,7 +136,7 @@ class Client(Agent):
             deal = data
             deal_data = deal.get_data()
             deal_id = deal.get_id()
-            if deal_data["client_address"] == self.get_public_key():
+            if deal_data["buyer_address"] == self.get_public_key():
                 self.current_deals[deal_id] = deal
         elif isinstance(data, Match):
             if event.get_name() == "result":
@@ -181,17 +177,17 @@ class Client(Agent):
 
     # TODO: transfer functionality inside policy evaluation at the agent level.
     def calculate_benefit(self, match):
-        """Calculate the expected benefit of a match to the client.
+        """Calculate the expected benefit of a match to the Buyer.
 
         Args:
             match: An object containing the match details.
 
         Returns:
-            float: The expected benefit to the client from the match.
+            float: The expected benefit to the Buyer from the match.
         """
         data = match.get_data()
-        expected_benefit_to_client = data.get("expected_benefit_to_client", 0)
-        return expected_benefit_to_client
+        expected_benefit_to_buyer = data.get("expected_benefit_to_buyer", 0)
+        return expected_benefit_to_buyer
 
     # TODO: transfer functionality inside policy evaluation at the agent level.
     def calculate_utility(self, match: Match):
@@ -209,8 +205,8 @@ class Client(Agent):
         output_message = self.policy.infer(match)
 
     # TODO: move this functionality in the networking model, at the agent level
-    def client_loop(self):
-        """Process matched offers and update finished deals for the client."""
+    def buyer_loop(self):
+        """Process matched offers and update finished deals for the buyer."""
         for match in self.current_matched_offers:
             self.make_match_decision(match)
         self.update_finished_deals()

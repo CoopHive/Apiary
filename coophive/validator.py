@@ -22,7 +22,7 @@ class Validator(Agent):
         )
 
     def verify_result(event):
-        """Verifies that a task was completed by a resource provider and verifies the time/resources it took to complete it."""
+        """Verifies that a task was completed by a seller and verifies the time/resources it took to complete it."""
         if event:
             return True
         return False

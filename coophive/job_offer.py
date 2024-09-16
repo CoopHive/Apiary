@@ -4,7 +4,7 @@ from coophive.data_attribute import DataAttribute
 
 job_offer_attributes = {
     "owner",
-    "target_client",
+    "target_buyer",
     "created_at",
     "timeout",
     "CPU",
@@ -15,7 +15,7 @@ job_offer_attributes = {
     "instruction_count",
     "verification_method",
     "mediators",
-    "benefit_to_client",
+    "benefit_to_buyer",
 }
 
 
@@ -31,11 +31,11 @@ class JobOffer(DataAttribute):
 
     def calculate_T_accept(self):
         """Placeholder logic for T_accept."""
-        return self.data_attributes.get("benefit_to_client", 0) * 1.05
+        return self.data_attributes.get("benefit_to_buyer", 0) * 1.05
 
     def calculate_T_reject(self):
         """Placeholder logic for T_reject."""
-        return self.data_attributes.get("benefit_to_client", 0) * 0.95
+        return self.data_attributes.get("benefit_to_buyer", 0) * 0.95
 
     def set_attributes(self, attributes):
         """Set attributes."""

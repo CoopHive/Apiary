@@ -18,7 +18,7 @@ from coophive.utils import Tx, hash_dict, log_json
 class Agent:
     """A class to represent an Agent.
 
-    Agents are entities such as Clients, Resource Providers, Solvers, and Validators.
+    Agents are entities such as Buyers, Sellers, Solvers, and Validators.
 
     The Agent is designed to be stateless, meaning that its states (messages, policy states, and environmental states)
     are loaded at inference time rather than being stored in memory. The history of these states is managed externally
@@ -29,7 +29,6 @@ class Agent:
         - Environmental States: These represent external factors that influence the Agent's decisions. Environmental states
           are updated using independent data pipelines and stored externally.
             - Mandatory States are hard coded in the Agents API.
-            - Additional States are passed as a generic dictionary {"additional_state_1_name": additional_state_1_value}.
         - Policies: The Agent's behavior is defined by its policiy, which in turn is determined by a set of parameters,
             defining the internal state/policy state of the agent, which can be dynamically updated using machine learning
             models. They are again stored outside the Agent.
@@ -218,8 +217,8 @@ class LocalInformation:
 
     Attributes:
         block_number (int): The block number for the current state.
-        resource_providers (dict): Mapping from wallet address to resource provider metadata.
-        clients (dict): Mapping from wallet address to client metadata.
+        sellers (dict): Mapping from wallet address to sellers metadata.
+        buyers (dict): Mapping from wallet address to buyers metadata.
         solvers (dict): Mapping from wallet address to solver metadata.
         mediators (dict): Mapping from wallet address to mediator metadata.
         directories (dict): Mapping from wallet address to directory metadata.
@@ -232,8 +231,8 @@ class LocalInformation:
     def __init__(self):
         """Initialize the LocalInformation."""
         self.block_number = 0
-        self.resource_providers = {}
-        self.clients = {}
+        self.sellers = {}
+        self.buyers = {}
         self.solvers = {}
         self.mediators = {}
         self.directories = {}

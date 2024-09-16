@@ -1,4 +1,4 @@
-"""Module for defining the ResourceProvider class and its related functionalities."""
+"""Module for defining the Seller class and its related functionalities."""
 
 import logging
 
@@ -8,8 +8,8 @@ from coophive.result import Result
 from coophive.utils import Tx, log_json
 
 
-class ResourceProvider(Agent):
-    """Class representing a resource provider in the CoopHive simulator."""
+class Seller(Agent):
+    """Class representing a seller in the CoopHive protocol."""
 
     def __init__(
         self,
@@ -18,7 +18,7 @@ class ResourceProvider(Agent):
         messaging_client_url: str,
         policy_name: str,
     ):
-        """Initialize the ResourceProvider instance."""
+        """Initialize the Seller instance."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
@@ -106,7 +106,7 @@ class ResourceProvider(Agent):
             deal = event.get_data()
             deal_data = deal.get_data()
             deal_id = deal.get_id()
-            if deal_data["resource_provider_address"] == self.get_public_key():
+            if deal_data["seller_address"] == self.get_public_key():
                 self.current_deals[deal_id] = deal
                 # changed to simulate running a docker job
                 container = self.docker_client.containers.run(
@@ -214,7 +214,7 @@ class ResourceProvider(Agent):
         return price_per_instruction * expected_number_of_instructions
 
     # TODO: transfer functionality inside policy evaluation at the agent level.
-    # NOTE: this utility calculation is DIFFERENT for a resource provider than for a client
+    # NOTE: this utility calculation is DIFFERENT for a seller than for a buyer
     def calculate_utility(self, match):
         """Calculate the utility of a match based on several factors.
 
@@ -232,8 +232,8 @@ class ResourceProvider(Agent):
         output_message = self.policy.infer(match)
 
     # TODO: move this functionality in the networking model, at the agent level
-    def resource_provider_loop(self):
-        """Main loop for the resource provider to process matched offers and update job running times."""
+    def seller_loop(self):
+        """Main loop for the seller to process matched offers and update job running times."""
         for match in self.current_matched_offers:
             self.make_match_decision(match)
         self.update_job_running_times()

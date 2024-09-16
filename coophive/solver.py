@@ -12,7 +12,7 @@ from coophive.resource_offer import ResourceOffer
 from coophive.utils import log_json
 
 extra_necessary_match_data = {
-    "client_deposit": 5,
+    "buyer_deposit": 5,
     "timeout": 10,
     "timeout_deposit": 3,
     "cheating_collateral_multiplier": 50,
@@ -205,8 +205,8 @@ class Solver(Agent):
         match = Match()
         job_offer_data = job_offer.get_data()
         resource_offer_data = resource_offer.get_data()
-        match.add_data("resource_provider_address", resource_offer_data.get("owner"))
-        match.add_data("client_address", job_offer_data.get("owner"))
+        match.add_data("seller_address", resource_offer_data.get("owner"))
+        match.add_data("buyer_address", job_offer_data.get("owner"))
         match.add_data("resource_offer", resource_offer.get_id())
         match.add_data("job_offer", job_offer.get_id())
 
