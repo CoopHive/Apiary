@@ -2,7 +2,6 @@
 
 from fastapi import FastAPI
 
-from coophive.messaging import Message
 from coophive.seller import Seller
 
 # FastAPI application
@@ -10,14 +9,15 @@ app = FastAPI()
 
 
 @app.post("/")
-async def inference_endpoint(message: Message):
+async def inference_endpoint(message: dict):
     """Process a message and return the inference result."""
-    return message
+    seller = Seller(
+        private_key="your_private_key",  # Replace with actual values or pass dynamically
+        public_key="your_public_key",
+        messaging_client_url="redis://localhost:6379",
+        policy_name="your_policy_name",
+    )
 
-    # seller = Seller(
-    #     private_key="your_private_key",  # Replace with actual values or pass dynamically
-    #     public_key="your_public_key",
-    #     messaging_client_url="redis://localhost:6379",
-    #     policy_name="your_policy_name",
-    # )
-    # return seller.policy.infer(message)
+    out_message = seller.policy.infer(message)
+
+    return out_message

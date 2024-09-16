@@ -65,15 +65,15 @@ class Policy:
         # and potentially (historical) policy_states and update the policy_states file.
         raise NotImplementedError(self.policy_name)
 
-    def infer(self, message):
+    def infer(self, message: dict):
         """Evaluate the policy, following the (message, context) => message structure, and compute the message to be returned.
 
         Context/states are loaded here, if necessary.
         """
-        if (
-            json.loads(message).get("pubkey") == self.public_key
-        ):  # if transmitter same as receiver
+        if message.get("pubkey") == self.public_key:  # if transmitter same as receiver
             return "noop"
+
+        breakpoint()
 
         if self.policy_name == "naive_accepter":
             # TODO: fix, this policy is not scheme compliant.
