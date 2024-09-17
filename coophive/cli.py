@@ -1,7 +1,5 @@
 """This module defines the CLI (Command Line Interface) for the Coophive application."""
 
-import json
-import logging
 import os
 import subprocess
 from datetime import datetime
@@ -9,8 +7,6 @@ from datetime import datetime
 import click
 
 from coophive import constants, utils
-from coophive.buyer import Buyer
-from coophive.seller import Seller
 
 current_time = datetime.now().replace(second=0, microsecond=0)
 
@@ -48,26 +44,9 @@ def cli(
 
 @cli.command()
 @click.option(
-    "--private-key",
+    "--role",
     required=True,
 )
-@click.option(
-    "--public-key",
-    required=True,
-)
-@click.option("--messaging-client-url", default="redis://localhost:6379")
-@click.option("--policy-name", required=True, help="Agent Policy.")
-def sell(
-    private_key: str, public_key: str, messaging_client_url: str, policy_name: str
-):
-    """Sell."""
-    logging.info(f"Messaging client: {messaging_client_url}")
-    logging.info(f"Policy name: {policy_name}")
-    subprocess.run(["uvicorn", "coophive.fastapi_app:app", "--reload"], check=True)
-
-
-@cli.command()
-@click.option("--initial-offer", required=True, help="Buyer Agent Initial Policy.")
 @click.option(
     "--private-key",
     required=True,
@@ -76,40 +55,25 @@ def sell(
     "--public-key",
     required=True,
 )
-@click.option("--messaging-client-url", default="redis://localhost:6379")
 @click.option("--policy-name", required=True, help="Agent Policy.")
-def buy(
-    initial_offer: str,
+@click.option("--messaging-client-url", default="redis://localhost:6379")
+@click.option("--inference-endpoint-url", default="redis://localhost:8000")
+def run(
+    role: str,
     private_key: str,
     public_key: str,
-    messaging_client_url: str,
     policy_name: str,
+    messaging_client_url: str,
+    inference_endpoint_url: str,
 ):
-    """Buy."""
-    logging.info(f"Initial Offer: {initial_offer}")
-    logging.info(f"Messaging client: {messaging_client_url}")
-    logging.info(f"Policy name: {policy_name}")
+    """Run Agent."""
+    os.environ["ROLE"] = role
 
-    command = f"redis-cli publish initial_offers '{initial_offer}'"
-    subprocess.run(command, shell=True, text=True)
+    os.environ["PRIVATE_KEY"] = private_key
+    os.environ["PUBLIC_KEY"] = public_key
+    os.environ["POLICY_NAME"] = policy_name
 
-    initial_offer = json.loads(initial_offer)
+    os.environ["MESSAGING_CLIENT_URL"] = messaging_client_url
+    os.environ["INFERENCE_ENDPOINT_URL"] = inference_endpoint_url
 
-    pubkey = initial_offer["pubkey"]
-
-    buyer = Buyer(
-        private_key=private_key,
-        public_key=public_key,
-        messaging_client_url=messaging_client_url,
-        policy_name=policy_name,
-    )
-
-    tmp = buyer.policy.infer(
-        "Some scheme-compliant message from seller, read by buyer."
-    )
-
-    # TODO: migrate these functionalities within the agent above.
-    # TODO: bug: this cli is wrong, in the example the message represented the buyer,
-    # the agent here is seller. Fix.
-    command = "cd ../redis-scheme-client/src && bun run runner.ts seller localhost:3000"
-    subprocess.run(command, shell=True, text=True)
+    subprocess.run(["uvicorn", "coophive.fastapi_app:app", "--reload"], check=True)

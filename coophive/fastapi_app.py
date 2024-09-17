@@ -1,24 +1,39 @@
 """FastAPI application module for handling message-based inference requests."""
 
-from fastapi import FastAPI
+import os
 
+from fastapi import Depends, FastAPI
+
+from coophive.buyer import Buyer
 from coophive.seller import Seller
+
+role = os.getenv("ROLE", "")
+inference_endpoint_url = os.environ[
+    "INFERENCE_ENDPOINT_URL"
+]  # TODO: use this to specify the inference endpoint port. Needed to simulate two agents and two clients on one machine.
+
+mandatory_states = {
+    "private_key": os.getenv("PRIVATE_KEY", ""),
+    "public_key": os.getenv("PUBLIC_KEY", ""),
+    "messaging_client_url": os.getenv("MESSAGING_CLIENT_URL", ""),
+    "policy_name": os.getenv("POLICY_NAME", ""),
+}
 
 # FastAPI application
 app = FastAPI()
 
 
+def get_agent():
+    """Dependency that provides a configured Agent based on global settings."""
+    if role == "seller":
+        return Seller(**mandatory_states)
+    elif role == "buyer":
+        return Buyer(**mandatory_states)
+
+
 @app.post("/")
-async def inference_endpoint(message: dict):
-    # https://github.com/CoopHive/redis-scheme-client/blob/main/src/scheme.ts#L108
+async def inference_endpoint(message: dict, agent=Depends(get_agent)):
     """Process a message and return the inference result."""
-    seller = Seller(
-        private_key="your_private_key",  # Replace with actual values or pass dynamically
-        public_key="your_public_key",
-        messaging_client_url="redis://localhost:6379",
-        policy_name="compute_marketplace_naive_rejecter",
-    )
-
-    out_message = seller.policy.infer(message)
-
-    return out_message
+    return agent.policy.infer(message)
+    # message needs to be scheme-compliant, as per:
+    # https://github.com/CoopHive/redis-scheme-client/blob/main/src/scheme.ts#L108
