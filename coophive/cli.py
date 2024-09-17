@@ -1,5 +1,6 @@
 """This module defines the CLI (Command Line Interface) for the Coophive application."""
 
+import json
 import os
 import subprocess
 from datetime import datetime
@@ -73,14 +74,12 @@ def run(
     os.environ["PUBLIC_KEY"] = public_key
     os.environ["POLICY_NAME"] = policy_name
 
-    # TODO: here giving twite the public key, can we avoid this?
-    if initial_offer:
-        command = ["redis-cli", "publish", "initial_offers", initial_offer]
-        subprocess.run(command, check=True)
+    initial_offer = json.loads(initial_offer)
+    initial_offer["pubkey"] = public_key
+    initial_offer["initial"] = True
+    initial_offer["data"]["_tag"] = "offer"
 
-    # TODO: here we risk the buyer being slower at setting up than the already connected seller
-    # to read and reply. Please fix, the buyer should first connects than shoot an initial offer.
-    subprocess.run(
+    subprocess.Popen(
         [
             "uvicorn",
             "coophive.fastapi_app:app",
@@ -90,5 +89,8 @@ def run(
             "--port",
             inference_endpoint_port,
         ],
-        check=True,
     )
+
+    if initial_offer:
+        command = ["redis-cli", "publish", "initial_offers", json.dumps(initial_offer)]
+        subprocess.Popen(command)
