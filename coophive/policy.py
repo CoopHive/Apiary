@@ -1,5 +1,7 @@
 """This module defines the Policy class used when agents, in general, make decisions within the CoopHive simulator."""
 
+import random
+
 import pandas as pd
 
 
@@ -87,6 +89,8 @@ class Policy:
             raise NotImplementedError(self.policy_name)
         elif self.policy_name == "compute_marketplace_identity_negotiator":
             pass
+        elif self.policy_name == "compute_marketplace_random_negotiator":
+            output_message["data"]["price"][1] = random.randint(10, 1000)
         elif self.policy_name == "compute_marketplace_useless_state_loader":
             context = self.load_states()
             raise NotImplementedError(self.policy_name)

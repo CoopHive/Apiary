@@ -58,7 +58,6 @@ def cli(
 )
 @click.option("--policy-name", required=True, help="Agent Policy.")
 @click.option("--inference-endpoint-port", required=True)
-@click.option("--initial-offer", default=None)
 def run(
     role: str,
     private_key: str,
