@@ -91,54 +91,6 @@ class Agent:
             ):
                 self.current_matched_offers.append(match)
 
-    # TODO: transfer functionality inside policy evaluation
-    def reject_match(self, match):
-        """Reject a match."""
-        logging.info(f"Rejected match: {match.get_id()}")
-
-    # TODO: transfer functionality inside policy evaluation
-    def negotiate_match(self, match, max_rounds=5):
-        """Negotiate a match."""
-        match_dict = match.get_data()
-        rounds_completed = match_dict["rounds_completed"]
-        while rounds_completed < max_rounds:
-            new_match_offer = self.create_new_match_offer(match)
-            response = self.communicate_request_to_party(new_match_offer)
-            if response["accepted"]:
-                self._agree_to_match(response["match_offer"])
-                return
-            match = response["counter_offer"]
-            rounds_completed += 1
-            match.set_attributes({"rounds_completed": rounds_completed})
-        self.reject_match(match)
-
-    def communicate_request_to_party(self, match_offer):
-        """Communicate a match offer request to a specified party.
-
-        Args:
-            match_offer: The match offer details to be communicated.
-        """
-        return self.simulate_communication(match_offer)
-
-    def simulate_communication(self, match_offer):
-        """Simulate communication."""
-        message = f"New match offer: {match_offer.get_data()}"
-
-        response_message = "Your offer has been accepted."
-
-        logging.info("Received response from server")
-        log_json(
-            "Received response from server",
-            {"response_message": response_message},
-        )
-
-        response = {
-            "accepted": "accepted" in response_message,
-            "match_offer": match_offer,
-            "counter_offer": self.create_new_match_offer(match_offer),
-        }
-        return response
-
     def create_new_match_offer(self, match):
         """Create a new match offer with modified terms.
 

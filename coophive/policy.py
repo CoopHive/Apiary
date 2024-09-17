@@ -1,7 +1,5 @@
 """This module defines the Policy class used when agents, in general, make decisions within the CoopHive simulator."""
 
-import json
-
 import pandas as pd
 
 
@@ -70,9 +68,8 @@ class Policy:
 
         Context/states are loaded here, only if necessary.
         """
-        if (
-            input_message.get("pubkey") == self.public_key
-        ):  # if transmitter same as receiver
+        # if transmitter same as receiver:
+        if input_message.get("pubkey") == self.public_key:
             return "noop"
 
         # TODO: as a function of the game being played, specificed as a mandatory input to the Agents API,
@@ -85,13 +82,37 @@ class Policy:
         output_message["initial"] = False
         if self.policy_name == "compute_marketplace_naive_rejecter":
             output_message["data"] = {"_tag": "cancel"}
-            return output_message
         elif self.policy_name == "compute_marketplace_naive_accepter":
             raise NotImplementedError(self.policy_name)
         elif self.policy_name == "compute_marketplace_identity_negotiator":
-            return output_message
+            pass
         elif self.policy_name == "compute_marketplace_useless_state_loader":
             context = self.load_states()
             raise NotImplementedError(self.policy_name)
         else:
             raise NotImplementedError(f"Policy {self.policy_name} is not implemented.")
+
+        # TODO: something akin to the following for agents to dump messages:
+        # logging.info("Received response from server")
+        # log_json(
+        #     "Received response from server",
+        #     {"response_message": response_message},
+        # )
+
+        # # TODO: transfer functionality inside policy evaluation
+        # def negotiate_match(self, match, max_rounds=5):
+        #     """Negotiate a match."""
+        #     match_dict = match.get_data()
+        #     rounds_completed = match_dict["rounds_completed"]
+        #     while rounds_completed < max_rounds:
+        #         new_match_offer = self.create_new_match_offer(match)
+        #         response = self.communicate_request_to_party(new_match_offer)
+        #         if response["accepted"]:
+        #             self._agree_to_match(response["match_offer"])
+        #             return
+        #         match = response["counter_offer"]
+        #         rounds_completed += 1
+        #         match.set_attributes({"rounds_completed": rounds_completed})
+        #     self.reject_match(match)
+
+        return output_message
