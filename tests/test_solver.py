@@ -12,6 +12,7 @@ private_key_solver = (
     "0x4c0883a69102937d6231471b5dbb6204fe512961708279a4a6075d78d6d3721b"
 )
 public_key_solver = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57"
+
 policy_solver = "mock_policy"
 
 
@@ -22,7 +23,7 @@ def setup_solver():
     solver = Solver(
         private_key=private_key_solver,
         public_key=public_key_solver,
-        policy=policy_solver,
+        policy_name=policy_solver,
     )
 
     smart_contract = SmartContract("public_key_123")
@@ -33,7 +34,7 @@ def setup_solver():
     job_offer.set_attributes(
         {
             "owner": "owner_123",
-            "target_client": "target_client_123",
+            "target_buyer": "target_buyer_123",
             "created_at": "2024",
             "timeout": "123",
             "CPU": 8,
@@ -50,9 +51,9 @@ def setup_solver():
     resource_offer.id = "resource_offer_123"
     resource_offer.set_attributes(
         {
-            "owner": "resource_owner_public_key",
+            "owner": "seller_public_key",
             "machine_id": "machine_12345",
-            "target_client": "target_client_id",
+            "target_buyer": "target_buyer_id",
             "created_at": "2024-05-28T12:00:00Z",
             "timeout": 3600,
             "CPU": 8,
@@ -68,21 +69,21 @@ def setup_solver():
     deal.set_attributes(
         {
             "price_per_instruction": 10,
-            "client_address": "client_address_123",
-            "resource_provider_address": "resource_provider_address_123",
-            "client_deposit": 300,
+            "buyer_address": "buyer_address_123",
+            "seller_address": "seller_address_123",
+            "buyer_deposit": 300,
         }
     )
 
     match = Match()
     match.set_attributes(
         {
-            "resource_provider_address": "provider1",
-            "client_address": "client1",
+            "seller_address": "provider1",
+            "buyer_address": "buyer1",
             "resource_offer": "offer1",
             "job_offer": "job1",
             "price_per_instruction": 10,
-            "client_deposit": 100,
+            "buyer_deposit": 100,
             "timeout": 10,
             "timeout_deposit": 15,
             "cheating_collateral_multiplier": 1.5,
@@ -91,10 +92,8 @@ def setup_solver():
         }
     )
 
-    solver.get_local_information().add_job_offer(id="job_123", data=job_offer)
-    solver.get_local_information().add_resource_offer(
-        id="resource_123", data=resource_offer
-    )
+    solver.local_information.add_job_offer(id="job_123", data=job_offer)
+    solver.local_information.add_resource_offer(id="resource_123", data=resource_offer)
 
     return {
         "solver": solver,
@@ -120,7 +119,7 @@ def test_handle_smart_contract_event_mediation_random(setup_solver):
     job_offer = setup_solver["job_offer"]
     event = Event("mediation_random", job_offer)
     solver.handle_smart_contract_event(event)
-    assert job_offer in solver.get_local_information().get_job_offers().values()
+    assert job_offer in solver.local_information.job_offers.values()
 
 
 def test_handle_smart_contract_event_deal(setup_solver):
@@ -137,10 +136,8 @@ def test_remove_outdated_offers(setup_solver):
     solver = setup_solver["solver"]
     solver.deals_made_in_current_step = [setup_solver["deal"]]
     solver.remove_outdated_offers()
-    assert "job_offer_123" not in solver.get_local_information().get_job_offers()
-    assert (
-        "resource_offer_123" not in solver.get_local_information().get_resource_offers()
-    )
+    assert "job_offer_123" not in solver.local_information.job_offers
+    assert "resource_offer_123" not in solver.local_information.resource_offers
 
 
 def test_solve(setup_solver):
@@ -165,8 +162,8 @@ def test_create_match(setup_solver):
     job_offer = setup_solver["job_offer"]
     resource_offer = setup_solver["resource_offer"]
     match = solver.create_match(job_offer, resource_offer)
-    assert match.get_data()["resource_provider_address"] == "resource_owner_public_key"
-    assert match.get_data()["client_address"] == "owner_123"
+    assert match.get_data()["seller_address"] == "seller_public_key"
+    assert match.get_data()["buyer_address"] == "owner_123"
     assert match.get_data()["resource_offer"] == "resource_offer_123"
     assert match.get_data()["job_offer"] == "job_offer_123"
 

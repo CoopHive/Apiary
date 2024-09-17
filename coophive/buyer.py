@@ -1,61 +1,40 @@
-"""This module defines the Client class used for interacting with solvers and smart contracts within the CoopHive simulator.
-
-The Client class extends the Agent class and provides methods to manage jobs, 
-connect to solvers and smart contracts, handle events, and make decisions regarding matches.
-"""
+"""This module defines the Buyer class used for interacting with solvers and smart contracts within the CoopHive simulator."""
 
 import logging
-import socket
-import threading
 from collections import deque
 
 from coophive.agent import Agent
 from coophive.deal import Deal
 from coophive.event import Event
 from coophive.match import Match
-from coophive.policy import Policy
 from coophive.result import Result
 from coophive.utils import Tx, log_json
 
 
-class Client(Agent):
-    """A client in the coophive simulator that interacts with solvers and smart contracts to manage jobs and deals."""
+class Buyer(Agent):
+    """A Buyer in the coophive protocol."""
 
     def __init__(
         self,
         private_key: str,
         public_key: str,
-        policy: Policy,
-        auxiliary_states: dict = {},
+        policy_name: str,
     ):
-        """Initialize a new Client instance."""
+        """Initialize a new Buyer instance."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
-            policy=policy,
-            auxiliary_states=auxiliary_states,
+            policy_name=policy_name,
         )
 
         self.current_jobs = deque()
         self.current_deals: dict[str, Deal] = {}  # maps deal id to deals
-        self.client_socket = None
-        self.server_address = ("localhost", 1234)
-        self.start_client_socket()
-
-    def start_client_socket(self):
-        """Start the client socket and connect to the server."""
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect(self.server_address)
-        logging.info("Connected to server")
-        threading.Thread(target=self.handle_server_messages, daemon=True).start()
 
     def handle_server_messages(self):
         """Handle incoming messages from the server."""
         while True:
             try:
-                message = self.client_socket.recv(1024)
-                if not message:
-                    break
+                break
                 message = message.decode("utf-8")
                 logging.info(f"Received message from server: {message}")
                 if "New match offer" in message:
@@ -73,21 +52,13 @@ class Client(Agent):
                         # New match, add to current_matched_offers and process
                         self.current_matched_offers.append(new_match)
                         self.make_match_decision(new_match)
-            except ConnectionResetError:
-                logging.info("Connection lost. Closing connection.")
-                self.client_socket.close()
-                break
             except Exception as e:
                 logging.info(f"Error handling message: {e}")
 
-    def get_jobs(self):
-        """Get the client's current jobs."""
-        return list(self.current_jobs)
-
     def _agree_to_match(self, match: Match):
         """Agree to a match."""
-        client_deposit = match.get_data().get("client_deposit")
-        tx = self._create_transaction(client_deposit)
+        buyer_deposit = match.get_data().get("buyer_deposit")
+        tx = self._create_transaction(buyer_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
 
         log_json("Agreed to match", {"match_id": match.get_id()})
@@ -109,7 +80,7 @@ class Client(Agent):
     # the mediation strategy is part of the agent policy.
     def request_mediation(self, event: Event):
         """Request mediation for an event."""
-        log_json("Requesting mediation", {"event_name": event.get_name()})
+        log_json("Requesting mediation", {"event_name": event.name})
         self.smart_contract.mediate_result(event)
 
     def pay_compute_node(self, event: Event):
@@ -137,9 +108,9 @@ class Client(Agent):
                     "Paying compute node",
                     {"deal_id": deal_id, "payment_value": payment_value},
                 )
-                tx = Tx(sender=self.get_public_key(), value=payment_value)
+                tx = Tx(sender=self.public_key, value=payment_value)
 
-                self.smart_contract.post_client_payment(result, tx)
+                self.smart_contract.post_buyer_payment(result, tx)
                 self.deals_finished_in_current_step.append(deal_id)
 
     def handle_smart_contract_event(self, event: Event):
@@ -147,22 +118,22 @@ class Client(Agent):
         data = event.get_data()
 
         if isinstance(data, Deal) or isinstance(data, Match):
-            event_data = {"name": event.get_name(), "id": data.get_id()}
+            event_data = {"name": event.name, "id": data.get_id()}
             log_json("Received smart contract event", {"event_data": event_data})
         else:
             log_json(
                 "Received smart contract event with unexpected data type",
-                {"name": event.get_name()},
+                {"name": event.name},
             )
 
         if isinstance(data, Deal):
             deal = data
             deal_data = deal.get_data()
             deal_id = deal.get_id()
-            if deal_data["client_address"] == self.get_public_key():
+            if deal_data["buyer_address"] == self.public_key:
                 self.current_deals[deal_id] = deal
         elif isinstance(data, Match):
-            if event.get_name() == "result":
+            if event.name == "result":
                 # decide whether to mediate result
                 mediate_flag = self.decide_whether_or_not_to_mediate(event)
                 if mediate_flag:
@@ -200,17 +171,17 @@ class Client(Agent):
 
     # TODO: transfer functionality inside policy evaluation at the agent level.
     def calculate_benefit(self, match):
-        """Calculate the expected benefit of a match to the client.
+        """Calculate the expected benefit of a match to the Buyer.
 
         Args:
             match: An object containing the match details.
 
         Returns:
-            float: The expected benefit to the client from the match.
+            float: The expected benefit to the Buyer from the match.
         """
         data = match.get_data()
-        expected_benefit_to_client = data.get("expected_benefit_to_client", 0)
-        return expected_benefit_to_client
+        expected_benefit_to_buyer = data.get("expected_benefit_to_buyer", 0)
+        return expected_benefit_to_buyer
 
     # TODO: transfer functionality inside policy evaluation at the agent level.
     def calculate_utility(self, match: Match):
@@ -219,23 +190,10 @@ class Client(Agent):
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
 
+    # TODO: the policy inference function shall interact directly with the messaging client.
+    # Everything in the make_match_decision should happen inside the policy inference,
+    # which is also responsible for outputs to be scheme-compliant.
+    # This will deprecate the make_match_decision function.
     def make_match_decision(self, match):
         """Make a decision on whether to accept, reject, or negotiate a match."""
-        localInfo = self.get_local_information()
-        decision, counteroffer = self.policy.infer(match, localInfo)
-        if decision == "accept":
-            self._agree_to_match(match)
-        elif decision == "reject":
-            self.reject_match(match)
-        elif decision == "negotiate":
-            self.negotiate_match(match)
-        else:
-            raise ValueError(f"Unknown policy decision: {decision}")
-
-    # TODO: move this functionality in the networking model, at the agent level
-    def client_loop(self):
-        """Process matched offers and update finished deals for the client."""
-        for match in self.current_matched_offers:
-            self.make_match_decision(match)
-        self.update_finished_deals()
-        self.current_matched_offers.clear()
+        output_message = self.policy.infer(match)

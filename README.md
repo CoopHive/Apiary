@@ -53,6 +53,21 @@ In order of Stars:
     make install
 ## Usage
 
+Seller setup:
+```bash
+coophive --verbose run --role seller --private-key 0x123 --public-key 0x123 --policy-name compute_marketplace_naive_rejecter --inference-endpoint-port 8000
+
+bun run runner.ts seller localhost:8000
+```
+Buyer setup:
+```bash
+coophive --verbose run --role buyer --private-key 0x321 --public-key 0x321 --policy-name compute_marketplace_naive_rejecter --inference-endpoint-port 8001 --initial-offer '{"offerId": "offer_0","data": {"query": "hello","price": ["0x100", 200]}}'
+
+bun run runner.ts buyer localhost:8001
+```
+
+### Make
+
 To format the code according to the project's style guidelines, run:
 
     make codestyle

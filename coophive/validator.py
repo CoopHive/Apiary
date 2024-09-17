@@ -1,7 +1,6 @@
 """Module for defining the Validator class and its related functionalities."""
 
 from coophive.agent import Agent
-from coophive.policy import Policy
 
 
 class Validator(Agent):
@@ -11,19 +10,17 @@ class Validator(Agent):
         self,
         private_key: str,
         public_key: str,
-        policy: Policy,
-        auxiliary_states: dict = {},
+        policy_name: str,
     ):
         """Initialize the Validator instance."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
-            policy=policy,
-            auxiliary_states=auxiliary_states,
+            policy_name=policy_name,
         )
 
     def verify_result(event):
-        """Verifies that a task was completed by a resource provider and verifies the time/resources it took to complete it."""
+        """Verifies that a task was completed by a seller and verifies the time/resources it took to complete it."""
         if event:
             return True
         return False

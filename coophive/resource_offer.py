@@ -5,7 +5,7 @@ from coophive.data_attribute import DataAttribute
 resource_offer_attributes = {
     "owner",
     "machine_id",
-    "target_client",
+    "target_buyer",
     "created_at",
     "timeout",
     "CPU",

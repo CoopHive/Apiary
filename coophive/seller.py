@@ -1,54 +1,28 @@
-"""Module for defining the ResourceProvider class and its related functionalities."""
+"""Module for defining the Seller class and its related functionalities."""
 
 import logging
-import socket
-import threading
-
-import docker
 
 from coophive.agent import Agent
 from coophive.match import Match
-from coophive.policy import Policy
 from coophive.result import Result
 from coophive.utils import Tx, log_json
 
 
-class ResourceProvider(Agent):
-    """Class representing a resource provider in the CoopHive simulator."""
+class Seller(Agent):
+    """Class representing a seller in the CoopHive protocol."""
 
     def __init__(
         self,
         private_key: str,
         public_key: str,
-        policy: Policy,
-        auxiliary_states: dict = {},
+        policy_name: str,
     ):
-        """Initialize the ResourceProvider instance."""
+        """Initialize the Seller instance."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
-            policy=policy,
-            auxiliary_states=auxiliary_states,
+            policy_name=policy_name,
         )
-        self.machines = {}
-        self.docker_client = docker.from_env()
-        self.server_socket = None
-        self.start_server_socket()
-        self.docker_username = "your_dockerhub_username"
-        self.docker_password = "your_dockerhub_password"
-        self.login_to_docker()
-
-    def start_server_socket(self):
-        """Initializes the server socket, binds it to a local address and port, and starts listening for incoming connections."""
-        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_socket.bind(("localhost", 1234))
-        self.server_socket.listen(5)
-        logging.info("Server listening on port 1234")
-        threading.Thread(target=self.accept_clients, daemon=True).start()
-
-    def accept_clients(self):
-        """Continuously accepts incoming client connections. The use of intermediary schemes deprecates this function."""
-        pass
 
     def handle_client_messages(self, client_socket):
         """Handles incoming messages from a connected client."""
@@ -102,16 +76,6 @@ class ResourceProvider(Agent):
             counter_offer = self.create_new_match_offer(match)
             return f"New match offer: {counter_offer.get_data()}"
 
-    def login_to_docker(self):
-        """Log in to Docker Hub using the provided username and password."""
-        try:
-            self.docker_client.login(
-                username=self.docker_username, password=self.docker_password
-            )
-            logging.info("Logged into Docker Hub successfully")
-        except docker.errors.APIError as e:
-            logging.info(f"Failed to log into Docker Hub: {e}")
-
     def _agree_to_match(self, match: Match):
         """Agree to a match and send a transaction to the connected smart contract.
 
@@ -129,18 +93,18 @@ class ResourceProvider(Agent):
         Args:
             event: The event object received from the smart contract.
         """
-        if event.get_name() == "mediation_random":
+        if event.name == "mediation_random":
 
-            event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+            event_data = {"name": event.name, "id": event.get_data().get_id()}
             log_json("Received smart contract event", {"event_data": event_data})
-        elif event.get_name() == "deal":
+        elif event.name == "deal":
 
-            event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+            event_data = {"name": event.name, "id": event.get_data().get_id()}
             log_json("Received smart contract event", {"event_data": event_data})
             deal = event.get_data()
             deal_data = deal.get_data()
             deal_id = deal.get_id()
-            if deal_data["resource_provider_address"] == self.get_public_key():
+            if deal_data["seller_address"] == self.public_key:
                 self.current_deals[deal_id] = deal
                 # changed to simulate running a docker job
                 container = self.docker_client.containers.run(
@@ -248,7 +212,7 @@ class ResourceProvider(Agent):
         return price_per_instruction * expected_number_of_instructions
 
     # TODO: transfer functionality inside policy evaluation at the agent level.
-    # NOTE: this utility calculation is DIFFERENT for a resource provider than for a client
+    # NOTE: this utility calculation is DIFFERENT for a seller than for a buyer
     def calculate_utility(self, match):
         """Calculate the utility of a match based on several factors.
 
@@ -257,22 +221,17 @@ class ResourceProvider(Agent):
         expected_revenue = self.calculate_revenue(match)
         return expected_revenue
 
+    # TODO: the policy inference function shall interact directly with the messaging client.
+    # Everything in the make_match_decision should happen inside the policy inference,
+    # which is also responsible for outputs to be scheme-compliant.
+    # This will deprecate the make_match_decision function.
     def make_match_decision(self, match):
         """Make a decision on whether to accept, reject, or negotiate a match."""
-        localInfo = self.get_local_information()
-        decision, counter = self.policy.infer(match, localInfo)
-        if decision == "accept":
-            self._agree_to_match(match)
-        elif decision == "reject":
-            self.reject_match(match)
-        elif decision == "negotiate":
-            self.negotiate_match(match)
-        else:
-            raise ValueError(f"Unknown policy decision: {decision}")
+        output_message = self.policy.infer(match)
 
     # TODO: move this functionality in the networking model, at the agent level
-    def resource_provider_loop(self):
-        """Main loop for the resource provider to process matched offers and update job running times."""
+    def seller_loop(self):
+        """Main loop for the seller to process matched offers and update job running times."""
         for match in self.current_matched_offers:
             self.make_match_decision(match)
         self.update_job_running_times()

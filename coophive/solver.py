@@ -1,7 +1,6 @@
 """This module defines the Solver class which is responsible for connecting to smart contracts, handling events, and managing job and resource offers."""
 
 import logging
-import os
 
 from coophive.agent import Agent
 from coophive.data_attribute import DataAttribute
@@ -9,12 +8,11 @@ from coophive.deal import Deal
 from coophive.event import Event
 from coophive.job_offer import JobOffer
 from coophive.match import Match
-from coophive.policy import Policy
 from coophive.resource_offer import ResourceOffer
 from coophive.utils import log_json
 
 extra_necessary_match_data = {
-    "client_deposit": 5,
+    "buyer_deposit": 5,
     "timeout": 10,
     "timeout_deposit": 3,
     "cheating_collateral_multiplier": 50,
@@ -30,27 +28,24 @@ class Solver(Agent):
         self,
         private_key: str,
         public_key: str,
-        policy: Policy,
-        auxiliary_states: dict = {},
+        policy_name: str,
     ):
         """Initialize the Solver."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
-            policy=policy,
-            auxiliary_states=auxiliary_states,
+            policy_name=policy_name,
         )
 
         self.machine_keys = ["CPU", "RAM"]
-        self.smart_contract = None
         self.deals_made_in_current_step: dict[str, Deal] = {}
         self.currently_matched_job_offers = set()
         self.current_matched_resource_offers = set()
 
     def handle_smart_contract_event(self, event: Event):
         """Handle events from the smart contract."""
-        if event.get_name() == "mediation_random":
-            event_name = event.get_name()
+        if event.name == "mediation_random":
+            event_name = event.name
             event_data_id = (
                 event.get_data().get_id()
                 if isinstance(event.get_data(), DataAttribute)
@@ -61,20 +56,20 @@ class Solver(Agent):
                 {"event_name": event_name, "event_data_id": event_data_id},
             )
             job_offer_cid = event_data_id
-            if job_offer_cid not in self.get_local_information().get_job_offers():
+            if job_offer_cid not in self.local_information.job_offers:
                 # solver doesn't have the job offer locally, must retrieve from IPFS
-                job_offer = self.get_local_information().ipfs.get(job_offer_cid)
+                job_offer = self.local_information.ipfs.get(job_offer_cid)
             else:
-                job_offer = self.get_local_information().get_job_offers()[job_offer_cid]
+                job_offer = self.local_information.job_offers[job_offer_cid]
 
             event = job_offer
 
         # if deal, remove resource and job offers from list
-        elif event.get_name() == "deal" and isinstance(event.get_data(), Deal):
+        elif event.name == "deal" and isinstance(event.get_data(), Deal):
             log_json(
                 "Smart contract event",
                 {
-                    "event_name": event.get_name(),
+                    "event_name": event.name,
                     "event_data_id": event.get_data().get_id(),
                 },
             )
@@ -112,26 +107,16 @@ class Solver(Agent):
             resource_offer = deal_data["resource_offer"]
             # delete job offer
             job_offer = deal_data["job_offer"]
-            self._remove_offer(
-                self.get_local_information().get_resource_offers(), resource_offer
-            )
-            self._remove_offer(self.get_local_information().get_job_offers(), job_offer)
+            self._remove_offer(self.local_information.resource_offers, resource_offer)
+            self._remove_offer(self.local_information.job_offers, job_offer)
         # clear list of deals made in current step
         self.deals_made_in_current_step.clear()
-
-    def emit_event(self, event: Event):
-        """Emit an event and notify all subscribed event handlers."""
-        self.events.append(event)
-        for event_handler in self.event_handlers:
-            event_handler(event)
 
     # TODO: transfer functionality inside policy evaluation at the agent level.
     # This is a solver-specific policy, but still a policy.
     def solve(self):
         """Solve the current matching problem by matching job offers with resource offers."""
-        for job_offer_id, job_offer in (
-            self.get_local_information().get_job_offers().items()
-        ):
+        for job_offer_id, job_offer in self.local_information.job_offers.items():
             resulting_resource_offer = self.match_job_offer(job_offer)
             if resulting_resource_offer is not None:
                 # add job and resource offers to sets of currently matched offers
@@ -143,8 +128,6 @@ class Solver(Agent):
                 match.set_id()
                 # create match event
                 match_event = Event(name="match", data=match)
-                # emit match event
-                self.emit_event(match_event)
                 log_json(
                     "Match event emitted",
                     {"match_event": match_event.get_data().get_id()},
@@ -164,7 +147,7 @@ class Solver(Agent):
         # only look for exact matches for now
         job_offer_data = job_offer.get_data()
         job_offer_id = job_offer.get_id()
-        current_resource_offers = self.local_information.get_resource_offers()
+        current_resource_offers = self.local_information.resource_offers
         for resource_offer_id, resource_offer in current_resource_offers.items():
             # do not consider offers that have already been matched
             if (job_offer_id in self.currently_matched_job_offers) or (
@@ -208,8 +191,8 @@ class Solver(Agent):
         match = Match()
         job_offer_data = job_offer.get_data()
         resource_offer_data = resource_offer.get_data()
-        match.add_data("resource_provider_address", resource_offer_data.get("owner"))
-        match.add_data("client_address", job_offer_data.get("owner"))
+        match.add_data("seller_address", resource_offer_data.get("owner"))
+        match.add_data("buyer_address", job_offer_data.get("owner"))
         match.add_data("resource_offer", resource_offer.get_id())
         match.add_data("job_offer", job_offer.get_id())
 

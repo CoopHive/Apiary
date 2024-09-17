@@ -9,10 +9,6 @@ class Event:
         self.name = name
         self.data = data
 
-    def get_name(self):
-        """Retrieve the name of the event."""
-        return self.name
-
     def get_data(self):
         """Retrieve the data associated with the event."""
         return self.data
