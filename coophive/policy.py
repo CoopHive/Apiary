@@ -4,6 +4,9 @@ import random
 
 import pandas as pd
 
+from coophive.event import Event
+from coophive.match import Match
+
 
 class Policy:
     """Defines the behavior of Agents based on a predefined policy within the CoopHive simulator.
@@ -121,3 +124,123 @@ class Policy:
         #     self.reject_match(match)
 
         return output_message
+
+    # BUYER POLICY FUNCTIONS 
+    def find_best_match(self, job_offer_id):
+        """Find the best match for a given job offer based on utility."""
+        best_match = None
+        highest_utility = -float("inf")
+        for match in self.current_matched_offers:
+            if match.get_data().get("job_offer") == job_offer_id:
+                utility = self.calculate_utility(match)
+                if utility > highest_utility:
+                    highest_utility = utility
+                    best_match = match
+        return best_match
+    
+    def calculate_cost(self, match):
+        """Calculate the cost of a match.
+
+        Args:
+            match: An object containing the match details.
+
+        Returns:
+            float: The cost of the match based on price per instruction and expected number of instructions.
+        """
+        data = match.get_data()
+        price_per_instruction = data.get("price_per_instruction", 0)
+        expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
+        return price_per_instruction * expected_number_of_instructions
+    
+    def calculate_benefit(self, match):
+        """Calculate the expected benefit of a match to the Buyer.
+
+        Args:
+            match: An object containing the match details.
+
+        Returns:
+            float: The expected benefit to the Buyer from the match.
+        """
+        data = match.get_data()
+        expected_benefit_to_buyer = data.get("expected_benefit_to_buyer", 0)
+        return expected_benefit_to_buyer
+
+    def calculate_utility(self, match: Match):
+        """Calculate the utility of a match based on several factors."""
+        expected_cost = self.calculate_cost(match)
+        expected_benefit = self.calculate_benefit(match)
+        return expected_benefit - expected_cost
+
+    def decide_whether_or_not_to_mediate(self, event: Event):
+        """Decide whether to mediate based on the event.
+
+        Args:
+            event: The event to decide on.
+
+        Returns:
+            bool: True if mediation is needed, False otherwise.
+        """
+        return True  # for now, always mediate
+
+    # SELLER POLICY FUNCTIONS
+    def evaluate_match(self, match):
+        """Here you evaluate the match and decide whether to accept or counteroffer."""
+        if (
+            self.calculate_utility(match)
+            > match.get_data()["resource_offer"]["T_accept"]
+        ):
+            return "RP accepted from evaluate match"
+        elif (
+            self.calculate_utility(match)
+            < match.get_data()["resource_offer"]["T_reject"]
+        ):
+            return "RP rejected from evaluate match"
+        else:
+            logging.info("RP sending counteroffer from evaluate match")
+            counter_offer = self.create_new_match_offer(match)
+            return f"New match offer: {counter_offer.get_data()}"
+
+    # NOTE: this best match calculation is DIFFERENT for a seller than for a buyer
+    def find_best_match(self, resource_offer_id):
+        """Find the best match for a given resource offer based on utility.
+
+        Args:
+            resource_offer_id: The ID of the resource offer.
+
+        Returns:
+            match: The match with the highest utility for the given resource offer.
+        """
+        best_match = None
+        highest_utility = -float("inf")
+        for match in self.current_matched_offers:
+            if match.get_data()["resource_offer"] == resource_offer_id:
+                utility = self.calculate_utility(match)
+                if utility > highest_utility:
+                    highest_utility = utility
+                    best_match = match
+        return best_match
+
+    def calculate_revenue(self, match):
+        """Calculate the revenue generated from a match.
+
+        Args:
+            match: An object containing the match details.
+
+        Returns:
+            float: The revenue from the match based on some calculation.
+        """
+        data = match.get_data()
+        price_per_instruction = data.get("price_per_instruction", 0)
+        expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
+        return price_per_instruction * expected_number_of_instructions
+
+    # NOTE: this utility calculation is DIFFERENT for a seller than for a buyer
+    def calculate_utility(self, match):
+        """Calculate the utility of a match based on several factors.
+
+        COST and TIME are the main determiners.
+        """
+        expected_revenue = self.calculate_revenue(match)
+        return expected_revenue
+
+    
