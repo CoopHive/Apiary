@@ -39,8 +39,9 @@ class Policy:
         self.policy_name = policy_name
 
     # TODO: make this loading more modular.
-    # some policies may train on the auxiliary states history only,
-    # others on a combination.
+    # some policies may train on the auxiliary states history only, others on a combination.
+    # More in general, in the same way in which the inference is separate from the update of the policy state, as more messages flow in,
+    # the policy train/infer are both separate from the population of the environmental state, both historical and point-in-time.
     def load_states(self):
         """Get the states for the agent policy to be trained/evaluated, if needed.
 
