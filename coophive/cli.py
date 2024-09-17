@@ -80,7 +80,7 @@ def run(
             "coophive.fastapi_app:app",
             "--reload",
             "--host",
-            "0.0.0.0",
+            "localhost",
             "--port",
             inference_endpoint_port,
         ],
