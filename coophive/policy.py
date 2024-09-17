@@ -65,29 +65,33 @@ class Policy:
         # and potentially (historical) policy_states and update the policy_states file.
         raise NotImplementedError(self.policy_name)
 
-    def infer(self, message: dict):
+    def infer(self, input_message: dict):
         """Evaluate the policy, following the (message, context) => message structure, and compute the message to be returned.
 
-        Context/states are loaded here, if necessary.
+        Context/states are loaded here, only if necessary.
         """
-        if message.get("pubkey") == self.public_key:  # if transmitter same as receiver
+        if (
+            input_message.get("pubkey") == self.public_key
+        ):  # if transmitter same as receiver
             return "noop"
 
-        breakpoint()
-
-        if self.policy_name == "naive_accepter":
-            # TODO: fix, this policy is not scheme compliant.
-            return "accept"
-        elif self.policy_name == "naive_rejecter":
-            # TODO: fix, this policy is not scheme compliant.
-            return "reject"
-        elif self.policy_name == "identity_negotiator":
-            # TODO: fix, this policy is not correct, even if scheme-compliant
-            # as it uses the received message address, instead of the submitter.
-            return message
-        elif self.policy_name == "useless_state_loader":
-            # TODO: fix, this policy is not scheme compliant.
+        # TODO: as a function of the game being played, specificed as a mandatory input to the Agents API,
+        # initialize the entries of the scheme which are inviariant across jobs. For example, the private key is constant.
+        # if you are a seller, the offerId reply is the same as the incoming one..other entries of the scheme for different games
+        # could have the same property. Make use of them to avoid thrivial computation at inference time/to avoid scheme-agnostic capabilities.
+        # TODO: policies shall be able to conclude any negotiation: they need to "have an answer for every possible question"
+        output_message = input_message.copy()
+        output_message["pubkey"] = self.public_key
+        output_message["initial"] = False
+        if self.policy_name == "compute_marketplace_naive_rejecter":
+            output_message["data"] = {"_tag": "cancel"}
+            return output_message
+        elif self.policy_name == "compute_marketplace_naive_accepter":
+            raise NotImplementedError(self.policy_name)
+        elif self.policy_name == "compute_marketplace_identity_negotiator":
+            return output_message
+        elif self.policy_name == "compute_marketplace_useless_state_loader":
             context = self.load_states()
-            return "accept"
+            raise NotImplementedError(self.policy_name)
         else:
             raise NotImplementedError(f"Policy {self.policy_name} is not implemented.")
