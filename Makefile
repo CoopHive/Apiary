@@ -40,3 +40,7 @@ diagrams:
 	python3 docs/classes_filter.py
 	dot -Tpng docs/img/classes_coophive.dot -o docs/img/classes_coophive.png
 	dot -Tpng docs/img/packages_coophive.dot -o docs/img/packages_coophive.png
+
+.PHONY: flush
+flush:
+	./kill_processes.sh
