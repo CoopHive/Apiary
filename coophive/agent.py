@@ -64,11 +64,6 @@ class Agent:
 
         logging.info(f"Agent {self.public_key} initialized.")
 
-    # TODO: deprecate local information
-    def get_local_information(self):
-        """Get the local information of the agent."""
-        return self.local_information
-
     def _create_transaction(self, value):
         """Helper function to create a reusable transaction object."""
         return Tx(sender=self.public_key, value=value)
