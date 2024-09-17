@@ -57,7 +57,7 @@ class Seller(Agent):
                 break
             except Exception as e:
                 logging.info(f"Error handling message: {e}")
-   
+
     def _agree_to_match(self, match: Match):
         """Agree to a match and send a transaction to the connected smart contract.
 

@@ -125,19 +125,19 @@ class Policy:
 
         return output_message
 
-    # BUYER POLICY FUNCTIONS 
+    # BUYER POLICY FUNCTIONS
     def find_best_match(self, job_offer_id):
         """Find the best match for a given job offer based on utility."""
         best_match = None
         highest_utility = -float("inf")
         for match in self.current_matched_offers:
             if match.get_data().get("job_offer") == job_offer_id:
-                utility = self.calculate_utility(match)
+                utility = self.calculate_utility_buyer(match)
                 if utility > highest_utility:
                     highest_utility = utility
                     best_match = match
         return best_match
-    
+
     def calculate_cost(self, match):
         """Calculate the cost of a match.
 
@@ -151,7 +151,7 @@ class Policy:
         price_per_instruction = data.get("price_per_instruction", 0)
         expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
         return price_per_instruction * expected_number_of_instructions
-    
+
     def calculate_benefit(self, match):
         """Calculate the expected benefit of a match to the Buyer.
 
@@ -165,8 +165,8 @@ class Policy:
         expected_benefit_to_buyer = data.get("expected_benefit_to_buyer", 0)
         return expected_benefit_to_buyer
 
-    def calculate_utility(self, match: Match):
-        """Calculate the utility of a match based on several factors."""
+    def calculate_utility_buyer(self, match: Match):
+        """Calculate the utility of a match for a buyer based on several factors."""
         expected_cost = self.calculate_cost(match)
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
@@ -186,12 +186,12 @@ class Policy:
     def evaluate_match(self, match):
         """Here you evaluate the match and decide whether to accept or counteroffer."""
         if (
-            self.calculate_utility(match)
+            self.calculate_utility_seller(match)
             > match.get_data()["resource_offer"]["T_accept"]
         ):
             return "RP accepted from evaluate match"
         elif (
-            self.calculate_utility(match)
+            self.calculate_utility_seller(match)
             < match.get_data()["resource_offer"]["T_reject"]
         ):
             return "RP rejected from evaluate match"
@@ -214,7 +214,7 @@ class Policy:
         highest_utility = -float("inf")
         for match in self.current_matched_offers:
             if match.get_data()["resource_offer"] == resource_offer_id:
-                utility = self.calculate_utility(match)
+                utility = self.calculate_utility_seller(match)
                 if utility > highest_utility:
                     highest_utility = utility
                     best_match = match
@@ -235,12 +235,10 @@ class Policy:
         return price_per_instruction * expected_number_of_instructions
 
     # NOTE: this utility calculation is DIFFERENT for a seller than for a buyer
-    def calculate_utility(self, match):
+    def calculate_utility_seller(self, match):
         """Calculate the utility of a match based on several factors.
 
         COST and TIME are the main determiners.
         """
         expected_revenue = self.calculate_revenue(match)
         return expected_revenue
-
-    
