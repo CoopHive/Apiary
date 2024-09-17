@@ -3,7 +3,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from coophive.buyer import Buyer
-from coophive.match import Match
 from coophive.policy import Policy
 from coophive.seller import Seller
 
@@ -56,18 +55,14 @@ def test_make_match_decision_with_policies(setup_agents_with_policies):
     """Test the make_match_decision method with different policies."""
     buyer, seller, policy_c = setup_agents_with_policies
 
-    mock_match = Match()
-    mock_match.set_attributes(
-        {
-            "buyer_address": "buyer_address",
-            "seller_address": "seller_address",
-            "buyer_deposit": 100,
-            "price_per_instruction": 10,
-            "expected_number_of_instructions": 1000,
-        }
-    )
+    mock_message = {
+        "pubkey": "0x123",
+        "offerId": "offer_0",
+        "initial": True,
+        "data": {"_tag": "offer", "query": "hello", "price": ["0x100", 200]},
+    }
 
-    buyer.policy = Policy(policy_name=policy_c)
+    buyer.policy = Policy(public_key=public_key_buyer, policy_name=policy_c)
     buyer.negotiate_match = MagicMock()
 
     # TODO: make this scheme-compliant
@@ -76,7 +71,7 @@ def test_make_match_decision_with_policies(setup_agents_with_policies):
         return "accept"
 
     buyer.policy.infer = MagicMock(side_effect=mock_infer)
-    buyer.policy.infer(mock_match)
+    buyer.policy.infer(mock_message)
 
 
 if __name__ == "__main__":

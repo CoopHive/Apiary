@@ -64,10 +64,6 @@ class Agent:
 
         logging.info(f"Agent {self.public_key} initialized.")
 
-    def get_public_key(self):
-        """Get the public key of the agent."""
-        return self.public_key
-
     # TODO: deprecate local information
     def get_local_information(self):
         """Get the local information of the agent."""
@@ -75,7 +71,7 @@ class Agent:
 
     def _create_transaction(self, value):
         """Helper function to create a reusable transaction object."""
-        return Tx(sender=self.get_public_key(), value=value)
+        return Tx(sender=self.public_key, value=value)
 
     def connect_to_smart_contract(self, smart_contract):
         """Connect to a smart contract and subscribe to its events.
@@ -96,7 +92,7 @@ class Agent:
             match = event.get_data()
             if (
                 match.get_data()[f"{self.__class__.__name__.lower()}_address"]
-                == self.get_public_key()
+                == self.public_key
             ):
                 self.current_matched_offers.append(match)
 

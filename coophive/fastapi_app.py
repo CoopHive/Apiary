@@ -10,6 +10,7 @@ app = FastAPI()
 
 @app.post("/")
 async def inference_endpoint(message: dict):
+    # https://github.com/CoopHive/redis-scheme-client/blob/main/src/scheme.ts#L108
     """Process a message and return the inference result."""
     seller = Seller(
         private_key="your_private_key",  # Replace with actual values or pass dynamically

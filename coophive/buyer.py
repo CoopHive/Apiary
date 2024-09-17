@@ -114,7 +114,7 @@ class Buyer(Agent):
                     "Paying compute node",
                     {"deal_id": deal_id, "payment_value": payment_value},
                 )
-                tx = Tx(sender=self.get_public_key(), value=payment_value)
+                tx = Tx(sender=self.public_key, value=payment_value)
 
                 self.smart_contract.post_buyer_payment(result, tx)
                 self.deals_finished_in_current_step.append(deal_id)
@@ -136,7 +136,7 @@ class Buyer(Agent):
             deal = data
             deal_data = deal.get_data()
             deal_id = deal.get_id()
-            if deal_data["buyer_address"] == self.get_public_key():
+            if deal_data["buyer_address"] == self.public_key:
                 self.current_deals[deal_id] = deal
         elif isinstance(data, Match):
             if event.get_name() == "result":
@@ -203,11 +203,3 @@ class Buyer(Agent):
     def make_match_decision(self, match):
         """Make a decision on whether to accept, reject, or negotiate a match."""
         output_message = self.policy.infer(match)
-
-    # TODO: move this functionality in the networking model, at the agent level
-    def buyer_loop(self):
-        """Process matched offers and update finished deals for the buyer."""
-        for match in self.current_matched_offers:
-            self.make_match_decision(match)
-        self.update_finished_deals()
-        self.current_matched_offers.clear()

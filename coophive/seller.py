@@ -106,7 +106,7 @@ class Seller(Agent):
             deal = event.get_data()
             deal_data = deal.get_data()
             deal_id = deal.get_id()
-            if deal_data["seller_address"] == self.get_public_key():
+            if deal_data["seller_address"] == self.public_key:
                 self.current_deals[deal_id] = deal
                 # changed to simulate running a docker job
                 container = self.docker_client.containers.run(

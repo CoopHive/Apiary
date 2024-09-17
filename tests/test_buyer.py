@@ -40,7 +40,7 @@ def setup_buyer():
             public_key_seller: 500,
         }
         buyer._create_transaction = lambda value: Tx(
-            sender=buyer.get_public_key(), value=value
+            sender=buyer.public_key, value=value
         )
         return buyer, smart_contract, match
 
@@ -166,119 +166,6 @@ def test_update_finished_deals(setup_buyer):
     assert (
         len(buyer.deals_finished_in_current_step) == 0
     )  # check if deals_finished_in_current_step is cleared
-
-
-def test_buyer_loop(setup_buyer):
-    """Test the buyer_loop method."""
-    buyer, _, _ = setup_buyer
-    match1 = Match()
-    match1.set_attributes(
-        {
-            "seller_address": "provider1",
-            "buyer_address": "buyer1",
-            "resource_offer": {
-                "owner": "provider1",
-                "machine_id": "machine1",
-                "target_buyer": "buyer1",
-                "created_at": "2024-08-15",
-                "timeout": 10,
-                "CPU": 4,
-                "GPU": 1,
-                "RAM": 16,
-                "prices": [10, 20, 30],
-                "verification_method": "method1",
-                "mediators": ["mediator1", "mediator2"],
-                "price_per_instruction": 10,
-                "expected_number_of_instructions": 1000,
-                "T_accept": 50,
-                "T_reject": 20,
-            },
-            "job_offer": {
-                "owner": "buyer1",
-                "target_buyer": "buyer1",
-                "created_at": "2024-08-15",
-                "timeout": 10,
-                "CPU": 4,
-                "GPU": 1,
-                "RAM": 16,
-                "module": "module1",
-                "prices": [15, 25, 35],
-                "instruction_count": 100,
-                "verification_method": "method1",
-                "mediators": ["mediator1", "mediator2"],
-                "benefit_to_buyer": 2000,
-                "T_accept": 50,
-                "T_reject": 20,
-            },
-            "price_per_instruction": 10,
-            "expected_number_of_instructions": 1000,
-            "expected_benefit_to_buyer": 2000,
-            "buyer_deposit": 100,
-            "timeout": 10,
-            "timeout_deposit": 15,
-            "cheating_collateral_multiplier": 1.5,
-        }
-    )
-
-    match2 = Match()
-    match2.set_attributes(
-        {
-            "seller_address": "provider2",
-            "buyer_address": "buyer2",
-            "resource_offer": {
-                "owner": "provider2",
-                "machine_id": "machine2",
-                "target_buyer": "buyer2",
-                "created_at": "2024-08-15",
-                "timeout": 12,
-                "CPU": 8,
-                "GPU": 2,
-                "RAM": 32,
-                "prices": [20, 40, 60],
-                "verification_method": "method2",
-                "mediators": ["mediator3"],
-                "price_per_instruction": 50,
-                "expected_number_of_instructions": 2000,
-                "T_accept": 70,
-                "T_reject": 30,
-            },
-            "job_offer": {
-                "owner": "buyer2",
-                "target_buyer": "buyer2",
-                "created_at": "2024-08-15",
-                "timeout": 12,
-                "CPU": 8,
-                "GPU": 2,
-                "RAM": 32,
-                "module": "module2",
-                "prices": [25, 50, 75],
-                "instruction_count": 100,
-                "verification_method": "method2",
-                "mediators": ["mediator3"],
-                "benefit_to_buyer": 3000,
-                "T_accept": 70,
-                "T_reject": 30,
-            },
-            "price_per_instruction": 50,
-            "expected_number_of_instructions": 2000,
-            "expected_benefit_to_buyer": 3000,
-            "buyer_deposit": 100,
-            "timeout": 12,
-            "timeout_deposit": 20,
-            "cheating_collateral_multiplier": 1.0,
-        }
-    )
-
-    buyer.current_matched_offers.append(match1)
-    buyer.current_matched_offers.append(match2)
-
-    buyer._agree_to_match = MagicMock()
-    buyer.update_finished_deals = MagicMock()
-
-    buyer.buyer_loop()
-
-    assert buyer.update_finished_deals.call_count == 1
-    assert len(buyer.current_matched_offers) == 0
 
 
 if __name__ == "__main__":
