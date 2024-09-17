@@ -56,13 +56,15 @@ def cli(
     required=True,
 )
 @click.option("--policy-name", required=True, help="Agent Policy.")
-@click.option("--inference-endpoint-url", default="redis://localhost:8000")
+@click.option("--inference-endpoint-port", required=True)
+@click.option("--initial-offer", default=None)
 def run(
     role: str,
     private_key: str,
     public_key: str,
     policy_name: str,
-    inference_endpoint_url: str,
+    inference_endpoint_port: str,
+    initial_offer: str,
 ):
     """Run Agent."""
     os.environ["ROLE"] = role
@@ -71,6 +73,22 @@ def run(
     os.environ["PUBLIC_KEY"] = public_key
     os.environ["POLICY_NAME"] = policy_name
 
-    os.environ["INFERENCE_ENDPOINT_URL"] = inference_endpoint_url
+    # TODO: here giving twite the public key, can we avoid this?
+    if initial_offer:
+        command = ["redis-cli", "publish", "initial_offers", initial_offer]
+        subprocess.run(command, check=True)
 
-    subprocess.run(["uvicorn", "coophive.fastapi_app:app", "--reload"], check=True)
+    # TODO: here we risk the buyer being slower at setting up than the already connected seller
+    # to read and reply. Please fix, the buyer should first connects than shoot an initial offer.
+    subprocess.run(
+        [
+            "uvicorn",
+            "coophive.fastapi_app:app",
+            "--reload",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            inference_endpoint_port,
+        ],
+        check=True,
+    )

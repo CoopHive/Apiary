@@ -8,9 +8,6 @@ from coophive.buyer import Buyer
 from coophive.seller import Seller
 
 role = os.getenv("ROLE", "")
-inference_endpoint_url = os.environ[
-    "INFERENCE_ENDPOINT_URL"
-]  # TODO: use this to specify the inference endpoint port. Needed to simulate two agents and two clients on one machine.
 
 mandatory_states = {
     "private_key": os.getenv("PRIVATE_KEY", ""),
