@@ -95,13 +95,13 @@ class Seller(Agent):
         Args:
             event: The event object received from the smart contract.
         """
-        if event.get_name() == "mediation_random":
+        if event.name == "mediation_random":
 
-            event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+            event_data = {"name": event.name, "id": event.get_data().get_id()}
             log_json("Received smart contract event", {"event_data": event_data})
-        elif event.get_name() == "deal":
+        elif event.name == "deal":
 
-            event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+            event_data = {"name": event.name, "id": event.get_data().get_id()}
             log_json("Received smart contract event", {"event_data": event_data})
             deal = event.get_data()
             deal_data = deal.get_data()

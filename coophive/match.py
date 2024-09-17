@@ -33,14 +33,6 @@ class Match(DataAttribute):
             for key, value in data.items():
                 self.add_data(key, value)
 
-    def get_seller_signed(self):
-        """Get the status of seller signed flag."""
-        return self.seller_signed
-
-    def get_buyer_signed(self):
-        """Get the status of buyer signed flag."""
-        return self.buyer_signed
-
     def sign_seller(self):
         """Set the seller signed flag to True."""
         self.seller_signed = True

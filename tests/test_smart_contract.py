@@ -23,7 +23,7 @@ def tx():
 
 def test_initial_balance(smart_contract):
     """Test that the initial balance of the smart contract is zero."""
-    assert smart_contract._get_balance() == 0
+    assert smart_contract.balance == 0
 
 
 def test_agree_to_match_seller(smart_contract, tx):
@@ -37,8 +37,8 @@ def test_agree_to_match_seller(smart_contract, tx):
 
     smart_contract._agree_to_match_seller(match, tx)
     assert smart_contract.balances["provider_address"] == 50
-    assert smart_contract._get_balance() == 100
-    assert match.get_seller_signed()
+    assert smart_contract.balance == 100
+    assert match.seller_signed
 
 
 def test_agree_to_match_buyer(smart_contract, tx):
@@ -52,7 +52,7 @@ def test_agree_to_match_buyer(smart_contract, tx):
 
     smart_contract._agree_to_match_buyer(match, tx)
     assert smart_contract.balances["buyer_address"] == 50
-    assert smart_contract._get_balance() == 100
+    assert smart_contract.balance == 100
     match.sign_buyer.assert_called_once()
 
 
@@ -74,12 +74,12 @@ def test_agree_to_match(smart_contract, tx):
 
     smart_contract.agree_to_match(match, tx)
     assert smart_contract.balances["provider_address"] == 50
-    assert smart_contract._get_balance() == 100
+    assert smart_contract.balance == 100
 
     tx.sender = "buyer_address"
     smart_contract.agree_to_match(match, tx)
     assert smart_contract.balances["buyer_address"] == 50
-    assert smart_contract._get_balance() == 200
+    assert smart_contract.balance == 200
     assert match in smart_contract.matches_made_in_current_step
 
 
@@ -110,7 +110,7 @@ def test_refund_buyer_deposit(smart_contract):
     smart_contract.balances["buyer_address"] = 0
     smart_contract._refund_buyer_deposit(deal)
     assert smart_contract.balances["buyer_address"] == 100
-    assert smart_contract._get_balance() == -100
+    assert smart_contract.balance == -100
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ from coophive.job_offer import JobOffer
 from coophive.match import Match
 from coophive.policy import Policy
 from coophive.resource_offer import ResourceOffer
-from coophive.utils import Tx, hash_dict, log_json
+from coophive.utils import Tx, hash_dict
 
 
 class Agent:
@@ -80,10 +80,10 @@ class Agent:
 
     def handle_solver_event(self, event):
         """Handle events from the solver."""
-        event_data = {"name": event.get_name(), "id": event.get_data().get_id()}
+        event_data = {"name": event.name, "id": event.get_data().get_id()}
         logging.info(f"Received solver event: {event_data}")
 
-        if event.get_name() == "match":
+        if event.name == "match":
             match = event.get_data()
             if (
                 match.get_data()[f"{self.__class__.__name__.lower()}_address"]
@@ -195,11 +195,3 @@ class LocalInformation:
         self.job_offers[id] = data
         logging.info("Adding job offer to IPFS:")
         self.ipfs.add(data)
-
-    def get_resource_offers(self):
-        """Get the resource offers in the local information."""
-        return self.resource_offers
-
-    def get_job_offers(self):
-        """Get the job offers in the local information."""
-        return self.job_offers

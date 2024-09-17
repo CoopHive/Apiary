@@ -46,8 +46,8 @@ class Solver(Agent):
 
     def handle_smart_contract_event(self, event: Event):
         """Handle events from the smart contract."""
-        if event.get_name() == "mediation_random":
-            event_name = event.get_name()
+        if event.name == "mediation_random":
+            event_name = event.name
             event_data_id = (
                 event.get_data().get_id()
                 if isinstance(event.get_data(), DataAttribute)
@@ -58,20 +58,20 @@ class Solver(Agent):
                 {"event_name": event_name, "event_data_id": event_data_id},
             )
             job_offer_cid = event_data_id
-            if job_offer_cid not in self.local_information.get_job_offers():
+            if job_offer_cid not in self.local_information.job_offers:
                 # solver doesn't have the job offer locally, must retrieve from IPFS
                 job_offer = self.local_information.ipfs.get(job_offer_cid)
             else:
-                job_offer = self.local_information.get_job_offers()[job_offer_cid]
+                job_offer = self.local_information.job_offers[job_offer_cid]
 
             event = job_offer
 
         # if deal, remove resource and job offers from list
-        elif event.get_name() == "deal" and isinstance(event.get_data(), Deal):
+        elif event.name == "deal" and isinstance(event.get_data(), Deal):
             log_json(
                 "Smart contract event",
                 {
-                    "event_name": event.get_name(),
+                    "event_name": event.name,
                     "event_data_id": event.get_data().get_id(),
                 },
             )
@@ -109,10 +109,8 @@ class Solver(Agent):
             resource_offer = deal_data["resource_offer"]
             # delete job offer
             job_offer = deal_data["job_offer"]
-            self._remove_offer(
-                self.local_information.get_resource_offers(), resource_offer
-            )
-            self._remove_offer(self.local_information.get_job_offers(), job_offer)
+            self._remove_offer(self.local_information.resource_offers, resource_offer)
+            self._remove_offer(self.local_information.job_offers, job_offer)
         # clear list of deals made in current step
         self.deals_made_in_current_step.clear()
 
@@ -120,7 +118,7 @@ class Solver(Agent):
     # This is a solver-specific policy, but still a policy.
     def solve(self):
         """Solve the current matching problem by matching job offers with resource offers."""
-        for job_offer_id, job_offer in self.local_information.get_job_offers().items():
+        for job_offer_id, job_offer in self.local_information.job_offers.items():
             resulting_resource_offer = self.match_job_offer(job_offer)
             if resulting_resource_offer is not None:
                 # add job and resource offers to sets of currently matched offers
@@ -151,7 +149,7 @@ class Solver(Agent):
         # only look for exact matches for now
         job_offer_data = job_offer.get_data()
         job_offer_id = job_offer.get_id()
-        current_resource_offers = self.local_information.get_resource_offers()
+        current_resource_offers = self.local_information.resource_offers
         for resource_offer_id, resource_offer in current_resource_offers.items():
             # do not consider offers that have already been matched
             if (job_offer_id in self.currently_matched_job_offers) or (

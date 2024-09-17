@@ -88,7 +88,7 @@ class SmartContract:
             self._agree_to_match_seller(match, tx)
         elif match.get_data().get("buyer_address") == tx.sender:
             self._agree_to_match_buyer(match, tx)
-        if match.get_seller_signed() and match.get_buyer_signed():
+        if match.seller_signed and match.buyer_signed:
             self.matches_made_in_current_step.append(match)
 
     def subscribe_event(self, handler):
@@ -321,6 +321,3 @@ class SmartContract:
         elif mediation_flag == False:
             # if result was incorrect, then buyer gets returned its collateral, and compute node gets slashed
             self.slash_cheating_collateral(event)
-
-    def _get_balance(self):
-        return self.balance

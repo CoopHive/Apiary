@@ -57,10 +57,6 @@ class Buyer(Agent):
             except Exception as e:
                 logging.info(f"Error handling message: {e}")
 
-    def get_jobs(self):
-        """Get the Buyer's current jobs."""
-        return list(self.current_jobs)
-
     def _agree_to_match(self, match: Match):
         """Agree to a match."""
         buyer_deposit = match.get_data().get("buyer_deposit")
@@ -86,7 +82,7 @@ class Buyer(Agent):
     # the mediation strategy is part of the agent policy.
     def request_mediation(self, event: Event):
         """Request mediation for an event."""
-        log_json("Requesting mediation", {"event_name": event.get_name()})
+        log_json("Requesting mediation", {"event_name": event.name})
         self.smart_contract.mediate_result(event)
 
     def pay_compute_node(self, event: Event):
@@ -124,12 +120,12 @@ class Buyer(Agent):
         data = event.get_data()
 
         if isinstance(data, Deal) or isinstance(data, Match):
-            event_data = {"name": event.get_name(), "id": data.get_id()}
+            event_data = {"name": event.name, "id": data.get_id()}
             log_json("Received smart contract event", {"event_data": event_data})
         else:
             log_json(
                 "Received smart contract event with unexpected data type",
-                {"name": event.get_name()},
+                {"name": event.name},
             )
 
         if isinstance(data, Deal):
@@ -139,7 +135,7 @@ class Buyer(Agent):
             if deal_data["buyer_address"] == self.public_key:
                 self.current_deals[deal_id] = deal
         elif isinstance(data, Match):
-            if event.get_name() == "result":
+            if event.name == "result":
                 # decide whether to mediate result
                 mediate_flag = self.decide_whether_or_not_to_mediate(event)
                 if mediate_flag:

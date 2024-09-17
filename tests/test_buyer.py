@@ -67,8 +67,8 @@ def test_agree_to_match_happy_path(setup_buyer):
     assert smart_contract.balances[public_key_buyer] == 900
     assert smart_contract.balances[public_key_seller] == 500
     assert smart_contract.balance == 100
-    assert match.get_buyer_signed()
-    assert not match.get_seller_signed()
+    assert match.buyer_signed
+    assert not match.seller_signed
 
 
 def test_agree_to_match_buyer_deposit_exceeds_balance(setup_buyer):

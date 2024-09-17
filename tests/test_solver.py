@@ -122,7 +122,7 @@ def test_handle_smart_contract_event_mediation_random(setup_solver):
     job_offer = setup_solver["job_offer"]
     event = Event("mediation_random", job_offer)
     solver.handle_smart_contract_event(event)
-    assert job_offer in solver.local_information.get_job_offers().values()
+    assert job_offer in solver.local_information.job_offers.values()
 
 
 def test_handle_smart_contract_event_deal(setup_solver):
@@ -139,8 +139,8 @@ def test_remove_outdated_offers(setup_solver):
     solver = setup_solver["solver"]
     solver.deals_made_in_current_step = [setup_solver["deal"]]
     solver.remove_outdated_offers()
-    assert "job_offer_123" not in solver.local_information.get_job_offers()
-    assert "resource_offer_123" not in solver.local_information.get_resource_offers()
+    assert "job_offer_123" not in solver.local_information.job_offers
+    assert "resource_offer_123" not in solver.local_information.resource_offers
 
 
 def test_solve(setup_solver):
