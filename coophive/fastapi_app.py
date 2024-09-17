@@ -15,7 +15,6 @@ inference_endpoint_url = os.environ[
 mandatory_states = {
     "private_key": os.getenv("PRIVATE_KEY", ""),
     "public_key": os.getenv("PUBLIC_KEY", ""),
-    "messaging_client_url": os.getenv("MESSAGING_CLIENT_URL", ""),
     "policy_name": os.getenv("POLICY_NAME", ""),
 }
 

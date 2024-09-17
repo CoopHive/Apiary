@@ -28,14 +28,12 @@ class Solver(Agent):
         self,
         private_key: str,
         public_key: str,
-        messaging_client_url: str,
         policy_name: str,
     ):
         """Initialize the Solver."""
         super().__init__(
             private_key=private_key,
             public_key=public_key,
-            messaging_client_url=messaging_client_url,
             policy_name=policy_name,
         )
 

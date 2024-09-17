@@ -56,14 +56,12 @@ def cli(
     required=True,
 )
 @click.option("--policy-name", required=True, help="Agent Policy.")
-@click.option("--messaging-client-url", default="redis://localhost:6379")
 @click.option("--inference-endpoint-url", default="redis://localhost:8000")
 def run(
     role: str,
     private_key: str,
     public_key: str,
     policy_name: str,
-    messaging_client_url: str,
     inference_endpoint_url: str,
 ):
     """Run Agent."""
@@ -73,7 +71,6 @@ def run(
     os.environ["PUBLIC_KEY"] = public_key
     os.environ["POLICY_NAME"] = policy_name
 
-    os.environ["MESSAGING_CLIENT_URL"] = messaging_client_url
     os.environ["INFERENCE_ENDPOINT_URL"] = inference_endpoint_url
 
     subprocess.run(["uvicorn", "coophive.fastapi_app:app", "--reload"], check=True)

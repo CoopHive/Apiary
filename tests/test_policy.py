@@ -13,8 +13,6 @@ private_key_seller = (
 public_key_buyer = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57"
 public_key_seller = "0x627306090abaB3A6e1400e9345bC60c78a8BEf56"
 
-messaging_client_url = "coophive.network.redis"
-
 
 @pytest.fixture
 def setup_agents_with_policies():
@@ -37,14 +35,12 @@ def setup_agents_with_policies():
         buyer = Buyer(
             private_key=private_key_buyer,
             public_key=public_key_buyer,
-            messaging_client_url=messaging_client_url,
             policy_name=policy_a,
         )
 
         seller = Seller(
             private_key=private_key_seller,
             public_key=public_key_seller,
-            messaging_client_url=messaging_client_url,
             policy_name=policy_b,
         )
 
