@@ -1,12 +1,12 @@
 """This module defines the CLI (Command Line Interface) for the Coophive application."""
 
 import os
-import subprocess
 from datetime import datetime
 
 import click
+import uvicorn
 
-from coophive import constants, utils
+from coophive import constants, fastapi_app, utils
 
 current_time = datetime.now().replace(second=0, microsecond=0)
 
@@ -62,7 +62,7 @@ def run(
     private_key: str,
     public_key: str,
     policy_name: str,
-    inference_endpoint_port: str,
+    inference_endpoint_port: int,
 ):
     """Run Agent."""
     os.environ["ROLE"] = role
@@ -71,14 +71,8 @@ def run(
     os.environ["PUBLIC_KEY"] = public_key
     os.environ["POLICY_NAME"] = policy_name
 
-    subprocess.run(
-        [
-            "uvicorn",
-            "coophive.fastapi_app:app",
-            "--reload",
-            "--host",
-            "localhost",
-            "--port",
-            inference_endpoint_port,
-        ],
+    uvicorn.run(
+        fastapi_app.app,
+        host="localhost",
+        port=int(inference_endpoint_port),
     )

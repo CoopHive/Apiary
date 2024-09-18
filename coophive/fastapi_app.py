@@ -7,20 +7,20 @@ from fastapi import Depends, FastAPI
 from coophive.buyer import Buyer
 from coophive.seller import Seller
 
-role = os.getenv("ROLE", "")
-
-mandatory_states = {
-    "private_key": os.getenv("PRIVATE_KEY", ""),
-    "public_key": os.getenv("PUBLIC_KEY", ""),
-    "policy_name": os.getenv("POLICY_NAME", ""),
-}
-
 # FastAPI application
 app = FastAPI()
 
 
 def get_agent():
     """Dependency that provides a configured Agent based on global settings."""
+    role = os.getenv("ROLE", "")
+
+    mandatory_states = {
+        "private_key": os.getenv("PRIVATE_KEY", ""),
+        "public_key": os.getenv("PUBLIC_KEY", ""),
+        "policy_name": os.getenv("POLICY_NAME", ""),
+    }
+
     if role == "seller":
         return Seller(**mandatory_states)
     elif role == "buyer":
