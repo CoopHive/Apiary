@@ -63,25 +63,13 @@ class Buyer(Agent):
 
         log_json("Agreed to match", {"match_id": match.get_id()})
 
-    # TODO: transfer functionality inside policy evaluation,
-    # the mediation strategy is part of the agent policy.
-    def decide_whether_or_not_to_mediate(self, event: Event):
-        """Decide whether to mediate based on the event.
-
-        Args:
-            event: The event to decide on.
-
-        Returns:
-            bool: True if mediation is needed, False otherwise.
-        """
-        return True  # for now, always mediate
-
-    # TODO: transfer functionality inside policy evaluation,
-    # the mediation strategy is part of the agent policy.
     def request_mediation(self, event: Event):
         """Request mediation for an event."""
-        log_json("Requesting mediation", {"event_name": event.name})
-        self.smart_contract.mediate_result(event)
+        if self.policy.decide_whether_or_not_to_mediate(event):
+            log_json("Requesting mediation", {"event_name": event.name})
+            self.smart_contract.mediate_result(event)
+        else:
+            log_json("Decided not to request mediation", {"event_name": event.name})
 
     def pay_compute_node(self, event: Event):
         """Pay the compute node based on the event result."""
@@ -140,60 +128,3 @@ class Buyer(Agent):
                     self.request_mediation(event)
                 else:
                     self.pay_compute_node(event)
-
-    # TODO: transfer functionality inside policy evaluation at the agent level.
-    def find_best_match(self, job_offer_id):
-        """Find the best match for a given job offer based on utility."""
-        best_match = None
-        highest_utility = -float("inf")
-        for match in self.current_matched_offers:
-            if match.get_data().get("job_offer") == job_offer_id:
-                utility = self.calculate_utility(match)
-                if utility > highest_utility:
-                    highest_utility = utility
-                    best_match = match
-        return best_match
-
-    # TODO: transfer functionality inside policy evaluation at the agent level.
-    def calculate_cost(self, match):
-        """Calculate the cost of a match.
-
-        Args:
-            match: An object containing the match details.
-
-        Returns:
-            float: The cost of the match based on price per instruction and expected number of instructions.
-        """
-        data = match.get_data()
-        price_per_instruction = data.get("price_per_instruction", 0)
-        expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
-        return price_per_instruction * expected_number_of_instructions
-
-    # TODO: transfer functionality inside policy evaluation at the agent level.
-    def calculate_benefit(self, match):
-        """Calculate the expected benefit of a match to the Buyer.
-
-        Args:
-            match: An object containing the match details.
-
-        Returns:
-            float: The expected benefit to the Buyer from the match.
-        """
-        data = match.get_data()
-        expected_benefit_to_buyer = data.get("expected_benefit_to_buyer", 0)
-        return expected_benefit_to_buyer
-
-    # TODO: transfer functionality inside policy evaluation at the agent level.
-    def calculate_utility(self, match: Match):
-        """Calculate the utility of a match based on several factors."""
-        expected_cost = self.calculate_cost(match)
-        expected_benefit = self.calculate_benefit(match)
-        return expected_benefit - expected_cost
-
-    # TODO: the policy inference function shall interact directly with the messaging client.
-    # Everything in the make_match_decision should happen inside the policy inference,
-    # which is also responsible for outputs to be scheme-compliant.
-    # This will deprecate the make_match_decision function.
-    def make_match_decision(self, match):
-        """Make a decision on whether to accept, reject, or negotiate a match."""
-        output_message = self.policy.infer(match)

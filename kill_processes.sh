@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the ports you want to check
-PORTS=(8000 8001)
+PORTS=(6379 8000 8001)
 
 for PORT in "${PORTS[@]}"; do
   # Find processes using the given port

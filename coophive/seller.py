@@ -58,24 +58,6 @@ class Seller(Agent):
             except Exception as e:
                 logging.info(f"Error handling message: {e}")
 
-    # TODO: transfer functionality inside policy evaluation at the agent level.
-    def evaluate_match(self, match):
-        """Here you evaluate the match and decide whether to accept or counteroffer."""
-        if (
-            self.calculate_utility(match)
-            > match.get_data()["resource_offer"]["T_accept"]
-        ):
-            return "RP accepted from evaluate match"
-        elif (
-            self.calculate_utility(match)
-            < match.get_data()["resource_offer"]["T_reject"]
-        ):
-            return "RP rejected from evaluate match"
-        else:
-            logging.info("RP sending counteroffer from evaluate match")
-            counter_offer = self.create_new_match_offer(match)
-            return f"New match offer: {counter_offer.get_data()}"
-
     def _agree_to_match(self, match: Match):
         """Agree to a match and send a transaction to the connected smart contract.
 
@@ -175,59 +157,6 @@ class Seller(Agent):
             if container.status == "exited":
                 self.handle_completed_job(deal_id)
         self.update_finished_deals()
-
-    # TODO: transfer functionality inside policy evaluation at the agent level.
-    def find_best_match(self, resource_offer_id):
-        """Find the best match for a given resource offer based on utility.
-
-        Args:
-            resource_offer_id: The ID of the resource offer.
-
-        Returns:
-            match: The match with the highest utility for the given resource offer.
-        """
-        best_match = None
-        highest_utility = -float("inf")
-        for match in self.current_matched_offers:
-            if match.get_data()["resource_offer"] == resource_offer_id:
-                utility = self.calculate_utility(match)
-                if utility > highest_utility:
-                    highest_utility = utility
-                    best_match = match
-        return best_match
-
-    # TODO: transfer functionality inside policy evaluation at the agent level.
-    def calculate_revenue(self, match):
-        """Calculate the revenue generated from a match.
-
-        Args:
-            match: An object containing the match details.
-
-        Returns:
-            float: The revenue from the match based on some calculation.
-        """
-        data = match.get_data()
-        price_per_instruction = data.get("price_per_instruction", 0)
-        expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
-        return price_per_instruction * expected_number_of_instructions
-
-    # TODO: transfer functionality inside policy evaluation at the agent level.
-    # NOTE: this utility calculation is DIFFERENT for a seller than for a buyer
-    def calculate_utility(self, match):
-        """Calculate the utility of a match based on several factors.
-
-        COST and TIME are the main determiners.
-        """
-        expected_revenue = self.calculate_revenue(match)
-        return expected_revenue
-
-    # TODO: the policy inference function shall interact directly with the messaging client.
-    # Everything in the make_match_decision should happen inside the policy inference,
-    # which is also responsible for outputs to be scheme-compliant.
-    # This will deprecate the make_match_decision function.
-    def make_match_decision(self, match):
-        """Make a decision on whether to accept, reject, or negotiate a match."""
-        output_message = self.policy.infer(match)
 
     # TODO: move this functionality in the networking model, at the agent level
     def seller_loop(self):
