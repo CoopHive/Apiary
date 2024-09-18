@@ -59,7 +59,6 @@ def test_make_match_decision_with_policies(setup_agents_with_policies):
     }
 
     buyer.policy = Policy(public_key=public_key_buyer, policy_name=policy_c)
-    buyer.negotiate_match = MagicMock()
 
     # TODO: make this scheme-compliant
     # TODO: more in general, test the scheme compliance of policies.

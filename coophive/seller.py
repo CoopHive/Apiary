@@ -24,40 +24,6 @@ class Seller(Agent):
             policy_name=policy_name,
         )
 
-    def handle_client_messages(self, client_socket):
-        """Handles incoming messages from a connected client."""
-        while True:
-            try:
-                message = client_socket.recv(1024)
-                if not message:
-                    break
-                # Decode the message from bytes to string
-                message = message.decode("utf-8")
-                logging.info(f"Received message from client: {message}")
-                if "New match offer" in message:
-                    match_data = eval(message.split("New match offer: ")[1])
-                    match = Match(match_data)
-                    match_dict = match.get_data()
-                    if "rounds_completed" not in match_dict:
-                        match.rounds_completed = 0
-                    # Check if the match is already in current_matched_offers by ID
-                    for existing_match in self.current_matched_offers:
-                        if existing_match.get_id() == match.get_id():
-                            # Continue negotiating on the existing match
-                            self.negotiate_match(existing_match)
-                            break
-                    else:
-                        # New match, add to current_matched_offers and process
-                        self.current_matched_offers.append(match)
-                        response = self.make_match_decision(match)
-                        client_socket.send(response.encode("utf-8"))
-            except ConnectionResetError:
-                logging.info("Connection lost. Closing connection.")
-                client_socket.close()
-                break
-            except Exception as e:
-                logging.info(f"Error handling message: {e}")
-
     def _agree_to_match(self, match: Match):
         """Agree to a match and send a transaction to the connected smart contract.
 

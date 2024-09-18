@@ -173,6 +173,30 @@ class Policy:
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
 
+    # def handle_server_messages(self):
+    #     """Handle incoming messages from the server."""
+    #     while True:
+    #         try:
+    #             message = message.decode("utf-8")
+    #             logging.info(f"Received message from server: {message}")
+    #             if "New match offer" in message:
+    #                 match_data = eval(message.split("New match offer: ")[1])
+    #                 new_match = Match(match_data)
+    #                 match_dict = new_match.get_data()
+    #                 if "rounds_completed" not in match_dict:
+    #                     new_match["rounds_completed"] = 0
+    #                 for existing_match in self.current_matched_offers:
+    #                     if existing_match.get_id() == new_match.get_id():
+    #                         # Continue negotiating on the existing match
+    #                         self.negotiate_match(existing_match)
+    #                         break
+    #                 else:
+    #                     # New match, add to current_matched_offers and process
+    #                     self.current_matched_offers.append(new_match)
+    #                     self.make_match_decision(new_match)
+    #         except Exception as e:
+    #             logging.info(f"Error handling message: {e}")
+
     # ------------------------------------Legacy BUYER POLICY FUNCTIONS end------------------------------------
 
     # ------------------------------------Legacy SELLER POLICY FUNCTIONS start------------------------------------
@@ -233,5 +257,39 @@ class Policy:
         """
         expected_revenue = self.calculate_revenue(match)
         return expected_revenue
+
+    # def handle_client_messages(self, client_socket):
+    #     """Handles incoming messages from a connected client."""
+    #     while True:
+    #         try:
+    #             message = client_socket.recv(1024)
+    #             if not message:
+    #                 break
+    #             # Decode the message from bytes to string
+    #             message = message.decode("utf-8")
+    #             logging.info(f"Received message from client: {message}")
+    #             if "New match offer" in message:
+    #                 match_data = eval(message.split("New match offer: ")[1])
+    #                 match = Match(match_data)
+    #                 match_dict = match.get_data()
+    #                 if "rounds_completed" not in match_dict:
+    #                     match.rounds_completed = 0
+    #                 # Check if the match is already in current_matched_offers by ID
+    #                 for existing_match in self.current_matched_offers:
+    #                     if existing_match.get_id() == match.get_id():
+    #                         # Continue negotiating on the existing match
+    #                         self.negotiate_match(existing_match)
+    #                         break
+    #                 else:
+    #                     # New match, add to current_matched_offers and process
+    #                     self.current_matched_offers.append(match)
+    #                     response = self.make_match_decision(match)
+    #                     client_socket.send(response.encode("utf-8"))
+    #         except ConnectionResetError:
+    #             logging.info("Connection lost. Closing connection.")
+    #             client_socket.close()
+    #             break
+    #         except Exception as e:
+    #             logging.info(f"Error handling message: {e}")
 
     # ------------------------------------Legacy SELLER POLICY FUNCTIONS end------------------------------------
