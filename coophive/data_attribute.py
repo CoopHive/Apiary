@@ -42,8 +42,11 @@ class DataAttribute:
             self.data[data_field] = data_value
 
     def get_data(self):
-        """Get the data stored in the data attribute."""
-        return self.data
+        """Get data from attributes."""
+        data = {}
+        for attribute in self.data_attributes:
+            data[attribute] = getattr(self, attribute, None)
+        return data
 
     def set_id(self):
         """Set a unique identifier for the data by hashing the data."""

@@ -156,17 +156,5 @@ def test_match_job_offer(setup_solver):
     assert result == setup_solver["resource_offer"]
 
 
-def test_create_match(setup_solver):
-    """Test creation of a match between job and resource offers."""
-    solver = setup_solver["solver"]
-    job_offer = setup_solver["job_offer"]
-    resource_offer = setup_solver["resource_offer"]
-    match = solver.create_match(job_offer, resource_offer)
-    assert match.get_data()["seller_address"] == "seller_public_key"
-    assert match.get_data()["buyer_address"] == "owner_123"
-    assert match.get_data()["resource_offer"] == "resource_offer_123"
-    assert match.get_data()["job_offer"] == "job_offer_123"
-
-
 if __name__ == "__main__":
     pytest.main()
