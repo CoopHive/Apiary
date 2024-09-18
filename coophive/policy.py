@@ -167,17 +167,6 @@ class Policy:
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
 
-    def decide_whether_or_not_to_mediate(self, event):
-        """Decide whether to mediate based on the event.
-
-        Args:
-            event: The event to decide on.
-
-        Returns:
-            bool: True if mediation is needed, False otherwise.
-        """
-        return True  # for now, always mediate
-
     # ------------------------------------Legacy BUYER POLICY FUNCTIONS end------------------------------------
 
     # ------------------------------------Legacy SELLER POLICY FUNCTIONS start------------------------------------
