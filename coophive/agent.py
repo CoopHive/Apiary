@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from coophive.data_attribute import DataAttribute
 from coophive.deal import Deal
 from coophive.job_offer import JobOffer
-from coophive.match import Match
 from coophive.policy import Policy
 from coophive.resource_offer import ResourceOffer
 from coophive.utils import Tx, hash_dict

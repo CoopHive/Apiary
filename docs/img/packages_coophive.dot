@@ -26,7 +26,6 @@ charset="utf-8"
 "coophive.agent" -> "coophive.data_attribute" [arrowhead="open", arrowtail="none"];
 "coophive.agent" -> "coophive.deal" [arrowhead="open", arrowtail="none"];
 "coophive.agent" -> "coophive.job_offer" [arrowhead="open", arrowtail="none"];
-"coophive.agent" -> "coophive.match" [arrowhead="open", arrowtail="none"];
 "coophive.agent" -> "coophive.policy" [arrowhead="open", arrowtail="none"];
 "coophive.agent" -> "coophive.resource_offer" [arrowhead="open", arrowtail="none"];
 "coophive.agent" -> "coophive.utils" [arrowhead="open", arrowtail="none"];
