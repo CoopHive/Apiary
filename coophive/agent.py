@@ -78,7 +78,7 @@ class Agent:
 
     def handle_solver_event(self, event: Event):
         """Handle events from the solver."""
-        event_data = {"name": event.name, "id": event.data.get_id()}
+        event_data = {"name": event.name, "id": event.data.id}
         logging.info(f"Received solver event: {event_data}")
 
         if event.name == "match":
@@ -120,7 +120,7 @@ class IPFS:
         """
         # check if data is of type DataAttribute
         if isinstance(data, DataAttribute):
-            cid_hash = data.get_id()
+            cid_hash = data.id
             self.data[cid_hash] = data
         # check if data is of type dict
         if isinstance(data, dict):

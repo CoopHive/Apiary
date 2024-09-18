@@ -51,7 +51,7 @@ class SmartContract:
 
         log_data = {
             "seller_address": seller_address,
-            "match_id": match.get_id(),
+            "match_id": match.id,
         }
         log_json("Resource provider signed match", log_data)
 
@@ -74,7 +74,7 @@ class SmartContract:
         self.balance += tx.value
         match.sign_buyer()
 
-        log_data = {"buyer_address": buyer_address, "match_id": match.get_id()}
+        log_data = {"buyer_address": buyer_address, "match_id": match.id}
         log_json("Client signed match", log_data)
 
     def agree_to_match(self, match: Match, tx: Tx):
@@ -109,11 +109,11 @@ class SmartContract:
             if data_field in deal.get_data().keys():
                 deal.add_data(data_field, data_value)
         deal.set_id()
-        self.deals[deal.get_id()] = deal
+        self.deals[deal.id] = deal
         deal_event = Event(name="deal", data=deal)
         self.emit_event(deal_event)
 
-        log_data = {"deal_id": deal.get_id(), "deal_attributes": deal.get_data()}
+        log_data = {"deal_id": deal.id, "deal_attributes": deal.get_data()}
         log_json("Deal created", log_data)
         # append to transactions
         self.transactions.append(deal_event)

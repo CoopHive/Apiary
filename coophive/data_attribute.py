@@ -48,7 +48,3 @@ class DataAttribute:
     def set_id(self):
         """Set a unique identifier for the data by hashing the data."""
         self.id = hash_dict(self.data)
-
-    def get_id(self):
-        """Get the unique identifier of the data."""
-        return self.id

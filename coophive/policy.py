@@ -184,7 +184,7 @@ class Policy:
     #                 if "rounds_completed" not in match_dict:
     #                     new_match["rounds_completed"] = 0
     #                 for existing_match in self.current_matched_offers:
-    #                     if existing_match.get_id() == new_match.get_id():
+    #                     if existing_match.id == new_match.id:
     #                         # Continue negotiating on the existing match
     #                         self.negotiate_match(existing_match)
     #                         break
@@ -274,7 +274,7 @@ class Policy:
     #                     match.rounds_completed = 0
     #                 # Check if the match is already in current_matched_offers by ID
     #                 for existing_match in self.current_matched_offers:
-    #                     if existing_match.get_id() == match.get_id():
+    #                     if existing_match.id == match.id:
     #                         # Continue negotiating on the existing match
     #                         self.negotiate_match(existing_match)
     #                         break
