@@ -1,11 +1,11 @@
 """This module defines the Policy class used when agents, in general, make decisions within the CoopHive simulator."""
 
 import random
+import time
 
 import pandas as pd
 
-from coophive.event import Event
-from coophive.match import Match
+from coophive.utils import log_json
 
 
 class Policy:
@@ -78,6 +78,10 @@ class Policy:
         if input_message.get("pubkey") == self.public_key:
             return "noop"
 
+        message_timestamp = int(time.time() * 1000)
+        # TODO: use message_timestamp to populate a database of messages.
+        # log_json(f"Received message at {message_timestamp}", {"input_message": input_message},)
+
         # TODO: as a function of the game being played, specificed as a mandatory input to the Agents API,
         # initialize the entries of the scheme which are inviariant across jobs. For example, the private key is constant.
         # if you are a seller, the offerId reply is the same as the incoming one..other entries of the scheme for different games
@@ -100,32 +104,24 @@ class Policy:
         else:
             raise NotImplementedError(f"Policy {self.policy_name} is not implemented.")
 
-        # TODO: something akin to the following for agents to dump messages:
-        # logging.info("Received response from server")
-        # log_json(
-        #     "Received response from server",
-        #     {"response_message": response_message},
-        # )
-
-        # # TODO: transfer functionality inside policy evaluation
-        # def negotiate_match(self, match, max_rounds=5):
-        #     """Negotiate a match."""
-        #     match_dict = match.get_data()
-        #     rounds_completed = match_dict["rounds_completed"]
-        #     while rounds_completed < max_rounds:
-        #         new_match_offer = self.create_new_match_offer(match)
-        #         response = self.communicate_request_to_party(new_match_offer)
-        #         if response["accepted"]:
-        #             self._agree_to_match(response["match_offer"])
-        #             return
-        #         match = response["counter_offer"]
-        #         rounds_completed += 1
-        #         match.set_attributes({"rounds_completed": rounds_completed})
-        #     self.reject_match(match)
-
         return output_message
 
-    # BUYER POLICY FUNCTIONS
+    # ------------------------------------Legacy BUYER POLICY FUNCTIONS start------------------------------------
+    def negotiate_match(self, match, max_rounds=5):
+        """Negotiate a match."""
+        match_dict = match.get_data()
+        rounds_completed = match_dict["rounds_completed"]
+        while rounds_completed < max_rounds:
+            new_match_offer = self.create_new_match_offer(match)
+            response = self.communicate_request_to_party(new_match_offer)
+            if response["accepted"]:
+                self._agree_to_match(response["match_offer"])
+                return
+            match = response["counter_offer"]
+            rounds_completed += 1
+            match.set_attributes({"rounds_completed": rounds_completed})
+        self.reject_match(match)
+
     def find_best_match(self, job_offer_id):
         """Find the best match for a given job offer based on utility."""
         best_match = None
@@ -165,13 +161,13 @@ class Policy:
         expected_benefit_to_buyer = data.get("expected_benefit_to_buyer", 0)
         return expected_benefit_to_buyer
 
-    def calculate_utility_buyer(self, match: Match):
+    def calculate_utility_buyer(self, match):
         """Calculate the utility of a match for a buyer based on several factors."""
         expected_cost = self.calculate_cost(match)
         expected_benefit = self.calculate_benefit(match)
         return expected_benefit - expected_cost
 
-    def decide_whether_or_not_to_mediate(self, event: Event):
+    def decide_whether_or_not_to_mediate(self, event):
         """Decide whether to mediate based on the event.
 
         Args:
@@ -182,7 +178,9 @@ class Policy:
         """
         return True  # for now, always mediate
 
-    # SELLER POLICY FUNCTIONS
+    # ------------------------------------Legacy BUYER POLICY FUNCTIONS end------------------------------------
+
+    # ------------------------------------Legacy SELLER POLICY FUNCTIONS start------------------------------------
     def evaluate_match(self, match):
         """Here you evaluate the match and decide whether to accept or counteroffer."""
         if (
@@ -196,7 +194,6 @@ class Policy:
         ):
             return "RP rejected from evaluate match"
         else:
-            logging.info("RP sending counteroffer from evaluate match")
             counter_offer = self.create_new_match_offer(match)
             return f"New match offer: {counter_offer.get_data()}"
 
@@ -234,7 +231,6 @@ class Policy:
         expected_number_of_instructions = data.get("expected_number_of_instructions", 0)
         return price_per_instruction * expected_number_of_instructions
 
-    # NOTE: this utility calculation is DIFFERENT for a seller than for a buyer
     def calculate_utility_seller(self, match):
         """Calculate the utility of a match based on several factors.
 
@@ -242,3 +238,5 @@ class Policy:
         """
         expected_revenue = self.calculate_revenue(match)
         return expected_revenue
+
+    # ------------------------------------Legacy SELLER POLICY FUNCTIONS end------------------------------------
