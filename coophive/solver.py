@@ -50,9 +50,7 @@ class Solver(Agent):
         if event.name == "mediation_random":
             event_name = event.name
             event_data_id = (
-                event.get_data().get_id()
-                if isinstance(event.get_data(), DataAttribute)
-                else None
+                event.data.get_id() if isinstance(event.data, DataAttribute) else None
             )
             log_json(
                 "Smart contract event",
@@ -68,25 +66,21 @@ class Solver(Agent):
             event = job_offer
 
         # if deal, remove resource and job offers from list
-        elif event.name == "deal" and isinstance(event.get_data(), Deal):
+        elif event.name == "deal" and isinstance(event.data, Deal):
             log_json(
                 "Smart contract event",
                 {
                     "event_name": event.name,
-                    "event_data_id": event.get_data().get_id(),
+                    "event_data_id": event.data.get_id(),
                 },
             )
 
-            deal = event.get_data()
-
-            if not isinstance(event.get_data(), DataAttribute):
+            if not isinstance(event.data, DataAttribute):
                 logging.warning(
-                    f"Unexpected data type received in solver event: {type(event.get_data())}"
+                    f"Unexpected data type received in solver event: {type(event.data)}"
                 )
 
-            self.deals_made_in_current_step[event.get_data().get_id()] = (
-                event.get_data()
-            )
+            self.deals_made_in_current_step[event.data.get_id()] = event.data
 
     def _remove_offer(self, offers_dict, offer_id):
         """Helper function to remove an offer by ID.
@@ -133,7 +127,7 @@ class Solver(Agent):
                 match_event = Event(name="match", data=match)
                 log_json(
                     "Match event emitted",
-                    {"match_event": match_event.get_data().get_id()},
+                    {"match_event": match_event.data.get_id()},
                 )
                 # go on to the next job offer
                 continue

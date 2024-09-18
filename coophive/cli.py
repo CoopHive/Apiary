@@ -1,6 +1,5 @@
 """This module defines the CLI (Command Line Interface) for the Coophive application."""
 
-import json
 import os
 import subprocess
 from datetime import datetime

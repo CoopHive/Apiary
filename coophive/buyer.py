@@ -48,7 +48,7 @@ class Buyer(Agent):
 
     def pay_compute_node(self, event: Event):
         """Pay the compute node based on the event result."""
-        result = event.get_data()
+        result = event.data
 
         if not isinstance(result, Result):
             logging.warning(
@@ -78,7 +78,7 @@ class Buyer(Agent):
 
     def handle_smart_contract_event(self, event: Event):
         """Handle events from the smart contract."""
-        data = event.get_data()
+        data = event.data
 
         if isinstance(data, Deal) or isinstance(data, Match):
             event_data = {"name": event.name, "id": data.get_id()}

@@ -1,8 +1,7 @@
 """Module for defining the Seller class and its related functionalities."""
 
-import logging
-
 from coophive.agent import Agent
+from coophive.event import Event
 from coophive.match import Match
 from coophive.result import Result
 from coophive.utils import Tx, log_json
@@ -35,7 +34,7 @@ class Seller(Agent):
         self.get_smart_contract().agree_to_match(match, tx)
         log_json("Agreed to match", {"match_id": match.get_id()})
 
-    def handle_smart_contract_event(self, event):
+    def handle_smart_contract_event(self, event: Event):
         """Handle events received from the connected smart contract.
 
         Args:
@@ -43,13 +42,13 @@ class Seller(Agent):
         """
         if event.name == "mediation_random":
 
-            event_data = {"name": event.name, "id": event.get_data().get_id()}
+            event_data = {"name": event.name, "id": event.data.get_id()}
             log_json("Received smart contract event", {"event_data": event_data})
         elif event.name == "deal":
 
-            event_data = {"name": event.name, "id": event.get_data().get_id()}
+            event_data = {"name": event.name, "id": event.data.get_id()}
             log_json("Received smart contract event", {"event_data": event_data})
-            deal = event.get_data()
+            deal = event.data
             deal_data = deal.get_data()
             deal_id = deal.get_id()
             if deal_data["seller_address"] == self.public_key:

@@ -5,8 +5,6 @@ import time
 
 import pandas as pd
 
-from coophive.utils import log_json
-
 
 class Policy:
     """Defines the behavior of Agents based on a predefined policy within the CoopHive simulator.

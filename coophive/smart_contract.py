@@ -229,10 +229,10 @@ class SmartContract:
 
     def slash_cheating_collateral(self, event: Event, result: Result):
         """Slash the cheating collateral based on an event."""
-        deal_id = event.get_data()["deal_id"]
+        deal_id = event.data["deal_id"]
         deal_data = self.deals[deal_id].get_data()
         cheating_collateral_multiplier = deal_data["cheating_collateral_multiplier"]
-        instruction_count = event.get_data()["instruction_count"]
+        instruction_count = event.data["instruction_count"]
         intended_cheating_collateral = (
             cheating_collateral_multiplier * instruction_count
         )
@@ -259,7 +259,7 @@ class SmartContract:
         and emit an event indicating that the solver should find compute nodes that can run the job,
         and then choose one randomly
         """
-        result = event.get_data()
+        result = event.data
         deal_id = result.get_data()["deal_id"]
         deal_data = self.deals[deal_id].get_data()
         job_offer = deal_data["job_offer"]
@@ -301,7 +301,7 @@ class SmartContract:
             result (Result): The result object.
             tx (Tx, optional): The transaction object. Defaults to None.
         """
-        result = event.get_data()
+        result = event.data
         deal_id = result.get_data()["deal_id"]
         deal_data = self.deals[deal_id].get_data()
         verification_method = deal_data["verification_method"]
