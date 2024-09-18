@@ -49,8 +49,3 @@ class Match(DataAttribute):
     def sign_buyer(self):
         """Set the buyer signed flag to True."""
         self.buyer_signed = True
-
-    def set_attributes(self, attributes):
-        """Set attributes."""
-        for key, value in attributes.items():
-            setattr(self, key, value)

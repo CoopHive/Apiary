@@ -41,6 +41,12 @@ class DataAttribute:
         else:
             self.data[data_field] = data_value
 
+    def set_attributes(self, attributes):
+        """Set attributes."""
+        for key, value in attributes.items():
+            if hasattr(self, key) or key in self.data_attributes:
+                setattr(self, key, value)
+
     def get_data(self):
         """Get data from attributes."""
         data = {}

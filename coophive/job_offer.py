@@ -36,8 +36,3 @@ class JobOffer(DataAttribute):
     def calculate_T_reject(self):
         """Placeholder logic for T_reject."""
         return self.data_attributes.get("benefit_to_buyer", 0) * 0.95
-
-    def set_attributes(self, attributes):
-        """Set attributes."""
-        for key, value in attributes.items():
-            setattr(self, key, value)

@@ -16,9 +16,3 @@ class Result(DataAttribute):
         """Initialize a new Result instance."""
         super().__init__()
         self.data_attributes = result_attributes
-
-    def set_attributes(self, attributes):
-        """Set attributes."""
-        for key, value in attributes.items():
-            if hasattr(self, key) or key in self.data_attributes:
-                setattr(self, key, value)
