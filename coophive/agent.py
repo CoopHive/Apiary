@@ -89,24 +89,6 @@ class Agent:
             ):
                 self.current_matched_offers.append(match)
 
-    def create_new_match_offer(self, match):
-        """Create a new match offer with modified terms.
-
-        Args:
-            match (Match): The match object to base the new offer on.
-
-        Returns:
-            Match: A new match object.
-        """
-        data = match.get_data()
-        new_data = data.copy()
-
-        # Placeholder identity Policy
-        new_data["price_per_instruction"] = data["price_per_instruction"]
-
-        new_match = Match(new_data)
-        return new_match
-
     def update_finished_deals(self):
         """Update the list of finished deals by removing them from the current deals and jobs lists."""
         for deal_id in self.deals_finished_in_current_step:
