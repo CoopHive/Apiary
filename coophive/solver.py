@@ -24,6 +24,9 @@ extra_necessary_match_data = {
 class Solver(Agent):
     """Solver class to handle smart contract connections, events, and the matching of job and resource offers."""
 
+    # We do not see any implementation of the solver bypassing the messaging.
+    # Solver as a specific kind of agent, buyer doesn’t distingush it from other sellers,
+    # it emerges as an intermediary betweeen buyers and sellers not interested in participating in negotiation/scheduling.
     def __init__(
         self,
         private_key: str,
