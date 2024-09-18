@@ -11,15 +11,6 @@ from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
 from coophive.utils import log_json
 
-extra_necessary_match_data = {
-    "buyer_deposit": 5,
-    "timeout": 10,
-    "timeout_deposit": 3,
-    "cheating_collateral_multiplier": 50,
-    "price_per_instruction": 1,
-    "verification_method": "random",
-}
-
 
 class Solver(Agent):
     """Solver class to handle smart contract connections, events, and the matching of job and resource offers."""
@@ -169,11 +160,6 @@ class Solver(Agent):
 
         return None
 
-    def add_necessary_match_data(self, match: Match):
-        """Add necessary match data to a match."""
-        for data_field, data_value in extra_necessary_match_data.items():
-            match.add_data(data_field, data_value)
-
     def create_match(self, job_offer: JobOffer, resource_offer: ResourceOffer) -> Match:
         """Create a match between a job offer and a resource offer.
 
@@ -192,7 +178,5 @@ class Solver(Agent):
         match.add_data("buyer_address", job_offer_data.get("owner"))
         match.add_data("resource_offer", resource_offer.id)
         match.add_data("job_offer", job_offer.id)
-
-        self.add_necessary_match_data(match)
 
         return match

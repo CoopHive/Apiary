@@ -19,6 +19,15 @@ match_attributes = {
     "rounds_completed",
 }
 
+extra_necessary_match_data = {
+    "buyer_deposit": 5,
+    "timeout": 10,
+    "timeout_deposit": 3,
+    "cheating_collateral_multiplier": 50,
+    "price_per_instruction": 1,
+    "verification_method": "random",
+}
+
 
 class Match(DataAttribute):
     """Represents a match object that inherits from DataAttribute."""
