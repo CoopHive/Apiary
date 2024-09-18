@@ -8,8 +8,8 @@ from dataclasses import dataclass
 
 from coophive.data_attribute import DataAttribute
 from coophive.deal import Deal
+from coophive.event import Event
 from coophive.job_offer import JobOffer
-from coophive.match import Match
 from coophive.policy import Policy
 from coophive.resource_offer import ResourceOffer
 from coophive.utils import Tx, hash_dict
@@ -76,13 +76,13 @@ class Agent:
         smart_contract.subscribe_event(self.handle_smart_contract_event)
         logging.info("Connected to smart contract")
 
-    def handle_solver_event(self, event):
+    def handle_solver_event(self, event: Event):
         """Handle events from the solver."""
-        event_data = {"name": event.name, "id": event.get_data().get_id()}
+        event_data = {"name": event.name, "id": event.data.id}
         logging.info(f"Received solver event: {event_data}")
 
         if event.name == "match":
-            match = event.get_data()
+            match = event.data
             if (
                 match.get_data()[f"{self.__class__.__name__.lower()}_address"]
                 == self.public_key
@@ -120,7 +120,7 @@ class IPFS:
         """
         # check if data is of type DataAttribute
         if isinstance(data, DataAttribute):
-            cid_hash = data.get_id()
+            cid_hash = data.id
             self.data[cid_hash] = data
         # check if data is of type dict
         if isinstance(data, dict):

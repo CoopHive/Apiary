@@ -1,8 +1,7 @@
 """Module for defining the Seller class and its related functionalities."""
 
-import logging
-
 from coophive.agent import Agent
+from coophive.event import Event
 from coophive.match import Match
 from coophive.result import Result
 from coophive.utils import Tx, log_json
@@ -33,9 +32,9 @@ class Seller(Agent):
         timeout_deposit = match.get_data()["timeout_deposit"]
         tx = self._create_transaction(timeout_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
-        log_json("Agreed to match", {"match_id": match.get_id()})
+        log_json("Agreed to match", {"match_id": match.id})
 
-    def handle_smart_contract_event(self, event):
+    def handle_smart_contract_event(self, event: Event):
         """Handle events received from the connected smart contract.
 
         Args:
@@ -43,15 +42,15 @@ class Seller(Agent):
         """
         if event.name == "mediation_random":
 
-            event_data = {"name": event.name, "id": event.get_data().get_id()}
+            event_data = {"name": event.name, "id": event.data.id}
             log_json("Received smart contract event", {"event_data": event_data})
         elif event.name == "deal":
 
-            event_data = {"name": event.name, "id": event.get_data().get_id()}
+            event_data = {"name": event.name, "id": event.data.id}
             log_json("Received smart contract event", {"event_data": event_data})
-            deal = event.get_data()
+            deal = event.data
             deal_data = deal.get_data()
-            deal_id = deal.get_id()
+            deal_id = deal.id
             if deal_data["seller_address"] == self.public_key:
                 self.current_deals[deal_id] = deal
                 # changed to simulate running a docker job
@@ -69,7 +68,7 @@ class Seller(Agent):
             tx (Tx): The transaction metadata associated with the posting.
         """
         self.get_smart_contract().post_result(result, tx)
-        log_json("Posted result", {"result_id": result.get_id()})
+        log_json("Posted result", {"result_id": result.id})
 
     def create_result(self, deal_id):
         """Create a result for the specified deal ID.
@@ -86,7 +85,7 @@ class Seller(Agent):
         instruction_count = 1
         result.add_data("instruction_count", instruction_count)
         result.set_id()
-        result.add_data("result_id", result.get_id())
+        result.add_data("result_id", result.id)
         cheating_collateral_multiplier = self.current_deals[deal_id].get_data()[
             "cheating_collateral_multiplier"
         ]

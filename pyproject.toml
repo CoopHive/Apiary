@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "coophive"
-version = "0.3.0"
+version = "0.4.0"
 description = "A simulator for the Multi-agent system of the CoopHive protocol"
 authors = ["Levi Rybalov, Aayushi Jain, Pratham Dave, Matteo Manzi"]
 license = "Apache 2"
@@ -21,6 +21,8 @@ click = {version = ">=8.0, <8.1.4"}
 docker = { version = ">=7.1.0, <7.2.0"}
 pandas = { version = ">=2.2, <2.3"}
 colorlog = { version = ">=6.6.0, <6.9.0"}
+uvicorn = { version = ">=0.30.0, <0.31.0"}
+fastapi = { version = ">=0.112.0, <0.115.0"}
 
 [tool.poetry.dev-dependencies]
 black = { version = ">=24.3.0, <24.4.0"}

@@ -19,6 +19,15 @@ match_attributes = {
     "rounds_completed",
 }
 
+extra_necessary_match_data = {
+    "buyer_deposit": 5,
+    "timeout": 10,
+    "timeout_deposit": 3,
+    "cheating_collateral_multiplier": 50,
+    "price_per_instruction": 1,
+    "verification_method": "random",
+}
+
 
 class Match(DataAttribute):
     """Represents a match object that inherits from DataAttribute."""
@@ -40,19 +49,3 @@ class Match(DataAttribute):
     def sign_buyer(self):
         """Set the buyer signed flag to True."""
         self.buyer_signed = True
-
-    def get_data(self):
-        """Get data from attributes."""
-        data = {}
-        for attribute in self.data_attributes:
-            data[attribute] = getattr(self, attribute, None)
-        return data
-
-    def set_attributes(self, attributes):
-        """Set attributes."""
-        for key, value in attributes.items():
-            setattr(self, key, value)
-
-    def add_data(self, data_field, data_value):
-        """Different API to set attributes."""
-        setattr(self, data_field, data_value)

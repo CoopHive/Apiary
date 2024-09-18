@@ -11,15 +11,6 @@ from coophive.match import Match
 from coophive.resource_offer import ResourceOffer
 from coophive.utils import log_json
 
-extra_necessary_match_data = {
-    "buyer_deposit": 5,
-    "timeout": 10,
-    "timeout_deposit": 3,
-    "cheating_collateral_multiplier": 50,
-    "price_per_instruction": 1,
-    "verification_method": "random",
-}
-
 
 class Solver(Agent):
     """Solver class to handle smart contract connections, events, and the matching of job and resource offers."""
@@ -50,9 +41,7 @@ class Solver(Agent):
         if event.name == "mediation_random":
             event_name = event.name
             event_data_id = (
-                event.get_data().get_id()
-                if isinstance(event.get_data(), DataAttribute)
-                else None
+                event.data.id if isinstance(event.data, DataAttribute) else None
             )
             log_json(
                 "Smart contract event",
@@ -68,25 +57,21 @@ class Solver(Agent):
             event = job_offer
 
         # if deal, remove resource and job offers from list
-        elif event.name == "deal" and isinstance(event.get_data(), Deal):
+        elif event.name == "deal" and isinstance(event.data, Deal):
             log_json(
                 "Smart contract event",
                 {
                     "event_name": event.name,
-                    "event_data_id": event.get_data().get_id(),
+                    "event_data_id": event.data.id,
                 },
             )
 
-            deal = event.get_data()
-
-            if not isinstance(event.get_data(), DataAttribute):
+            if not isinstance(event.data, DataAttribute):
                 logging.warning(
-                    f"Unexpected data type received in solver event: {type(event.get_data())}"
+                    f"Unexpected data type received in solver event: {type(event.data)}"
                 )
 
-            self.deals_made_in_current_step[event.get_data().get_id()] = (
-                event.get_data()
-            )
+            self.deals_made_in_current_step[event.data.id] = event.data
 
     def _remove_offer(self, offers_dict, offer_id):
         """Helper function to remove an offer by ID.
@@ -123,7 +108,7 @@ class Solver(Agent):
             resulting_resource_offer = self.match_job_offer(job_offer)
             if resulting_resource_offer is not None:
                 # add job and resource offers to sets of currently matched offers
-                resulting_resource_offer_id = resulting_resource_offer.get_id()
+                resulting_resource_offer_id = resulting_resource_offer.id
                 self.current_matched_resource_offers.add(resulting_resource_offer_id)
                 self.currently_matched_job_offers.add(job_offer_id)
                 # create match
@@ -133,7 +118,7 @@ class Solver(Agent):
                 match_event = Event(name="match", data=match)
                 log_json(
                     "Match event emitted",
-                    {"match_event": match_event.get_data().get_id()},
+                    {"match_event": match_event.data.id},
                 )
                 # go on to the next job offer
                 continue
@@ -149,7 +134,7 @@ class Solver(Agent):
         """
         # only look for exact matches for now
         job_offer_data = job_offer.get_data()
-        job_offer_id = job_offer.get_id()
+        job_offer_id = job_offer.id
         current_resource_offers = self.local_information.resource_offers
         for resource_offer_id, resource_offer in current_resource_offers.items():
             # do not consider offers that have already been matched
@@ -175,11 +160,6 @@ class Solver(Agent):
 
         return None
 
-    def add_necessary_match_data(self, match: Match):
-        """Add necessary match data to a match."""
-        for data_field, data_value in extra_necessary_match_data.items():
-            match.add_data(data_field, data_value)
-
     def create_match(self, job_offer: JobOffer, resource_offer: ResourceOffer) -> Match:
         """Create a match between a job offer and a resource offer.
 
@@ -196,9 +176,7 @@ class Solver(Agent):
         resource_offer_data = resource_offer.get_data()
         match.add_data("seller_address", resource_offer_data.get("owner"))
         match.add_data("buyer_address", job_offer_data.get("owner"))
-        match.add_data("resource_offer", resource_offer.get_id())
-        match.add_data("job_offer", job_offer.get_id())
-
-        self.add_necessary_match_data(match)
+        match.add_data("resource_offer", resource_offer.id)
+        match.add_data("job_offer", job_offer.id)
 
         return match

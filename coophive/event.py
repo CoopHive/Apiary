@@ -8,7 +8,3 @@ class Event:
         """Initialize the Event with a name and data."""
         self.name = name
         self.data = data
-
-    def get_data(self):
-        """Retrieve the data associated with the event."""
-        return self.data

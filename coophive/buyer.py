@@ -36,7 +36,7 @@ class Buyer(Agent):
         tx = self._create_transaction(buyer_deposit)
         self.get_smart_contract().agree_to_match(match, tx)
 
-        log_json("Agreed to match", {"match_id": match.get_id()})
+        log_json("Agreed to match", {"match_id": match.id})
 
     def request_mediation(self, event: Event):
         """Request mediation for an event."""
@@ -48,7 +48,7 @@ class Buyer(Agent):
 
     def pay_compute_node(self, event: Event):
         """Pay the compute node based on the event result."""
-        result = event.get_data()
+        result = event.data
 
         if not isinstance(result, Result):
             logging.warning(
@@ -78,10 +78,10 @@ class Buyer(Agent):
 
     def handle_smart_contract_event(self, event: Event):
         """Handle events from the smart contract."""
-        data = event.get_data()
+        data = event.data
 
         if isinstance(data, Deal) or isinstance(data, Match):
-            event_data = {"name": event.name, "id": data.get_id()}
+            event_data = {"name": event.name, "id": data.id}
             log_json("Received smart contract event", {"event_data": event_data})
         else:
             log_json(
@@ -92,7 +92,7 @@ class Buyer(Agent):
         if isinstance(data, Deal):
             deal = data
             deal_data = deal.get_data()
-            deal_id = deal.get_id()
+            deal_id = deal.id
             if deal_data["buyer_address"] == self.public_key:
                 self.current_deals[deal_id] = deal
         elif isinstance(data, Match):

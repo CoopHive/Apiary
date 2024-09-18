@@ -51,7 +51,7 @@ class SmartContract:
 
         log_data = {
             "seller_address": seller_address,
-            "match_id": match.get_id(),
+            "match_id": match.id,
         }
         log_json("Resource provider signed match", log_data)
 
@@ -74,7 +74,7 @@ class SmartContract:
         self.balance += tx.value
         match.sign_buyer()
 
-        log_data = {"buyer_address": buyer_address, "match_id": match.get_id()}
+        log_data = {"buyer_address": buyer_address, "match_id": match.id}
         log_json("Client signed match", log_data)
 
     def agree_to_match(self, match: Match, tx: Tx):
@@ -109,11 +109,11 @@ class SmartContract:
             if data_field in deal.get_data().keys():
                 deal.add_data(data_field, data_value)
         deal.set_id()
-        self.deals[deal.get_id()] = deal
+        self.deals[deal.id] = deal
         deal_event = Event(name="deal", data=deal)
         self.emit_event(deal_event)
 
-        log_data = {"deal_id": deal.get_id(), "deal_attributes": deal.get_data()}
+        log_data = {"deal_id": deal.id, "deal_attributes": deal.get_data()}
         log_json("Deal created", log_data)
         # append to transactions
         self.transactions.append(deal_event)
@@ -229,10 +229,10 @@ class SmartContract:
 
     def slash_cheating_collateral(self, event: Event, result: Result):
         """Slash the cheating collateral based on an event."""
-        deal_id = event.get_data()["deal_id"]
+        deal_id = event.data["deal_id"]
         deal_data = self.deals[deal_id].get_data()
         cheating_collateral_multiplier = deal_data["cheating_collateral_multiplier"]
-        instruction_count = event.get_data()["instruction_count"]
+        instruction_count = event.data["instruction_count"]
         intended_cheating_collateral = (
             cheating_collateral_multiplier * instruction_count
         )
@@ -259,7 +259,7 @@ class SmartContract:
         and emit an event indicating that the solver should find compute nodes that can run the job,
         and then choose one randomly
         """
-        result = event.get_data()
+        result = event.data
         deal_id = result.get_data()["deal_id"]
         deal_data = self.deals[deal_id].get_data()
         job_offer = deal_data["job_offer"]
@@ -301,7 +301,7 @@ class SmartContract:
             result (Result): The result object.
             tx (Tx, optional): The transaction object. Defaults to None.
         """
-        result = event.get_data()
+        result = event.data
         deal_id = result.get_data()["deal_id"]
         deal_data = self.deals[deal_id].get_data()
         verification_method = deal_data["verification_method"]
