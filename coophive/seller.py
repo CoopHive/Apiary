@@ -157,11 +157,3 @@ class Seller(Agent):
             if container.status == "exited":
                 self.handle_completed_job(deal_id)
         self.update_finished_deals()
-
-    # TODO: move this functionality in the networking model, at the agent level
-    def seller_loop(self):
-        """Main loop for the seller to process matched offers and update job running times."""
-        for match in self.current_matched_offers:
-            self.make_match_decision(match)
-        self.update_job_running_times()
-        self.current_matched_offers.clear()

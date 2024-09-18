@@ -65,7 +65,7 @@ class Buyer(Agent):
 
     def request_mediation(self, event: Event):
         """Request mediation for an event."""
-        if self.policy.decide_whether_or_not_to_mediate(event):
+        if True:  # TODO: integrate this in agent behaviour.
             log_json("Requesting mediation", {"event_name": event.name})
             self.smart_contract.mediate_result(event)
         else:

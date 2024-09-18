@@ -107,8 +107,14 @@ class Policy:
         return output_message
 
     # ------------------------------------Legacy BUYER POLICY FUNCTIONS start------------------------------------
+    # We need to go through the functions here and see which ones are important to policy.infer
+    # (evaluate_match, find_best_match, etc).
     def negotiate_match(self, match, max_rounds=5):
         """Negotiate a match."""
+        # TODO: Should negotiate match be in policy.py? or seller.py or buyer.py?
+        # Should it be separated the way mediation is separated where the policy decides whether
+        # a match should be negotiated and then the buyer/seller has the function to actually take the action
+        # of negotiating via the messaging client?
         match_dict = match.get_data()
         rounds_completed = match_dict["rounds_completed"]
         while rounds_completed < max_rounds:
