@@ -244,4 +244,3 @@ Sequential decision problems in stochastic environments. General formulation of 
 #### Gradient Ascent
 
 #### Nash Q-Learning
-

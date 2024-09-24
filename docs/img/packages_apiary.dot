@@ -1,0 +1,21 @@
+digraph "packages_apiary" {
+rankdir=BT
+charset="utf-8"
+"apiary" [color="#77AADD", label=<apiary>, shape="box", style="filled"];
+"apiary.__main__" [color="#77AADD", label=<apiary.__main__>, shape="box", style="filled"];
+"apiary.agent" [color="#77AADD", label=<apiary.agent>, shape="box", style="filled"];
+"apiary.buyer" [color="#77AADD", label=<apiary.buyer>, shape="box", style="filled"];
+"apiary.cli" [color="#77AADD", label=<apiary.cli>, shape="box", style="filled"];
+"apiary.constants" [color="#77AADD", label=<apiary.constants>, shape="box", style="filled"];
+"apiary.external_services" [color="#77AADD", label=<apiary.external_services>, shape="box", style="filled"];
+"apiary.inference_endpoint" [color="#77AADD", label=<apiary.inference_endpoint>, shape="box", style="filled"];
+"apiary.seller" [color="#77AADD", label=<apiary.seller>, shape="box", style="filled"];
+"apiary.utils" [color="#77AADD", label=<apiary.utils>, shape="box", style="filled"];
+"apiary.__main__" -> "apiary.cli" [arrowhead="open", arrowtail="none"];
+"apiary.buyer" -> "apiary" [arrowhead="open", arrowtail="none"];
+"apiary.buyer" -> "apiary.agent" [arrowhead="open", arrowtail="none"];
+"apiary.cli" -> "apiary" [arrowhead="open", arrowtail="none"];
+"apiary.cli" -> "apiary.constants" [arrowhead="open", arrowtail="none"];
+"apiary.cli" -> "apiary.utils" [arrowhead="open", arrowtail="none"];
+"apiary.seller" -> "apiary.agent" [arrowhead="open", arrowtail="none"];
+}

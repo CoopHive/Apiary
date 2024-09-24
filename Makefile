@@ -1,46 +1,44 @@
-#* Variables
-PYTHON := python3
-
 #* Poetry
-.PHONY: poetry-download
-poetry-download:
-	curl -sSL https://install.python-poetry.org | $(PYTHON) -
-    
-.PHONY: poetry-remove
-poetry-remove:
-	curl -sSL https://install.python-poetry.org | $(PYTHON) - --uninstall
+.PHONY: uv-download
+uv-download:
+	curl -LsSf https://astral.sh/uv/install.sh | sh
 
 .PHONY: install
 install:
-	rm -f poetry.lock
-	poetry install -n
-	poetry run pre-commit install
+	rm -f Cargo.lock
+	cargo build
+	rm -rf .venv && uv venv
+	uv pip install .[dev]
+	uvx maturin develop
+	uv run pre-commit install
 
 .PHONY: codestyle
 codestyle:
-	poetry run isort --settings-path pyproject.toml ./
-	poetry run black --config pyproject.toml ./
+	uv run isort ./
+	uv run ruff check ./
+	uv run ruff format ./
 
 .PHONY: check-codestyle
 check-codestyle:
-	poetry run isort --diff --check-only --settings-path pyproject.toml ./
-	poetry run black --diff --check --config pyproject.toml ./
+	uv run isort --diff --check-only ./
+	uv run ruff check --exit-non-zero-on-fix ./
+	uv run ruff format --diff ./
 
 .PHONY: docs
 docs:
-	poetry run pydocstyle --convention=google .
+	uv run pydocstyle --convention=google .
 
 .PHONY: test
 test:
-	poetry run pytest -c pyproject.toml tests/
+	uv run pytest -c pyproject.toml tests/
 
 .PHONY: diagrams
 diagrams:
-	pyreverse coophive -A --colorized -p coophive -d docs/img -o dot
+	pyreverse apiary -A --colorized -p apiary -d docs/img -o dot
 	python3 docs/classes_filter.py
-	dot -Tpng docs/img/classes_coophive.dot -o docs/img/classes_coophive.png
-	dot -Tpng docs/img/packages_coophive.dot -o docs/img/packages_coophive.png
+	dot -Tpng docs/img/classes_apiary.dot -o docs/img/classes_apiary.png
+	dot -Tpng docs/img/packages_apiary.dot -o docs/img/packages_apiary.png
 
 .PHONY: flush
 flush:
-	./kill_processes.sh
+	./scripts/kill_processes.sh

@@ -1,0 +1,9 @@
+digraph "classes_apiary" {
+rankdir=BT
+charset="utf-8"
+"apiary.agent.Agent" [color="#77AADD", fontcolor="black", label=<{Agent|<br ALIGN="LEFT"/>|<I>infer</I>(states, message)<br ALIGN="LEFT"/><I>load_states</I>()<br ALIGN="LEFT"/><I>start_agent_daemon</I>()<br ALIGN="LEFT"/><I>stop_agent_daemon</I>()<br ALIGN="LEFT"/>}>, shape="record", style="filled"];
+"apiary.buyer.Buyer" [color="#77AADD", fontcolor="black", label=<{Buyer|<br ALIGN="LEFT"/>|}>, shape="record", style="filled"];
+"apiary.seller.Seller" [color="#77AADD", fontcolor="black", label=<{Seller|<br ALIGN="LEFT"/>|}>, shape="record", style="filled"];
+"apiary.buyer.Buyer" -> "apiary.agent.Agent" [arrowhead="empty", arrowtail="none"];
+"apiary.seller.Seller" -> "apiary.agent.Agent" [arrowhead="empty", arrowtail="none"];
+}

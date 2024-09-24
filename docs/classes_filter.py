@@ -1,6 +1,6 @@
 """Filter out .dot file for classes relationship plotting."""
 
-file_path = "docs/img/classes_coophive.dot"
+file_path = "docs/img/classes_apiary.dot"
 
 search_string = 'arrowhead="diamond"'
 

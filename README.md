@@ -1,52 +1,26 @@
-# CoopHive Simulator
+# Apiary
 
 ## Overview
 
-CoopHive Simulator is a tool designed to simulate the agent-based and game theory aspects of the CoopHive protocol, a two-sided marketplace for computing resources.
-
-![Class Diagram](docs/img/classes_coophive.png)
-![Package Diagram](docs/img/packages_coophive.png)
-
-### Reference Literature
-
-The Literature that informed this repository can be found at [this ResearchRabbit Public Collection](https://www.researchrabbitapp.com/collection/public/JLNPJ13R6N).
-
-### Related Python Projects
-
-In order of Stars:
-
-- [OpenHands](https://github.com/All-Hands-AI/OpenHands): An Open Platform for AI Software Developers as Generalist Agents.
-- [CrewAI](https://github.com/crewAIInc/crewAI): Framework for orchestrating role-playing, autonomous AI agents.
-- [PettingZoo](https://github.com/Farama-Foundation/PettingZoo): An API standard for multi-agent reinforcement learning environments, with popular reference environments and related utilities.
-- [Mesa](https://github.com/projectmesa/mesa/): library for agent-based modeling, ideal for simulating complex systems and exploring emergent behaviors.
-- [uAgents](https://github.com/fetchai/uAgents): A fast and lightweight framework for creating decentralized agents with ease.
-- [Mava](https://github.com/instadeepai/Mava): A research-friendly codebase for fast experimentation of multi-agent reinforcement learning in JAX.
-- [meltingpot](https://github.com/google-deepmind/meltingpot): A suite of test scenarios for multi-agent reinforcement learning.
-- [EPyMARL](https://github.com/uoe-agents/epymarl): An extension of the PyMARL codebase that includes additional algorithms and environment support.
-- [AgentPy](https://github.com/jofmi/agentpy): framework for the development and analysis of agent-based models.
-- [VMAS](https://github.com/proroklab/VectorizedMultiAgentSimulator): vectorized differentiable simulator designed for efficient Multi-Agent Reinforcement Learning benchmarking.
-- [BenchMARL](https://github.com/facebookresearch/BenchMARL): A collection of MARL benchmarks based on TorchRL.
-- [PADE](https://github.com/grei-ufc/pade): Python Agent DEvelopment framework.
-- [Repast](https://github.com/Repast/repast4py): agent-based modeling and simulation software.
-- [moragents](https://github.com/MorpheusAIs/moragents): Morpheus Local Agents.
+Apiary is a tool designed to simulate the agent-based and game theory aspects of the CoopHive protocol, a two-sided marketplace for computing resources.
 
 ## Installation
 
 ### Requirements
 
-- Python >= 3.10
+- Python >= 3.12
 
 ### Setup
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/CoopHive/coophive-simulator.git
-   cd coophive-simulator
-2. Install Poetry (if not already installed)
+   git clone https://github.com/CoopHive/Apiary.git
+   cd 
+2. Install uv (if not already installed)
 
     ```bash
-    make poetry-download
+    make uv-download
 3. Install dependencies and set up pre-commit hooks:
 
     ```bash
@@ -55,15 +29,15 @@ In order of Stars:
 
 Seller setup:
 ```bash
-coophive --verbose run --role seller --private-key 0x123 --public-key 0x123 --policy-name compute_marketplace_random_negotiator --inference-endpoint-port 8000
+coophive --verbose run --role seller --private-key 7850b55b1582add03da1cab6350cdccd7fc13c093b5bc61a5378469b8151341a --public-key 0x1C53Ec481419daA436B47B2c916Fa3766C6Da9Fc --policy-name naive_accepter --inference-endpoint-port 8000
 
-bun run runner.ts seller localhost:8000
+bun run runner.ts seller localhost:8000 ""  rediss://default:***@***.upstash.io:6379
 ```
 Buyer setup:
 ```bash
-coophive --verbose run --role buyer --private-key 0x321 --public-key 0x321 --policy-name compute_marketplace_identity_negotiator --inference-endpoint-port 8001
+coophive --verbose run --role buyer --private-key 0202ea5001ba9d11e8fecb4a3a943fbaa4a1068821e35533bd2161e76d333811 --public-key 0x002189E2F82ac8FBF19e2Dc279d19E07eCE12cfb --policy-name naive_accepter --inference-endpoint-port 8001
 
-bun run runner.ts buyer localhost:8001 '{"pubkey": "0x321","offerId": "offer_0","initial": true,"data": {"_tag": "offer","query": "hello","price": ["0x100", 200]}}'
+bun run runner.ts buyer localhost:8001 '{"pubkey": "0x002189E2F82ac8FBF19e2Dc279d19E07eCE12cfb","offerId": "offer_0","data": {"_tag": "offer","query": "FROM alpine:3.7\nRUN apk update && apk add --no-cache git perl && cd /tmp && git clone https://github.com/jasonm23/cowsay.git && cd cowsay ; ./install.sh /usr/local && rm -rf /var/cache/apk/* /var/tmp/* /tmp/* && apk del git\nCMD [\"/usr/local/bin/cowsay\",\"Docker is very good !\"]","price": ["0x036CbD53842c5426634e7929541eC2318f3dCF7e"]}}' rediss://default:***@***.upstash.io:6379
 ```
 
 ### Make

@@ -1,69 +1,50 @@
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
 
-[tool.poetry]
-name = "coophive"
-version = "0.4.0"
-description = "A simulator for the Multi-agent system of the CoopHive protocol"
-authors = ["Levi Rybalov, Aayushi Jain, Pratham Dave, Matteo Manzi"]
-license = "Apache 2"
+[project]
+name = "apiary"
+version = "0.5.0"
+description = "Agent-based modeling for negotiation and scheduling within the CoopHive protocol."
+authors = [
+    { name = "Levi Rybalov" },
+    { name = "Matteo Manzi" },
+    { name = "疒奀" },
+    { name = "Aayushi Jain" }
+]
+requires-python = ">=3.12"
 readme = "README.md"
-packages = [{include = "coophive"}]
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["version"]
+dependencies = [
+    "pip>=24.2",
+    "click>=8.0,<8.1.4",
+    "docker>=7.1.0,<7.2.0",
+    "colorlog>=6.6.0,<6.9.0",
+    "uvicorn>=0.30.0,<0.31.0",
+    "fastapi>=0.112.0,<0.115.0",
+    "lighthouseweb3>=0.1.0,<0.2.0",
+]
+packages = [{include = "apiary"}]
 
-[tool.poetry.scripts]
-# Entry points for the package https://python-poetry.org/docs/pyproject/#scripts
-"coophive" = "coophive.__main__:cli"
+[project.scripts]
+"apiary" = "apiary.__main__:cli"
 
-[tool.poetry.dependencies]
-python = "^3.12"
-click = {version = ">=8.0, <8.1.4"}
-docker = { version = ">=7.1.0, <7.2.0"}
-pandas = { version = ">=2.2, <2.3"}
-colorlog = { version = ">=6.6.0, <6.9.0"}
-uvicorn = { version = ">=0.30.0, <0.31.0"}
-fastapi = { version = ">=0.112.0, <0.115.0"}
+[project.optional-dependencies]
+dev = [
+    "pre-commit>=3.0.0,<3.3.0",
+    "isort[colors]>=5.11.0,<5.12.0",
+    "ruff>=0.6.0, < 1.0.0",
+    "pylint>=3.2, <3.3",
+    "pydocstyle>=6.3.0,<6.4.0",
+    "pytest>=8.3.0,<8.4.0",
+    "pytest-asyncio>=0.23.0,<0.25.0",
+]
 
-[tool.poetry.dev-dependencies]
-black = { version = ">=24.3.0, <24.4.0"}
-darglint = { version = ">=1.7.0, <1.8.1"}
-isort = {extras = ["colors"], version = ">=5.11.0, <5.12.0"}
-pre-commit = { version = ">=3.0.0, <3.3.0"}
-pydocstyle = { version = ">=6.3.0, <6.4.0"}
-pytest = { version = ">=8.3.0, <8.4.0"}
-pylint = { version = ">=3.2, <3.3"}
-
-[tool.black]
-# https://github.com/psf/black
-target-version = ["py310"]
-line-length = 88
-color = true
-
-exclude = '''
-/(
-    \.git
-    | \.hg
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-    | env
-    | venv
-)/
-'''
-
-[tool.isort]
-# https://github.com/timothycrosley/isort/
-py_version = 310
-line_length = 88
-
-known_typing = ["typing", "types", "typing_extensions", "mypy", "mypy_extensions"]
-sections = ["FUTURE", "TYPING", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
-include_trailing_comma = true
-profile = "black"
-multi_line_output = 3
-indent = 4
-color_output = true
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "apiary.apiars"
