@@ -1,5 +1,6 @@
 """Agent Module."""
 
+import os
 from abc import ABC, abstractmethod
 
 
@@ -54,5 +55,25 @@ class Agent(ABC):
 
     @abstractmethod
     def infer(self, states, input_message):
-        """Infer scheme-compliant message from states and input_message."""
+        """Infer scheme-compliant message following the (message, context) => message structure."""
         ...
+
+    def _preprocess_infer(self, input_message):
+        """Shared preprocessing logic for infer."""
+        pubkey = os.getenv("PUBLIC_KEY")
+        # if transmitter same as receiver:
+        if input_message.get("pubkey") == pubkey:
+            return "noop"
+
+        # Initialize the output message
+        output_message = input_message.copy()
+        output_message["pubkey"] = pubkey
+        output_message["initial"] = False
+
+        return output_message
+
+
+# TODO: understand if the inference agent is at least responsible for writing messages.
+# Use message_timestamp to populate a database of messages?
+# import time
+# message_timestamp = int(time.time() * 1000)

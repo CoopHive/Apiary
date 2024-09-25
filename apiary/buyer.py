@@ -19,10 +19,9 @@ class NaiveBuyer(Agent):
 
     def infer(self, states, input_message):
         """Policy of Naive Buyer."""
-        pubkey = os.getenv("PUBLIC_KEY")
-        # if transmitter same as receiver:
-        if input_message.get("pubkey") == pubkey:
-            return "noop"
+        output_message = self._preprocess_infer(input_message)
+        if output_message == "noop":
+            return output_message
 
         # from apiary import apiars
         # TODO: implement exaustive and modular scheme-compliant set of functions for buyer.
@@ -30,21 +29,22 @@ class NaiveBuyer(Agent):
         # use match to cover all the scheme-compliant cases:
         # https://github.com/CoopHive/redis-scheme-client/blob/main/src/compute-marketplace-scheme.ts#L19
         # define and import functions for cases in which the action is complex.
-        pass
+        return output_message
 
-    # def load_states():
-    # TODO:
-    # check that states (including p (internal states/model states/policy configurations))
-    # are up to date and warning if not (not doing anything directly, another process is responsibile for doing something about it).
-    #     import jax
-    #     model_pickle = read_pickle('jax_model.pickle')
-    #     model = jax.from_pickle(model_pickle) # NOTE: This is why we do this in python, even if the training is happening in a completely separate process.
-    #     return {'X': , ''}
-    # def infer():
-    #    match input_message_tag to capute negotiation-strategy-invariant actions and move them to buy/sellagent functions if necessary, else:
-    #    reply_buy_attest.
-    #    reply_sell_attest.
-    #    NOTE: in the case messaging is server-push-based, deal negotiations and job runs are necessarily sequential.
+
+# TODO:
+# def load_states():
+# check that states (including p (internal states/model states/policy configurations))
+# are up to date and warning if not (not doing anything directly, another process is responsibile for doing something about it).
+#     import jax
+#     model_pickle = read_pickle('jax_model.pickle')
+#     model = jax.from_pickle(model_pickle) # NOTE: This is why we do this in python, even if the training is happening in a completely separate process.
+#     return {'X': , ''}
+# def infer():
+#    match input_message_tag to capute negotiation-strategy-invariant actions and move them to buy/sellagent functions if necessary, else:
+#    reply_buy_attest.
+#    reply_sell_attest.
+#    NOTE: in the case messaging is server-push-based, deal negotiations and job runs are necessarily sequential.
 
 
 def parse_initial_offer(job_path, price):

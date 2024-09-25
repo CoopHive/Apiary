@@ -1,7 +1,6 @@
 """This module defines the Sellers used within the CoopHive protocol."""
 
 import logging
-import os
 
 from apiary.base_agent import Agent
 
@@ -16,10 +15,9 @@ class NaiveSeller(Agent):
 
     def infer(self, states, input_message):
         """Policy of Naive Seller."""
-        pubkey = os.getenv("PUBLIC_KEY")
-        # if transmitter same as receiver:
-        if input_message.get("pubkey") == pubkey:
-            return "noop"
+        output_message = self._preprocess_infer(input_message)
+        if output_message == "noop":
+            return output_message
 
         # TODO:
         # use match to cover all the scheme-compliant cases:
@@ -27,4 +25,4 @@ class NaiveSeller(Agent):
         # define and import functions for cases in which the action is complex.
         # implement exaustive and modular scheme-compliant set of functions for seller.
         # apiars.make_buy_statement()
-        pass
+        return output_message
