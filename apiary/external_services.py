@@ -4,6 +4,7 @@ import logging
 import os
 import platform
 import subprocess
+import time
 
 
 def start_job_daemon():
@@ -32,11 +33,13 @@ def start_job_daemon():
     # Start Docker daemon and dump the PID to the lock file
     process = subprocess.Popen(docker_command)
 
+    time.sleep(5)
+
     # Write the PID to the lock file
     with open(lock_file, "w") as f:
         f.write(str(process.pid))
 
-    logging.info(f"Docker daemon started with PID {process.pid}.")
+    logging.info(f"Docker daemon started with PID {process.pid}")
 
 
 def start_messaging_client():
