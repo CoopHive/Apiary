@@ -7,6 +7,8 @@ import time
 
 from fastapi import FastAPI
 
+from apiary import agent_registry
+
 # FastAPI application
 app = FastAPI()
 
@@ -14,15 +16,9 @@ app = FastAPI()
 @app.post("/")
 async def inference_endpoint(message: dict):
     """Process a message and return the inference result."""
-    # agent = get_agent()
-
-    # states = agent.load_states(config)
-    # return agent.infer(states, message)
-    # message needs to be scheme-compliant, as per:
-    # https://github.com/CoopHive/redis-scheme-client/blob/main/src/scheme.ts#L108
-    logging.info("HELLO WORLD APIARY INFERENCE!")
-    breakpoint()
-    pass
+    agent = agent_registry.get_agent()
+    states = agent.load_states()
+    return agent.infer(states, message)
 
 
 def start_inference_endpoint():

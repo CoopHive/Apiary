@@ -46,7 +46,7 @@ def start_job_daemon():
     logging.info(f"Docker daemon started with PID {process.pid}")
 
 
-def start_messaging_client(initial_offer=""):
+def start_messaging_client(initial_offer=None):
     """Start Messaging Client."""
     lock_file = f"messaging_client_{os.getenv('AGENT_NAME')}.lock"
     if os.path.exists(lock_file):
@@ -63,7 +63,7 @@ def start_messaging_client(initial_offer=""):
         "./client/runner.ts",
         os.getenv("ROLE"),
         f"{os.getenv('INFERENCE_ENDPOINT.HOST')}:{os.getenv('INFERENCE_ENDPOINT.PORT')}",
-        json.dumps(initial_offer),
+        "" if not initial_offer else json.dumps(initial_offer),
         os.getenv("REDIS_URL"),
     ]
 

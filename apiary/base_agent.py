@@ -26,7 +26,6 @@ class Agent(ABC):
         """Initialize the Agent."""
         ...
 
-    @abstractmethod
     def start_agent_daemon(self):
         """Module responsible for launching daemons to make states accessible at inference time.
 
@@ -34,18 +33,16 @@ class Agent(ABC):
         trigger datapipelines to bring states up-to-date,
         but can take care of and updates cached states.
         """
-        ...
+        pass
 
-    @abstractmethod
     def stop_agent_daemon(self):
         """Check if we own the daemon process and stop it if so.
 
         In the presence of a parallel training process running it might not be the case.
         Daemon ownership is communicated via lock files.
         """
-        ...
+        pass
 
-    @abstractmethod
     def load_states(self):
         """Load necessary states in order to be able to perform an inference against incoming messages.
 
@@ -53,22 +50,9 @@ class Agent(ABC):
         to define the states, load them, train models on them to define policies. This function assumes the presence of
         a dataset of states to be loaded.
         """
-        # TODO:
-        # check that states (including p (internal states/model states/policy configurations))
-        # are up to date and warning if not (not doing anything directly, another process is responsibile for doing something about it).
-        ...
+        pass
 
     @abstractmethod
     def infer(self, states, input_message):
         """Infer scheme-compliant message from states and input_message."""
-        # TODO:
-        # use match to cover all the scheme-compliant cases:
-        # https://github.com/CoopHive/redis-scheme-client/blob/main/src/compute-marketplace-scheme.ts#L19
-        # define and import functions for cases in which the action is complex.
         ...
-
-
-def get_agent():
-    """Get agent from registry."""
-    # TODO: get_agent is just a registry of agents. the hierarchy is flat. Implement accordingly.
-    pass
