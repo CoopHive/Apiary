@@ -19,11 +19,13 @@ class NaiveSeller(Agent):
         if output_message == "noop":
             return output_message
 
-        # TODO:
-        # Case in which offer comes in, replies with identity here
-        # seller can respond to initial offers with a counteroffer
-
-        # TODO:
-        # Case input buy attest output sell attest, use self._somefunctions()
+        match input_message["data"].get("_tag"):
+            case "offer":
+                # Confirm buyer offer with identity counteroffer ?
+                pass
+            case "buyAttest":
+                # TODO
+                # Case input buy attest output sell attest, use self._somefunctions()
+                pass
 
         return output_message

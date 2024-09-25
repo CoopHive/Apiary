@@ -1,12 +1,13 @@
 """Agent Module."""
 
+import logging
 import os
 from abc import ABC, abstractmethod
 
-# TODO: understand if the inference agent is at least responsible for writing messages.
-# Use message_timestamp to populate a database of messages?
-# import time
-# message_timestamp = int(time.time() * 1000)
+from dotenv import load_dotenv
+from lighthouseweb3 import Lighthouse
+
+load_dotenv()
 
 
 class Agent(ABC):
@@ -77,9 +78,27 @@ class Agent(ABC):
 
         return output_message
 
-    # TODO:
-    # buyer can respond to counteroffers with payment (buy attestation). Implement this in superclass and set variables from environment to self.x if useful.
-    # uses: apiars.make_buy_statement
+    def _get_query_cid(self, input_message):
+        """Parse Dockerfile from input_message query, upload to IPFS and return the query_cid."""
+        file_path = "tmp_lighthouse.Dockerfile"
+
+        with open(file_path, "w") as file:
+            file.write(input_message["data"]["query"])
+
+        lh = Lighthouse(os.getenv("LIGHTHOUSE_TOKEN"))
+        try:
+            response = lh.upload(file_path)
+            query_cid = response["data"]["Hash"]
+        except Exception:
+            logging.error("Lighthouse Error occurred.", exc_info=True)
+            raise
+        finally:
+            # Remove the temporary file
+            if os.path.exists(file_path):
+                os.remove(file_path)
+
+        logging.info(f"https://gateway.lighthouse.storage/ipfs/{query_cid}")
+        return query_cid
 
     # TODO:
     # seller respond to buyer's attestation (payment) with their own attestation (result). Implement this in superclass and set variables from environment to self.x if useful.
@@ -89,3 +108,9 @@ class Agent(ABC):
 
     # TODO:
     # buyer receiving sell_attestations perform get_result_cid_from_sell_uid.
+
+
+# TODO: understand if the inference agent is at least responsible for writing messages.
+# Use message_timestamp to populate a database of messages?
+# import time
+# message_timestamp = int(time.time() * 1000)

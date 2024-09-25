@@ -6,6 +6,7 @@ import os
 
 import readwrite as rw
 
+from apiary import apiars
 from apiary.base_agent import Agent
 
 
@@ -23,27 +24,33 @@ class NaiveBuyer(Agent):
         if output_message == "noop":
             return output_message
 
-        # TODO:
-        # Case in which offer comes in, replies with identity here
-        # anyone can respond to a non-initial offer with a counteroffer
+        match input_message["data"].get("_tag"):
+            case "offer":
+                token = str(input_message["data"]["price"][0])
+                amount = int(input_message["data"]["price"][1])
+                query_cid = self._get_query_cid(input_message)
 
-        # TODO:
-        # Case input good offer, output buy attest, use self._somefunctions()
+                # TODO: deal with asyncronicity:
+                _ = apiars.make_buy_statement(token, amount, query_cid)  # statement_uid
 
-        # TODO:
-        # Case input sell_attestation, use self._somefunctions() and output  noop
+                1 / 0
+                pass
+            case "sellAttest":
+                # TODO
+                # Case input sell_attestation, use self._somefunctions() and output  noop
+                pass
+
         return output_message
 
 
-# TODO:
+# NOTE:
 # def load_states():
 # check that states (including p (internal states/model states/policy configurations))
 # are up to date and warning if not (not doing anything directly, another process is responsibile for doing something about it).
 #     import jax
 #     model_pickle = read_pickle('jax_model.pickle')
-#     model = jax.from_pickle(model_pickle) # NOTE: This is why we do this in python, even if the training is happening in a completely separate process.
+#     model = jax.from_pickle(model_pickle) # This is why we do this in python, even if the training is happening in a completely separate process.
 #     return {'X': , ''}
-# def infer():
 #    match input_message_tag to capute negotiation-strategy-invariant actions and move them to buy/sellagent functions if necessary, else:
 #    reply_buy_attest.
 #    reply_sell_attest.

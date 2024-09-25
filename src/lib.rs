@@ -44,11 +44,11 @@ sol!(
 /// A Python module implemented in Rust.
 #[pymodule]
 fn apiars(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(helloworld, m)?)?;
     m.add_function(wrap_pyfunction!(make_buy_statement, m)?)?;
     m.add_function(wrap_pyfunction!(get_buy_statement, m)?)?;
     m.add_function(wrap_pyfunction!(submit_and_collect, m)?)?;
     m.add_function(wrap_pyfunction!(get_result_cid_from_sell_uid, m)?)?;
-    m.add_function(wrap_pyfunction!(helloworld, m)?)?;
     Ok(())
 }
 
@@ -65,8 +65,8 @@ macro_rules! py_run_err {
     };
 }
 
-async fn approve_token(token: Address, amount: U256) -> eyre::Result<()> {
-    let provider = provider::get_provider()?;
+async fn approve_token(token: Address, amount: U256, private_key: String) -> eyre::Result<()> {
+    let provider = provider::get_provider(private_key)?;
 
     let payment_address =
         env::var("ERC20_PAYMENT_STATEMENT").map(|a| Address::parse_checksummed(a, None))??;
@@ -79,16 +79,17 @@ async fn approve_token(token: Address, amount: U256) -> eyre::Result<()> {
 }
 
 #[pyfunction]
-async fn make_buy_statement(token: String, amount: u64, query_cid: String) -> PyResult<String> {
+async fn make_buy_statement(token: String, amount: u64, query_cid: String, private_key: String) -> PyResult<String> {
     let amount = U256::from(amount);
 
-    let provider = provider::get_provider()?;
+    let provider = provider::get_provider(private_key.clone())?;
+
     let payment_address = env::var("ERC20_PAYMENT_STATEMENT")
         .or_else(|_| py_val_err!("ERC20_PAYMENT_STATEMENT not set"))
         .map(|a| Address::parse_checksummed(a, None))?
         .or_else(|_| py_val_err!("couldn't parse ERC20_PAYMENT_STATEMENT as an address"))?;
-    
-    approve_token(payment_address, amount).await
+
+    approve_token(payment_address, amount, private_key).await
     .or_else(|_| py_run_err!("contract call to approve token failed"))?;
 
     let contract = ERC20PaymentStatement::new(payment_address, provider);
@@ -127,11 +128,11 @@ async fn make_buy_statement(token: String, amount: u64, query_cid: String) -> Py
 }
 
 #[pyfunction]
-async fn get_buy_statement(statement_uid: String) -> PyResult<(String, u64, String, String)> {
+async fn get_buy_statement(statement_uid: String, private_key: String) -> PyResult<(String, u64, String, String)> {
 
     let statement_uid: FixedBytes<32> = statement_uid.parse::<FixedBytes<32>>().or_else(|_| py_val_err!("couldn't parse statement_uid as bytes32"))?;
 
-    let provider = provider::get_provider()?;
+    let provider = provider::get_provider(private_key)?;
 
     let eas_address =env::var("EAS_CONTRACT")
         .or_else(|_| py_val_err!("EAS_CONTRACT not set"))
@@ -157,11 +158,11 @@ async fn get_buy_statement(statement_uid: String) -> PyResult<(String, u64, Stri
 }
 
 #[pyfunction]
-async fn get_result_cid_from_sell_uid(sell_uid: String) -> PyResult<String> {
+async fn get_result_cid_from_sell_uid(sell_uid: String, private_key: String) -> PyResult<String> {
 
     let sell_uid = sell_uid.parse::<FixedBytes<32>>().or_else(|_| py_val_err!("couldn't parse sell_uid as bytes32"))?;
 
-    let provider = provider::get_provider()?;
+    let provider = provider::get_provider(private_key)?;
 
     let eas_address =env::var("EAS_CONTRACT")
         .or_else(|_| py_val_err!("EAS_CONTRACT not set"))
@@ -182,11 +183,11 @@ async fn get_result_cid_from_sell_uid(sell_uid: String) -> PyResult<String> {
 }
 
 #[pyfunction]
-async fn submit_and_collect(buy_attestation_uid: String, result_cid: String) -> PyResult<String> {
+async fn submit_and_collect(buy_attestation_uid: String, result_cid: String, private_key: String) -> PyResult<String> {
 
     let buy_attestation_uid = buy_attestation_uid.parse::<FixedBytes<32>>().or_else(|_| py_val_err!("couldn't parse buy_attestation_uid as bytes32"))?;
 
-    let provider = provider::get_provider()?;
+    let provider = provider::get_provider(private_key)?;
     
     let result_address = env::var("DOCKER_RESULT_STATEMENT")
         .or_else(|_| py_val_err!("DOCKER_RESULT_STATEMENT not set"))

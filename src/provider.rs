@@ -15,7 +15,7 @@ use std::env;
 
 use crate::py_val_err;
 
-pub fn get_provider() -> Result<
+pub fn get_provider(private_key: String) -> Result<
     FillProvider<
         JoinFill<
             JoinFill<
@@ -30,10 +30,9 @@ pub fn get_provider() -> Result<
     >,
     pyo3::PyErr,
 > {
-    let signer: PrivateKeySigner = env::var("PRIVATE_KEY")
-        .or_else(|_| py_val_err!("PRIVATE_KEY not set"))?
+    let signer: PrivateKeySigner = private_key
         .parse()
-        .or_else(|_| py_val_err!("couldn't parse PRIVATE_KEY as a private key"))?;
+        .or_else(|_| py_val_err!("couldn't parse private_key as PrivateKeySigner"))?;
     let wallet = EthereumWallet::from(signer);
     let rpc_url = env::var("RPC_URL")
         .or_else(|_| py_val_err!("RPC_URL not set"))?
