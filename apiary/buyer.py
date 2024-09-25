@@ -23,12 +23,15 @@ class NaiveBuyer(Agent):
         if output_message == "noop":
             return output_message
 
-        # from apiary import apiars
-        # TODO: implement exaustive and modular scheme-compliant set of functions for buyer.
-        # apiars.make_buy_statement()
-        # use match to cover all the scheme-compliant cases:
-        # https://github.com/CoopHive/redis-scheme-client/blob/main/src/compute-marketplace-scheme.ts#L19
-        # define and import functions for cases in which the action is complex.
+        # TODO:
+        # Case in which offer comes in, replies with identity here
+        # anyone can respond to a non-initial offer with a counteroffer
+
+        # TODO:
+        # Case input good offer, output buy attest, use self._somefunctions()
+
+        # TODO:
+        # Case input sell_attestation, use self._somefunctions() and output  noop
         return output_message
 
 

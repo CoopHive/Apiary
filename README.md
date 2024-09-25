@@ -37,21 +37,6 @@ apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./
 apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --price '["0x036CbD53842c5426634e7929541eC2318f3dCF7e", 1]'
 ```
 
-#### Legacy to be updated:
-
-Seller setup:
-```bash
-apiary --verbose run --role seller --private-key 7850b55b1582add03da1cab6350cdccd7fc13c093b5bc61a5378469b8151341a --public-key 0x1C53Ec481419daA436B47B2c916Fa3766C6Da9Fc --policy-name naive_accepter --inference-endpoint-port 8000
-
-bun run runner.ts seller localhost:8000 ""  rediss://default:***@***.upstash.io:6379
-```
-Buyer setup:
-```bash
-coophive --verbose run --role buyer --private-key 0202ea5001ba9d11e8fecb4a3a943fbaa4a1068821e35533bd2161e76d333811 --public-key 0x002189E2F82ac8FBF19e2Dc279d19E07eCE12cfb --policy-name naive_accepter --inference-endpoint-port 8001
-
-bun run runner.ts buyer localhost:8001 '{"pubkey": "0x002189E2F82ac8FBF19e2Dc279d19E07eCE12cfb","offerId": "offer_0","data": {"_tag": "offer","query": "FROM alpine:3.7\nRUN apk update && apk add --no-cache git perl && cd /tmp && git clone https://github.com/jasonm23/cowsay.git && cd cowsay ; ./install.sh /usr/local && rm -rf /var/cache/apk/* /var/tmp/* /tmp/* && apk del git\nCMD [\"/usr/local/bin/cowsay\",\"Docker is very good !\"]","price": ["0x036CbD53842c5426634e7929541eC2318f3dCF7e"]}}' rediss://default:***@***.upstash.io:6379
-```
-
 ### Make
 
 To format the code according to the project's style guidelines, run:

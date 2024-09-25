@@ -20,9 +20,10 @@ class NaiveSeller(Agent):
             return output_message
 
         # TODO:
-        # use match to cover all the scheme-compliant cases:
-        # https://github.com/CoopHive/redis-scheme-client/blob/main/src/compute-marketplace-scheme.ts#L19
-        # define and import functions for cases in which the action is complex.
-        # implement exaustive and modular scheme-compliant set of functions for seller.
-        # apiars.make_buy_statement()
+        # Case in which offer comes in, replies with identity here
+        # seller can respond to initial offers with a counteroffer
+
+        # TODO:
+        # Case input buy attest output sell attest, use self._somefunctions()
+
         return output_message

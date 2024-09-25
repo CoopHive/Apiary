@@ -3,6 +3,11 @@
 import os
 from abc import ABC, abstractmethod
 
+# TODO: understand if the inference agent is at least responsible for writing messages.
+# Use message_timestamp to populate a database of messages?
+# import time
+# message_timestamp = int(time.time() * 1000)
+
 
 class Agent(ABC):
     """A class to represent an Agent.
@@ -72,8 +77,15 @@ class Agent(ABC):
 
         return output_message
 
+    # TODO:
+    # buyer can respond to counteroffers with payment (buy attestation). Implement this in superclass and set variables from environment to self.x if useful.
+    # uses: apiars.make_buy_statement
 
-# TODO: understand if the inference agent is at least responsible for writing messages.
-# Use message_timestamp to populate a database of messages?
-# import time
-# message_timestamp = int(time.time() * 1000)
+    # TODO:
+    # seller respond to buyer's attestation (payment) with their own attestation (result). Implement this in superclass and set variables from environment to self.x if useful.
+    # uses: apiars.get_buy_statement()
+    # Performs job.
+    # uses: apiars.submit_and_collect()
+
+    # TODO:
+    # buyer receiving sell_attestations perform get_result_cid_from_sell_uid.
