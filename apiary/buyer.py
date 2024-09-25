@@ -6,9 +6,9 @@ from apiary.agent import Agent
 class Buyer(Agent):
     """A Buyer in the CoopHive protocol."""
 
-    def __init__(self, config) -> None:
+    def __init__(self) -> None:
         """Initialize the Buyer instance."""
-        super().__init__(config)
+        super().__init__()
 
     # from apiary import apiars
     # TODO: implement exaustive and modular scheme-compliant set of functions for buyer.

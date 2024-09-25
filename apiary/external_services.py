@@ -1,5 +1,7 @@
 """Manage External Services."""
 
+import os
+
 
 def start_job_daemon():
     """Start Job Daemon."""
@@ -13,12 +15,9 @@ def start_job_daemon():
     pass
 
 
-def start_messaging_client(config):
+def start_messaging_client():
     """Start Messaging Client."""
-    # config.inference_endpoint.host
-    # config.inference_endpoint.port
-
-    # TODO: same logic as above.
+    _ = os.getenv("REDIS_URL")
     pass
 
 

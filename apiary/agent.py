@@ -2,14 +2,6 @@
 
 from abc import ABC, abstractmethod
 
-agents = {"buyer": str, "seller": str}
-
-
-def get_agent(config):
-    """Get agent from config."""
-    config.agent.role
-    pass
-
 
 class Agent(ABC):
     """A class to represent an Agent.
@@ -30,7 +22,7 @@ class Agent(ABC):
     """
 
     @abstractmethod
-    def __init__(self, config) -> None:
+    def __init__(self) -> None:
         """Initialize the Agent."""
         ...
 
@@ -74,3 +66,9 @@ class Agent(ABC):
         # https://github.com/CoopHive/redis-scheme-client/blob/main/src/compute-marketplace-scheme.ts#L19
         # define and import functions for cases in which the action is complex.
         ...
+
+
+def get_agent():
+    """Get agent from registry."""
+    # TODO: get_agent is just a registry of agents. the hierarchy is flat. Implement accordingly.
+    pass

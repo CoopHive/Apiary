@@ -27,9 +27,15 @@ Apiary is a tool designed to simulate the agent-based and game theory aspects of
     make install
 ## Usage
 
+```bash
+apiary --verbose start-sell --config-path ./config/seller_naive.json
+```
+
+#### Legacy to be updated:
+
 Seller setup:
 ```bash
-coophive --verbose run --role seller --private-key 7850b55b1582add03da1cab6350cdccd7fc13c093b5bc61a5378469b8151341a --public-key 0x1C53Ec481419daA436B47B2c916Fa3766C6Da9Fc --policy-name naive_accepter --inference-endpoint-port 8000
+apiary --verbose run --role seller --private-key 7850b55b1582add03da1cab6350cdccd7fc13c093b5bc61a5378469b8151341a --public-key 0x1C53Ec481419daA436B47B2c916Fa3766C6Da9Fc --policy-name naive_accepter --inference-endpoint-port 8000
 
 bun run runner.ts seller localhost:8000 ""  rediss://default:***@***.upstash.io:6379
 ```

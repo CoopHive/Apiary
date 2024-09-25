@@ -1,10 +1,12 @@
 """FastAPI application module for handling message-based inference requests."""
 
+import os
+
 import uvicorn
 from fastapi import FastAPI
 
 
-def start_inference_endpoint(config):
+def start_inference_endpoint():
     """Start Inference Endpoint."""
     # TODO:
     # same logic as external_services dumping lock for
@@ -12,8 +14,8 @@ def start_inference_endpoint(config):
 
     uvicorn.run(
         inference_endpoint.app,
-        host=config.inference_endpoint.host,
-        port=int(config.inference_endpoint.port),
+        host=os.getenv("INFERENCE_ENDPOINT.HOST"),
+        port=int(os.getenv("INFERENCE_ENDPOINT.PORT")),
     )
 
 

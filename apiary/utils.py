@@ -1,17 +1,16 @@
 """This module defines various utility classes and functions for the CoopHive simulator."""
 
 import logging
+import os
 
 import colorlog
+import readwrite as rw
+from dotenv import load_dotenv
 
 
 def template(input: str, variables: dict) -> None:
     """Replace placeholders in the input string with values from the variables dictionary."""
-    for key, value in variables.items():
-        key = "{" + key + "}"
-        input = input.replace(key, str(value))
-
-    return input
+    return input.format_map(variables)
 
 
 def setup_logger(logs_path, verbose, no_color):
@@ -61,3 +60,62 @@ def setup_logger(logs_path, verbose, no_color):
     logger.setLevel(logging.DEBUG if verbose else logging.INFO)
 
     return logger
+
+
+def set_env_variables(config: dict):
+    """Set environment variables based on a configuration dictionary.
+
+    This function flattens the nested dictionary and assigns the corresponding values
+    to environment variables. Existing environment variables take precedence over
+    values in the config.
+    """
+    load_dotenv()
+
+    def get_keys(d, parent_key=""):
+        """Recursively flatten dictionary keys."""
+        keys = []
+        for k, v in d.items():
+            new_key = f"{parent_key}.{k}" if parent_key else k
+            if isinstance(v, dict):
+                keys.extend(get_keys(v, new_key))
+            else:
+                keys.append(new_key)
+        return keys
+
+    def get_value_by_key(d, key):
+        """Get the value from a nested dictionary using a flattened key."""
+        keys = key.split(".")
+        value = d
+        for k in keys:
+            value = value.get(k)
+        return value
+
+    # Flatten the config keys
+    keys = get_keys(config)
+
+    for key in keys:
+        # Use the dotted keys directly for environment variables
+        env_key = key.upper()
+
+        # If the env variable is not already set, use the value from config
+        if not os.getenv(env_key):
+            value = get_value_by_key(config, key)
+            os.environ[env_key] = str(value)
+            logging.info(f"Set {env_key} = {value}")
+
+
+def load_configuration(config_path: str):
+    """Load configuration from a file and set environment variables.
+
+    This function reads the configuration from a given file path and sets the
+    appropriate environment variables, including setting AGENT_NAME based on the file name if not already defined.
+    """
+    config = rw.read(config_path)
+
+    if not os.getenv("AGENT_NAME"):
+        agent_name = config_path.rpartition(".")[0]
+        agent_name = agent_name.rpartition("/")[-1]
+        os.environ["AGENT_NAME"] = agent_name
+        logging.info(f"Set AGENT_NAME: {agent_name}")
+
+    set_env_variables(config)

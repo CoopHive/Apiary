@@ -1,5 +1,6 @@
 """This module defines the CLI (Command Line Interface) for the CoopHive application."""
 
+import logging
 import os
 from datetime import datetime
 
@@ -14,7 +15,7 @@ CLI_TIME = current_time.strftime("%Y-%m-%d_%H-%M")
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
 @click.option("--verbose", is_flag=True)
 @click.option("--no-color", is_flag=True)
-@click.option("--logs-filename", default="CoopHive-{time}.log")
+@click.option("--logs-filename", default="Apiary-{time}.log")
 @click.option(
     "--output-path",
     default="./apiary_output/",
@@ -40,45 +41,42 @@ def cli(
 
 
 @cli.command()
-def start_buy():
+@click.option(
+    "--config-path",
+    required=True,
+)
+def start_buy(config_path: str):
     """Start Buyer."""
-    # TODO: load config
-    # env > json > cli_inputs
-    # config = {"a": 2, "b": 3}
-    # config = {**config, "b":4, "c":5}
-    # config = load_config('config.json')
-    # config: {dict}
+    logging.info("Starting Buyer.")
 
-    # TODO: add initial message to cli.
-    # initial_offer = .
+    utils.load_configuration(config_path)
 
-    # Same as sell...
+    # start_inference_endpoint(config)
+
+    # TODO: add initial message variable to cli.
+    # initial_offer = f(variables)
+
+    # start_messaging_client(config)
 
     pass
 
 
 @cli.command()
-def start_sell():
+@click.option(
+    "--config-path",
+    required=True,
+)
+def start_sell(config_path: str):
     """Start Seller."""
-    # TODO: load config
-    # env > json > cli_inputs
-    # config = {"a": 2, "b": 3}
-    # config = {**config, "b":4, "c":5}
-    # config = load_config('config.json')
-    # TODO: store final config as environmental variables with os. (without overwriting entries in .env file)
-    # to use them anywhere in the process afterwards.
+    logging.info("Starting Seller.")
+
+    utils.load_configuration(config_path)
 
     # start_job_daemon(config) # launch docker
 
     # start_inference_endpoint(config)
 
     # start_messaging_client(config)
-
-    # config = {
-    #     'inference_endpoint': {
-    #         'port': int, "host": str
-    #     }
-    # }
     pass
 
 
