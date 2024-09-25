@@ -1,5 +1,6 @@
 """Manage External Services."""
 
+import json
 import logging
 import os
 import platform
@@ -45,12 +46,35 @@ def start_job_daemon():
     logging.info(f"Docker daemon started with PID {process.pid}")
 
 
-def start_messaging_client(initial_offer=None):
+def start_messaging_client(initial_offer=""):
     """Start Messaging Client."""
-    breakpoint()
+    lock_file = f"messaging_client_{os.getenv('AGENT_NAME')}.lock"
+    if os.path.exists(lock_file):
+        with open(lock_file, "r") as file:
+            lock_content = file.read()
+        logging.warning(
+            f"{lock_file} already exists, assuming messaging client already running at PID {lock_content}"
+        )
+        return
 
-    _ = os.getenv("REDIS_URL")
-    pass
+    command = [
+        "bun",
+        "run",
+        "./client/runner.ts",
+        os.getenv("ROLE"),
+        f"{os.getenv('INFERENCE_ENDPOINT.HOST')}:{os.getenv('INFERENCE_ENDPOINT.PORT')}",
+        json.dumps(initial_offer),
+        os.getenv("REDIS_URL"),
+    ]
+
+    process = subprocess.Popen(command)
+
+    time.sleep(5)
+
+    with open(lock_file, "w") as f:
+        f.write(str(process.pid))
+
+    logging.info(f"Messaging Client started with PID {process.pid}")
 
 
 def kill_job_daemon():

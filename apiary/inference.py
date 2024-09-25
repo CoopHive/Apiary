@@ -20,6 +20,7 @@ async def inference_endpoint(message: dict):
     # return agent.infer(states, message)
     # message needs to be scheme-compliant, as per:
     # https://github.com/CoopHive/redis-scheme-client/blob/main/src/scheme.ts#L108
+    logging.info("HELLO WORLD APIARY INFERENCE!")
     breakpoint()
     pass
 

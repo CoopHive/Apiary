@@ -53,6 +53,7 @@ def cli(
 def start_buy(config_path: str, job_path: str, price: str):
     """Start Buyer."""
     logging.info("Starting Buyer.")
+    os.environ["ROLE"] = "buyer"
 
     utils.load_configuration(config_path)
 
@@ -72,6 +73,7 @@ def start_buy(config_path: str, job_path: str, price: str):
 def start_sell(config_path: str):
     """Start Seller."""
     logging.info("Starting Seller.")
+    os.environ["ROLE"] = "seller"
 
     utils.load_configuration(config_path)
 
