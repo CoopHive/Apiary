@@ -1,18 +1,42 @@
 """Manage External Services."""
 
+import logging
 import os
+import platform
+import subprocess
 
 
 def start_job_daemon():
     """Start Job Daemon."""
-    # TODO: get process_id
-    # process_id = subprocess.run()
+    lock_file = "job_daemon.lock"
 
-    # TODO: store it in something like job.lock
-    # logging.info(process_id)?
-    # if job.lock already there, break and ask user to delete job.lock manually and restart.
+    # Check if the lock file already exists
+    if os.path.exists(lock_file):
+        logging.warning(
+            f"{lock_file} already exists, assuming job_daemon already running."
+        )
+        return
+    # Determine the operating system
+    operating_system = platform.system()
 
-    pass
+    # Command to start Docker daemon based on the OS
+    if operating_system == "Linux":
+        docker_command = ["sudo", "dockerd"]
+    elif operating_system == "Darwin":
+        docker_command = ["open", "-a", "Docker"]
+    else:
+        raise ValueError(
+            "Unsupported operating system. Only Linux, and macOS are supported."
+        )
+
+    # Start Docker daemon and dump the PID to the lock file
+    process = subprocess.Popen(docker_command)
+
+    # Write the PID to the lock file
+    with open(lock_file, "w") as f:
+        f.write(str(process.pid))
+
+    logging.info(f"Docker daemon started with PID {process.pid}.")
 
 
 def start_messaging_client():
