@@ -15,7 +15,14 @@ app = FastAPI()
 
 @app.post("/")
 async def inference_endpoint(message: dict):
-    """Process a message and return the inference result."""
+    """Process a message and return the inference result.
+
+    The inference function defines the behavior of Agents based on predefined Policies within the CoopHive simulator.
+
+    Policies dictate how an Agent interacts with the Schema-compliant messaging scheme (action space), determining its mode of behavior.
+    Each policy operates in a stateless manner, meaning that the Agent's actions (inferences) are computed in real-time
+    using the current state, without persisting any state in memory.
+    """
     agent = agent_registry.get_agent()
     states = agent.load_states()
     return agent.infer(states, message)

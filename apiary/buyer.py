@@ -17,8 +17,13 @@ class NaiveBuyer(Agent):
         super().__init__()
         logging.info("NaiveBuyer initialized")
 
-    def infer(self, states, input_messages):
+    def infer(self, states, input_message):
         """Policy of Naive Buyer."""
+        pubkey = os.getenv("PUBLIC_KEY")
+        # if transmitter same as receiver:
+        if input_message.get("pubkey") == pubkey:
+            return "noop"
+
         # from apiary import apiars
         # TODO: implement exaustive and modular scheme-compliant set of functions for buyer.
         # apiars.make_buy_statement()

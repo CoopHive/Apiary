@@ -1,6 +1,7 @@
 """This module defines the Sellers used within the CoopHive protocol."""
 
 import logging
+import os
 
 from apiary.base_agent import Agent
 
@@ -13,8 +14,13 @@ class NaiveSeller(Agent):
         super().__init__()
         logging.info("NaiveSeller initialized")
 
-    def infer(self, states, input_messages):
+    def infer(self, states, input_message):
         """Policy of Naive Seller."""
+        pubkey = os.getenv("PUBLIC_KEY")
+        # if transmitter same as receiver:
+        if input_message.get("pubkey") == pubkey:
+            return "noop"
+
         # TODO:
         # use match to cover all the scheme-compliant cases:
         # https://github.com/CoopHive/redis-scheme-client/blob/main/src/compute-marketplace-scheme.ts#L19
