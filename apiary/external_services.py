@@ -13,10 +13,13 @@ def start_job_daemon():
 
     # Check if the lock file already exists
     if os.path.exists(lock_file):
+        with open(lock_file, "r") as file:
+            lock_content = file.read()
         logging.warning(
-            f"{lock_file} already exists, assuming job_daemon already running."
+            f"{lock_file} already exists, assuming job_daemon already running at PID {lock_content}"
         )
         return
+
     # Determine the operating system
     operating_system = platform.system()
 
@@ -42,8 +45,10 @@ def start_job_daemon():
     logging.info(f"Docker daemon started with PID {process.pid}")
 
 
-def start_messaging_client():
+def start_messaging_client(initial_offer=None):
     """Start Messaging Client."""
+    breakpoint()
+
     _ = os.getenv("REDIS_URL")
     pass
 

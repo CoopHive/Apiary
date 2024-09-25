@@ -5,8 +5,11 @@ uv-download:
 
 .PHONY: install
 install:
-	rm -f Cargo.lock
+	cd client && bun install && cd ..
+
+	cargo update
 	cargo build
+
 	rm -rf .venv && uv venv
 	uv pip install .[dev]
 	uvx maturin develop

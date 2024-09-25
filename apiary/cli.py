@@ -61,9 +61,7 @@ def start_buy(config_path: str, job_path: str, price: str):
     initial_offer = buyer.parse_initial_offer(job_path, price)
     logging.info(f"Initial Offer: {initial_offer}")
 
-    # start_messaging_client(initial_offer)
-
-    pass
+    external_services.start_messaging_client(initial_offer)
 
 
 @cli.command()
@@ -81,8 +79,7 @@ def start_sell(config_path: str):
 
     inference.start_inference_endpoint()
 
-    # start_messaging_client()
-    pass
+    external_services.start_messaging_client()
 
 
 @cli.command()
