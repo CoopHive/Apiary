@@ -6,7 +6,7 @@ from datetime import datetime
 
 import click
 
-from apiary import constants, utils
+from apiary import buyer, constants, utils
 
 current_time = datetime.now().replace(second=0, microsecond=0)
 CLI_TIME = current_time.strftime("%Y-%m-%d_%H-%M")
@@ -45,18 +45,25 @@ def cli(
     "--config-path",
     required=True,
 )
-def start_buy(config_path: str):
+@click.option(
+    "--job-path",
+    required=True,
+)
+@click.option("--price", default=None)
+def start_buy(config_path: str, job_path: str, price: str):
     """Start Buyer."""
     logging.info("Starting Buyer.")
 
     utils.load_configuration(config_path)
 
-    # start_inference_endpoint(config)
+    # start_inference_endpoint()
 
-    # TODO: add initial message variable to cli.
-    # initial_offer = f(variables)
+    initial_offer = buyer.parse_initial_offer(job_path, price)
+    logging.info(f"Initial Offer: {initial_offer}")
 
-    # start_messaging_client(config)
+    breakpoint()
+
+    # start_messaging_client(initial_offer)
 
     pass
 
@@ -72,11 +79,11 @@ def start_sell(config_path: str):
 
     utils.load_configuration(config_path)
 
-    # start_job_daemon(config) # launch docker
+    # start_job_daemon() # launch docker
 
-    # start_inference_endpoint(config)
+    # start_inference_endpoint()
 
-    # start_messaging_client(config)
+    # start_messaging_client()
     pass
 
 

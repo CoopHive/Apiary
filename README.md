@@ -30,6 +30,12 @@ Apiary is a tool designed to simulate the agent-based and game theory aspects of
 ```bash
 apiary --verbose start-sell --config-path ./config/seller_naive.json
 ```
+```bash
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile
+```
+```bash
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --price '["0x036CbD53842c5426634e7929541eC2318f3dCF7e", 1]'
+```
 
 #### Legacy to be updated:
 

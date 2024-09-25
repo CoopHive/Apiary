@@ -1,5 +1,9 @@
 """This module defines the Buyer used within the CoopHive protocol."""
 
+import os
+
+import readwrite as rw
+
 from apiary.agent import Agent
 
 
@@ -26,3 +30,19 @@ class Buyer(Agent):
 #        reply_buy_attest.
 #        reply_sell_attest.
 # NOTE: in the case messaging is server-push-based, deal negotiations and job runs are necessarily sequential.
+
+
+def parse_initial_offer(job_path, price):
+    """Parses the initial offer based on the provided job path and price."""
+    pubkey = os.getenv("PUBLIC_KEY")
+    offerId = "offer_0"  # TODO: make this dynamically assigned based on client/server interaction.
+    query = rw.read_as(job_path, "txt")
+
+    data = {
+        "_tag": "offer",
+        "query": query,
+    }
+    if price is not None:
+        data["price"] = price
+
+    return {"pubkey": pubkey, "offerId": offerId, "data": data}
