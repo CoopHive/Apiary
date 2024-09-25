@@ -1,5 +1,6 @@
 """This module defines the Buyers used within the CoopHive protocol."""
 
+import json
 import logging
 import os
 
@@ -51,7 +52,8 @@ def parse_initial_offer(job_path, price):
         "_tag": "offer",
         "query": query,
     }
+
     if price is not None:
-        data["price"] = price
+        data["price"] = json.loads(price)
 
     return {"pubkey": pubkey, "offerId": offerId, "data": data}

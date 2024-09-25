@@ -43,6 +43,7 @@ export class RedisSchemeClient<
    * @throws Error if the start fails.
    */
   async start(init?: Message<T>) {
+    
     await this.redisPubSub.connect();
     await this.redis.connect();
     if (!(await this.scheme.onStart(this, this.role, init))) {
