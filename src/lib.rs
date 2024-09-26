@@ -1,6 +1,5 @@
 use alloy::{
-    contract::Event,
-    primitives::{address, b256, Address, Bytes, FixedBytes, U256},
+    primitives::{b256, Address, Bytes, FixedBytes, U256},
     rpc::types::Filter,
     sol,
     sol_types::SolValue,
