@@ -277,7 +277,12 @@ async fn submit_and_collect(
         )
         .send()
         .await
-        .or_else(|_| py_run_err!("contract call to result_contract make statement failed"))?
+        .or_else(|err| {
+            py_run_err!(format!(
+                "contract call to result_contract make statement failed; {:?}",
+                err
+            ))
+        })?
         .watch()
         .await
         .or_else(|err| py_run_err!(format!("{:?}", err)))?;
