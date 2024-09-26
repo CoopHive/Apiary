@@ -5,7 +5,7 @@ import asyncio
 
 async def main():
     load_dotenv()
-    tx = await apiars.make_buy_statement(
+    tx = apiars.make_buy_statement(
         "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
         10,
         "bafkreihy4ldvgswp223sirjii2lck4pfvis3aswy65y2xyquudxvwakldy",

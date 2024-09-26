@@ -1,8 +1,11 @@
 use alloy::{
-    primitives::{b256, Address, Bytes, FixedBytes, U256},
+    contract::Event,
+    primitives::{address, b256, Address, Bytes, FixedBytes, U256},
+    rpc::types::Filter,
     sol,
     sol_types::SolValue,
 };
+use alloy_provider::Provider;
 use pyo3::{
     exceptions::{PyRuntimeError, PyValueError},
     prelude::*,
@@ -72,9 +75,7 @@ async fn make_buy_statement(
     private_key: String,
 ) -> PyResult<String> {
     let amount = U256::from(amount);
-
     let provider = provider::get_provider(private_key)?;
-
     let payment_address = env::var("ERC20_PAYMENT_STATEMENT")
         .or_else(|_| py_val_err!("ERC20_PAYMENT_STATEMENT not set"))
         .map(|a| Address::parse_checksummed(a, None))?
@@ -82,6 +83,8 @@ async fn make_buy_statement(
 
     let token_address = Address::parse_checksummed(&token, None)
         .or_else(|_| py_val_err!("couldn't parse token as an address"))?;
+
+    let attestation_address = address!("4200000000000000000000000000000000000021");
 
     let token_contract = USDC::new(token_address, &provider);
     let receipt = token_contract
@@ -92,6 +95,10 @@ async fn make_buy_statement(
         .get_receipt()
         .await
         .or_else(|err| py_run_err!(format!("{:?}", err)))?;
+
+    if !receipt.status() {
+        return py_run_err!("approval failed")?;
+    };
 
     let contract = ERC20PaymentStatement::new(payment_address, &provider);
 
@@ -109,7 +116,7 @@ async fn make_buy_statement(
     .abi_encode()
     .into();
 
-    let statement_uid = contract
+    let statement_hash = contract
         .makeStatement(
             ERC20PaymentStatement::StatementData {
                 token,
@@ -120,12 +127,32 @@ async fn make_buy_statement(
             0,
             b256!("0000000000000000000000000000000000000000000000000000000000000000"),
         )
-        .call()
+        .send()
         .await
-        .or_else(|_| py_run_err!("contract call to make payment statement failed"))?
-        ._0;
+        .or_else(|err| py_run_err!(format!("{:?}", err)))?
+        .watch()
+        .await
+        .or_else(|err| py_run_err!(format!("{:?}", err)))?;
 
-    Ok(statement_uid.to_string())
+    let filter = Filter::new()
+        .address(attestation_address)
+        .event_signature(b256!(
+            "8bf46bf4cfd674fa735a3d63ec1c9ad4153f033c290341f3a588b75685141b35"
+        ));
+
+    let logs: Vec<_> = provider
+        .get_logs(&filter)
+        .await
+        .or_else(|err| py_run_err!(format!("error getting logs: {:?}", err)))?
+        .into_iter()
+        .filter(|log| log.transaction_hash == Some(statement_hash))
+        .collect();
+
+    let log = logs[0]
+        .log_decode::<IEAS::Attested>()
+        .or_else(|err| py_run_err!(format!("couldn't decode attestation log; {:?}", err)))?;
+
+    Ok(log.inner.uid.to_string())
 }
 
 #[tokio::main]
