@@ -6,6 +6,7 @@ import os
 
 import readwrite as rw
 
+from apiary import apiars
 from apiary.base_agent import Agent
 
 
@@ -29,12 +30,7 @@ class NaiveBuyer(Agent):
                 amount = int(input_message["data"]["price"][1])
                 query_cid = self._get_query_cid(input_message)
 
-                # TODO: deal with asyncronicity:
-                # _ = apiars.make_buy_statement(token, amount, query_cid)  # statement_uid
-                def mock_make_buy_statement(token, amount, query_cid, private_key):
-                    return f"statement_uid_{token}_{amount}_{query_cid}_{private_key}"
-
-                statement_uid = mock_make_buy_statement(
+                statement_uid = apiars.make_buy_statement(
                     token, amount, query_cid, self.private_key
                 )
 
