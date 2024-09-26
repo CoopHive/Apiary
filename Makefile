@@ -5,7 +5,6 @@ uv-download:
 
 .PHONY: install
 install:
-	export PATH="$HOME/.bun/bin:$PATH"
 	cd client && bun install && cd ..
 
 	cargo update
