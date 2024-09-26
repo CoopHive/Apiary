@@ -29,6 +29,19 @@ Apiary is a tool designed to simulate the agent-based and game theory aspects of
 
     ```bash
     make install
+
+5. Populate all the necessary environmental variables and/or confguration file:
+    - REDIS_URL
+    - RPC_URL
+    - ERC20_PAYMENT_STATEMENT
+    - DOCKER_RESULT_STATEMENT
+    - EAS_CONTRACT
+    - LIGHTHOUSE_TOKEN
+    - PRIVATE_KEY
+    - PUBLIC_KEY
+    - INFERENCE_ENDPOINT.PORT
+    - INFERENCE_ENDPOINT.HOST
+
 ## Usage
 
 As a seller, simply run:
