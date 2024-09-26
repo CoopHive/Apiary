@@ -3,7 +3,6 @@ use alloy::{
     sol,
     sol_types::{SolEvent, SolValue},
 };
-use alloy_provider::Provider;
 use pyo3::{
     exceptions::{PyRuntimeError, PyValueError},
     prelude::*,
