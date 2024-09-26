@@ -24,6 +24,12 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Install bun
+      run: |
+        curl -fsSL https://bun.sh/install | bash
+        export BUN_INSTALL="$HOME/.bun"
+        export PATH="$BUN_INSTALL/bin:$PATH"
+      
     - name: Install uv
       run: make uv-download
 
