@@ -1,5 +1,5 @@
 use alloy::{
-    network::{AnyNetwork, Ethereum, EthereumWallet},
+    network::{Ethereum, EthereumWallet},
     providers::{
         fillers::{
             BlobGasFiller, ChainIdFiller, FillProvider, GasFiller, JoinFill, NonceFiller,
@@ -36,9 +36,6 @@ pub fn get_provider(
     let signer: PrivateKeySigner = private_key
         .parse()
         .or_else(|_| py_val_err!("couldn't parse private_key as PrivateKeySigner"))?;
-
-    println!("privkey: {}", private_key);
-    println!("pubkey: {}", signer.address());
 
     let wallet = EthereumWallet::from(signer);
     let rpc_url = env::var("RPC_URL")
