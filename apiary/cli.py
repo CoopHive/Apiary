@@ -1,11 +1,12 @@
 """This module defines the CLI (Command Line Interface) for the CoopHive application."""
 
+import logging
 import os
 from datetime import datetime
 
 import click
 
-from apiary import constants, utils
+from apiary import buyer, constants, external_services, inference, utils
 
 current_time = datetime.now().replace(second=0, microsecond=0)
 CLI_TIME = current_time.strftime("%Y-%m-%d_%H-%M")
@@ -14,7 +15,7 @@ CLI_TIME = current_time.strftime("%Y-%m-%d_%H-%M")
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
 @click.option("--verbose", is_flag=True)
 @click.option("--no-color", is_flag=True)
-@click.option("--logs-filename", default="CoopHive-{time}.log")
+@click.option("--logs-filename", default="Apiary-{time}.log")
 @click.option(
     "--output-path",
     default="./apiary_output/",
@@ -40,46 +41,47 @@ def cli(
 
 
 @cli.command()
-def start_buy():
+@click.option(
+    "--config-path",
+    required=True,
+)
+@click.option(
+    "--job-path",
+    required=True,
+)
+@click.option("--price", default=None)
+def start_buy(config_path: str, job_path: str, price: str):
     """Start Buyer."""
-    # TODO: load config
-    # env > json > cli_inputs
-    # config = {"a": 2, "b": 3}
-    # config = {**config, "b":4, "c":5}
-    # config = load_config('config.json')
-    # config: {dict}
+    logging.info("Starting Buyer.")
+    os.environ["ROLE"] = "buyer"
 
-    # TODO: add initial message to cli.
-    # initial_offer = .
+    utils.load_configuration(config_path)
 
-    # Same as sell...
+    inference.start_inference_endpoint()
 
-    pass
+    initial_offer = buyer.parse_initial_offer(job_path, price)
+    logging.info(f"Initial Offer: {initial_offer}")
+
+    external_services.start_messaging_client(initial_offer)
 
 
 @cli.command()
-def start_sell():
+@click.option(
+    "--config-path",
+    required=True,
+)
+def start_sell(config_path: str):
     """Start Seller."""
-    # TODO: load config
-    # env > json > cli_inputs
-    # config = {"a": 2, "b": 3}
-    # config = {**config, "b":4, "c":5}
-    # config = load_config('config.json')
-    # TODO: store final config as environmental variables with os. (without overwriting entries in .env file)
-    # to use them anywhere in the process afterwards.
+    logging.info("Starting Seller.")
+    os.environ["ROLE"] = "seller"
 
-    # start_job_daemon(config) # launch docker
+    utils.load_configuration(config_path)
 
-    # start_inference_endpoint(config)
+    external_services.start_job_daemon()
 
-    # start_messaging_client(config)
+    inference.start_inference_endpoint()
 
-    # config = {
-    #     'inference_endpoint': {
-    #         'port': int, "host": str
-    #     }
-    # }
-    pass
+    external_services.start_messaging_client()
 
 
 @cli.command()
@@ -88,6 +90,7 @@ def cancel_buy(offer_id):
     # TODO: turn off services in backward order as they have been turned on.
     # TODO: gracefully kill killable process (including messaging cancellation messages to messaging client)
     # and warn user about in-progress processes that cannot be stopped.
+    # ps aux | grep -E 'uvicorn|redis'
     pass
 
 
@@ -97,6 +100,7 @@ def cancel_sell():
     # TODO: turn off services in backward order as they have been turned on.
     # TODO: gracefully kill killable process and warn user about in-progress processes that cannot be stopped.
     # TODO: include force flag to kill all the in-progress jobs, else wait for them to turn everything off.
+    # ps aux | grep -E 'uvicorn|redis'
     pass
 
 

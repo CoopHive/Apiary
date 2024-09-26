@@ -16,28 +16,49 @@ Apiary is a tool designed to simulate the agent-based and game theory aspects of
 
    ```bash
    git clone https://github.com/CoopHive/Apiary.git
-   cd 
-2. Install uv (if not already installed)
+   cd Apiary
+2. Install bun if not already installed)
+
+    ```bash
+    make bun-install
+3. Install uv (if not already installed)
 
     ```bash
     make uv-download
-3. Install dependencies and set up pre-commit hooks:
+4. Install dependencies and set up pre-commit hooks:
 
     ```bash
     make install
+
+5. Populate all the necessary environmental variables and/or confguration file:
+    - REDIS_URL
+    - RPC_URL
+    - ERC20_PAYMENT_STATEMENT
+    - DOCKER_RESULT_STATEMENT
+    - EAS_CONTRACT
+    - LIGHTHOUSE_TOKEN
+    - PRIVATE_KEY
+    - PUBLIC_KEY
+    - INFERENCE_ENDPOINT.PORT
+    - INFERENCE_ENDPOINT.HOST
+
 ## Usage
 
-Seller setup:
-```bash
-coophive --verbose run --role seller --private-key 7850b55b1582add03da1cab6350cdccd7fc13c093b5bc61a5378469b8151341a --public-key 0x1C53Ec481419daA436B47B2c916Fa3766C6Da9Fc --policy-name naive_accepter --inference-endpoint-port 8000
+As a seller, simply run:
 
-bun run runner.ts seller localhost:8000 ""  rediss://default:***@***.upstash.io:6379
+```bash
+apiary --verbose start-sell --config-path ./config/seller_naive.json
 ```
-Buyer setup:
-```bash
-coophive --verbose run --role buyer --private-key 0202ea5001ba9d11e8fecb4a3a943fbaa4a1068821e35533bd2161e76d333811 --public-key 0x002189E2F82ac8FBF19e2Dc279d19E07eCE12cfb --policy-name naive_accepter --inference-endpoint-port 8001
 
-bun run runner.ts buyer localhost:8001 '{"pubkey": "0x002189E2F82ac8FBF19e2Dc279d19E07eCE12cfb","offerId": "offer_0","data": {"_tag": "offer","query": "FROM alpine:3.7\nRUN apk update && apk add --no-cache git perl && cd /tmp && git clone https://github.com/jasonm23/cowsay.git && cd cowsay ; ./install.sh /usr/local && rm -rf /var/cache/apk/* /var/tmp/* /tmp/* && apk del git\nCMD [\"/usr/local/bin/cowsay\",\"Docker is very good !\"]","price": ["0x036CbD53842c5426634e7929541eC2318f3dCF7e"]}}' rediss://default:***@***.upstash.io:6379
+As a buyer, run:
+
+```bash
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --price '["0x036CbD53842c5426634e7929541eC2318f3dCF7e", 100000000]'```
+
+Note that buyers can avoid specifying the initial offer job price:
+
+```bash
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile
 ```
 
 ### Make

@@ -1,12 +1,18 @@
 #* Poetry
+.PHONY: client-install
+bun-install:
+	curl -fsSL https://bun.sh/installer/bun.sh | bash
+	cd client && bun install && cd ..
+
 .PHONY: uv-download
 uv-download:
 	curl -LsSf https://astral.sh/uv/install.sh | sh
 
 .PHONY: install
 install:
-	rm -f Cargo.lock
+	cargo update
 	cargo build
+
 	rm -rf .venv && uv venv
 	uv pip install .[dev]
 	uvx maturin develop
@@ -38,7 +44,3 @@ diagrams:
 	python3 docs/classes_filter.py
 	dot -Tpng docs/img/classes_apiary.dot -o docs/img/classes_apiary.png
 	dot -Tpng docs/img/packages_apiary.dot -o docs/img/packages_apiary.png
-
-.PHONY: flush
-flush:
-	./scripts/kill_processes.sh
