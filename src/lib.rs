@@ -286,7 +286,7 @@ async fn submit_and_collect(
         })?
         .get_receipt()
         .await
-        .map_err(|err| py_run_err(format!("couldn't get receipt{:?}", err)))?;
+        .map_err(|err| py_run_err(format!("couldn't get collection receipt; {:?}", err)))?;
 
     if collect_receipt.status() {
         Ok(sell_uid.to_string())
