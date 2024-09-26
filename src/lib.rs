@@ -1,7 +1,7 @@
 use alloy::{
     primitives::{b256, Address, Bytes, FixedBytes, U256},
     sol,
-    sol_types::SolValue,
+    sol_types::{SolEvent, SolValue},
 };
 use alloy_provider::Provider;
 use pyo3::{
@@ -125,12 +125,7 @@ async fn make_buy_statement(
         .inner
         .logs()
         .into_iter()
-        .filter(|log| {
-            log.topic0()
-                == Some(&b256!(
-                    "8bf46bf4cfd674fa735a3d63ec1c9ad4153f033c290341f3a588b75685141b35"
-                ))
-        })
+        .filter(|log| log.topic0() == Some(&IEAS::Attested::SIGNATURE_HASH))
         .collect::<Vec<_>>()
         .get(0)
         .map_or(
@@ -266,12 +261,7 @@ async fn submit_and_collect(
         .inner
         .logs()
         .into_iter()
-        .filter(|log| {
-            log.topic0()
-                == Some(&b256!(
-                    "8bf46bf4cfd674fa735a3d63ec1c9ad4153f033c290341f3a588b75685141b35"
-                ))
-        })
+        .filter(|log| log.topic0() == Some(&IEAS::Attested::SIGNATURE_HASH))
         .collect::<Vec<_>>()
         .get(0)
         .map_or(
