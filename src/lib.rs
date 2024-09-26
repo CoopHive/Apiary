@@ -1,5 +1,5 @@
 use alloy::{
-    primitives::{b256, Address, Bytes, U256, FixedBytes},
+    primitives::{b256, Address, Bytes, FixedBytes, U256},
     sol,
     sol_types::SolValue,
 };
@@ -70,16 +70,24 @@ async fn approve_token(token: Address, amount: U256, private_key: String) -> eyr
 
     let payment_address =
         env::var("ERC20_PAYMENT_STATEMENT").map(|a| Address::parse_checksummed(a, None))??;
-
     let contract = IERC20::new(token, provider);
-
     let receipt = contract.approve(payment_address, amount).call().await?._0;
 
-    if receipt {Ok(())} else {Err(eyre!("TransactionFailed"))}
+    if receipt {
+        Ok(())
+    } else {
+        Err(eyre!("TransactionFailed"))
+    }
 }
 
+#[tokio::main]
 #[pyfunction]
-async fn make_buy_statement(token: String, amount: u64, query_cid: String, private_key: String) -> PyResult<String> {
+async fn make_buy_statement(
+    token: String,
+    amount: u64,
+    query_cid: String,
+    private_key: String,
+) -> PyResult<String> {
     let amount = U256::from(amount);
 
     let provider = provider::get_provider(private_key.clone())?;
@@ -89,12 +97,28 @@ async fn make_buy_statement(token: String, amount: u64, query_cid: String, priva
         .map(|a| Address::parse_checksummed(a, None))?
         .or_else(|_| py_val_err!("couldn't parse ERC20_PAYMENT_STATEMENT as an address"))?;
 
-    approve_token(payment_address, amount, private_key).await
-    .or_else(|_| py_run_err!("contract call to approve token failed"))?;
+    let token_address = Address::parse_checksummed(&token, None)
+        .or_else(|_| py_val_err!("couldn't parse token as an address"))?;
+
+    // approve_token(token_address, amount, private_key)
+    //     .await
+    //     .or_else(|_| py_run_err!("contract call to approve token failed"))?;
+
+    let token_contract = IERC20::new(token_address, provider.clone());
+    let success = token_contract
+        .approve(payment_address, amount)
+        .call()
+        .await
+        .or_else(|_| py_run_err!("contract call to approve token failed; internal"))?
+        ._0;
+
+    if !success {
+        return py_run_err!("contract call to approve token failed; returned false");
+    }
 
     let contract = ERC20PaymentStatement::new(payment_address, provider);
 
-    let token = Address::parse_checksummed(token, None)
+    let token = Address::parse_checksummed(&token, None)
         .or_else(|_| py_val_err!("couldn't parse token as an address"))?;
     let arbiter = env::var("DOCKER_RESULT_STATEMENT")
         .or_else(|_| py_val_err!("DOCKER_RESULT_STATEMENT not set"))
@@ -127,68 +151,99 @@ async fn make_buy_statement(token: String, amount: u64, query_cid: String, priva
     Ok(statement_uid.to_string())
 }
 
+#[tokio::main]
 #[pyfunction]
-async fn get_buy_statement(statement_uid: String, private_key: String) -> PyResult<(String, u64, String, String)> {
-
-    let statement_uid: FixedBytes<32> = statement_uid.parse::<FixedBytes<32>>().or_else(|_| py_val_err!("couldn't parse statement_uid as bytes32"))?;
+async fn get_buy_statement(
+    statement_uid: String,
+    private_key: String,
+) -> PyResult<(String, u64, String, String)> {
+    let statement_uid: FixedBytes<32> = statement_uid
+        .parse::<FixedBytes<32>>()
+        .or_else(|_| py_val_err!("couldn't parse statement_uid as bytes32"))?;
 
     let provider = provider::get_provider(private_key)?;
 
-    let eas_address =env::var("EAS_CONTRACT")
+    let eas_address = env::var("EAS_CONTRACT")
         .or_else(|_| py_val_err!("EAS_CONTRACT not set"))
         .map(|a| Address::parse_checksummed(a, None))?
         .or_else(|_| py_val_err!("couldn't parse EAS_CONTRACT as an address"))?;
 
     let contract = IEAS::new(eas_address, provider);
 
-    let attestation = contract.getAttestation(statement_uid).call()
-    .await
-    .or_else(|_| py_run_err!("contract call to getAttestation failed"))?
-    ._0;
+    let attestation = contract
+        .getAttestation(statement_uid)
+        .call()
+        .await
+        .or_else(|_| py_run_err!("contract call to getAttestation failed"))?
+        ._0;
 
-    let attestation_data = ERC20PaymentStatement::StatementData::abi_decode(attestation.data.as_ref(), true)
-    .or_else(|_| py_run_err!("attestation_data decoding failed"))?;
+    let attestation_data =
+        ERC20PaymentStatement::StatementData::abi_decode(attestation.data.as_ref(), true)
+            .or_else(|_| py_run_err!("attestation_data decoding failed"))?;
 
-    let (token, amount, arbiter, demand) = (attestation_data.token, attestation_data.amount, attestation_data.arbiter, attestation_data.demand);
-    let amount: u64  = amount.try_into().or_else(|_| py_run_err!("amount too big for u64"))?;
+    let (token, amount, arbiter, demand) = (
+        attestation_data.token,
+        attestation_data.amount,
+        attestation_data.arbiter,
+        attestation_data.demand,
+    );
+    let amount: u64 = amount
+        .try_into()
+        .or_else(|_| py_run_err!("amount too big for u64"))?;
     let demand = DockerResultStatement::StatementData::abi_decode(&demand, true)
-    .or_else(|_| py_run_err!("demand decoding failed"))?;
+        .or_else(|_| py_run_err!("demand decoding failed"))?;
 
-    Ok((token.to_string(), amount, arbiter.to_string(), demand.resultCID))
+    Ok((
+        token.to_string(),
+        amount,
+        arbiter.to_string(),
+        demand.resultCID,
+    ))
 }
 
+#[tokio::main]
 #[pyfunction]
 async fn get_result_cid_from_sell_uid(sell_uid: String, private_key: String) -> PyResult<String> {
-
-    let sell_uid = sell_uid.parse::<FixedBytes<32>>().or_else(|_| py_val_err!("couldn't parse sell_uid as bytes32"))?;
+    let sell_uid = sell_uid
+        .parse::<FixedBytes<32>>()
+        .or_else(|_| py_val_err!("couldn't parse sell_uid as bytes32"))?;
 
     let provider = provider::get_provider(private_key)?;
 
-    let eas_address =env::var("EAS_CONTRACT")
+    let eas_address = env::var("EAS_CONTRACT")
         .or_else(|_| py_val_err!("EAS_CONTRACT not set"))
         .map(|a| Address::parse_checksummed(a, None))?
         .or_else(|_| py_val_err!("couldn't parse EAS_CONTRACT as an address"))?;
 
     let contract = IEAS::new(eas_address, provider);
 
-    let attestation = contract.getAttestation(sell_uid).call()
-    .await
-    .or_else(|_| py_run_err!("contract call to getAttestation failed"))?
-    ._0;
+    let attestation = contract
+        .getAttestation(sell_uid)
+        .call()
+        .await
+        .or_else(|_| py_run_err!("contract call to getAttestation failed"))?
+        ._0;
 
-    let attestation_data = DockerResultStatement::StatementData::abi_decode(attestation.data.as_ref(), true)
-    .or_else(|_| py_run_err!("attestation_data decoding failed"))?;
+    let attestation_data =
+        DockerResultStatement::StatementData::abi_decode(attestation.data.as_ref(), true)
+            .or_else(|_| py_run_err!("attestation_data decoding failed"))?;
 
     Ok(attestation_data.resultCID)
 }
 
+#[tokio::main]
 #[pyfunction]
-async fn submit_and_collect(buy_attestation_uid: String, result_cid: String, private_key: String) -> PyResult<String> {
-
-    let buy_attestation_uid = buy_attestation_uid.parse::<FixedBytes<32>>().or_else(|_| py_val_err!("couldn't parse buy_attestation_uid as bytes32"))?;
+async fn submit_and_collect(
+    buy_attestation_uid: String,
+    result_cid: String,
+    private_key: String,
+) -> PyResult<String> {
+    let buy_attestation_uid = buy_attestation_uid
+        .parse::<FixedBytes<32>>()
+        .or_else(|_| py_val_err!("couldn't parse buy_attestation_uid as bytes32"))?;
 
     let provider = provider::get_provider(private_key)?;
-    
+
     let result_address = env::var("DOCKER_RESULT_STATEMENT")
         .or_else(|_| py_val_err!("DOCKER_RESULT_STATEMENT not set"))
         .map(|a| Address::parse_checksummed(a, None))?
@@ -198,24 +253,37 @@ async fn submit_and_collect(buy_attestation_uid: String, result_cid: String, pri
         .or_else(|_| py_val_err!("ERC20_PAYMENT_STATEMENT not set"))
         .map(|a| Address::parse_checksummed(a, None))?
         .or_else(|_| py_val_err!("couldn't parse ERC20_PAYMENT_STATEMENT as an address"))?;
-    
+
     let result_contract = DockerResultStatement::new(result_address, provider.clone());
     let payment_contract = ERC20PaymentStatement::new(payment_address, provider);
-    
-    let sell_uid = result_contract.makeStatement(DockerResultStatement::StatementData{resultCID: result_cid}, buy_attestation_uid)
-    .call()
-    .await
-    .or_else(|_| py_run_err!("contract call to result_contract make statement failed"))?
-    ._0;
 
-    let success = payment_contract.collectPayment(buy_attestation_uid, sell_uid)
-    .call()
-    .await.or_else(|_| py_run_err!("contract call to collect payment failed"))?._0;
+    let sell_uid = result_contract
+        .makeStatement(
+            DockerResultStatement::StatementData {
+                resultCID: result_cid,
+            },
+            buy_attestation_uid,
+        )
+        .call()
+        .await
+        .or_else(|_| py_run_err!("contract call to result_contract make statement failed"))?
+        ._0;
 
-    if success {Ok(sell_uid.to_string())} else {py_run_err!("contract call to collect payment failed")}
+    let success = payment_contract
+        .collectPayment(buy_attestation_uid, sell_uid)
+        .call()
+        .await
+        .or_else(|_| py_run_err!("contract call to collect payment failed"))?
+        ._0;
+
+    if success {
+        Ok(sell_uid.to_string())
+    } else {
+        py_run_err!("contract call to collect payment failed")
+    }
 }
 
 #[pyfunction]
-async fn helloworld() -> PyResult<String>{
+async fn helloworld() -> PyResult<String> {
     Ok("HelloWorld".into())
 }
