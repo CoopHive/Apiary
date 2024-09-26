@@ -180,11 +180,7 @@ async fn get_buy_statement(
 
     let attestation_data =
         ERC20PaymentStatement::StatementData::abi_decode(attestation.data.as_ref(), true)
-<<<<<<< HEAD
-            .or_else(|err| py_run_err!(format!("attestation_data decoding failed; {:?}", err)))?;
-=======
             .map_err(|_| py_run_err("attestation_data decoding failed"))?;
->>>>>>> bbff235 (back to IERC20, stylistic changes)
 
     let (token, amount, arbiter, demand) = (
         attestation_data.token,
