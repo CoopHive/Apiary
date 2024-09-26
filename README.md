@@ -53,8 +53,7 @@ apiary --verbose start-sell --config-path ./config/seller_naive.json
 As a buyer, run:
 
 ```bash
-apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --price '["0x036CbD53842c5426634e7929541eC2318f3dCF7e", 1]'
-```
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --price '["0x036CbD53842c5426634e7929541eC2318f3dCF7e", 100000000]'```
 
 Note that buyers can avoid specifying the initial offer job price:
 
