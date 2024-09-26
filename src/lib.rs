@@ -68,40 +68,11 @@ async fn make_buy_statement(
     query_cid: String,
     private_key: String,
 ) -> PyResult<String> {
-    let amount = U256::from(amount);
     let provider = provider::get_provider(private_key)?;
-    let payment_address = env::var("ERC20_PAYMENT_STATEMENT")
-        .map_err(|_| py_val_err("ERC20_PAYMENT_STATEMENT not set"))
-        .map(|a| Address::parse_checksummed(a, None))?
-        .map_err(|_| py_val_err("couldn't parse ERC20_PAYMENT_STATEMENT as an address"))?;
-
-    let token_address = Address::parse_checksummed(&token, None)
-        .map_err(|_| py_val_err("couldn't parse token as an address"))?;
-
-    // let attestation_address = address!("4200000000000000000000000000000000000021");
-    let eas_address = env::var("EAS_CONTRACT")
-        .map_err(|_| py_val_err("EAS_CONTRACT not set"))
-        .map(|a| Address::parse_checksummed(a, None))?
-        .map_err(|_| py_val_err("couldn't parse EAS_CONTRACT as an address"))?;
-
-    let token_contract = IERC20::new(token_address, &provider);
-    let receipt = token_contract
-        .approve(payment_address, amount)
-        .send()
-        .await
-        .map_err(|err| py_run_err(format!("error sending transaction; {:?}", err)))?
-        .get_receipt()
-        .await
-        .map_err(|err| py_run_err(format!("error getting tx receipt; {:?}", err)))?;
-
-    if !receipt.status() {
-        return Err(py_run_err("approval failed"));
-    };
-
-    let contract = ERC20PaymentStatement::new(payment_address, &provider);
 
     let token = Address::parse_checksummed(&token, None)
         .map_err(|_| py_val_err("couldn't parse token as an address"))?;
+    let amount = U256::from(amount);
     let arbiter = env::var("DOCKER_RESULT_STATEMENT")
         .map_err(|_| py_val_err("DOCKER_RESULT_STATEMENT not set"))
         .map(|a| Address::parse_checksummed(a, None))?
@@ -114,7 +85,33 @@ async fn make_buy_statement(
     .abi_encode()
     .into();
 
-    let statement_hash = contract
+    let payment_address = env::var("ERC20_PAYMENT_STATEMENT")
+        .map_err(|_| py_val_err("ERC20_PAYMENT_STATEMENT not set"))
+        .map(|a| Address::parse_checksummed(a, None))?
+        .map_err(|_| py_val_err("couldn't parse ERC20_PAYMENT_STATEMENT as an address"))?;
+    // let eas_address = address!("4200000000000000000000000000000000000021");
+    let eas_address = env::var("EAS_CONTRACT")
+        .map_err(|_| py_val_err("EAS_CONTRACT not set"))
+        .map(|a| Address::parse_checksummed(a, None))?
+        .map_err(|_| py_val_err("couldn't parse EAS_CONTRACT as an address"))?;
+
+    let token_contract = IERC20::new(token, &provider);
+    let statement_contract = ERC20PaymentStatement::new(payment_address, &provider);
+
+    let approval_receipt = token_contract
+        .approve(payment_address, amount)
+        .send()
+        .await
+        .map_err(|err| py_run_err(format!("error sending transaction; {:?}", err)))?
+        .get_receipt()
+        .await
+        .map_err(|err| py_run_err(format!("error getting tx receipt; {:?}", err)))?;
+
+    if !approval_receipt.status() {
+        return Err(py_run_err("approval failed"));
+    };
+
+    let statement_hash = statement_contract
         .makeStatement(
             ERC20PaymentStatement::StatementData {
                 token,
@@ -158,11 +155,11 @@ async fn get_buy_statement(
     statement_uid: String,
     private_key: String,
 ) -> PyResult<(String, u64, String, String)> {
+    let provider = provider::get_provider(private_key)?;
+
     let statement_uid: FixedBytes<32> = statement_uid
         .parse::<FixedBytes<32>>()
         .map_err(|_| py_val_err("couldn't parse statement_uid as bytes32"))?;
-
-    let provider = provider::get_provider(private_key)?;
 
     let eas_address = env::var("EAS_CONTRACT")
         .map_err(|_| py_val_err("EAS_CONTRACT not set"))
@@ -205,11 +202,11 @@ async fn get_buy_statement(
 #[tokio::main]
 #[pyfunction]
 async fn get_result_cid_from_sell_uid(sell_uid: String, private_key: String) -> PyResult<String> {
+    let provider = provider::get_provider(private_key)?;
+
     let sell_uid = sell_uid
         .parse::<FixedBytes<32>>()
         .map_err(|_| py_val_err("couldn't parse sell_uid as bytes32"))?;
-
-    let provider = provider::get_provider(private_key)?;
 
     let eas_address = env::var("EAS_CONTRACT")
         .map_err(|_| py_val_err("EAS_CONTRACT not set"))
@@ -239,22 +236,20 @@ async fn submit_and_collect(
     result_cid: String,
     private_key: String,
 ) -> PyResult<String> {
+    let provider = provider::get_provider(private_key)?;
+
     let buy_attestation_uid = buy_attestation_uid
         .parse::<FixedBytes<32>>()
         .map_err(|_| py_val_err("couldn't parse buy_attestation_uid as bytes32"))?;
-
-    let provider = provider::get_provider(private_key)?;
 
     let result_address = env::var("DOCKER_RESULT_STATEMENT")
         .map_err(|_| py_val_err("DOCKER_RESULT_STATEMENT not set"))
         .map(|a| Address::parse_checksummed(a, None))?
         .map_err(|_| py_val_err("couldn't parse DOCKER_RESULT_STATEMENT as an address"))?;
-
     let payment_address = env::var("ERC20_PAYMENT_STATEMENT")
         .map_err(|_| py_val_err("ERC20_PAYMENT_STATEMENT not set"))
         .map(|a| Address::parse_checksummed(a, None))?
         .map_err(|_| py_val_err("couldn't parse ERC20_PAYMENT_STATEMENT as an address"))?;
-
     let eas_address = env::var("EAS_CONTRACT")
         .map_err(|_| py_val_err("EAS_CONTRACT not set"))
         .map(|a| Address::parse_checksummed(a, None))?
