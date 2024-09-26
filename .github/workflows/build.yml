@@ -27,8 +27,7 @@ jobs:
     - name: Install bun
       run: |
         curl -fsSL https://bun.sh/install | bash
-        export BUN_INSTALL="$HOME/.bun"
-        export PATH="$BUN_INSTALL/bin:$PATH"
+        source /home/runner/.bashrc 
       
     - name: Install uv
       run: make uv-download
