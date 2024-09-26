@@ -21,11 +21,28 @@ class NaiveSeller(Agent):
 
         match input_message["data"].get("_tag"):
             case "offer":
-                # Confirm buyer offer with identity counteroffer ?
-                pass
+                pass  # Confirm buyer offer with identity counteroffer
             case "buyAttest":
-                # TODO
-                # Case input buy attest output sell attest, use self._somefunctions()
+                statement_uid = input_message["data"]["attestation"]
+
+                # apiars.get_buy_statement(statement_uid, private_key)
+                def mock_get_buy_statement(statement_uid, private_key):
+                    return (
+                        "token",
+                        1,
+                        "arbiter",
+                        "bafkreihy4ldvgswp223sirjii2lck4pfvis3aswy65y2xyquudxvwakldy",
+                    )
+
+                (token, quantity, arbiter, job_cid) = mock_get_buy_statement(
+                    statement_uid, self.private_key
+                )
+
+                self._job_cid_to_result_cid(statement_uid, job_cid)
+
+                # 2) Performs job, use self._somefunctions()
+                # 3) apiars.submit_and_collect()
+                1 / 0
                 pass
 
         return output_message

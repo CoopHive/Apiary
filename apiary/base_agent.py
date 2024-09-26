@@ -2,6 +2,7 @@
 
 import logging
 import os
+import subprocess
 from abc import ABC, abstractmethod
 
 from dotenv import load_dotenv
@@ -28,10 +29,10 @@ class Agent(ABC):
     if necessary, is separate.
     """
 
-    @abstractmethod
     def __init__(self) -> None:
         """Initialize the Agent."""
-        ...
+        self.private_key = os.getenv("PRIVATE_KEY")
+        self.lh = Lighthouse(os.getenv("LIGHTHOUSE_TOKEN"))
 
     def start_agent_daemon(self):
         """Module responsible for launching daemons to make states accessible at inference time.
@@ -85,9 +86,8 @@ class Agent(ABC):
         with open(file_path, "w") as file:
             file.write(input_message["data"]["query"])
 
-        lh = Lighthouse(os.getenv("LIGHTHOUSE_TOKEN"))
         try:
-            response = lh.upload(file_path)
+            response = self.lh.upload(file_path)
             query_cid = response["data"]["Hash"]
         except Exception:
             logging.error("Lighthouse Error occurred.", exc_info=True)
@@ -100,11 +100,61 @@ class Agent(ABC):
         logging.info(f"https://gateway.lighthouse.storage/ipfs/{query_cid}")
         return query_cid
 
-    # TODO:
-    # seller respond to buyer's attestation (payment) with their own attestation (result). Implement this in superclass and set variables from environment to self.x if useful.
-    # uses: apiars.get_buy_statement()
-    # Performs job.
-    # uses: apiars.submit_and_collect()
+    def _job_cid_to_result_cid(self, statement_uid: str, job_cid: str):
+        """Download Dockerfile from job_cid, run the job, upload the results to IPFS and return the result_cid."""
+        try:
+            dockerFile = self.lh.download(job_cid)
+        except Exception:
+            logging.error("Lighthouse Error occurred.", exc_info=True)
+            raise
+
+        if not os.path.exists("tmp"):
+            os.makedirs("tmp")
+
+        # Write Dockerfile
+        with open("tmp/Dockerfile", "w") as f:
+            f.write(dockerFile[0].decode("utf-8"))
+
+        # Build the Docker image
+        build_command = f"docker build -t job-image-{statement_uid} tmp"
+        subprocess.run(build_command, shell=True, check=True)
+
+        # Run the Docker container and capture the output
+        run_command = (
+            f"docker run --name job-container-{statement_uid} job-image-{statement_uid}"
+        )
+        result = subprocess.run(
+            run_command,
+            shell=True,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        result = result.stdout
+
+        # Remove the Docker container
+        remove_command = f"docker rm job-container-{statement_uid}"
+        subprocess.run(remove_command, shell=True, check=True)
+
+        result_file = "tmp/output.txt"
+        with open(result_file, "w") as file:
+            # Write the variable to the file
+            file.write(result)
+
+        try:
+            response = self.lh.upload(result_file)
+        except Exception:
+            logging.error("Lighthouse Error occurred.", exc_info=True)
+            raise
+
+        result_cid = response["data"]["Hash"]
+
+        1 / 0
+
+        return result_cid
+
+    def _get_result_from_result_cid(self):
+        pass
 
     # TODO:
     # buyer receiving sell_attestations perform get_result_cid_from_sell_uid.
