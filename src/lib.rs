@@ -84,7 +84,11 @@ async fn make_buy_statement(
     let token_address = Address::parse_checksummed(&token, None)
         .or_else(|_| py_val_err!("couldn't parse token as an address"))?;
 
-    let attestation_address = address!("4200000000000000000000000000000000000021");
+    // let attestation_address = address!("4200000000000000000000000000000000000021");
+    let eas_address = env::var("EAS_CONTRACT")
+        .or_else(|_| py_val_err!("EAS_CONTRACT not set"))
+        .map(|a| Address::parse_checksummed(a, None))?
+        .or_else(|_| py_val_err!("couldn't parse EAS_CONTRACT as an address"))?;
 
     let token_contract = USDC::new(token_address, &provider);
     let receipt = token_contract
@@ -134,11 +138,9 @@ async fn make_buy_statement(
         .await
         .or_else(|err| py_run_err!(format!("{:?}", err)))?;
 
-    let filter = Filter::new()
-        .address(attestation_address)
-        .event_signature(b256!(
-            "8bf46bf4cfd674fa735a3d63ec1c9ad4153f033c290341f3a588b75685141b35"
-        ));
+    let filter = Filter::new().address(eas_address).event_signature(b256!(
+        "8bf46bf4cfd674fa735a3d63ec1c9ad4153f033c290341f3a588b75685141b35"
+    ));
 
     let logs: Vec<_> = provider
         .get_logs(&filter)
@@ -148,11 +150,12 @@ async fn make_buy_statement(
         .filter(|log| log.transaction_hash == Some(statement_hash))
         .collect();
 
-    let log = logs[0]
+    let statement_uid = logs[0]
         .log_decode::<IEAS::Attested>()
-        .or_else(|err| py_run_err!(format!("couldn't decode attestation log; {:?}", err)))?;
+        .or_else(|err| py_run_err!(format!("couldn't decode attestation log; {:?}", err)))
+        .map(|log| log.inner.uid)?;
 
-    Ok(log.inner.uid.to_string())
+    Ok(statement_uid.to_string())
 }
 
 #[tokio::main]
@@ -258,29 +261,55 @@ async fn submit_and_collect(
         .map(|a| Address::parse_checksummed(a, None))?
         .or_else(|_| py_val_err!("couldn't parse ERC20_PAYMENT_STATEMENT as an address"))?;
 
-    let result_contract = DockerResultStatement::new(result_address, provider.clone());
-    let payment_contract = ERC20PaymentStatement::new(payment_address, provider);
+    let eas_address = env::var("EAS_CONTRACT")
+        .or_else(|_| py_val_err!("EAS_CONTRACT not set"))
+        .map(|a| Address::parse_checksummed(a, None))?
+        .or_else(|_| py_val_err!("couldn't parse EAS_CONTRACT as an address"))?;
 
-    let sell_uid = result_contract
+    let result_contract = DockerResultStatement::new(result_address, &provider);
+    let payment_contract = ERC20PaymentStatement::new(payment_address, &provider);
+
+    let statement_hash = result_contract
         .makeStatement(
             DockerResultStatement::StatementData {
                 resultCID: result_cid,
             },
             buy_attestation_uid,
         )
-        .call()
+        .send()
         .await
         .or_else(|_| py_run_err!("contract call to result_contract make statement failed"))?
-        ._0;
+        .watch()
+        .await
+        .or_else(|err| py_run_err!(format!("{:?}", err)))?;
 
-    let success = payment_contract
+    let filter = Filter::new().address(eas_address).event_signature(b256!(
+        "8bf46bf4cfd674fa735a3d63ec1c9ad4153f033c290341f3a588b75685141b35"
+    ));
+
+    let logs: Vec<_> = provider
+        .get_logs(&filter)
+        .await
+        .or_else(|err| py_run_err!(format!("error getting logs: {:?}", err)))?
+        .into_iter()
+        .filter(|log| log.transaction_hash == Some(statement_hash))
+        .collect();
+
+    let sell_uid = logs[0]
+        .log_decode::<IEAS::Attested>()
+        .or_else(|err| py_run_err!(format!("couldn't decode attestation log; {:?}", err)))
+        .map(|log| log.inner.uid)?;
+
+    let collect_receipt = payment_contract
         .collectPayment(buy_attestation_uid, sell_uid)
-        .call()
+        .send()
         .await
         .or_else(|_| py_run_err!("contract call to collect payment failed"))?
-        ._0;
+        .get_receipt()
+        .await
+        .or_else(|_| py_run_err!("couldn't get receipt"))?;
 
-    if success {
+    if collect_receipt.status() {
         Ok(sell_uid.to_string())
     } else {
         py_run_err!("contract call to collect payment failed")
