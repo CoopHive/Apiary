@@ -94,10 +94,10 @@ async fn make_buy_statement(
         .approve(payment_address, amount)
         .send()
         .await
-        .or_else(|err| py_run_err!(format!("{:?}", err)))?
+        .or_else(|err| py_run_err!(format!("error sending transaction; {:?}", err)))?
         .get_receipt()
         .await
-        .or_else(|err| py_run_err!(format!("{:?}", err)))?;
+        .or_else(|err| py_run_err!(format!("error getting tx receipt; {:?}", err)))?;
 
     if !receipt.status() {
         return py_run_err!("approval failed")?;
@@ -180,7 +180,7 @@ async fn get_buy_statement(
         .getAttestation(statement_uid)
         .call()
         .await
-        .or_else(|_| py_run_err!("contract call to getAttestation failed"))?
+        .or_else(|err| py_run_err!(format!("contract call to getAttestation failed; {:?}", err)))?
         ._0;
 
     let attestation_data =
@@ -227,7 +227,7 @@ async fn get_result_cid_from_sell_uid(sell_uid: String, private_key: String) -> 
         .getAttestation(sell_uid)
         .call()
         .await
-        .or_else(|_| py_run_err!("contract call to getAttestation failed"))?
+        .or_else(|err| py_run_err!(format!("contract call to getAttestation failed; {:?}", err)))?
         ._0;
 
     let attestation_data =
@@ -303,10 +303,15 @@ async fn submit_and_collect(
         .collectPayment(buy_attestation_uid, sell_uid)
         .send()
         .await
-        .or_else(|_| py_run_err!("contract call to collect payment failed"))?
+        .or_else(|err| {
+            py_run_err!(format!(
+                "contract call to collect payment failed; {:?}",
+                err
+            ))
+        })?
         .get_receipt()
         .await
-        .or_else(|_| py_run_err!("couldn't get receipt"))?;
+        .or_else(|err| py_run_err!(format!("couldn't get receipt{:?}", err)))?;
 
     if collect_receipt.status() {
         Ok(sell_uid.to_string())
