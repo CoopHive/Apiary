@@ -1,7 +1,8 @@
 #* Poetry
-.PHONY: bun-install
+.PHONY: client-install
 bun-install:
 	curl -fsSL https://bun.sh/installer/bun.sh | bash
+	cd client && bun install && cd ..
 
 .PHONY: uv-download
 uv-download:
@@ -9,8 +10,6 @@ uv-download:
 
 .PHONY: install
 install:
-	cd client && bun install && cd ..
-
 	cargo update
 	cargo build
 
@@ -45,7 +44,3 @@ diagrams:
 	python3 docs/classes_filter.py
 	dot -Tpng docs/img/classes_apiary.dot -o docs/img/classes_apiary.png
 	dot -Tpng docs/img/packages_apiary.dot -o docs/img/packages_apiary.png
-
-.PHONY: flush
-flush:
-	./scripts/kill_processes.sh
