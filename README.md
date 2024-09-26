@@ -16,25 +16,37 @@ Apiary is a tool designed to simulate the agent-based and game theory aspects of
 
    ```bash
    git clone https://github.com/CoopHive/Apiary.git
-   cd 
-2. Install uv (if not already installed)
+   cd Apiary
+2. Install bun if not already installed)
+
+    ```bash
+    make bun-install
+3. Install uv (if not already installed)
 
     ```bash
     make uv-download
-3. Install dependencies and set up pre-commit hooks:
+4. Install dependencies and set up pre-commit hooks:
 
     ```bash
     make install
 ## Usage
 
+As a seller, simply run:
+
 ```bash
 apiary --verbose start-sell --config-path ./config/seller_naive.json
 ```
-```bash
-apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile
-```
+
+As a buyer, run:
+
 ```bash
 apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --price '["0x036CbD53842c5426634e7929541eC2318f3dCF7e", 1]'
+```
+
+Note that buyers can avoid specifying the initial offer job price:
+
+```bash
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile
 ```
 
 ### Make

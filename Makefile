@@ -1,4 +1,8 @@
 #* Poetry
+.PHONY: bun-install
+bun-install:
+	curl -fsSL https://bun.sh/installer/bun.sh | bash
+
 .PHONY: uv-download
 uv-download:
 	curl -LsSf https://astral.sh/uv/install.sh | sh
