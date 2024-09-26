@@ -1,6 +1,5 @@
 use alloy::{
     primitives::{b256, Address, Bytes, FixedBytes, U256},
-    rpc::types::Filter,
     sol,
     sol_types::SolValue,
 };
@@ -70,7 +69,7 @@ async fn make_buy_statement(
 ) -> PyResult<String> {
     let provider = provider::get_provider(private_key)?;
 
-    let token = Address::parse_checksummed(&token, None)
+    let token_address = Address::parse_checksummed(&token, None)
         .map_err(|_| py_val_err("couldn't parse token as an address"))?;
     let amount = U256::from(amount);
     let arbiter = env::var("DOCKER_RESULT_STATEMENT")
@@ -89,32 +88,27 @@ async fn make_buy_statement(
         .map_err(|_| py_val_err("ERC20_PAYMENT_STATEMENT not set"))
         .map(|a| Address::parse_checksummed(a, None))?
         .map_err(|_| py_val_err("couldn't parse ERC20_PAYMENT_STATEMENT as an address"))?;
-    // let eas_address = address!("4200000000000000000000000000000000000021");
-    let eas_address = env::var("EAS_CONTRACT")
-        .map_err(|_| py_val_err("EAS_CONTRACT not set"))
-        .map(|a| Address::parse_checksummed(a, None))?
-        .map_err(|_| py_val_err("couldn't parse EAS_CONTRACT as an address"))?;
 
-    let token_contract = IERC20::new(token, &provider);
+    let token_contract = IERC20::new(token_address, &provider);
     let statement_contract = ERC20PaymentStatement::new(payment_address, &provider);
 
     let approval_receipt = token_contract
         .approve(payment_address, amount)
         .send()
         .await
-        .map_err(|err| py_run_err(format!("error sending transaction; {:?}", err)))?
+        .map_err(|err| py_run_err(format!("error calling approve; {:?}", err)))?
         .get_receipt()
         .await
-        .map_err(|err| py_run_err(format!("error getting tx receipt; {:?}", err)))?;
+        .map_err(|err| py_run_err(format!("error getting approval receipt; {:?}", err)))?;
 
     if !approval_receipt.status() {
         return Err(py_run_err("approval failed"));
     };
 
-    let statement_hash = statement_contract
+    let log = statement_contract
         .makeStatement(
             ERC20PaymentStatement::StatementData {
-                token,
+                token: token_address,
                 amount,
                 arbiter,
                 demand,
@@ -124,29 +118,31 @@ async fn make_buy_statement(
         )
         .send()
         .await
-        .map_err(|err| py_run_err(format!("{:?}", err)))?
-        .watch()
+        .map_err(|err| py_run_err(format!("error calling makeStatement (buy); {:?}", err)))?
+        .get_receipt()
         .await
-        .map_err(|err| py_run_err(format!("{:?}", err)))?;
-
-    let filter = Filter::new().address(eas_address).event_signature(b256!(
-        "8bf46bf4cfd674fa735a3d63ec1c9ad4153f033c290341f3a588b75685141b35"
-    ));
-
-    let logs: Vec<_> = provider
-        .get_logs(&filter)
-        .await
-        .map_err(|err| py_run_err(format!("error getting logs: {:?}", err)))?
+        .map_err(|err| py_run_err(format!("error getting buy statement receipt; {:?}", err)))?
+        .inner
+        .logs()
         .into_iter()
-        .filter(|log| log.transaction_hash == Some(statement_hash))
-        .collect();
+        .filter(|log| {
+            log.topic0()
+                == Some(&b256!(
+                    "8bf46bf4cfd674fa735a3d63ec1c9ad4153f033c290341f3a588b75685141b35"
+                ))
+        })
+        .collect::<Vec<_>>()
+        .get(0)
+        .map_or(
+            Err(py_run_err("makeStatement logs didn't contain Attest")),
+            |log| {
+                log.log_decode::<IEAS::Attested>().map_err(|err| {
+                    py_run_err(format!("couldn't decode attestation log; {:?}", err))
+                })
+            },
+        )?;
 
-    let statement_uid = logs[0]
-        .log_decode::<IEAS::Attested>()
-        .map_err(|err| py_run_err(format!("couldn't decode attestation log; {:?}", err)))
-        .map(|log| log.inner.uid)?;
-
-    Ok(statement_uid.to_string())
+    Ok(log.inner.uid.to_string())
 }
 
 #[tokio::main]
@@ -250,15 +246,11 @@ async fn submit_and_collect(
         .map_err(|_| py_val_err("ERC20_PAYMENT_STATEMENT not set"))
         .map(|a| Address::parse_checksummed(a, None))?
         .map_err(|_| py_val_err("couldn't parse ERC20_PAYMENT_STATEMENT as an address"))?;
-    let eas_address = env::var("EAS_CONTRACT")
-        .map_err(|_| py_val_err("EAS_CONTRACT not set"))
-        .map(|a| Address::parse_checksummed(a, None))?
-        .map_err(|_| py_val_err("couldn't parse EAS_CONTRACT as an address"))?;
 
     let result_contract = DockerResultStatement::new(result_address, &provider);
     let payment_contract = ERC20PaymentStatement::new(payment_address, &provider);
 
-    let statement_hash = result_contract
+    let sell_uid = result_contract
         .makeStatement(
             DockerResultStatement::StatementData {
                 resultCID: result_cid,
@@ -267,32 +259,31 @@ async fn submit_and_collect(
         )
         .send()
         .await
-        .map_err(|err| {
-            py_run_err(format!(
-                "contract call to result_contract make statement failed; {:?}",
-                err
-            ))
-        })?
-        .watch()
+        .map_err(|err| py_run_err(format!("error calling makeStatement (sell); {:?}", err)))?
+        .get_receipt()
         .await
-        .map_err(|err| py_run_err(format!("{:?}", err)))?;
-
-    let filter = Filter::new().address(eas_address).event_signature(b256!(
-        "8bf46bf4cfd674fa735a3d63ec1c9ad4153f033c290341f3a588b75685141b35"
-    ));
-
-    let logs: Vec<_> = provider
-        .get_logs(&filter)
-        .await
-        .map_err(|err| py_run_err(format!("error getting logs: {:?}", err)))?
+        .map_err(|err| py_run_err(format!("error getting sell statement receipt; {:?}", err)))?
+        .inner
+        .logs()
         .into_iter()
-        .filter(|log| log.transaction_hash == Some(statement_hash))
-        .collect();
-
-    let sell_uid = logs[0]
-        .log_decode::<IEAS::Attested>()
-        .map_err(|err| py_run_err(format!("couldn't decode attestation log; {:?}", err)))
-        .map(|log| log.inner.uid)?;
+        .filter(|log| {
+            log.topic0()
+                == Some(&b256!(
+                    "8bf46bf4cfd674fa735a3d63ec1c9ad4153f033c290341f3a588b75685141b35"
+                ))
+        })
+        .collect::<Vec<_>>()
+        .get(0)
+        .map_or(
+            Err(py_run_err("makeStatement logs didn't contain Attest")),
+            |log| {
+                log.log_decode::<IEAS::Attested>()
+                    .map_err(|err| {
+                        py_run_err(format!("couldn't decode attestation log; {:?}", err))
+                    })
+                    .map(|a| a.inner.uid)
+            },
+        )?;
 
     let collect_receipt = payment_contract
         .collectPayment(buy_attestation_uid, sell_uid)
