@@ -1,9 +1,11 @@
 digraph "classes_apiary" {
 rankdir=BT
 charset="utf-8"
-"apiary.agent.Agent" [color="#77AADD", fontcolor="black", label=<{Agent|<br ALIGN="LEFT"/>|<I>infer</I>(states, message)<br ALIGN="LEFT"/><I>load_states</I>()<br ALIGN="LEFT"/><I>start_agent_daemon</I>()<br ALIGN="LEFT"/><I>stop_agent_daemon</I>()<br ALIGN="LEFT"/>}>, shape="record", style="filled"];
-"apiary.buyer.Buyer" [color="#77AADD", fontcolor="black", label=<{Buyer|<br ALIGN="LEFT"/>|}>, shape="record", style="filled"];
-"apiary.seller.Seller" [color="#77AADD", fontcolor="black", label=<{Seller|<br ALIGN="LEFT"/>|}>, shape="record", style="filled"];
-"apiary.buyer.Buyer" -> "apiary.agent.Agent" [arrowhead="empty", arrowtail="none"];
-"apiary.seller.Seller" -> "apiary.agent.Agent" [arrowhead="empty", arrowtail="none"];
+"apiary.base_agent.Agent" [color="#77AADD", fontcolor="black", label=<{Agent|lh : Lighthouse<br ALIGN="LEFT"/>private_key : NoneType<br ALIGN="LEFT"/>|<I>infer</I>(states, input_message)<br ALIGN="LEFT"/><I>load_states</I>()<br ALIGN="LEFT"/><I>start_agent_daemon</I>()<br ALIGN="LEFT"/><I>stop_agent_daemon</I>()<br ALIGN="LEFT"/>}>, shape="record", style="filled"];
+"apiary.buyer.NaiveBuyer" [color="#77AADD", fontcolor="black", label=<{NaiveBuyer|<br ALIGN="LEFT"/>|infer(states, input_message)<br ALIGN="LEFT"/>}>, shape="record", style="filled"];
+"apiary.seller.NaiveSeller" [color="#77AADD", fontcolor="black", label=<{NaiveSeller|<br ALIGN="LEFT"/>|infer(states, input_message)<br ALIGN="LEFT"/>}>, shape="record", style="filled"];
+"apiary.validator.PlaceholderValidator" [color="#77AADD", fontcolor="black", label=<{PlaceholderValidator|<br ALIGN="LEFT"/>|<I>infer</I>(states, input_message)<br ALIGN="LEFT"/>}>, shape="record", style="filled"];
+"apiary.buyer.NaiveBuyer" -> "apiary.base_agent.Agent" [arrowhead="empty", arrowtail="none"];
+"apiary.seller.NaiveSeller" -> "apiary.base_agent.Agent" [arrowhead="empty", arrowtail="none"];
+"apiary.validator.PlaceholderValidator" -> "apiary.base_agent.Agent" [arrowhead="empty", arrowtail="none"];
 }

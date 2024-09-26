@@ -257,3 +257,4 @@ bun.lockb
 
 .vscode
 package-lock.json
+results/

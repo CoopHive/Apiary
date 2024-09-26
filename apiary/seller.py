@@ -2,6 +2,7 @@
 
 import logging
 
+from apiary import apiars
 from apiary.base_agent import Agent
 
 
@@ -25,24 +26,18 @@ class NaiveSeller(Agent):
             case "buyAttest":
                 statement_uid = input_message["data"]["attestation"]
 
-                # apiars.get_buy_statement(statement_uid, private_key)
-                def mock_get_buy_statement(statement_uid, private_key):
-                    return (
-                        "token",
-                        1,
-                        "arbiter",
-                        "bafkreihy4ldvgswp223sirjii2lck4pfvis3aswy65y2xyquudxvwakldy",
-                    )
-
-                (token, quantity, arbiter, job_cid) = mock_get_buy_statement(
+                (token, quantity, arbiter, job_cid) = apiars.get_buy_statement(
                     statement_uid, self.private_key
                 )
 
-                self._job_cid_to_result_cid(statement_uid, job_cid)
+                result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
 
-                # 2) Performs job, use self._somefunctions()
-                # 3) apiars.submit_and_collect()
-                1 / 0
-                pass
+                sell_uid = apiars.submit_and_collect(
+                    statement_uid, result_cid, self.private_key
+                )
+
+                output_message["data"]["_tag"] = "sellAttest"
+                output_message["data"]["result"] = result_cid
+                output_message["data"]["attestation"] = sell_uid
 
         return output_message

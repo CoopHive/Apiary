@@ -69,7 +69,7 @@ def set_env_variables(config: dict):
     to environment variables. Existing environment variables take precedence over
     values in the config.
     """
-    load_dotenv()
+    load_dotenv(override=True)
 
     def get_keys(d, parent_key=""):
         """Recursively flatten dictionary keys."""

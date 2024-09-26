@@ -37,9 +37,8 @@ class NaiveBuyer(Agent):
                 output_message["data"]["_tag"] = "buyAttest"
                 output_message["data"]["attestation"] = statement_uid
             case "sellAttest":
-                # result_cid = apiars.get_result_cid_from_sell_uid()
-
-                # TODO: download results using result_cid and _get_result_from_result_cid
+                result_cid = input_message["data"]["result"]
+                self._get_result_from_result_cid(result_cid)
                 return "noop"
 
         return output_message

@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from dotenv import load_dotenv
 from lighthouseweb3 import Lighthouse
 
-load_dotenv()
+load_dotenv(override=True)
 
 
 class Agent(ABC):
@@ -148,16 +148,21 @@ class Agent(ABC):
             raise
 
         result_cid = response["data"]["Hash"]
-
-        1 / 0
-
         return result_cid
 
-    def _get_result_from_result_cid(self):
-        pass
+    def _get_result_from_result_cid(self, result_cid):
+        try:
+            results = self.lh.download(result_cid)
+        except Exception:
+            logging.error("Lighthouse Error occurred.", exc_info=True)
+            raise
 
-    # TODO:
-    # buyer receiving sell_attestations perform get_result_cid_from_sell_uid.
+        if not os.path.exists("results/"):
+            os.makedirs("results")
+
+        # Write Dockerfile
+        with open(f"results/{result_cid}.txt", "w") as f:
+            f.write(results[0].decode("utf-8"))
 
 
 # TODO: understand if the inference agent is at least responsible for writing messages.

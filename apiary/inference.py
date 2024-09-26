@@ -51,7 +51,7 @@ def start_inference_endpoint():
     # Start the Uvicorn app and dump the PID to the lock file
     process = subprocess.Popen(command)
 
-    time.sleep(5)
+    time.sleep(3)
 
     with open(lock_file, "w") as f:
         f.write(str(process.pid))

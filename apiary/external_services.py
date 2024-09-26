@@ -37,7 +37,7 @@ def start_job_daemon():
     # Start Docker daemon and dump the PID to the lock file
     process = subprocess.Popen(docker_command)
 
-    time.sleep(5)
+    time.sleep(3)
 
     # Write the PID to the lock file
     with open(lock_file, "w") as f:
@@ -69,7 +69,7 @@ def start_messaging_client(initial_offer=None):
 
     process = subprocess.Popen(command)
 
-    time.sleep(5)
+    time.sleep(3)
 
     with open(lock_file, "w") as f:
         f.write(str(process.pid))
