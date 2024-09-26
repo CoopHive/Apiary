@@ -6,10 +6,10 @@ import asyncio
 async def main():
     load_dotenv()
     tx = await apiars.make_buy_statement(
-        "0xD4fA4dE9D8F8DB39EAf4de9A19bF6910F6B5bD60",
-        1000,
+        "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+        10,
         "bafkreihy4ldvgswp223sirjii2lck4pfvis3aswy65y2xyquudxvwakldy",
-        "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d",
+        "7850b55b1582add03da1cab6350cdccd7fc13c093b5bc61a5378469b8151341a",
     )
     print(tx)
 

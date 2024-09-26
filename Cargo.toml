@@ -9,6 +9,7 @@ name = "apiars"
 crate-type = ["cdylib"]
 
 [dependencies]
+alloy-provider = { version = "0.3.6", features = ["anvil-node"] }
 alloy = { version = "0.3.6", features = ["full"] }
 eyre = "0.6.12"
 pyo3 = { version = "0.22.0", features = ["experimental-async"] }

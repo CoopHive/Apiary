@@ -9,8 +9,6 @@ use pyo3::{
 };
 use std::env;
 
-use eyre::eyre;
-
 mod provider;
 
 sol!(
@@ -30,8 +28,8 @@ sol!(
 sol!(
     #[allow(missing_docs)]
     #[sol(rpc)]
-    IERC20,
-    "src/contracts/IERC20.json"
+    USDC,
+    "src/contracts/USDC.json"
 );
 
 sol!(
@@ -65,21 +63,6 @@ macro_rules! py_run_err {
     };
 }
 
-async fn approve_token(token: Address, amount: U256, private_key: String) -> eyre::Result<()> {
-    let provider = provider::get_provider(private_key)?;
-
-    let payment_address =
-        env::var("ERC20_PAYMENT_STATEMENT").map(|a| Address::parse_checksummed(a, None))??;
-    let contract = IERC20::new(token, provider);
-    let receipt = contract.approve(payment_address, amount).call().await?._0;
-
-    if receipt {
-        Ok(())
-    } else {
-        Err(eyre!("TransactionFailed"))
-    }
-}
-
 #[tokio::main]
 #[pyfunction]
 async fn make_buy_statement(
@@ -90,7 +73,7 @@ async fn make_buy_statement(
 ) -> PyResult<String> {
     let amount = U256::from(amount);
 
-    let provider = provider::get_provider(private_key.clone())?;
+    let provider = provider::get_provider(private_key)?;
 
     let payment_address = env::var("ERC20_PAYMENT_STATEMENT")
         .or_else(|_| py_val_err!("ERC20_PAYMENT_STATEMENT not set"))
@@ -100,23 +83,17 @@ async fn make_buy_statement(
     let token_address = Address::parse_checksummed(&token, None)
         .or_else(|_| py_val_err!("couldn't parse token as an address"))?;
 
-    // approve_token(token_address, amount, private_key)
-    //     .await
-    //     .or_else(|_| py_run_err!("contract call to approve token failed"))?;
-
-    let token_contract = IERC20::new(token_address, provider.clone());
-    let success = token_contract
+    let token_contract = USDC::new(token_address, &provider);
+    let receipt = token_contract
         .approve(payment_address, amount)
-        .call()
+        .send()
         .await
-        .or_else(|_| py_run_err!("contract call to approve token failed; internal"))?
-        ._0;
+        .or_else(|err| py_run_err!(format!("{:?}", err)))?
+        .get_receipt()
+        .await
+        .or_else(|err| py_run_err!(format!("{:?}", err)))?;
 
-    if !success {
-        return py_run_err!("contract call to approve token failed; returned false");
-    }
-
-    let contract = ERC20PaymentStatement::new(payment_address, provider);
+    let contract = ERC20PaymentStatement::new(payment_address, &provider);
 
     let token = Address::parse_checksummed(&token, None)
         .or_else(|_| py_val_err!("couldn't parse token as an address"))?;
