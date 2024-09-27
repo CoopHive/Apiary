@@ -2,7 +2,9 @@
 
 ## Overview
 
-Apiary is a tool designed to simulate the agent-based and game theory aspects of the CoopHive protocol, a two-sided marketplace for computing resources.
+CoopHive is a decentralized marketplace for computational resources, allowing clients to execute workloads in a permissionless environment. Participants can connect their compute nodes to the network, perform tasks, and earn compensation. The platform utilizes EVM-compatible interfaces to facilitate payments and manage data storage.
+
+Apiary serves as the user-friendly interface, providing seamless access to the CoopHive protocol and enabling efficient interaction with its features.
 
 ### Package Structure
 

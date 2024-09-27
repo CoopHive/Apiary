@@ -5,7 +5,7 @@ build-backend = "maturin"
 [project]
 name = "apiary"
 version = "0.5.1"
-description = "Agent-based modeling for negotiation and scheduling within the CoopHive protocol."
+description = "A user-friendly tool for seamless interaction with the CoopHive protocol, enabling decentralized execution of computational workloads and management of payments and storage."
 authors = [
     { name = "Levi Rybalov" },
     { name = "Matteo Manzi" },
