@@ -295,6 +295,7 @@ async fn submit_and_collect(
     }
 }
 
+#[tokio::main]
 #[pyfunction]
 async fn helloworld() -> PyResult<String> {
     Ok("HelloWorld".into())

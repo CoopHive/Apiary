@@ -4,6 +4,10 @@
 
 Apiary is a tool designed to simulate the agent-based and game theory aspects of the CoopHive protocol, a two-sided marketplace for computing resources.
 
+### Package Structure
+
+![](./docs/img/apiary.svg)
+
 ## Installation
 
 ### Requirements
@@ -29,7 +33,6 @@ Apiary is a tool designed to simulate the agent-based and game theory aspects of
 
     ```bash
     make install
-
 5. Populate all the necessary environmental variables and/or confguration file:
     - REDIS_URL
     - RPC_URL
@@ -50,17 +53,16 @@ As a seller, simply run:
 apiary --verbose start-sell --config-path ./config/seller_naive.json
 ```
 
-As a buyer, run:
+As a buyer, to create a USDC offer, run:
 
 ```bash
-apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --price '["0x036CbD53842c5426634e7929541eC2318f3dCF7e", 100000000]'```
-
-Note that buyers can avoid specifying the initial offer job price:
-
-```bash
-apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --price '["0x036CbD53842c5426634e7929541eC2318f3dCF7e", 1000]'
 ```
+Or create a EURC offer with:
 
+```bash
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --price '["0x808456652fdb597867f38412077A9182bf77359F", 1000]'
+```
 ### Make
 
 To format the code according to the project's style guidelines, run:
@@ -77,6 +79,6 @@ To run the tests, use:
 
     make test
 
-To upgrade class and package diagrams, use:
+To update package diagram, use:
 
-    make diagrams
+    make diagram

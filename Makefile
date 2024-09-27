@@ -38,9 +38,6 @@ docs:
 test:
 	uv run pytest -c pyproject.toml tests/
 
-.PHONY: diagrams
-diagrams:
-	pyreverse apiary -A --colorized -p apiary -d docs/img -o dot
-	python3 docs/classes_filter.py
-	dot -Tpng docs/img/classes_apiary.dot -o docs/img/classes_apiary.png
-	dot -Tpng docs/img/packages_apiary.dot -o docs/img/packages_apiary.png
+.PHONY: diagram
+diagram:
+	pydeps apiary --max-bacon=2 -o=docs/img/apiary.svg --no-show  --cluster

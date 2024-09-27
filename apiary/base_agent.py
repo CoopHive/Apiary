@@ -130,6 +130,8 @@ class Agent(ABC):
             capture_output=True,
             text=True,
         )
+
+        # TODO: make result generic to volume.
         result = result.stdout
 
         # Remove the Docker container
