@@ -8,7 +8,9 @@ Apiary serves as the user-friendly interface, providing seamless access to the C
 
 ### Package Structure
 
-![](./docs/img/apiary.svg)
+<p align="center">
+  <img src="./docs/img/apiary.svg" />
+</p>
 
 ## Installation
 
