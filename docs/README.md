@@ -20,9 +20,3 @@ In order of Stars:
 - [PADE](https://github.com/grei-ufc/pade): Python Agent DEvelopment framework.
 - [Repast](https://github.com/Repast/repast4py): agent-based modeling and simulation software.
 - [moragents](https://github.com/MorpheusAIs/moragents): Morpheus Local Agents.
-
-## Diagrams
-
-![Class Diagram](./img/classes_apiary.png)
-
-![Package Diagram](./img/packages_apiary.png)

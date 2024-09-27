@@ -4,8 +4,8 @@ build-backend = "maturin"
 
 [project]
 name = "apiary"
-version = "0.5.0"
-description = "Agent-based modeling for negotiation and scheduling within the CoopHive protocol."
+version = "0.5.1"
+description = "A user-friendly tool for seamless interaction with the CoopHive protocol, enabling decentralized execution of computational workloads and management of payments and storage."
 authors = [
     { name = "Levi Rybalov" },
     { name = "Matteo Manzi" },
@@ -42,10 +42,9 @@ dev = [
     "pre-commit>=3.0.0,<3.3.0",
     "isort[colors]>=5.11.0,<5.12.0",
     "ruff>=0.6.0, < 1.0.0",
-    "pylint>=3.2, <3.3",
     "pydocstyle>=6.3.0,<6.4.0",
     "pytest>=8.3.0,<8.4.0",
-    "pytest-asyncio>=0.23.0,<0.25.0",
+    "pydeps>=1.11.0,<1.12.0"
 ]
 
 [tool.maturin]

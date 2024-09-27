@@ -3,6 +3,7 @@
 import json
 import logging
 import os
+import uuid
 
 import readwrite as rw
 
@@ -61,7 +62,6 @@ class NaiveBuyer(Agent):
 def parse_initial_offer(job_path, price):
     """Parses the initial offer based on the provided job path and price."""
     pubkey = os.getenv("PUBLIC_KEY")
-    offerId = "offer_0"  # TODO: make this dynamically assigned based on client/server interaction.
     query = rw.read_as(job_path, "txt")
 
     data = {
@@ -72,4 +72,4 @@ def parse_initial_offer(job_path, price):
     if price is not None:
         data["price"] = json.loads(price)
 
-    return {"pubkey": pubkey, "offerId": offerId, "data": data}
+    return {"pubkey": pubkey, "offerId": str(uuid.uuid4()), "data": data}
