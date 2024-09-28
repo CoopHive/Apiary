@@ -1,9 +1,14 @@
-#* Poetry
-.PHONY: client-install
-client-install:
+.PHONY: setup
+setup: bun-download cargo-download uv-download
+
+.PHONY: bun-download
+bun-download:
 	npm install -g bun
 	curl -fsSL https://bun.sh/installer/bun.sh | bash
-	cd client && bun install && cd ..
+
+.PHONY: cargo-download
+cargo-download:
+	curl https://sh.rustup.rs -sSf | sh
 
 .PHONY: uv-download
 uv-download:
@@ -11,6 +16,8 @@ uv-download:
 
 .PHONY: install
 install:
+	cd client && bun install && cd ..
+
 	cargo update
 	cargo build
 
