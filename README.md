@@ -25,7 +25,7 @@ Apiary serves as the user-friendly interface, providing seamless access to the C
    ```bash
    git clone https://github.com/CoopHive/Apiary.git
    cd Apiary
-2. Install bun if not already installed)
+2. Install bun (if not already installed)
 
     ```bash
     make bun-install
@@ -37,7 +37,7 @@ Apiary serves as the user-friendly interface, providing seamless access to the C
 
     ```bash
     make install
-5. Populate all the necessary environmental variables and/or confguration file:
+5. Populate all the necessary environmental variables and/or confguration file (see [.env.example](https://github.com/CoopHive/Apiary/blob/main/.env.example)):
     - REDIS_URL
     - RPC_URL
     - ERC20_PAYMENT_STATEMENT
