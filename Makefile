@@ -1,6 +1,7 @@
 #* Poetry
 .PHONY: client-install
-bun-install:
+client-install:
+	npm install -g bun
 	curl -fsSL https://bun.sh/installer/bun.sh | bash
 	cd client && bun install && cd ..
 

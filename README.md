@@ -25,10 +25,10 @@ Apiary serves as the user-friendly interface, providing seamless access to the C
    ```bash
    git clone https://github.com/CoopHive/Apiary.git
    cd Apiary
-2. Install bun (if not already installed)
+2. Install client
 
     ```bash
-    make bun-install
+    make client-install
 3. Install uv (if not already installed)
 
     ```bash
