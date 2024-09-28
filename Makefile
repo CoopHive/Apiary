@@ -1,6 +1,3 @@
-.PHONY: setup
-setup: bun-download cargo-download uv-download
-
 .PHONY: bun-download
 bun-download:
 	npm install -g bun

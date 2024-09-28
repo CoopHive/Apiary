@@ -28,7 +28,9 @@ Apiary serves as the user-friendly interface, providing seamless access to the C
 2. Install bun, cargo, uv (if not already installed)
 
     ```bash
-    make setup
+    make bun-download
+    make cargo-download
+    make uv-download
 Please export the necessary paths or start a new session before proceeding.
 
 3. Install dependencies and set up pre-commit hooks:
