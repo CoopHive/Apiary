@@ -5,7 +5,7 @@ bun-download:
 
 .PHONY: cargo-download
 cargo-download:
-	curl https://sh.rustup.rs -sSf | sh
+	curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 .PHONY: uv-download
 uv-download:
