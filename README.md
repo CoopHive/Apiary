@@ -16,8 +16,25 @@ Apiary serves as the user-friendly interface, providing seamless access to the C
 
 ### Requirements
 
-- Python >= 3.12
+Python >= 3.12
 
+Before proceeding, you can check if you have the correct Python version installed by running:
+
+```bash
+python3 --version
+```
+
+If Python 3.12 or higher is not installed, you can download the latest version from the [official Python website](https://www.python.org/downloads/). For Linux or macOS users, you can use a package manager to install the latest version:
+
+```
+# For Linux (Ubuntu)
+sudo apt-get update
+sudo apt-get install python3.12
+
+# For macOS using Homebrew
+brew update
+brew install python@3.12
+```
 ### Setup
 
 1. Clone the repository:
