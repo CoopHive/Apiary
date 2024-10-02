@@ -115,13 +115,13 @@ class Agent(ABC):
         with open("tmp/Dockerfile", "w") as f:
             f.write(dockerFile[0].decode("utf-8"))
 
-        # Build the Docker image
-        build_command = f"docker build -t job-image-{statement_uid} tmp"
+        # Build the image
+        build_command = f"podman build -t job-image-{statement_uid} tmp"
         subprocess.run(build_command, shell=True, check=True)
 
-        # Run the Docker container and capture the output
+        # Run the container and capture the output
         run_command = (
-            f"docker run --name job-container-{statement_uid} job-image-{statement_uid}"
+            f"podman run --name job-container-{statement_uid} job-image-{statement_uid}"
         )
         result = subprocess.run(
             run_command,
@@ -134,8 +134,8 @@ class Agent(ABC):
         # TODO: make result generic to volume.
         result = result.stdout
 
-        # Remove the Docker container
-        remove_command = f"docker rm job-container-{statement_uid}"
+        # Remove the container
+        remove_command = f"podman rm job-container-{statement_uid}"
         subprocess.run(remove_command, shell=True, check=True)
 
         result_file = "tmp/output.txt"
