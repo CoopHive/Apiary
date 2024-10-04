@@ -16,25 +16,37 @@ Apiary serves as the user-friendly interface, providing seamless access to the C
 
 ### Requirements
 
-Python >= 3.12
+- Python >= 3.12
 
-Before proceeding, you can check if you have the correct Python version installed by running:
+    Before proceeding, you can check if you have the correct Python version installed by running:
 
-```bash
-python3 --version
-```
+    ```bash
+    python3 --version
+    ```
 
-If Python 3.12 or higher is not installed, you can download the latest version from the [official Python website](https://www.python.org/downloads/). For Linux or macOS users, you can use a package manager to install the latest version:
+    If Python 3.12 or higher is not installed, you can download the latest version from the [official Python website](https://www.python.org/downloads/). For Linux or macOS users, you can use a package manager to install the latest version:
 
-```
-# For Linux (Ubuntu)
-sudo apt-get update
-sudo apt-get install python3.12
+    ```bash
+    # For Linux (Ubuntu)
+    sudo apt-get update
+    sudo apt-get install python3.12
 
-# For macOS using Homebrew
-brew update
-brew install python@3.12
-```
+    # For macOS using Homebrew
+    brew update
+    brew install python@3.12
+    ```
+
+- Podman
+
+    Podman is the container management tool used in Apiary. Unlike Docker, Podman does not require a central daemon to run containers, which allows for better security and system efficiency.
+
+    You can install Podman by following the instructions provided in the [official Podman installation documentation](https://podman.io/docs/installation).
+
+    After installation, you can verify if Podman is installed correctly by running:
+
+    ```bash
+    podman --version
+    ```
 ### Setup
 
 1. Clone the repository:
@@ -82,7 +94,7 @@ apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./
 Or create a EURC offer with:
 
 ```bash
-apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/sklearn.Dockerfile --price '["0x808456652fdb597867f38412077A9182bf77359F", 10000]'
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/sklearn.Dockerfile --price '["0x808456652fdb597867f38412077A9182bf77359F", 1000]'
 ```
 ### Make
 
