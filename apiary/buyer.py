@@ -107,4 +107,9 @@ def parse_initial_offer(job_path, token_data):
 
     data["token"] = token
 
-    return {"pubkey": pubkey, "offerId": str(uuid.uuid4()), "data": data}
+    return {
+        "pubkey": pubkey,
+        "offerId": str(uuid.uuid4()),
+        "initial": True,
+        "data": data,
+    }
