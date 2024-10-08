@@ -49,8 +49,8 @@ def cli(
     "--job-path",
     required=True,
 )
-@click.option("--price", default=None)
-def start_buy(config_path: str, job_path: str, price: str):
+@click.option("--token-data", required=True)
+def start_buy(config_path: str, job_path: str, token_data: str):
     """Start Buyer."""
     logging.info("Starting Buyer.")
     os.environ["ROLE"] = "buyer"
@@ -59,7 +59,7 @@ def start_buy(config_path: str, job_path: str, price: str):
 
     inference.start_inference_endpoint()
 
-    initial_offer = buyer.parse_initial_offer(job_path, price)
+    initial_offer = buyer.parse_initial_offer(job_path, token_data)
     logging.info(f"Initial Offer: {initial_offer}")
 
     external_services.start_messaging_client(initial_offer)

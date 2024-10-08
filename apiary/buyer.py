@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import uuid
+from typing import TypedDict, Union
 
 import readwrite as rw
 
@@ -59,7 +60,39 @@ class NaiveBuyer(Agent):
 #    NOTE: in the case messaging is server-push-based, deal negotiations and job runs are necessarily sequential.
 
 
-def parse_initial_offer(job_path, price):
+class ERC20Token(TypedDict):
+    """ERC20."""
+
+    tokenStandard: str
+    address: str
+    amt: int
+
+
+class ERC721Token(TypedDict):
+    """ERC721."""
+
+    tokenStandard: str
+    address: str
+    id: int
+
+
+Token = Union[ERC20Token, ERC721Token]
+
+
+def create_token(token_data: list) -> Token:
+    """Create token object form input token data."""
+    token_standard = token_data[0]
+    address = token_data[1]
+
+    if token_standard == "ERC20":
+        return {"tokenStandard": "ERC20", "address": address, "amt": token_data[2]}
+    elif token_standard == "ERC721":
+        return {"tokenStandard": "ERC721", "address": address, "id": token_data[2]}
+    else:
+        raise ValueError(f"Unsupported token standard: {token_standard}")
+
+
+def parse_initial_offer(job_path, token_data):
     """Parses the initial offer based on the provided job path and price."""
     pubkey = os.getenv("PUBLIC_KEY")
     query = rw.read_as(job_path, "txt")
@@ -69,7 +102,9 @@ def parse_initial_offer(job_path, price):
         "query": query,
     }
 
-    if price is not None:
-        data["price"] = json.loads(price)
+    token_data = json.loads(token_data)
+    token = create_token(token_data)
+
+    data["token"] = token
 
     return {"pubkey": pubkey, "offerId": str(uuid.uuid4()), "data": data}

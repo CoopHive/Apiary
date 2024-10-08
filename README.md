@@ -89,12 +89,12 @@ apiary --verbose start-sell --config-path ./config/seller_naive.json
 As a buyer, to create a USDC offer, run:
 
 ```bash
-apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --price '["0x036CbD53842c5426634e7929541eC2318f3dCF7e", 500]'
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --token-data '["ERC20", "0x036CbD53842c5426634e7929541eC2318f3dCF7e", 50]'
 ```
 Or create a EURC offer with:
 
 ```bash
-apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/sklearn.Dockerfile --price '["0x808456652fdb597867f38412077A9182bf77359F", 1000]'
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/sklearn.Dockerfile --token-data '["ERC20", "0x808456652fdb597867f38412077A9182bf77359F", 100]'
 ```
 ### Make
 

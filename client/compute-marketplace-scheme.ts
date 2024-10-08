@@ -66,7 +66,7 @@ export const dcnScheme: Scheme<Messages, Roles> = {
       // buyers must join with an initial offer
       .with(
         { role: "buyer", init: { initial: true, data: { _tag: "offer" } } },
-        async ({ init }) => await client.subscribeSend(init)
+        async ({ init }) => await client.subscribeSend({...init, initial: true,})
       )
       // sellers must join without an initial offer
       .with(
