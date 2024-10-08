@@ -1,16 +1,17 @@
 import { type Scheme } from "./scheme";
 import { match, P } from "ts-pattern";
 
-type Roles = "buyer" | "seller";
+type Hex = `0x${string}`;
+type Token = { tokenStandard: "ERC20", address: Hex, amt: number } | {tokenStandard: "ERC721", address: Hex, id: number}
+type Offer = { query: string; token: Token };
+
 type Messages =
   | ({ _tag: "offer" } & Offer)
   | { _tag: "cancel"; error?: string }
   | ({ _tag: "buyAttest"; attestation: Hex } & Offer)
   | { _tag: "sellAttest"; attestation: Hex; result: string };
 
-type Offer = { query: string; price: [Hex, number] };
-type Hex = `0x${string}`;
-
+type Roles = "buyer" | "seller";
 
 export const dcnScheme: Scheme<Messages, Roles> = {
   onAgent: async (client, role, input, output) =>
@@ -64,17 +65,8 @@ export const dcnScheme: Scheme<Messages, Roles> = {
     match({ role, init })
       // buyers must join with an initial offer
       .with(
-        { role: "buyer", init: { data: { _tag: "offer" } } },
-        async ({ init }) =>
-          // default to 0 if no price is given; token must still be given
-          await client.subscribeSend({
-            ...init,
-            initial: true,
-            data: {
-              ...init.data,
-              price: [init.data.price[0], init.data.price[1] || 0],
-            },
-          })
+        { role: "buyer", init: { initial: true, data: { _tag: "offer" } } },
+        async ({ init }) => await client.subscribeSend(init)
       )
       // sellers must join without an initial offer
       .with(
