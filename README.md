@@ -80,22 +80,36 @@ Please export the necessary paths or start a new session before proceeding.
 
 ## Usage
 
-As a seller, simply run:
+### Seller
+
+Simply run:
 
 ```bash
 apiary --verbose start-sell --config-path ./config/seller_naive.json
 ```
 
-As a buyer, to create a USDC offer, run:
+### Buyer
+
+#### ERC20
+
+To create a USDC offer, run:
 
 ```bash
 apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --token-data '["ERC20", "0x036CbD53842c5426634e7929541eC2318f3dCF7e", 50]'
 ```
-Or create a EURC offer with:
+
+Create a EURC offer with:
 
 ```bash
 apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/sklearn.Dockerfile --token-data '["ERC20", "0x808456652fdb597867f38412077A9182bf77359F", 100]'
 ```
+
+#### ERC721
+
+```bash
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --token-data '["ERC721", "0x9757694a764de0c6599735D37fecd1d09501fb39", 1]'
+```
+
 ### Make
 
 To format the code according to the project's style guidelines, run:
