@@ -22,21 +22,21 @@ class NaiveBuyer(Agent):
 
         match input_message["data"].get("_tag"):
             case "offer":
-                token_standard = str(input_message["data"]["token"][0])
-                token_address = str(input_message["data"]["address"][1])
-
                 query_cid = self._get_query_cid(input_message)
 
+                token_standard = str(input_message["data"]["token"]["tokenStandard"])
+                token_address = str(input_message["data"]["token"]["address"])
+
                 if token_standard == "ERC20":
-                    amount = int(input_message["data"]["amt"][2])
-                    # TODO: add submodule apiars.erc20.make_buy_statement...
-                    statement_uid = apiars.make_buy_statement(
+                    amount = int(input_message["data"]["token"]["amt"])
+                    statement_uid = apiars.erc20.make_buy_statement(
                         token_address, amount, query_cid, self.private_key
                     )
-                elif token_standard == "ERC721":
-                    token_id = int(input_message["data"]["id"][2])
 
+                elif token_standard == "ERC721":
+                    token_id = int(input_message["data"]["token"]["id"])
                     print(token_id)
+                    raise ValueError("To be implemented!")
                 else:
                     raise ValueError(f"Unsupported token standard: {token_standard}")
 

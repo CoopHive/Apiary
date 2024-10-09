@@ -26,15 +26,22 @@ class NaiveSeller(Agent):
             case "buyAttest":
                 statement_uid = input_message["data"]["attestation"]
 
-                (token, quantity, arbiter, job_cid) = apiars.get_buy_statement(
-                    statement_uid, self.private_key
-                )
+                token_standard = str(input_message["data"]["token"]["tokenStandard"])
 
-                result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
+                if token_standard == "ERC20":
+                    (token, quantity, arbiter, job_cid) = (
+                        apiars.erc20.get_buy_statement(statement_uid, self.private_key)
+                    )
 
-                sell_uid = apiars.submit_and_collect(
-                    statement_uid, result_cid, self.private_key
-                )
+                    result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
+
+                    sell_uid = apiars.erc20.submit_and_collect(
+                        statement_uid, result_cid, self.private_key
+                    )
+                elif token_standard == "ERC721":
+                    raise ValueError("To be implemented!")
+                else:
+                    raise ValueError(f"Unsupported token standard: {token_standard}")
 
                 output_message["data"]["_tag"] = "sellAttest"
                 output_message["data"]["result"] = result_cid

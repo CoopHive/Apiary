@@ -49,7 +49,8 @@ fn py_run_err(msg: impl Into<String>) -> PyErr {
 
 #[tokio::main]
 #[pyfunction]
-async fn make_buy_statement(
+#[pyo3(name = "make_buy_statement")]
+async fn erc_20_make_buy_statement(
     token: String,
     amount: u64,
     query_cid: String,
@@ -130,7 +131,8 @@ async fn make_buy_statement(
 
 #[tokio::main]
 #[pyfunction]
-async fn get_buy_statement(
+#[pyo3(name = "get_buy_statement")]
+async fn erc20_get_buy_statement(
     statement_uid: String,
     private_key: String,
 ) -> PyResult<(String, u64, String, String)> {
@@ -210,7 +212,8 @@ async fn get_result_cid_from_sell_uid(sell_uid: String, private_key: String) -> 
 
 #[tokio::main]
 #[pyfunction]
-async fn submit_and_collect(
+#[pyo3(name = "submit_and_collect")]
+async fn erc20_submit_and_collect(
     buy_attestation_uid: String,
     result_cid: String,
     private_key: String,
@@ -300,14 +303,21 @@ async fn erc721_helloworld() -> PyResult<String> {
 
 fn add_erc20_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     let erc20_module = PyModule::new_bound(py, "erc20")?;
+    
     erc20_module.add_function(wrap_pyfunction!(erc20_helloworld, erc20_module.clone())?)?;
+    erc20_module.add_function(wrap_pyfunction!(erc_20_make_buy_statement, erc20_module.clone())?)?;
+    erc20_module.add_function(wrap_pyfunction!(erc20_get_buy_statement, erc20_module.clone())?)?;
+    erc20_module.add_function(wrap_pyfunction!(erc20_submit_and_collect, erc20_module.clone())?)?;
+
     parent_module.add_submodule(&erc20_module)?;
     Ok(())
 }
 
 fn add_erc721_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     let erc721_module = PyModule::new_bound(py, "erc721")?;
+    
     erc721_module.add_function(wrap_pyfunction!(erc721_helloworld, erc721_module.clone())?)?;
+    
     parent_module.add_submodule(&erc721_module)?;
     Ok(())
 }
@@ -319,10 +329,6 @@ fn apiars(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     add_erc20_submodule(py, m)?;
     add_erc721_submodule(py, m)?;
 
-    m.add_function(wrap_pyfunction!(erc20_helloworld, m)?)?;
-    m.add_function(wrap_pyfunction!(make_buy_statement, m)?)?;
-    m.add_function(wrap_pyfunction!(get_buy_statement, m)?)?;
-    m.add_function(wrap_pyfunction!(submit_and_collect, m)?)?;
     m.add_function(wrap_pyfunction!(get_result_cid_from_sell_uid, m)?)?;
     Ok(())
 }
