@@ -286,12 +286,14 @@ async fn submit_and_collect(
 
 #[tokio::main]
 #[pyfunction]
+#[pyo3(name = "helloworld")]
 async fn erc20_helloworld() -> PyResult<String> {
     Ok("HelloWorld ERC20".into())
 }
 
 #[tokio::main]
 #[pyfunction]
+#[pyo3(name = "helloworld")]
 async fn erc721_helloworld() -> PyResult<String> {
     Ok("HelloWorld ERC721".into())
 }
