@@ -1,12 +1,6 @@
 """This module defines the Buyers used within the CoopHive protocol."""
 
-import json
 import logging
-import os
-import uuid
-from typing import TypedDict, Union
-
-import readwrite as rw
 
 from apiary import apiars
 from apiary.base_agent import Agent
@@ -28,13 +22,23 @@ class NaiveBuyer(Agent):
 
         match input_message["data"].get("_tag"):
             case "offer":
-                token = str(input_message["data"]["price"][0])
-                amount = int(input_message["data"]["price"][1])
+                token_standard = str(input_message["data"]["token"][0])
+                token_address = str(input_message["data"]["address"][1])
+
                 query_cid = self._get_query_cid(input_message)
 
-                statement_uid = apiars.make_buy_statement(
-                    token, amount, query_cid, self.private_key
-                )
+                if token_standard == "ERC20":
+                    amount = int(input_message["data"]["amt"][2])
+                    # TODO: add submodule apiars.erc20.make_buy_statement...
+                    statement_uid = apiars.make_buy_statement(
+                        token_address, amount, query_cid, self.private_key
+                    )
+                elif token_standard == "ERC721":
+                    token_id = int(input_message["data"]["id"][2])
+
+                    print(token_id)
+                else:
+                    raise ValueError(f"Unsupported token standard: {token_standard}")
 
                 output_message["data"]["_tag"] = "buyAttest"
                 output_message["data"]["attestation"] = statement_uid
@@ -58,58 +62,3 @@ class NaiveBuyer(Agent):
 #    reply_buy_attest.
 #    reply_sell_attest.
 #    NOTE: in the case messaging is server-push-based, deal negotiations and job runs are necessarily sequential.
-
-
-class ERC20Token(TypedDict):
-    """ERC20."""
-
-    tokenStandard: str
-    address: str
-    amt: int
-
-
-class ERC721Token(TypedDict):
-    """ERC721."""
-
-    tokenStandard: str
-    address: str
-    id: int
-
-
-Token = Union[ERC20Token, ERC721Token]
-
-
-def create_token(token_data: list) -> Token:
-    """Create token object form input token data."""
-    token_standard = token_data[0]
-    address = token_data[1]
-
-    if token_standard == "ERC20":
-        return {"tokenStandard": "ERC20", "address": address, "amt": token_data[2]}
-    elif token_standard == "ERC721":
-        return {"tokenStandard": "ERC721", "address": address, "id": token_data[2]}
-    else:
-        raise ValueError(f"Unsupported token standard: {token_standard}")
-
-
-def parse_initial_offer(job_path, token_data):
-    """Parses the initial offer based on the provided job path and price."""
-    pubkey = os.getenv("PUBLIC_KEY")
-    query = rw.read_as(job_path, "txt")
-
-    data = {
-        "_tag": "offer",
-        "query": query,
-    }
-
-    token_data = json.loads(token_data)
-    token = create_token(token_data)
-
-    data["token"] = token
-
-    return {
-        "pubkey": pubkey,
-        "offerId": str(uuid.uuid4()),
-        "initial": True,
-        "data": data,
-    }

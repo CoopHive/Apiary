@@ -6,7 +6,7 @@ from datetime import datetime
 
 import click
 
-from apiary import buyer, constants, external_services, inference, utils
+from apiary import constants, external_services, inference, utils
 
 current_time = datetime.now().replace(second=0, microsecond=0)
 CLI_TIME = current_time.strftime("%Y-%m-%d_%H-%M")
@@ -59,7 +59,7 @@ def start_buy(config_path: str, job_path: str, token_data: str):
 
     inference.start_inference_endpoint()
 
-    initial_offer = buyer.parse_initial_offer(job_path, token_data)
+    initial_offer = utils.parse_initial_offer(job_path, token_data)
     logging.info(f"Initial Offer: {initial_offer}")
 
     external_services.start_messaging_client(initial_offer)

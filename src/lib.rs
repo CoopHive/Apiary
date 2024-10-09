@@ -39,17 +39,6 @@ sol!(
     "src/contracts/IEAS.json"
 );
 
-/// A Python module implemented in Rust.
-#[pymodule]
-fn apiars(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(helloworld, m)?)?;
-    m.add_function(wrap_pyfunction!(make_buy_statement, m)?)?;
-    m.add_function(wrap_pyfunction!(get_buy_statement, m)?)?;
-    m.add_function(wrap_pyfunction!(submit_and_collect, m)?)?;
-    m.add_function(wrap_pyfunction!(get_result_cid_from_sell_uid, m)?)?;
-    Ok(())
-}
-
 fn py_val_err(msg: impl Into<String>) -> PyErr {
     PyErr::new::<PyValueError, _>(msg.into())
 }
@@ -297,6 +286,41 @@ async fn submit_and_collect(
 
 #[tokio::main]
 #[pyfunction]
-async fn helloworld() -> PyResult<String> {
-    Ok("HelloWorld".into())
+async fn erc20_helloworld() -> PyResult<String> {
+    Ok("HelloWorld ERC20".into())
+}
+
+#[tokio::main]
+#[pyfunction]
+async fn erc721_helloworld() -> PyResult<String> {
+    Ok("HelloWorld ERC721".into())
+}
+
+fn add_erc20_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
+    let erc20_module = PyModule::new_bound(py, "erc20")?;
+    erc20_module.add_function(wrap_pyfunction!(erc20_helloworld, erc20_module.clone())?)?;
+    parent_module.add_submodule(&erc20_module)?;
+    Ok(())
+}
+
+fn add_erc721_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
+    let erc721_module = PyModule::new_bound(py, "erc721")?;
+    erc721_module.add_function(wrap_pyfunction!(erc721_helloworld, erc721_module.clone())?)?;
+    parent_module.add_submodule(&erc721_module)?;
+    Ok(())
+}
+
+/// A Python module implemented in Rust.
+#[pymodule]
+fn apiars(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
+
+    add_erc20_submodule(py, m)?;
+    add_erc721_submodule(py, m)?;
+
+    m.add_function(wrap_pyfunction!(erc20_helloworld, m)?)?;
+    m.add_function(wrap_pyfunction!(make_buy_statement, m)?)?;
+    m.add_function(wrap_pyfunction!(get_buy_statement, m)?)?;
+    m.add_function(wrap_pyfunction!(submit_and_collect, m)?)?;
+    m.add_function(wrap_pyfunction!(get_result_cid_from_sell_uid, m)?)?;
+    Ok(())
 }
