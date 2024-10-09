@@ -70,6 +70,7 @@ Please export the necessary paths or start a new session before proceeding.
     - REDIS_URL
     - RPC_URL
     - ERC20_PAYMENT_STATEMENT
+    - ERC721_PAYMENT_STATEMENT
     - DOCKER_RESULT_STATEMENT
     - EAS_CONTRACT
     - LIGHTHOUSE_TOKEN
@@ -107,7 +108,7 @@ apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./
 #### ERC721
 
 ```bash
-apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --token-data '["ERC721", "0x9757694a764de0c6599735D37fecd1d09501fb39", 1]'
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --token-data '["ERC721", "0x9757694a764de0c6599735D37fecd1d09501fb39", 1000]'
 ```
 
 ### Make

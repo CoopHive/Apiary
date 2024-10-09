@@ -21,6 +21,13 @@ sol!(
 sol!(
     #[allow(missing_docs)]
     #[sol(rpc)]
+    ERC721PaymentStatement,
+    "src/contracts/ERC721PaymentStatement.json"
+);
+
+sol!(
+    #[allow(missing_docs)]
+    #[sol(rpc)]
     DockerResultStatement,
     "src/contracts/DockerResultStatement.json"
 );
@@ -30,6 +37,13 @@ sol!(
     #[sol(rpc)]
     IERC20,
     "src/contracts/IERC20.json"
+);
+
+sol!(
+    #[allow(missing_docs)]
+    #[sol(rpc)]
+    IERC721,
+    "src/contracts/IERC721.json"
 );
 
 sol!(
@@ -99,6 +113,90 @@ async fn erc_20_make_buy_statement(
             ERC20PaymentStatement::StatementData {
                 token: token_address,
                 amount,
+                arbiter,
+                demand,
+            },
+            0,
+            b256!("0000000000000000000000000000000000000000000000000000000000000000"),
+        )
+        .send()
+        .await
+        .map_err(|err| py_run_err(format!("error calling makeStatement (buy); {:?}", err)))?
+        .get_receipt()
+        .await
+        .map_err(|err| py_run_err(format!("error getting buy statement receipt; {:?}", err)))?
+        .inner
+        .logs()
+        .into_iter()
+        .filter(|log| log.topic0() == Some(&IEAS::Attested::SIGNATURE_HASH))
+        .collect::<Vec<_>>()
+        .get(0)
+        .map_or(
+            Err(py_run_err("makeStatement logs didn't contain Attest")),
+            |log| {
+                log.log_decode::<IEAS::Attested>().map_err(|err| {
+                    py_run_err(format!("couldn't decode attestation log; {:?}", err))
+                })
+            },
+        )?;
+
+    Ok(log.inner.uid.to_string())
+}
+
+#[tokio::main]
+#[pyfunction]
+#[pyo3(name = "make_buy_statement")]
+async fn erc_721_make_buy_statement(
+    token: String,
+    token_id: u64,
+    query_cid: String,
+    private_key: String,
+) -> PyResult<String>{
+
+    let provider = provider::get_provider(private_key)?;
+
+    let token_address = Address::parse_checksummed(&token, None)
+        .map_err(|_| py_val_err("couldn't parse token as an address"))?;
+
+    let token_id = U256::from(token_id);
+    let arbiter = env::var("DOCKER_RESULT_STATEMENT")
+        .map_err(|_| py_val_err("DOCKER_RESULT_STATEMENT not set"))
+        .map(|a| Address::parse_checksummed(a, None))?
+        .map_err(|_| py_val_err("couldn't parse DOCKER_RESULT_STATEMENT as an address"))?;
+    // ResultData and StatementData became the same abi type after solc compilation
+    // since they have the same structure: (string)
+    let demand: Bytes = DockerResultStatement::StatementData {
+        resultCID: query_cid,
+    }
+    .abi_encode()
+    .into();
+
+    let payment_address = env::var("ERC721_PAYMENT_STATEMENT")
+        .map_err(|_| py_val_err("ERC721_PAYMENT_STATEMENT not set"))
+        .map(|a| Address::parse_checksummed(a, None))?
+        .map_err(|_| py_val_err("couldn't parse ERC721_PAYMENT_STATEMENT as an address"))?;
+
+    let token_contract = IERC721::new(token_address, &provider);
+    let statement_contract = ERC721PaymentStatement::new(payment_address, &provider);
+
+    let approval_receipt = token_contract
+        .approve(payment_address, token_id)
+        .send()
+        .await
+        .map_err(|err| py_run_err(format!("error calling approve; {:?}", err)))?
+        .get_receipt()
+        .await
+        .map_err(|err| py_run_err(format!("error getting approval receipt; {:?}", err)))?;
+
+    if !approval_receipt.status() {
+        return Err(py_run_err("approval failed"));
+    };
+
+    let log = statement_contract
+        .makeStatement(
+            ERC721PaymentStatement::StatementData {
+                token: token_address,
+                tokenId: token_id,
                 arbiter,
                 demand,
             },
@@ -317,7 +415,8 @@ fn add_erc721_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> PyRe
     let erc721_module = PyModule::new_bound(py, "erc721")?;
     
     erc721_module.add_function(wrap_pyfunction!(erc721_helloworld, erc721_module.clone())?)?;
-    
+    erc721_module.add_function(wrap_pyfunction!(erc_721_make_buy_statement, erc721_module.clone())?)?;
+
     parent_module.add_submodule(&erc721_module)?;
     Ok(())
 }
