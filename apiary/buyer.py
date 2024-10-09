@@ -35,8 +35,11 @@ class NaiveBuyer(Agent):
 
                 elif token_standard == "ERC721":
                     token_id = int(input_message["data"]["token"]["id"])
-                    print(token_id)
+
                     raise ValueError("To be implemented!")
+                    statement_uid = apiars.erc721.make_buy_statement(
+                        token_address, token_id, query_cid, self.private_key
+                    )
                 else:
                     raise ValueError(f"Unsupported token standard: {token_standard}")
 

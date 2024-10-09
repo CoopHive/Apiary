@@ -78,7 +78,7 @@ Please export the necessary paths or start a new session before proceeding.
     - INFERENCE_ENDPOINT.PORT
     - INFERENCE_ENDPOINT.HOST
 
-## Usage
+## Example Usage
 
 ### Seller
 
