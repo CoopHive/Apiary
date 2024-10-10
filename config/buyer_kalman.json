@@ -4,5 +4,8 @@
     "inference_endpoint": {
         "port": 8001,
         "host": "localhost"
-    }
+    },
+    "valuation_variance": 4,
+    "measurement_variance": 20,
+    "absolute_tolerance": 0.01
 }

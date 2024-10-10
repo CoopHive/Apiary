@@ -2,7 +2,11 @@
 
 import logging
 
+from dotenv import load_dotenv
+
 from apiary.base_agent import Agent
+
+load_dotenv(override=True)
 
 
 class NaiveBuyer(Agent):
@@ -35,7 +39,29 @@ class NaiveBuyer(Agent):
 class KalmanBuyer(Agent):
     """A Buyer in the CoopHive protocol."""
 
-    pass
+    def __init__(self) -> None:
+        """Initialize the Buyer instance."""
+        super().__init__()
+        logging.info("KalmanBuyer initialized")
+
+    def infer(self, states, input_message):
+        """Policy of Naive Buyer."""
+        output_message = self._preprocess_infer(input_message)
+        if output_message == "noop":
+            return output_message
+
+        match input_message["data"].get("_tag"):
+            case "offer":
+                raise ValueError("TO BE IMPLEMENTED")
+
+                output_message = self._offer_to_buy_attestation(
+                    input_message, output_message
+                )
+            case "sellAttest":
+                self._get_result_from_result_cid(input_message["data"]["result"])
+                return "noop"
+
+        return output_message
 
 
 # NOTE:
