@@ -10,6 +10,8 @@ import colorlog
 import readwrite as rw
 from dotenv import load_dotenv
 
+load_dotenv(override=True)
+
 
 def template(input: str, variables: dict) -> None:
     """Replace placeholders in the input string with values from the variables dictionary."""
@@ -72,7 +74,6 @@ def set_env_variables(config: dict):
     to environment variables. Existing environment variables take precedence over
     values in the config.
     """
-    load_dotenv(override=True)
 
     def get_keys(d, parent_key=""):
         """Recursively flatten dictionary keys."""
@@ -149,7 +150,9 @@ def create_token(token_data: list) -> Token:
     address = token_data[1]
 
     if token_standard == "ERC20":
-        return {"tokenStandard": "ERC20", "address": address, "amt": token_data[2]}
+        amt = token_data[2]
+        os.environ["VALUATION_ESTIMATION"] = str(amt)
+        return {"tokenStandard": "ERC20", "address": address, "amt": amt}
     elif token_standard == "ERC721":
         return {"tokenStandard": "ERC721", "address": address, "id": token_data[2]}
     else:

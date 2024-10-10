@@ -1,6 +1,7 @@
 """This module defines the Buyers used within the CoopHive protocol."""
 
 import logging
+import os
 
 from dotenv import load_dotenv
 
@@ -52,11 +53,40 @@ class KalmanBuyer(Agent):
 
         match input_message["data"].get("_tag"):
             case "offer":
-                raise ValueError("TO BE IMPLEMENTED")
+                # TODO: mostly duplicate of KalmanSeller, refacto to avoid.
 
-                output_message = self._offer_to_buy_attestation(
-                    input_message, output_message
-                )
+                # NOTE: Negotiation strategy over scalar ERC20 amount only.
+                valuation_estimation = float(os.getenv("VALUATION_ESTIMATION"))
+                valuation_variance = float(os.getenv("VALUATION_VARIANCE"))
+
+                valuation_measurement = input_message["data"]["token"]["amt"]
+
+                abs_tol = float(os.getenv("ABSOLUTE_TOLERANCE"))
+                if valuation_measurement <= valuation_estimation + abs_tol:
+                    output_message = self._offer_to_buy_attestation(
+                        input_message, output_message
+                    )
+                else:
+                    valuation_measurement_variance = float(
+                        os.getenv("VALUATION_MEASUREMENT_VARIANCE")
+                    )
+
+                    kalman_gain = valuation_variance / (
+                        valuation_variance + valuation_measurement_variance
+                    )
+
+                    # Covariance Update
+                    valuation_variance *= 1 - kalman_gain
+                    os.environ["VALUATION_VARIANCE"] = str(valuation_variance)
+
+                    # State Update
+                    valuation_estimation *= 1 - kalman_gain
+                    valuation_estimation += kalman_gain * valuation_measurement
+                    valuation_estimation = round(
+                        valuation_estimation
+                    )  # EVM-compatible integer.
+                    os.environ["VALUATION_ESTIMATION"] = str(valuation_estimation)
+                    output_message["data"]["token"]["amt"] = valuation_estimation
             case "sellAttest":
                 self._get_result_from_result_cid(input_message["data"]["result"])
                 return "noop"

@@ -50,14 +50,21 @@ class KalmanSeller(Agent):
 
         match input_message["data"].get("_tag"):
             case "offer":
-                # NOTE: Negotiation strategy over ERC20 amount only.
+                # NOTE: Negotiation strategy over scalar ERC20 amount only.
                 valuation_estimation = os.getenv("VALUATION_ESTIMATION")
                 valuation_variance = os.getenv("VALUATION_VARIANCE")
+
+                # NOTE: General form:
+                # (valuation_estimation, valuation_variance) = f(input_message, states)
                 if valuation_estimation is None:
-                    # NOTE: General form:
-                    # (valuation_estimation, valuation_variance) = f(input_message, states)
-                    valuation_estimation = 200
-                    valuation_variance = 10
+                    valuation_estimation = 300.0
+                else:
+                    valuation_estimation = float(valuation_estimation)
+
+                if valuation_variance is None:
+                    valuation_variance = 20.0
+                else:
+                    valuation_variance = float(valuation_variance)
 
                 valuation_measurement = input_message["data"]["token"]["amt"]
                 if valuation_measurement >= valuation_estimation:
