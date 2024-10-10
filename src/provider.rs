@@ -13,7 +13,7 @@ use alloy::{
 use alloy_provider::Identity;
 use std::env;
 
-use crate::py_val_err;
+use crate::shared::py_val_err;
 
 type DefaultProvider = FillProvider<
     JoinFill<

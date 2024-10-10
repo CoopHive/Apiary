@@ -69,8 +69,9 @@ Please export the necessary paths or start a new session before proceeding.
 5. Populate all the necessary environmental variables and/or confguration file (see [.env.example](https://github.com/CoopHive/Apiary/blob/main/.env.example)):
     - REDIS_URL
     - RPC_URL
-    - ERC20_PAYMENT_STATEMENT
-    - DOCKER_RESULT_STATEMENT
+    - ERC20_PAYMENT_OBLIGATION
+    - ERC721_PAYMENT_OBLIGATION
+    - JOB_RESULT_OBLIGATION
     - EAS_CONTRACT
     - LIGHTHOUSE_TOKEN
     - PRIVATE_KEY
@@ -78,24 +79,38 @@ Please export the necessary paths or start a new session before proceeding.
     - INFERENCE_ENDPOINT.PORT
     - INFERENCE_ENDPOINT.HOST
 
-## Usage
+## Example Usage
 
-As a seller, simply run:
+### Seller
+
+Simply run:
 
 ```bash
 apiary --verbose start-sell --config-path ./config/seller_naive.json
 ```
 
-As a buyer, to create a USDC offer, run:
+### Buyer
+
+#### ERC20
+
+To create a USDC offer, run:
 
 ```bash
-apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --price '["0x036CbD53842c5426634e7929541eC2318f3dCF7e", 500]'
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --token-data '["ERC20", "0x036CbD53842c5426634e7929541eC2318f3dCF7e", 50]'
 ```
-Or create a EURC offer with:
+
+Create a EURC offer with:
 
 ```bash
-apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/sklearn.Dockerfile --price '["0x808456652fdb597867f38412077A9182bf77359F", 1000]'
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/sklearn.Dockerfile --token-data '["ERC20", "0x808456652fdb597867f38412077A9182bf77359F", 100]'
 ```
+
+#### ERC721
+
+```bash
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --token-data '["ERC721", "0x9757694a764de0c6599735D37fecd1d09501fb39", 998]'
+```
+
 ### Make
 
 To format the code according to the project's style guidelines, run:

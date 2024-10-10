@@ -1,0 +1,261 @@
+{
+    "abi": [
+        {
+            "type": "function",
+            "name": "checkStatement",
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "tuple",
+                    "internalType": "struct Attestation",
+                    "components": [
+                        {
+                            "name": "uid",
+                            "type": "bytes32",
+                            "internalType": "bytes32"
+                        },
+                        {
+                            "name": "schema",
+                            "type": "bytes32",
+                            "internalType": "bytes32"
+                        },
+                        {
+                            "name": "time",
+                            "type": "uint64",
+                            "internalType": "uint64"
+                        },
+                        {
+                            "name": "expirationTime",
+                            "type": "uint64",
+                            "internalType": "uint64"
+                        },
+                        {
+                            "name": "revocationTime",
+                            "type": "uint64",
+                            "internalType": "uint64"
+                        },
+                        {
+                            "name": "refUID",
+                            "type": "bytes32",
+                            "internalType": "bytes32"
+                        },
+                        {
+                            "name": "recipient",
+                            "type": "address",
+                            "internalType": "address"
+                        },
+                        {
+                            "name": "attester",
+                            "type": "address",
+                            "internalType": "address"
+                        },
+                        {
+                            "name": "revocable",
+                            "type": "bool",
+                            "internalType": "bool"
+                        },
+                        {
+                            "name": "data",
+                            "type": "bytes",
+                            "internalType": "bytes"
+                        }
+                    ]
+                },
+                {
+                    "name": "",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                },
+                {
+                    "name": "",
+                    "type": "bytes32",
+                    "internalType": "bytes32"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bool",
+                    "internalType": "bool"
+                }
+            ],
+            "stateMutability": "pure"
+        }
+    ],
+    "bytecode": {
+        "object": "0x6080604052348015600f57600080fd5b506102d48061001f6000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c80631272ff8b14610030575b600080fd5b61004761003e36600461016e565b60019392505050565b604051901515815260200160405180910390f35b634e487b7160e01b600052604160045260246000fd5b604051610140810167ffffffffffffffff811182821017156100955761009561005b565b60405290565b803567ffffffffffffffff811681146100b357600080fd5b919050565b80356001600160a01b03811681146100b357600080fd5b803580151581146100b357600080fd5b600082601f8301126100f057600080fd5b813567ffffffffffffffff81111561010a5761010a61005b565b604051601f8201601f19908116603f0116810167ffffffffffffffff811182821017156101395761013961005b565b60405281815283820160200185101561015157600080fd5b816020850160208301376000918101602001919091529392505050565b60008060006060848603121561018357600080fd5b833567ffffffffffffffff81111561019a57600080fd5b840161014081870312156101ad57600080fd5b6101b5610071565b81358152602080830135908201526101cf6040830161009b565b60408201526101e06060830161009b565b60608201526101f16080830161009b565b608082015260a0828101359082015261020c60c083016100b8565b60c082015261021d60e083016100b8565b60e082015261022f61010083016100cf565b61010082015261012082013567ffffffffffffffff81111561025057600080fd5b61025c888285016100df565b61012083015250935050602084013567ffffffffffffffff81111561028057600080fd5b61028c868287016100df565b9396939550505050604091909101359056fea2646970667358221220e7e986e0c82a099ccec43e8b33cb081a7e54fce6722bd18ab0e463e901a54ee264736f6c634300081a0033",
+        "sourceMap": "202:248:3:-:0;;;;;;;;;;;;;;;;;;;",
+        "linkReferences": {}
+    },
+    "deployedBytecode": {
+        "object": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c80631272ff8b14610030575b600080fd5b61004761003e36600461016e565b60019392505050565b604051901515815260200160405180910390f35b634e487b7160e01b600052604160045260246000fd5b604051610140810167ffffffffffffffff811182821017156100955761009561005b565b60405290565b803567ffffffffffffffff811681146100b357600080fd5b919050565b80356001600160a01b03811681146100b357600080fd5b803580151581146100b357600080fd5b600082601f8301126100f057600080fd5b813567ffffffffffffffff81111561010a5761010a61005b565b604051601f8201601f19908116603f0116810167ffffffffffffffff811182821017156101395761013961005b565b60405281815283820160200185101561015157600080fd5b816020850160208301376000918101602001919091529392505050565b60008060006060848603121561018357600080fd5b833567ffffffffffffffff81111561019a57600080fd5b840161014081870312156101ad57600080fd5b6101b5610071565b81358152602080830135908201526101cf6040830161009b565b60408201526101e06060830161009b565b60608201526101f16080830161009b565b608082015260a0828101359082015261020c60c083016100b8565b60c082015261021d60e083016100b8565b60e082015261022f61010083016100cf565b61010082015261012082013567ffffffffffffffff81111561025057600080fd5b61025c888285016100df565b61012083015250935050602084013567ffffffffffffffff81111561028057600080fd5b61028c868287016100df565b9396939550505050604091909101359056fea2646970667358221220e7e986e0c82a099ccec43e8b33cb081a7e54fce6722bd18ab0e463e901a54ee264736f6c634300081a0033",
+        "sourceMap": "202:248:3:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;244:204;;;;;;:::i;:::-;437:4;244:204;;;;;;;;;3496:14:4;;3489:22;3471:41;;3459:2;3444:18;244:204:3;;;;;;;14:127:4;75:10;70:3;66:20;63:1;56:31;106:4;103:1;96:15;130:4;127:1;120:15;146:250;213:2;207:9;255:6;243:19;;292:18;277:34;;313:22;;;274:62;271:88;;;339:18;;:::i;:::-;375:2;368:22;146:250;:::o;401:171::-;468:20;;528:18;517:30;;507:41;;497:69;;562:1;559;552:12;497:69;401:171;;;:::o;577:173::-;645:20;;-1:-1:-1;;;;;694:31:4;;684:42;;674:70;;740:1;737;730:12;755:160;820:20;;876:13;;869:21;859:32;;849:60;;905:1;902;895:12;920:745;962:5;1015:3;1008:4;1000:6;996:17;992:27;982:55;;1033:1;1030;1023:12;982:55;1073:6;1060:20;1103:18;1095:6;1092:30;1089:56;;;1125:18;;:::i;:::-;1194:2;1188:9;1286:2;1248:17;;-1:-1:-1;;1244:31:4;;;1277:2;1240:40;1236:54;1224:67;;1321:18;1306:34;;1342:22;;;1303:62;1300:88;;;1368:18;;:::i;:::-;1404:2;1397:22;1428;;;1469:19;;;1490:4;1465:30;1462:39;-1:-1:-1;1459:59:4;;;1514:1;1511;1504:12;1459:59;1578:6;1571:4;1563:6;1559:17;1552:4;1544:6;1540:17;1527:58;1633:1;1605:19;;;1626:4;1601:30;1594:41;;;;1609:6;920:745;-1:-1:-1;;;920:745:4:o;1670:1656::-;1783:6;1791;1799;1852:2;1840:9;1831:7;1827:23;1823:32;1820:52;;;1868:1;1865;1858:12;1820:52;1908:9;1895:23;1941:18;1933:6;1930:30;1927:50;;;1973:1;1970;1963:12;1927:50;1996:22;;2052:6;2034:16;;;2030:29;2027:49;;;2072:1;2069;2062:12;2027:49;2098:17;;:::i;:::-;2160:16;;2185:22;;2273:2;2265:11;;;2252:25;2293:14;;;2286:31;2349:30;2375:2;2367:11;;2349:30;:::i;:::-;2344:2;2337:5;2333:14;2326:54;2412:30;2438:2;2434;2430:11;2412:30;:::i;:::-;2407:2;2400:5;2396:14;2389:54;2476:31;2502:3;2498:2;2494:12;2476:31;:::i;:::-;2470:3;2459:15;;2452:56;2574:3;2566:12;;;2553:26;2595:15;;;2588:32;2653;2680:3;2672:12;;2653:32;:::i;:::-;2647:3;2640:5;2636:15;2629:57;2719:32;2746:3;2742:2;2738:12;2719:32;:::i;:::-;2713:3;2706:5;2702:15;2695:57;2785:29;2809:3;2805:2;2801:12;2785:29;:::i;:::-;2779:3;2772:5;2768:15;2761:54;2861:3;2857:2;2853:12;2840:26;2891:18;2881:8;2878:32;2875:52;;;2923:1;2920;2913:12;2875:52;2960:44;2996:7;2985:8;2981:2;2977:17;2960:44;:::i;:::-;2954:3;2943:15;;2936:69;-1:-1:-1;2947:5:4;-1:-1:-1;;3082:2:4;3067:18;;3054:32;3111:18;3098:32;;3095:52;;;3143:1;3140;3133:12;3095:52;3166:51;3209:7;3198:8;3187:9;3183:24;3166:51;:::i;:::-;1670:1656;;3156:61;;-1:-1:-1;;;;3290:2:4;3275:18;;;;3262:32;;1670:1656::o",
+        "linkReferences": {}
+    },
+    "methodIdentifiers": {
+        "checkStatement((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes),bytes,bytes32)": "1272ff8b"
+    },
+    "rawMetadata": "{\"compiler\":{\"version\":\"0.8.26+commit.8a97fa7a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"components\":[{\"internalType\":\"bytes32\",\"name\":\"uid\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"schema\",\"type\":\"bytes32\"},{\"internalType\":\"uint64\",\"name\":\"time\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"expirationTime\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"revocationTime\",\"type\":\"uint64\"},{\"internalType\":\"bytes32\",\"name\":\"refUID\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"attester\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"revocable\",\"type\":\"bool\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"struct Attestation\",\"name\":\"\",\"type\":\"tuple\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"},{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"checkStatement\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/Validators/TrivialArbiter.sol\":\"TrivialArbiter\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@eas/=lib/eas-contracts/contracts/\",\":@openzeppelin/=lib/openzeppelin-contracts/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/\",\":eas-contracts/=lib/eas-contracts/contracts/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"lib/eas-contracts/contracts/Common.sol\":{\"keccak256\":\"0x957bd2e6d0d6d637f86208b135c29fbaf4412cb08e5e7a61ede16b80561bf685\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://da1dc9aedbb1d4d39c46c2235918d3adfbc5741dd34a46010cf425d134e7936d\",\"dweb:/ipfs/QmWUk6bXnLaghS2riF3GTFEeURCzgYFMA5woa6AsgPwEgc\"]},\"src/ArbiterUtils.sol\":{\"keccak256\":\"0x1ae482f265bdcbd8bb02a1f6ef7ffdbca8957e8d2b34aae31ba67c1f8d53f11c\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://c23924e0e10367b023c4a0b6d64bda4303e2b3d96bed226fc7623b9b7255b265\",\"dweb:/ipfs/QmTEJsmSyRACQqWDL1rN9vTgeCXZf6wqBrX8cBeYHh2UtZ\"]},\"src/IArbiter.sol\":{\"keccak256\":\"0x1081592b193da4a0afa7524b03e5714f12770c6979bc65362714a7238705c647\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://3d676d3f5dcbb43ad28c18776d07d7b6567094a4effb2de8fe8455a6a45a9778\",\"dweb:/ipfs/QmYvL7JcFowSjcceZV4VRUDFV9RD5tg7vD4zeXTYACUmBp\"]},\"src/Validators/TrivialArbiter.sol\":{\"keccak256\":\"0xa665b60f2319474503572daecd6caaad14fc33e8b9cd8456dff42d87ac56d57d\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://055d2b969ba3623767edd8f700ae61904e701aef13c804f3de8de1b6e68677d3\",\"dweb:/ipfs/QmQ8p7DXcj4hi3DP4E5iRt31TefPTCRL8tfMertS9En3Nu\"]}},\"version\":1}",
+    "metadata": {
+        "compiler": {
+            "version": "0.8.26+commit.8a97fa7a"
+        },
+        "language": "Solidity",
+        "output": {
+            "abi": [
+                {
+                    "inputs": [
+                        {
+                            "internalType": "struct Attestation",
+                            "name": "",
+                            "type": "tuple",
+                            "components": [
+                                {
+                                    "internalType": "bytes32",
+                                    "name": "uid",
+                                    "type": "bytes32"
+                                },
+                                {
+                                    "internalType": "bytes32",
+                                    "name": "schema",
+                                    "type": "bytes32"
+                                },
+                                {
+                                    "internalType": "uint64",
+                                    "name": "time",
+                                    "type": "uint64"
+                                },
+                                {
+                                    "internalType": "uint64",
+                                    "name": "expirationTime",
+                                    "type": "uint64"
+                                },
+                                {
+                                    "internalType": "uint64",
+                                    "name": "revocationTime",
+                                    "type": "uint64"
+                                },
+                                {
+                                    "internalType": "bytes32",
+                                    "name": "refUID",
+                                    "type": "bytes32"
+                                },
+                                {
+                                    "internalType": "address",
+                                    "name": "recipient",
+                                    "type": "address"
+                                },
+                                {
+                                    "internalType": "address",
+                                    "name": "attester",
+                                    "type": "address"
+                                },
+                                {
+                                    "internalType": "bool",
+                                    "name": "revocable",
+                                    "type": "bool"
+                                },
+                                {
+                                    "internalType": "bytes",
+                                    "name": "data",
+                                    "type": "bytes"
+                                }
+                            ]
+                        },
+                        {
+                            "internalType": "bytes",
+                            "name": "",
+                            "type": "bytes"
+                        },
+                        {
+                            "internalType": "bytes32",
+                            "name": "",
+                            "type": "bytes32"
+                        }
+                    ],
+                    "stateMutability": "pure",
+                    "type": "function",
+                    "name": "checkStatement",
+                    "outputs": [
+                        {
+                            "internalType": "bool",
+                            "name": "",
+                            "type": "bool"
+                        }
+                    ]
+                }
+            ],
+            "devdoc": {
+                "kind": "dev",
+                "methods": {},
+                "version": 1
+            },
+            "userdoc": {
+                "kind": "user",
+                "methods": {},
+                "version": 1
+            }
+        },
+        "settings": {
+            "remappings": [
+                "@eas/=lib/eas-contracts/contracts/",
+                "@openzeppelin/=lib/openzeppelin-contracts/contracts/",
+                "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+                "ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/",
+                "eas-contracts/=lib/eas-contracts/contracts/",
+                "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+                "forge-std/=lib/forge-std/src/",
+                "halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/",
+                "openzeppelin-contracts/=lib/openzeppelin-contracts/"
+            ],
+            "optimizer": {
+                "enabled": true,
+                "runs": 200
+            },
+            "metadata": {
+                "bytecodeHash": "ipfs"
+            },
+            "compilationTarget": {
+                "src/Validators/TrivialArbiter.sol": "TrivialArbiter"
+            },
+            "evmVersion": "paris",
+            "libraries": {}
+        },
+        "sources": {
+            "lib/eas-contracts/contracts/Common.sol": {
+                "keccak256": "0x957bd2e6d0d6d637f86208b135c29fbaf4412cb08e5e7a61ede16b80561bf685",
+                "urls": [
+                    "bzz-raw://da1dc9aedbb1d4d39c46c2235918d3adfbc5741dd34a46010cf425d134e7936d",
+                    "dweb:/ipfs/QmWUk6bXnLaghS2riF3GTFEeURCzgYFMA5woa6AsgPwEgc"
+                ],
+                "license": "MIT"
+            },
+            "src/ArbiterUtils.sol": {
+                "keccak256": "0x1ae482f265bdcbd8bb02a1f6ef7ffdbca8957e8d2b34aae31ba67c1f8d53f11c",
+                "urls": [
+                    "bzz-raw://c23924e0e10367b023c4a0b6d64bda4303e2b3d96bed226fc7623b9b7255b265",
+                    "dweb:/ipfs/QmTEJsmSyRACQqWDL1rN9vTgeCXZf6wqBrX8cBeYHh2UtZ"
+                ],
+                "license": "UNLICENSED"
+            },
+            "src/IArbiter.sol": {
+                "keccak256": "0x1081592b193da4a0afa7524b03e5714f12770c6979bc65362714a7238705c647",
+                "urls": [
+                    "bzz-raw://3d676d3f5dcbb43ad28c18776d07d7b6567094a4effb2de8fe8455a6a45a9778",
+                    "dweb:/ipfs/QmYvL7JcFowSjcceZV4VRUDFV9RD5tg7vD4zeXTYACUmBp"
+                ],
+                "license": "UNLICENSED"
+            },
+            "src/Validators/TrivialArbiter.sol": {
+                "keccak256": "0xa665b60f2319474503572daecd6caaad14fc33e8b9cd8456dff42d87ac56d57d",
+                "urls": [
+                    "bzz-raw://055d2b969ba3623767edd8f700ae61904e701aef13c804f3de8de1b6e68677d3",
+                    "dweb:/ipfs/QmQ8p7DXcj4hi3DP4E5iRt31TefPTCRL8tfMertS9En3Nu"
+                ],
+                "license": "UNLICENSED"
+            }
+        },
+        "version": 1
+    },
+    "id": 3
+}

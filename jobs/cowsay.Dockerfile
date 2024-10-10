@@ -7,4 +7,4 @@ RUN apk update && \
     cd cowsay ; ./install.sh /usr/local && \
     rm -rf /var/cache/apk/* /var/tmp/* /tmp/* && \
     apk del git
-CMD ["/usr/local/bin/cowsay","Docker is very good !"]
+CMD ["/usr/local/bin/cowsay","Paying with ERC20 or ERC721 for Compute jobs is very nice!"]

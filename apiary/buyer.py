@@ -1,11 +1,6 @@
 """This module defines the Buyers used within the CoopHive protocol."""
 
-import json
 import logging
-import os
-import uuid
-
-import readwrite as rw
 
 from apiary import apiars
 from apiary.base_agent import Agent
@@ -27,13 +22,24 @@ class NaiveBuyer(Agent):
 
         match input_message["data"].get("_tag"):
             case "offer":
-                token = str(input_message["data"]["price"][0])
-                amount = int(input_message["data"]["price"][1])
-                query_cid = self._get_query_cid(input_message)
+                query = self._get_query(input_message)
 
-                statement_uid = apiars.make_buy_statement(
-                    token, amount, query_cid, self.private_key
-                )
+                token_standard = str(input_message["data"]["token"]["tokenStandard"])
+                token_address = str(input_message["data"]["token"]["address"])
+
+                if token_standard == "ERC20":
+                    amount = int(input_message["data"]["token"]["amt"])
+                    statement_uid = apiars.erc20.make_buy_statement(
+                        token_address, amount, query, self.private_key
+                    )
+
+                elif token_standard == "ERC721":
+                    token_id = int(input_message["data"]["token"]["id"])
+                    statement_uid = apiars.erc721.make_buy_statement(
+                        token_address, token_id, query, self.private_key
+                    )
+                else:
+                    raise ValueError(f"Unsupported token standard: {token_standard}")
 
                 output_message["data"]["_tag"] = "buyAttest"
                 output_message["data"]["attestation"] = statement_uid
@@ -57,19 +63,3 @@ class NaiveBuyer(Agent):
 #    reply_buy_attest.
 #    reply_sell_attest.
 #    NOTE: in the case messaging is server-push-based, deal negotiations and job runs are necessarily sequential.
-
-
-def parse_initial_offer(job_path, price):
-    """Parses the initial offer based on the provided job path and price."""
-    pubkey = os.getenv("PUBLIC_KEY")
-    query = rw.read_as(job_path, "txt")
-
-    data = {
-        "_tag": "offer",
-        "query": query,
-    }
-
-    if price is not None:
-        data["price"] = json.loads(price)
-
-    return {"pubkey": pubkey, "offerId": str(uuid.uuid4()), "data": data}
