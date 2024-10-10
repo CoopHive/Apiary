@@ -56,3 +56,9 @@ class NaiveSeller(Agent):
                 output_message["data"]["attestation"] = sell_uid
 
         return output_message
+
+
+class KalmanSeller(Agent):
+    """A Seller in the CoopHive protocol."""
+
+    pass

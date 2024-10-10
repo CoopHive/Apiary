@@ -2,7 +2,6 @@
 
 import logging
 
-from apiary import apiars
 from apiary.base_agent import Agent
 
 
@@ -22,33 +21,21 @@ class NaiveBuyer(Agent):
 
         match input_message["data"].get("_tag"):
             case "offer":
-                query = self._get_query(input_message)
-
-                token_standard = str(input_message["data"]["token"]["tokenStandard"])
-                token_address = str(input_message["data"]["token"]["address"])
-
-                if token_standard == "ERC20":
-                    amount = int(input_message["data"]["token"]["amt"])
-                    statement_uid = apiars.erc20.make_buy_statement(
-                        token_address, amount, query, self.private_key
-                    )
-
-                elif token_standard == "ERC721":
-                    token_id = int(input_message["data"]["token"]["id"])
-                    statement_uid = apiars.erc721.make_buy_statement(
-                        token_address, token_id, query, self.private_key
-                    )
-                else:
-                    raise ValueError(f"Unsupported token standard: {token_standard}")
-
-                output_message["data"]["_tag"] = "buyAttest"
-                output_message["data"]["attestation"] = statement_uid
+                output_message = self._offer_to_buy_attestation(
+                    input_message, output_message
+                )
             case "sellAttest":
                 result_cid = input_message["data"]["result"]
                 self._get_result_from_result_cid(result_cid)
                 return "noop"
 
         return output_message
+
+
+class KalmanBuyer(Agent):
+    """A Buyer in the CoopHive protocol."""
+
+    pass
 
 
 # NOTE:
