@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 
 from apiary.base_agent import Agent
+from apiary.utils import plot_negotiation
 
 load_dotenv(override=True)
 
@@ -63,6 +64,8 @@ class KalmanBuyer(Agent):
 
                 abs_tol = float(os.getenv("ABSOLUTE_TOLERANCE"))
                 if valuation_measurement <= valuation_estimation + abs_tol:
+                    plot_negotiation()
+
                     output_message = self._offer_to_buy_attestation(
                         input_message, output_message
                     )

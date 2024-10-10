@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 
 from apiary.base_agent import Agent
+from apiary.utils import add_float_to_csv
 
 load_dotenv(override=True)
 
@@ -60,13 +61,16 @@ class KalmanSeller(Agent):
                     valuation_estimation = 300.0
                 else:
                     valuation_estimation = float(valuation_estimation)
+                add_float_to_csv(valuation_estimation)
 
                 if valuation_variance is None:
-                    valuation_variance = 20.0
+                    valuation_variance = 10.0
                 else:
                     valuation_variance = float(valuation_variance)
 
                 valuation_measurement = input_message["data"]["token"]["amt"]
+                add_float_to_csv(valuation_measurement)
+
                 if valuation_measurement >= valuation_estimation:
                     # Beneficial incoming offer, no further negotiation needed.
                     pass  # Confirm buyer offer with identity counteroffer
