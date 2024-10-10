@@ -21,12 +21,12 @@ class NaiveBuyer(Agent):
 
         match input_message["data"].get("_tag"):
             case "offer":
+                # Confirm seller counteroffer
                 output_message = self._offer_to_buy_attestation(
                     input_message, output_message
                 )
             case "sellAttest":
-                result_cid = input_message["data"]["result"]
-                self._get_result_from_result_cid(result_cid)
+                self._get_result_from_result_cid(input_message["data"]["result"])
                 return "noop"
 
         return output_message

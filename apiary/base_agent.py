@@ -178,6 +178,39 @@ class Agent(ABC):
         result_cid = response["data"]["Hash"]
         return result_cid
 
+    def _buy_attestation_to_sell_attestation(self, input_message, output_message):
+        statement_uid = input_message["data"]["attestation"]
+
+        token_standard = str(input_message["data"]["token"]["tokenStandard"])
+
+        if token_standard == "ERC20":
+            (token, quantity, arbiter, job_cid) = apiars.erc20.get_buy_statement(
+                statement_uid, self.private_key
+            )
+
+            result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
+
+            sell_uid = apiars.erc20.submit_and_collect(
+                statement_uid, result_cid, self.private_key
+            )
+        elif token_standard == "ERC721":
+            (token, token_id, arbiter, job_cid) = apiars.erc721.get_buy_statement(
+                statement_uid, self.private_key
+            )
+
+            result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
+
+            sell_uid = apiars.erc721.submit_and_collect(
+                statement_uid, result_cid, self.private_key
+            )
+        else:
+            raise ValueError(f"Unsupported token standard: {token_standard}")
+
+        output_message["data"]["_tag"] = "sellAttest"
+        output_message["data"]["result"] = result_cid
+        output_message["data"]["attestation"] = sell_uid
+        return output_message
+
     def _get_result_from_result_cid(self, result_cid):
         try:
             results = self.lh.download(result_cid)

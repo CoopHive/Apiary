@@ -2,7 +2,6 @@
 
 import logging
 
-from apiary import apiars
 from apiary.base_agent import Agent
 
 
@@ -24,37 +23,9 @@ class NaiveSeller(Agent):
             case "offer":
                 pass  # Confirm buyer offer with identity counteroffer
             case "buyAttest":
-                statement_uid = input_message["data"]["attestation"]
-
-                token_standard = str(input_message["data"]["token"]["tokenStandard"])
-
-                if token_standard == "ERC20":
-                    (token, quantity, arbiter, job_cid) = (
-                        apiars.erc20.get_buy_statement(statement_uid, self.private_key)
-                    )
-
-                    result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
-
-                    sell_uid = apiars.erc20.submit_and_collect(
-                        statement_uid, result_cid, self.private_key
-                    )
-                elif token_standard == "ERC721":
-                    (token, token_id, arbiter, job_cid) = (
-                        apiars.erc721.get_buy_statement(statement_uid, self.private_key)
-                    )
-
-                    result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
-
-                    sell_uid = apiars.erc721.submit_and_collect(
-                        statement_uid, result_cid, self.private_key
-                    )
-                else:
-                    raise ValueError(f"Unsupported token standard: {token_standard}")
-
-                output_message["data"]["_tag"] = "sellAttest"
-                output_message["data"]["result"] = result_cid
-                output_message["data"]["attestation"] = sell_uid
-
+                output_message = self._buy_attestation_to_sell_attestation(
+                    input_message, output_message
+                )
         return output_message
 
 
