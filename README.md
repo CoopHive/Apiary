@@ -69,9 +69,9 @@ Please export the necessary paths or start a new session before proceeding.
 5. Populate all the necessary environmental variables and/or confguration file (see [.env.example](https://github.com/CoopHive/Apiary/blob/main/.env.example)):
     - REDIS_URL
     - RPC_URL
-    - ERC20_PAYMENT_STATEMENT
-    - ERC721_PAYMENT_STATEMENT
-    - DOCKER_RESULT_STATEMENT
+    - ERC20_PAYMENT_OBLIGATION
+    - ERC721_PAYMENT_OBLIGATION
+    - JOB_RESULT_OBLIGATION
     - EAS_CONTRACT
     - LIGHTHOUSE_TOKEN
     - PRIVATE_KEY

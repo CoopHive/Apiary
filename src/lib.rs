@@ -14,22 +14,29 @@ mod provider;
 sol!(
     #[allow(missing_docs)]
     #[sol(rpc)]
-    ERC20PaymentStatement,
-    "src/contracts/ERC20PaymentStatement.json"
+    ERC20PaymentObligation,
+    "src/contracts/ERC20PaymentObligation.json"
 );
 
 sol!(
     #[allow(missing_docs)]
     #[sol(rpc)]
-    ERC721PaymentStatement,
-    "src/contracts/ERC721PaymentStatement.json"
+    ERC721PaymentObligation,
+    "src/contracts/ERC721PaymentObligation.json"
 );
 
 sol!(
     #[allow(missing_docs)]
     #[sol(rpc)]
-    DockerResultStatement,
-    "src/contracts/DockerResultStatement.json"
+    JobResultObligation,
+    "src/contracts/JobResultObligation.json"
+);
+
+sol!(
+    #[allow(missing_docs)]
+    #[sol(rpc)]
+    TrivialArbiter,
+    "src/contracts/TrivialArbiter.json"
 );
 
 sol!(
@@ -67,7 +74,7 @@ fn py_run_err(msg: impl Into<String>) -> PyErr {
 async fn erc_20_make_buy_statement(
     token: String,
     amount: u64,
-    query_cid: String,
+    query: String,
     private_key: String,
 ) -> PyResult<String> {
     let provider = provider::get_provider(private_key)?;
@@ -75,25 +82,25 @@ async fn erc_20_make_buy_statement(
     let token_address = Address::parse_checksummed(&token, None)
         .map_err(|_| py_val_err("couldn't parse token as an address"))?;
     let amount = U256::from(amount);
-    let arbiter = env::var("DOCKER_RESULT_STATEMENT")
-        .map_err(|_| py_val_err("DOCKER_RESULT_STATEMENT not set"))
+    let arbiter = env::var("TRIVIAL_ARBITER")
+        .map_err(|_| py_val_err("TRIVIAL_ARBITER not set"))
         .map(|a| Address::parse_checksummed(a, None))?
-        .map_err(|_| py_val_err("couldn't parse DOCKER_RESULT_STATEMENT as an address"))?;
+        .map_err(|_| py_val_err("couldn't parse TRIVIAL_ARBITER as an address"))?;
     // ResultData and StatementData became the same abi type after solc compilation
     // since they have the same structure: (string)
-    let demand: Bytes = DockerResultStatement::StatementData {
-        resultCID: query_cid,
+    let demand: Bytes = JobResultObligation::StatementData {
+        result: query,
     }
     .abi_encode()
     .into();
 
-    let payment_address = env::var("ERC20_PAYMENT_STATEMENT")
-        .map_err(|_| py_val_err("ERC20_PAYMENT_STATEMENT not set"))
+    let payment_address = env::var("ERC20_PAYMENT_OBLIGATION")
+        .map_err(|_| py_val_err("ERC20_PAYMENT_OBLIGATION not set"))
         .map(|a| Address::parse_checksummed(a, None))?
-        .map_err(|_| py_val_err("couldn't parse ERC20_PAYMENT_STATEMENT as an address"))?;
+        .map_err(|_| py_val_err("couldn't parse ERC20_PAYMENT_OBLIGATION as an address"))?;
 
     let token_contract = IERC20::new(token_address, &provider);
-    let statement_contract = ERC20PaymentStatement::new(payment_address, &provider);
+    let statement_contract = ERC20PaymentObligation::new(payment_address, &provider);
 
     let approval_receipt = token_contract
         .approve(payment_address, amount)
@@ -110,7 +117,7 @@ async fn erc_20_make_buy_statement(
 
     let log = statement_contract
         .makeStatement(
-            ERC20PaymentStatement::StatementData {
+            ERC20PaymentObligation::StatementData {
                 token: token_address,
                 amount,
                 arbiter,
@@ -149,7 +156,7 @@ async fn erc_20_make_buy_statement(
 async fn erc_721_make_buy_statement(
     token: String,
     token_id: u64,
-    query_cid: String,
+    query: String,
     private_key: String,
 ) -> PyResult<String>{
 
@@ -159,25 +166,25 @@ async fn erc_721_make_buy_statement(
         .map_err(|_| py_val_err("couldn't parse token as an address"))?;
 
     let token_id = U256::from(token_id);
-    let arbiter = env::var("DOCKER_RESULT_STATEMENT")
-        .map_err(|_| py_val_err("DOCKER_RESULT_STATEMENT not set"))
+    let arbiter = env::var("TRIVIAL_ARBITER")
+        .map_err(|_| py_val_err("TRIVIAL_ARBITER not set"))
         .map(|a| Address::parse_checksummed(a, None))?
-        .map_err(|_| py_val_err("couldn't parse DOCKER_RESULT_STATEMENT as an address"))?;
+        .map_err(|_| py_val_err("couldn't parse TRIVIAL_ARBITER as an address"))?;
     // ResultData and StatementData became the same abi type after solc compilation
     // since they have the same structure: (string)
-    let demand: Bytes = DockerResultStatement::StatementData {
-        resultCID: query_cid,
+    let demand: Bytes = JobResultObligation::StatementData {
+        result: query,
     }
     .abi_encode()
     .into();
 
-    let payment_address = env::var("ERC721_PAYMENT_STATEMENT")
-        .map_err(|_| py_val_err("ERC721_PAYMENT_STATEMENT not set"))
+    let payment_address = env::var("ERC721_PAYMENT_OBLIGATION")
+        .map_err(|_| py_val_err("ERC721_PAYMENT_OBLIGATION not set"))
         .map(|a| Address::parse_checksummed(a, None))?
-        .map_err(|_| py_val_err("couldn't parse ERC721_PAYMENT_STATEMENT as an address"))?;
+        .map_err(|_| py_val_err("couldn't parse ERC721_PAYMENT_OBLIGATION as an address"))?;
 
     let token_contract = IERC721::new(token_address, &provider);
-    let statement_contract = ERC721PaymentStatement::new(payment_address, &provider);
+    let statement_contract = ERC721PaymentObligation::new(payment_address, &provider);
 
     let approval_receipt = token_contract
         .approve(payment_address, token_id)
@@ -194,7 +201,7 @@ async fn erc_721_make_buy_statement(
 
     let log = statement_contract
         .makeStatement(
-            ERC721PaymentStatement::StatementData {
+            ERC721PaymentObligation::StatementData {
                 token: token_address,
                 tokenId: token_id,
                 arbiter,
@@ -255,7 +262,7 @@ async fn erc20_get_buy_statement(
         ._0;
 
     let attestation_data =
-        ERC20PaymentStatement::StatementData::abi_decode(attestation.data.as_ref(), true)
+        ERC20PaymentObligation::StatementData::abi_decode(attestation.data.as_ref(), true)
             .map_err(|_| py_run_err("attestation_data decoding failed"))?;
 
     let (token, amount, arbiter, demand) = (
@@ -267,14 +274,14 @@ async fn erc20_get_buy_statement(
     let amount: u64 = amount
         .try_into()
         .map_err(|_| py_run_err("amount too big for u64"))?;
-    let demand = DockerResultStatement::StatementData::abi_decode(&demand, true)
+    let demand = JobResultObligation::StatementData::abi_decode(&demand, true)
         .map_err(|_| py_run_err("demand decoding failed"))?;
 
     Ok((
         token.to_string(),
         amount,
         arbiter.to_string(),
-        demand.resultCID,
+        demand.result,
     ))
 }
 
@@ -302,10 +309,10 @@ async fn get_result_cid_from_sell_uid(sell_uid: String, private_key: String) -> 
         ._0;
 
     let attestation_data =
-        DockerResultStatement::StatementData::abi_decode(attestation.data.as_ref(), true)
+        JobResultObligation::StatementData::abi_decode(attestation.data.as_ref(), true)
             .map_err(|_| py_run_err("attestation_data decoding failed"))?;
 
-    Ok(attestation_data.resultCID)
+    Ok(attestation_data.result)
 }
 
 #[tokio::main]
@@ -322,22 +329,22 @@ async fn erc20_submit_and_collect(
         .parse::<FixedBytes<32>>()
         .map_err(|_| py_val_err("couldn't parse buy_attestation_uid as bytes32"))?;
 
-    let result_address = env::var("DOCKER_RESULT_STATEMENT")
-        .map_err(|_| py_val_err("DOCKER_RESULT_STATEMENT not set"))
+    let result_address = env::var("JOB_RESULT_OBLIGATION")
+        .map_err(|_| py_val_err("JOB_RESULT_OBLIGATION not set"))
         .map(|a| Address::parse_checksummed(a, None))?
-        .map_err(|_| py_val_err("couldn't parse DOCKER_RESULT_STATEMENT as an address"))?;
-    let payment_address = env::var("ERC20_PAYMENT_STATEMENT")
-        .map_err(|_| py_val_err("ERC20_PAYMENT_STATEMENT not set"))
+        .map_err(|_| py_val_err("couldn't parse JOB_RESULT_OBLIGATION as an address"))?;
+    let payment_address = env::var("ERC20_PAYMENT_OBLIGATION")
+        .map_err(|_| py_val_err("ERC20_PAYMENT_OBLIGATION not set"))
         .map(|a| Address::parse_checksummed(a, None))?
-        .map_err(|_| py_val_err("couldn't parse ERC20_PAYMENT_STATEMENT as an address"))?;
+        .map_err(|_| py_val_err("couldn't parse ERC20_PAYMENT_OBLIGATION as an address"))?;
 
-    let result_contract = DockerResultStatement::new(result_address, &provider);
-    let payment_contract = ERC20PaymentStatement::new(payment_address, &provider);
+    let result_contract = JobResultObligation::new(result_address, &provider);
+    let payment_contract = ERC20PaymentObligation::new(payment_address, &provider);
 
     let sell_uid = result_contract
         .makeStatement(
-            DockerResultStatement::StatementData {
-                resultCID: result_cid,
+            JobResultObligation::StatementData {
+                result: result_cid,
             },
             buy_attestation_uid,
         )

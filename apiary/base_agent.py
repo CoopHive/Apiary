@@ -79,8 +79,8 @@ class Agent(ABC):
 
         return output_message
 
-    def _get_query_cid(self, input_message):
-        """Parse Dockerfile from input_message query, upload to IPFS and return the query_cid."""
+    def _get_query(self, input_message):
+        """Parse Dockerfile from input_message query, upload to IPFS and return the query."""
         file_path = "tmp_lighthouse.Dockerfile"
 
         with open(file_path, "w") as file:
@@ -88,7 +88,7 @@ class Agent(ABC):
 
         try:
             response = self.lh.upload(file_path)
-            query_cid = response["data"]["Hash"]
+            query = response["data"]["Hash"]
         except Exception:
             logging.error("Lighthouse Error occurred.", exc_info=True)
             raise
@@ -97,8 +97,8 @@ class Agent(ABC):
             if os.path.exists(file_path):
                 os.remove(file_path)
 
-        logging.info(f"https://gateway.lighthouse.storage/ipfs/{query_cid}")
-        return query_cid
+        logging.info(f"https://gateway.lighthouse.storage/ipfs/{query}")
+        return query
 
     def _job_cid_to_result_cid(self, statement_uid: str, job_cid: str):
         """Download Dockerfile from job_cid, run the job, upload the results to IPFS and return the result_cid."""
