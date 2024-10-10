@@ -25,15 +25,13 @@ sol!(
 
 #[tokio::main]
 #[pyfunction]
-#[pyo3(name = "helloworld")]
-async fn erc20_helloworld() -> PyResult<String> {
+async fn helloworld() -> PyResult<String> {
     Ok("HelloWorld ERC20".into())
 }
 
 #[tokio::main]
 #[pyfunction]
-#[pyo3(name = "make_buy_statement")]
-async fn erc_20_make_buy_statement(
+async fn make_buy_statement(
     token: String,
     amount: u64,
     query: String,
@@ -114,8 +112,7 @@ async fn erc_20_make_buy_statement(
 
 #[tokio::main]
 #[pyfunction]
-#[pyo3(name = "get_buy_statement")]
-async fn erc20_get_buy_statement(
+async fn get_buy_statement(
     statement_uid: String,
     private_key: String,
 ) -> PyResult<(String, u64, String, String)> {
@@ -165,8 +162,7 @@ async fn erc20_get_buy_statement(
 
 #[tokio::main]
 #[pyfunction]
-#[pyo3(name = "submit_and_collect")]
-async fn erc20_submit_and_collect(
+async fn submit_and_collect(
     buy_attestation_uid: String,
     result_cid: String,
     private_key: String,
@@ -243,10 +239,10 @@ async fn erc20_submit_and_collect(
 pub fn add_erc20_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     let erc20_module = PyModule::new_bound(py, "erc20")?;
     
-    erc20_module.add_function(wrap_pyfunction!(erc20_helloworld, erc20_module.clone())?)?;
-    erc20_module.add_function(wrap_pyfunction!(erc_20_make_buy_statement, erc20_module.clone())?)?;
-    erc20_module.add_function(wrap_pyfunction!(erc20_get_buy_statement, erc20_module.clone())?)?;
-    erc20_module.add_function(wrap_pyfunction!(erc20_submit_and_collect, erc20_module.clone())?)?;
+    erc20_module.add_function(wrap_pyfunction!(helloworld, erc20_module.clone())?)?;
+    erc20_module.add_function(wrap_pyfunction!(make_buy_statement, erc20_module.clone())?)?;
+    erc20_module.add_function(wrap_pyfunction!(get_buy_statement, erc20_module.clone())?)?;
+    erc20_module.add_function(wrap_pyfunction!(submit_and_collect, erc20_module.clone())?)?;
 
     parent_module.add_submodule(&erc20_module)?;
     Ok(())

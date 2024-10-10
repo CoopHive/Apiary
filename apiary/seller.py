@@ -39,7 +39,15 @@ class NaiveSeller(Agent):
                         statement_uid, result_cid, self.private_key
                     )
                 elif token_standard == "ERC721":
-                    raise ValueError("To be implemented!")
+                    (token, token_id, arbiter, job_cid) = (
+                        apiars.erc721.get_buy_statement(statement_uid, self.private_key)
+                    )
+
+                    result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
+
+                    sell_uid = apiars.erc721.submit_and_collect(
+                        statement_uid, result_cid, self.private_key
+                    )
                 else:
                     raise ValueError(f"Unsupported token standard: {token_standard}")
 
