@@ -31,6 +31,9 @@ pub async fn make_buy_statement(
     let provider = provider::get_provider(private_key)?;
 
     let token_address = Address::parse_checksummed(&token, None)?;
+    let payment_address =
+        env::var("ERC20_PAYMENT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
+
     let amount = U256::from(amount);
     let arbiter = env::var("TRIVIAL_ARBITER").map(|a| Address::parse_checksummed(a, None))??;
     // ResultData and StatementData became the same abi type after solc compilation
@@ -38,9 +41,6 @@ pub async fn make_buy_statement(
     let demand: Bytes = JobResultObligation::StatementData { result: query }
         .abi_encode()
         .into();
-
-    let payment_address =
-        env::var("ERC20_PAYMENT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
 
     let token_contract = IERC20::new(token_address, &provider);
     let statement_contract = ERC20PaymentObligation::new(payment_address, &provider);
@@ -95,14 +95,16 @@ pub async fn get_buy_statement(
     private_key: String,
 ) -> eyre::Result<JobPayment> {
     let provider = provider::get_provider(private_key)?;
-    let statement_uid: FixedBytes<32> = statement_uid.parse::<FixedBytes<32>>()?;
+
     let eas_address = env::var("EAS_CONTRACT").map(|a| Address::parse_checksummed(a, None))??;
+
+    let statement_uid: FixedBytes<32> = statement_uid.parse::<FixedBytes<32>>()?;
+
     let contract = IEAS::new(eas_address, provider);
     let attestation = contract.getAttestation(statement_uid).call().await?._0;
 
     let attestation_data =
         ERC20PaymentObligation::StatementData::abi_decode(attestation.data.as_ref(), true)?;
-
     let (token, amount, arbiter, demand) = (
         attestation_data.token,
         attestation_data.amount,
@@ -126,12 +128,12 @@ pub async fn submit_and_collect(
 ) -> eyre::Result<String> {
     let provider = provider::get_provider(private_key)?;
 
-    let buy_attestation_uid = buy_attestation_uid.parse::<FixedBytes<32>>()?;
-
     let result_address =
         env::var("JOB_RESULT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
     let payment_address =
         env::var("ERC20_PAYMENT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
+
+    let buy_attestation_uid = buy_attestation_uid.parse::<FixedBytes<32>>()?;
 
     let result_contract = JobResultObligation::new(result_address, &provider);
     let payment_contract = ERC20PaymentObligation::new(payment_address, &provider);
