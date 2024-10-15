@@ -38,7 +38,7 @@ async fn get_buy_statement(
                     .try_into()
                     .map_err(|_| PyValueError::new_err("amount too big for u64"))?,
                 r.arbiter.to_string(),
-                r.demand.result,
+                r.demand.result, // actually query, unified by abi
             ))
         })?
 }
