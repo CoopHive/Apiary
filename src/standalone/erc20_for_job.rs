@@ -1,5 +1,5 @@
 use alloy::{
-    primitives::{b256, Address, Bytes, FixedBytes, U256},
+    primitives::{self, b256, Address, Bytes, FixedBytes, U256},
     sol,
     sol_types::{SolEvent, SolValue},
 };
@@ -83,10 +83,17 @@ pub async fn make_buy_statement(
     Ok(log.inner.uid.to_string())
 }
 
+pub struct JobPayment {
+    pub token: primitives::Address,
+    pub amount: primitives::U256,
+    pub arbiter: primitives::Address,
+    pub demand: JobResultObligation::StatementData,
+}
+
 pub async fn get_buy_statement(
     statement_uid: String,
     private_key: String,
-) -> eyre::Result<(String, u64, String, String)> {
+) -> eyre::Result<JobPayment> {
     let provider = provider::get_provider(private_key)?;
     let statement_uid: FixedBytes<32> = statement_uid.parse::<FixedBytes<32>>()?;
     let eas_address = env::var("EAS_CONTRACT").map(|a| Address::parse_checksummed(a, None))??;
@@ -102,15 +109,14 @@ pub async fn get_buy_statement(
         attestation_data.arbiter,
         attestation_data.demand,
     );
-    let amount: u64 = amount.try_into()?;
     let demand = JobResultObligation::StatementData::abi_decode(&demand, true)?;
 
-    Ok((
-        token.to_string(),
+    Ok(JobPayment {
+        token,
         amount,
-        arbiter.to_string(),
-        demand.result,
-    ))
+        arbiter,
+        demand,
+    })
 }
 
 pub async fn submit_and_collect(
