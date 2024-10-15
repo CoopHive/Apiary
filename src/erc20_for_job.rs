@@ -58,10 +58,10 @@ async fn submit_and_collect(
 pub fn add_erc20_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     let erc20_module = PyModule::new_bound(py, "erc20")?;
 
-    erc20_module.add_function(wrap_pyfunction!(helloworld, erc20_module.clone())?)?;
-    erc20_module.add_function(wrap_pyfunction!(make_buy_statement, erc20_module.clone())?)?;
-    erc20_module.add_function(wrap_pyfunction!(get_buy_statement, erc20_module.clone())?)?;
-    erc20_module.add_function(wrap_pyfunction!(submit_and_collect, erc20_module.clone())?)?;
+    erc20_module.add_function(wrap_pyfunction!(helloworld, &erc20_module)?)?;
+    erc20_module.add_function(wrap_pyfunction!(make_buy_statement, &erc20_module)?)?;
+    erc20_module.add_function(wrap_pyfunction!(get_buy_statement, &erc20_module)?)?;
+    erc20_module.add_function(wrap_pyfunction!(submit_and_collect, &erc20_module)?)?;
 
     parent_module.add_submodule(&erc20_module)?;
     Ok(())
