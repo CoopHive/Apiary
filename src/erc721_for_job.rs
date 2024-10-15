@@ -7,7 +7,7 @@ use pyo3::prelude::*;
 use std::env;
 
 use crate::provider;
-use crate::shared::{JobResultObligation, IEAS, py_val_err, py_run_err};
+use crate::shared::{py_run_err, py_val_err, JobResultObligation, IEAS};
 
 sol!(
     #[allow(missing_docs)]
@@ -36,8 +36,7 @@ async fn make_buy_statement(
     token_id: u64,
     query: String,
     private_key: String,
-) -> PyResult<String>{
-
+) -> PyResult<String> {
     let provider = provider::get_provider(private_key)?;
 
     let token_address = Address::parse_checksummed(&token, None)
@@ -50,11 +49,9 @@ async fn make_buy_statement(
         .map_err(|_| py_val_err("couldn't parse TRIVIAL_ARBITER as an address"))?;
     // ResultData and StatementData became the same abi type after solc compilation
     // since they have the same structure: (string)
-    let demand: Bytes = JobResultObligation::StatementData {
-        result: query,
-    }
-    .abi_encode()
-    .into();
+    let demand: Bytes = JobResultObligation::StatementData { result: query }
+        .abi_encode()
+        .into();
 
     let payment_address = env::var("ERC721_PAYMENT_OBLIGATION")
         .map_err(|_| py_val_err("ERC721_PAYMENT_OBLIGATION not set"))
@@ -189,9 +186,7 @@ async fn submit_and_collect(
 
     let sell_uid = result_contract
         .makeStatement(
-            JobResultObligation::StatementData {
-                result: result_cid,
-            },
+            JobResultObligation::StatementData { result: result_cid },
             buy_attestation_uid,
         )
         .send()
@@ -240,11 +235,11 @@ async fn submit_and_collect(
 
 pub fn add_erc721_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     let erc721_module = PyModule::new_bound(py, "erc721")?;
-    
-    erc721_module.add_function(wrap_pyfunction!(helloworld, erc721_module.clone())?)?;
-    erc721_module.add_function(wrap_pyfunction!(make_buy_statement, erc721_module.clone())?)?;
-    erc721_module.add_function(wrap_pyfunction!(get_buy_statement, erc721_module.clone())?)?;
-    erc721_module.add_function(wrap_pyfunction!(submit_and_collect, erc721_module.clone())?)?;
+
+    erc721_module.add_function(wrap_pyfunction!(helloworld, &erc721_module)?)?;
+    erc721_module.add_function(wrap_pyfunction!(make_buy_statement, &erc721_module)?)?;
+    erc721_module.add_function(wrap_pyfunction!(get_buy_statement, &erc721_module)?)?;
+    erc721_module.add_function(wrap_pyfunction!(submit_and_collect, &erc721_module)?)?;
 
     parent_module.add_submodule(&erc721_module)?;
     Ok(())
