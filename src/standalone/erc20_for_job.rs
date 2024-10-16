@@ -105,19 +105,12 @@ pub async fn get_buy_statement(
 
     let attestation_data =
         ERC20PaymentObligation::StatementData::abi_decode(attestation.data.as_ref(), true)?;
-    let (token, amount, arbiter, demand) = (
-        attestation_data.token,
-        attestation_data.amount,
-        attestation_data.arbiter,
-        attestation_data.demand,
-    );
-    let demand = JobResultObligation::StatementData::abi_decode(&demand, true)?;
 
     Ok(JobPayment {
-        token,
-        amount,
-        arbiter,
-        demand,
+        token: attestation_data.token,
+        amount: attestation_data.amount,
+        arbiter: attestation_data.arbiter,
+        demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,
     })
 }
 
