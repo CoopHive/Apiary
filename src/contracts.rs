@@ -1,5 +1,7 @@
 use alloy::sol;
 
+// general
+
 sol!(
     #[allow(missing_docs)]
     #[sol(rpc)]
@@ -20,6 +22,8 @@ sol!(
     IERC721,
     "src/contracts/IERC721.json"
 );
+
+// obligations
 
 sol!(
     #[allow(missing_docs)]
@@ -47,4 +51,13 @@ sol!(
     #[sol(rpc)]
     RedisProvisionObligation,
     "src/contracts/RedisProvisionObligation.json"
+);
+
+// arbiters
+
+sol!(
+    #[allow(missing_docs)]
+    #[sol(rpc)]
+    TrustedPartyArbiter,
+    "src/contracts/TrustedPartyArbiter.json"
 );
