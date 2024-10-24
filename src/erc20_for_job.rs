@@ -19,6 +19,7 @@ async fn make_buy_statement(
 ) -> PyResult<String> {
     erc20_for_job::make_buy_statement(token, amount, query, private_key)
         .await
+        .map(|x| x.to_string())
         .map_err(PyErr::from)
 }
 
@@ -52,6 +53,7 @@ async fn submit_and_collect(
 ) -> PyResult<String> {
     erc20_for_job::submit_and_collect(buy_attestation_uid, result_cid, private_key)
         .await
+        .map(|x| x.to_string())
         .map_err(PyErr::from)
 }
 

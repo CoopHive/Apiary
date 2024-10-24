@@ -27,7 +27,7 @@ pub async fn make_buy_statement(
     amount: u64,
     query: String,
     private_key: String,
-) -> eyre::Result<String> {
+) -> eyre::Result<FixedBytes<32>> {
     let provider = provider::get_provider(private_key)?;
 
     let token_address = Address::parse_checksummed(&token, None)?;
@@ -80,7 +80,7 @@ pub async fn make_buy_statement(
         .map(|log| log.log_decode::<IEAS::Attested>())
         .ok_or_else(|| eyre::eyre!("makeStatement logs didn't contain Attested"))??;
 
-    Ok(log.inner.uid.to_string())
+    Ok(log.inner.uid)
 }
 
 pub struct JobPayment {
@@ -118,7 +118,7 @@ pub async fn submit_and_collect(
     buy_attestation_uid: String,
     result_cid: String,
     private_key: String,
-) -> eyre::Result<String> {
+) -> eyre::Result<FixedBytes<32>> {
     let provider = provider::get_provider(private_key)?;
 
     let result_address =
@@ -157,7 +157,7 @@ pub async fn submit_and_collect(
         .await?;
 
     if collect_receipt.status() {
-        Ok(sell_uid.to_string())
+        Ok(sell_uid)
     } else {
         Err(eyre::eyre!("contract call to collect payment failed"))
     }
