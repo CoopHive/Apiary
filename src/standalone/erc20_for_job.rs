@@ -70,8 +70,7 @@ pub async fn make_buy_statement(
 }
 
 pub struct JobPayment {
-    pub token: primitives::Address,
-    pub amount: primitives::U256,
+    pub price: ERC20Price,
     pub arbiter: primitives::Address,
     pub demand: JobResultObligation::StatementData,
 }
@@ -91,8 +90,10 @@ pub async fn get_buy_statement(
         ERC20PaymentObligation::StatementData::abi_decode(attestation.data.as_ref(), true)?;
 
     Ok(JobPayment {
-        token: attestation_data.token,
-        amount: attestation_data.amount,
+        price: ERC20Price {
+            token: attestation_data.token,
+            amount: attestation_data.amount,
+        },
         arbiter: attestation_data.arbiter,
         demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,
     })

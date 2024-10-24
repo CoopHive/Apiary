@@ -43,8 +43,9 @@ async fn get_buy_statement(
         .await
         .map(|r| -> PyResult<_> {
             Ok((
-                r.token.to_string(),
-                r.token_id
+                r.price.token.to_string(),
+                r.price
+                    .id
                     .try_into()
                     .map_err(|_| PyValueError::new_err("token_id too big for u64"))?,
                 r.arbiter.to_string(),
