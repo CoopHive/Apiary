@@ -1,5 +1,5 @@
 use alloy::{
-    primitives::{self, b256, Address, Bytes, FixedBytes, U256},
+    primitives::{self, b256, Address, Bytes, FixedBytes},
     sol_types::{SolEvent, SolValue},
 };
 use std::env;

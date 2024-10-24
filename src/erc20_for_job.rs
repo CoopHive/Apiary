@@ -1,6 +1,8 @@
+use alloy::primitives::{Address, FixedBytes, U256};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
+use crate::shared::ERC20Price;
 use crate::standalone::erc20_for_job;
 
 #[tokio::main]
@@ -17,7 +19,13 @@ async fn make_buy_statement(
     query: String,
     private_key: String,
 ) -> PyResult<String> {
-    erc20_for_job::make_buy_statement(token, amount, query, private_key)
+    let price = ERC20Price {
+        token: Address::parse_checksummed(&token, None)
+            .map_err(|_| PyValueError::new_err("couldn't parse token as an address"))?,
+        amount: U256::from(amount),
+    };
+
+    erc20_for_job::make_buy_statement(price, query, private_key)
         .await
         .map(|x| x.to_string())
         .map_err(PyErr::from)
@@ -29,6 +37,10 @@ async fn get_buy_statement(
     statement_uid: String,
     private_key: String,
 ) -> PyResult<(String, u64, String, String)> {
+    let statement_uid: FixedBytes<32> = statement_uid
+        .parse::<FixedBytes<32>>()
+        .map_err(|_| PyValueError::new_err("couldn't parse statement_uid as bytes32"))?;
+
     erc20_for_job::get_buy_statement(statement_uid, private_key)
         .await
         .map_err(PyErr::from)
@@ -51,6 +63,10 @@ async fn submit_and_collect(
     result_cid: String,
     private_key: String,
 ) -> PyResult<String> {
+    let buy_attestation_uid: FixedBytes<32> = buy_attestation_uid
+        .parse::<FixedBytes<32>>()
+        .map_err(|_| PyValueError::new_err("couldn't parse buy_attestation_uid as bytes32"))?;
+
     erc20_for_job::submit_and_collect(buy_attestation_uid, result_cid, private_key)
         .await
         .map(|x| x.to_string())
