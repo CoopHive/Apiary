@@ -52,12 +52,3 @@ sol!(
     RedisProvisionObligation,
     "src/contracts/RedisProvisionObligation.json"
 );
-
-// arbiters
-
-sol!(
-    #[allow(missing_docs)]
-    #[sol(rpc)]
-    TrustedPartyArbiter,
-    "src/contracts/TrustedPartyArbiter.json"
-);
