@@ -16,9 +16,9 @@ pub async fn make_buy_statement(
     let provider = provider::get_provider(private_key)?;
 
     let token_address = Address::parse_checksummed(&token, None)?;
+    let arbiter = env::var("TRIVIAL_ARBITER").map(|a| Address::parse_checksummed(a, None))??;
 
     let token_id = U256::from(token_id);
-    let arbiter = env::var("TRIVIAL_ARBITER").map(|a| Address::parse_checksummed(a, None))??;
     // ResultData and StatementData became the same abi type after solc compilation
     // since they have the same structure: (string)
     let demand: Bytes = JobResultObligation::StatementData { result: query }

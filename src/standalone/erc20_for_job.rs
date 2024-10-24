@@ -18,9 +18,10 @@ pub async fn make_buy_statement(
     let token_address = Address::parse_checksummed(&token, None)?;
     let payment_address =
         env::var("ERC20_PAYMENT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
+    let arbiter_address =
+        env::var("TRIVIAL_ARBITER").map(|a| Address::parse_checksummed(a, None))??;
 
     let amount = U256::from(amount);
-    let arbiter = env::var("TRIVIAL_ARBITER").map(|a| Address::parse_checksummed(a, None))??;
     // ResultData and StatementData became the same abi type after solc compilation
     // since they have the same structure: (string)
     let demand: Bytes = JobResultObligation::StatementData { result: query }
@@ -46,7 +47,7 @@ pub async fn make_buy_statement(
             ERC20PaymentObligation::StatementData {
                 token: token_address,
                 amount,
-                arbiter,
+                arbiter: arbiter_address,
                 demand,
             },
             0,
