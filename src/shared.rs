@@ -1,6 +1,6 @@
 use alloy::{
     dyn_abi::SolType,
-    primitives::{Address, FixedBytes},
+    primitives::{Address, FixedBytes, U256},
 };
 use pyo3::{
     exceptions::{PyRuntimeError, PyValueError},
@@ -10,6 +10,16 @@ use std::env;
 
 use crate::contracts::{JobResultObligation, IEAS};
 use crate::provider;
+
+pub struct ERC20Price {
+    pub token: Address,
+    pub amount: U256,
+}
+
+pub struct ERC721Price {
+    pub token: Address,
+    pub id: U256,
+}
 
 pub fn py_val_err(msg: impl Into<String>) -> PyErr {
     PyErr::new::<PyValueError, _>(msg.into())

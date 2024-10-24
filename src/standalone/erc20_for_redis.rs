@@ -5,8 +5,11 @@ use alloy::{
 };
 use std::env;
 
-use crate::contracts::{ERC20PaymentObligation, RedisProvisionObligation, IEAS, IERC20};
 use crate::provider;
+use crate::{
+    contracts::{ERC20PaymentObligation, RedisProvisionObligation, IEAS, IERC20},
+    shared::ERC20Price,
+};
 
 sol! {
     #[allow(missing_docs)]
@@ -33,7 +36,7 @@ sol! {
 }
 
 pub async fn make_buy_statement(
-    price: ERC20PaymentObligation::StatementData,
+    price: ERC20Price,
     demand: RedisProvisionDemand,
     service_provider: Address,
     private_key: String,

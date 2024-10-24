@@ -4,35 +4,35 @@ use alloy::{
 };
 use std::env;
 
-use crate::contracts::{ERC20PaymentObligation, JobResultObligation, IEAS, IERC20};
 use crate::provider;
+use crate::{
+    contracts::{ERC20PaymentObligation, JobResultObligation, IEAS, IERC20},
+    shared::ERC20Price,
+};
 
 pub async fn make_buy_statement(
-    token: String,
-    amount: u64,
+    price: ERC20Price,
     query: String,
     private_key: String,
 ) -> eyre::Result<FixedBytes<32>> {
     let provider = provider::get_provider(private_key)?;
 
-    let token_address = Address::parse_checksummed(&token, None)?;
     let payment_address =
         env::var("ERC20_PAYMENT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
     let arbiter_address =
         env::var("TRIVIAL_ARBITER").map(|a| Address::parse_checksummed(a, None))??;
 
-    let amount = U256::from(amount);
     // ResultData and StatementData became the same abi type after solc compilation
     // since they have the same structure: (string)
     let demand: Bytes = JobResultObligation::StatementData { result: query }
         .abi_encode()
         .into();
 
-    let token_contract = IERC20::new(token_address, &provider);
+    let token_contract = IERC20::new(price.token, &provider);
     let statement_contract = ERC20PaymentObligation::new(payment_address, &provider);
 
     let approval_receipt = token_contract
-        .approve(payment_address, amount)
+        .approve(payment_address, price.amount)
         .send()
         .await?
         .get_receipt()
@@ -45,8 +45,8 @@ pub async fn make_buy_statement(
     let log = statement_contract
         .makeStatement(
             ERC20PaymentObligation::StatementData {
-                token: token_address,
-                amount,
+                token: price.token,
+                amount: price.amount,
                 arbiter: arbiter_address,
                 demand,
             },
@@ -77,14 +77,12 @@ pub struct JobPayment {
 }
 
 pub async fn get_buy_statement(
-    statement_uid: String,
+    statement_uid: FixedBytes<32>,
     private_key: String,
 ) -> eyre::Result<JobPayment> {
     let provider = provider::get_provider(private_key)?;
 
     let eas_address = env::var("EAS_CONTRACT").map(|a| Address::parse_checksummed(a, None))??;
-
-    let statement_uid: FixedBytes<32> = statement_uid.parse::<FixedBytes<32>>()?;
 
     let contract = IEAS::new(eas_address, provider);
     let attestation = contract.getAttestation(statement_uid).call().await?._0;
@@ -101,7 +99,7 @@ pub async fn get_buy_statement(
 }
 
 pub async fn submit_and_collect(
-    buy_attestation_uid: String,
+    buy_attestation_uid: FixedBytes<32>,
     result_cid: String,
     private_key: String,
 ) -> eyre::Result<FixedBytes<32>> {
@@ -111,8 +109,6 @@ pub async fn submit_and_collect(
         env::var("JOB_RESULT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
     let payment_address =
         env::var("ERC20_PAYMENT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
-
-    let buy_attestation_uid = buy_attestation_uid.parse::<FixedBytes<32>>()?;
 
     let result_contract = JobResultObligation::new(result_address, &provider);
     let payment_contract = ERC20PaymentObligation::new(payment_address, &provider);
