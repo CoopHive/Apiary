@@ -99,3 +99,39 @@ pub async fn make_buy_statement(
 
     Ok(log.inner.uid)
 }
+
+pub struct RedisProvisionPayment {
+    pub price: ERC20Price,
+    pub arbiter: Address,
+    pub base_demand: RedisProvisionDemand,
+    pub provider_demand: Address,
+}
+
+pub async fn get_buy_statement(
+    statement_uid: FixedBytes<32>,
+    private_key: String,
+) -> eyre::Result<RedisProvisionPayment> {
+    let provider = provider::get_provider(private_key)?;
+    let eas_address = env::var("EAS_CONTRACT").map(|a| Address::parse_checksummed(a, None))??;
+
+    let contract = IEAS::new(eas_address, provider);
+
+    let attestation = contract.getAttestation(statement_uid).call().await?._0;
+
+    let attestation_data =
+        ERC20PaymentObligation::StatementData::abi_decode(attestation.data.as_ref(), true)?;
+    let trusted_party_demand =
+        TrustedPartyDemand::abi_decode(attestation_data.demand.as_ref(), true)?;
+    let base_demand =
+        RedisProvisionDemand::abi_decode(trusted_party_demand.baseDemand.as_ref(), true)?;
+
+    Ok(RedisProvisionPayment {
+        price: ERC20Price {
+            token: attestation_data.token,
+            amount: attestation_data.amount,
+        },
+        arbiter: attestation_data.arbiter,
+        base_demand,
+        provider_demand: trusted_party_demand.creator,
+    })
+}
