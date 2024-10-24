@@ -1,7 +1,6 @@
 use alloy::{
+    dyn_abi::SolType,
     primitives::{Address, FixedBytes},
-    sol,
-    sol_types::SolValue,
 };
 use pyo3::{
     exceptions::{PyRuntimeError, PyValueError},
@@ -9,8 +8,8 @@ use pyo3::{
 };
 use std::env;
 
+use crate::contracts::{JobResultObligation, IEAS};
 use crate::provider;
-
 
 pub fn py_val_err(msg: impl Into<String>) -> PyErr {
     PyErr::new::<PyValueError, _>(msg.into())
@@ -20,24 +19,12 @@ pub fn py_run_err(msg: impl Into<String>) -> PyErr {
     PyErr::new::<PyRuntimeError, _>(msg.into())
 }
 
-sol!(
-    #[allow(missing_docs)]
-    #[sol(rpc)]
-    JobResultObligation,
-    "src/contracts/JobResultObligation.json"
-);
-
-
-sol!(
-    #[allow(missing_docs)]
-    #[sol(rpc)]
-    IEAS,
-    "src/contracts/IEAS.json"
-);
-
 #[tokio::main]
 #[pyfunction]
-pub async fn get_result_cid_from_sell_uid(sell_uid: String, private_key: String) -> PyResult<String> {
+pub async fn get_result_cid_from_sell_uid(
+    sell_uid: String,
+    private_key: String,
+) -> PyResult<String> {
     let provider = provider::get_provider(private_key)?;
 
     let sell_uid = sell_uid

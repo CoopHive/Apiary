@@ -1,21 +1,6 @@
-use alloy::sol;
 use pyo3::{exceptions::PyValueError, prelude::*};
 
 use crate::standalone::erc721_for_job;
-
-sol!(
-    #[allow(missing_docs)]
-    #[sol(rpc)]
-    ERC721PaymentObligation,
-    "src/contracts/ERC721PaymentObligation.json"
-);
-
-sol!(
-    #[allow(missing_docs)]
-    #[sol(rpc)]
-    IERC721,
-    "src/contracts/IERC721.json"
-);
 
 #[tokio::main]
 #[pyfunction]

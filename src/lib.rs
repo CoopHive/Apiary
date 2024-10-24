@@ -1,5 +1,6 @@
 use pyo3::prelude::*;
 
+pub mod contracts;
 pub mod erc20_for_job;
 pub mod erc721_for_job;
 pub mod provider;

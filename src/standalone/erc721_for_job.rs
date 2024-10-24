@@ -1,26 +1,11 @@
 use alloy::{
     primitives::{self, b256, Address, Bytes, FixedBytes, U256},
-    sol,
     sol_types::{SolEvent, SolValue},
 };
 use std::env;
 
+use crate::contracts::{ERC721PaymentObligation, JobResultObligation, IEAS, IERC721};
 use crate::provider;
-use crate::shared::{JobResultObligation, IEAS};
-
-sol!(
-    #[allow(missing_docs)]
-    #[sol(rpc)]
-    ERC721PaymentObligation,
-    "src/contracts/ERC721PaymentObligation.json"
-);
-
-sol!(
-    #[allow(missing_docs)]
-    #[sol(rpc)]
-    IERC721,
-    "src/contracts/IERC721.json"
-);
 
 pub async fn make_buy_statement(
     token: String,
