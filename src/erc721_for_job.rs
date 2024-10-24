@@ -1,13 +1,7 @@
-use alloy::{
-    primitives::{b256, Address, Bytes, FixedBytes, U256},
-    sol,
-    sol_types::{SolEvent, SolValue},
-};
+use alloy::sol;
 use pyo3::{exceptions::PyValueError, prelude::*};
-use std::env;
 
-use crate::shared::{py_run_err, py_val_err, JobResultObligation, IEAS};
-use crate::{provider, standalone::erc721_for_job};
+use crate::standalone::erc721_for_job;
 
 sol!(
     #[allow(missing_docs)]
