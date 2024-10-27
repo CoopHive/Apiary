@@ -2,9 +2,8 @@
 
 import logging
 
-from dotenv import load_dotenv
-
 from apiary.base_agent import Agent
+from dotenv import load_dotenv
 
 load_dotenv(override=True)
 

@@ -1,7 +1,7 @@
 use alloy::primitives::{Address, FixedBytes, U256};
 use pyo3::{exceptions::PyValueError, prelude::*};
 
-use crate::{shared::ERC721Price, standalone::erc721_for_job};
+use crate::{shared::ERC721Price, apiary::erc721_for_job};
 
 #[tokio::main]
 #[pyfunction]
@@ -33,13 +33,12 @@ async fn make_buy_statement(
 #[pyfunction]
 async fn get_buy_statement(
     statement_uid: String,
-    private_key: String,
 ) -> PyResult<(String, u64, String, String)> {
     let statement_uid: FixedBytes<32> = statement_uid
         .parse::<FixedBytes<32>>()
         .map_err(|_| PyValueError::new_err("couldn't parse statement_uid as bytes32"))?;
 
-    erc721_for_job::get_buy_statement(statement_uid, private_key)
+    erc721_for_job::get_buy_statement(statement_uid)
         .await
         .map(|r| -> PyResult<_> {
             Ok((

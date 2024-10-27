@@ -33,9 +33,8 @@ pub fn py_run_err(msg: impl Into<String>) -> PyErr {
 #[pyfunction]
 pub async fn get_result_cid_from_sell_uid(
     sell_uid: String,
-    private_key: String,
 ) -> PyResult<String> {
-    let provider = provider::get_provider(private_key)?;
+    let provider = provider::get_public_provider()?;
 
     let sell_uid = sell_uid
         .parse::<FixedBytes<32>>()

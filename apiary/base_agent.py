@@ -5,11 +5,11 @@ import os
 import subprocess
 from abc import ABC, abstractmethod
 
+from apiary.utils import add_float_to_csv
 from dotenv import load_dotenv
 from lighthouseweb3 import Lighthouse
 
 from apiary import apiars
-from apiary.utils import add_float_to_csv
 
 load_dotenv(override=True)
 
@@ -110,7 +110,7 @@ class Agent(ABC):
 
             if token_standard == "ERC20":
                 (token, quantity, arbiter, job_cid) = apiars.erc20.get_buy_statement(
-                    statement_uid, self.private_key
+                    statement_uid
                 )
 
                 result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
@@ -120,7 +120,7 @@ class Agent(ABC):
                 )
             elif token_standard == "ERC721":
                 (token, token_id, arbiter, job_cid) = apiars.erc721.get_buy_statement(
-                    statement_uid, self.private_key
+                    statement_uid
                 )
 
                 result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)

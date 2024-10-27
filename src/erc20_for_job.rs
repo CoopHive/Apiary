@@ -3,7 +3,7 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
 use crate::shared::ERC20Price;
-use crate::standalone::erc20_for_job;
+use crate::apiary::erc20_for_job;
 
 #[tokio::main]
 #[pyfunction]
@@ -35,13 +35,12 @@ async fn make_buy_statement(
 #[pyfunction]
 async fn get_buy_statement(
     statement_uid: String,
-    private_key: String,
 ) -> PyResult<(String, u64, String, String)> {
     let statement_uid: FixedBytes<32> = statement_uid
         .parse::<FixedBytes<32>>()
         .map_err(|_| PyValueError::new_err("couldn't parse statement_uid as bytes32"))?;
 
-    erc20_for_job::get_buy_statement(statement_uid, private_key)
+    erc20_for_job::get_buy_statement(statement_uid)
         .await
         .map_err(PyErr::from)
         .map(|r| -> PyResult<_> {

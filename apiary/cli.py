@@ -97,7 +97,7 @@ def analysis():
 def cancel_buy(offer_id):
     """Turn Off Buyer Services."""
     # TODO: turn off services in backward order as they have been turned on.
-    # TODO: gracefully kill killable process (including messaging cancellation messages to messaging client)
+    # gracefully kill killable process (including messaging cancellation messages to messaging client)
     # and warn user about in-progress processes that cannot be stopped.
     # ps aux | grep -E 'uvicorn|redis'
     pass
@@ -106,10 +106,7 @@ def cancel_buy(offer_id):
 @cli.command()
 def cancel_sell():
     """Turn Off Seller Services."""
-    # TODO: turn off services in backward order as they have been turned on.
-    # TODO: gracefully kill killable process and warn user about in-progress processes that cannot be stopped.
-    # TODO: include force flag to kill all the in-progress jobs, else wait for them to turn everything off.
-    # ps aux | grep -E 'uvicorn|redis'
+    # TODO: Same logic as cancel_buy.
     pass
 
 

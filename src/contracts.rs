@@ -42,6 +42,13 @@ sol!(
 sol!(
     #[allow(missing_docs)]
     #[sol(rpc)]
+    BundlePaymentObligation,
+    "src/contracts/BundlePaymentObligation.json"
+);
+
+sol!(
+    #[allow(missing_docs)]
+    #[sol(rpc)]
     JobResultObligation,
     "src/contracts/JobResultObligation.json"
 );

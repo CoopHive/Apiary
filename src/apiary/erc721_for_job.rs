@@ -15,7 +15,7 @@ pub async fn make_buy_statement(
     query: String,
     private_key: String,
 ) -> eyre::Result<FixedBytes<32>> {
-    let provider = provider::get_provider(private_key)?;
+    let provider = provider::get_wallet_provider(private_key)?;
 
     let arbiter_address =
         env::var("TRIVIAL_ARBITER").map(|a| Address::parse_checksummed(a, None))??;
@@ -78,9 +78,8 @@ pub struct JobPayment {
 
 pub async fn get_buy_statement(
     statement_uid: FixedBytes<32>,
-    private_key: String,
 ) -> eyre::Result<JobPayment> {
-    let provider = provider::get_provider(private_key)?;
+    let provider = provider::get_public_provider()?;
     let eas_address = env::var("EAS_CONTRACT").map(|a| Address::parse_checksummed(a, None))??;
 
     let contract = IEAS::new(eas_address, provider);
@@ -105,7 +104,7 @@ pub async fn submit_and_collect(
     result_cid: String,
     private_key: String,
 ) -> eyre::Result<FixedBytes<32>> {
-    let provider = provider::get_provider(private_key)?;
+    let provider = provider::get_wallet_provider(private_key)?;
     let result_address =
         env::var("JOB_RESULT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
     let payment_address =
