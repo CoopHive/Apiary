@@ -147,22 +147,35 @@ class ERC721Token(TypedDict):
 Token = Union[ERC20Token, ERC721Token]
 
 
-def create_token(token_data: list) -> Token:
-    """Create token object form input token data."""
-    token_standard = token_data[0]
-    address = token_data[1]
+def create_offer_tokens(tokens_data: list) -> Token:
+    """Create offer-compatible tokens object from buyer inputs tokens data."""
+    if not all(isinstance(entry, list) for entry in tokens_data):
+        # Uniformize format to bundles of assets for the one-dimensional case.
+        tokens_data = [tokens_data]
 
-    if token_standard == "ERC20":
-        amt = token_data[2]
-        os.environ["VALUATION_ESTIMATION"] = str(amt)
-        return {"tokenStandard": "ERC20", "address": address, "amt": amt}
-    elif token_standard == "ERC721":
-        return {"tokenStandard": "ERC721", "address": address, "id": token_data[2]}
-    else:
-        raise ValueError(f"Unsupported token standard: {token_standard}")
+    offer_tokens = []
+    for token_data in tokens_data:
+        token_standard = token_data[0]
+        address = token_data[1]
+
+        if token_standard == "ERC20":
+            amt = token_data[2]
+            os.environ["VALUATION_ESTIMATION"] = str(amt)
+            offer_token = {"tokenStandard": "ERC20", "address": address, "amt": amt}
+        elif token_standard == "ERC721":
+            offer_token = {
+                "tokenStandard": "ERC721",
+                "address": address,
+                "id": token_data[2],
+            }
+        else:
+            raise ValueError(f"Unsupported token standard: {token_standard}")
+
+        offer_tokens.append(offer_token)
+    return offer_tokens
 
 
-def parse_initial_offer(job_path, token_data):
+def parse_initial_offer(job_path, tokens_data):
     """Parses the initial offer based on the provided job path and price."""
     pubkey = os.getenv("PUBLIC_KEY")
     query = rw.read_as(job_path, "txt")
@@ -172,10 +185,10 @@ def parse_initial_offer(job_path, token_data):
         "query": query,
     }
 
-    token_data = json.loads(token_data)
-    token = create_token(token_data)
+    tokens_data = json.loads(tokens_data)
+    tokens = create_offer_tokens(tokens_data)
 
-    data["token"] = token
+    data["tokens"] = tokens
 
     return {
         "pubkey": pubkey,
@@ -200,10 +213,8 @@ def add_float_to_csv(value):
         writer.writerow([value])
 
 
-def plot_negotiation():
-    """Plot negotiation offers from a CSV file."""
-    file_path = "apiary_output/negotiation.csv"
-
+def plot_negotiation(file_path: str):
+    """Plot negotiation offers from a CSV file file_path."""
     df = pd.read_csv(file_path)
 
     odd_entries = df.iloc[::2]

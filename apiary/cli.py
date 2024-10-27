@@ -49,15 +49,15 @@ def cli(
     "--job-path",
     required=True,
 )
-@click.option("--token-data", required=True)
-def start_buy(config_path: str, job_path: str, token_data: str):
+@click.option("--tokens-data", required=True)
+def start_buy(config_path: str, job_path: str, tokens_data: str):
     """Start Buyer."""
     logging.info("Starting Buyer.")
     os.environ["ROLE"] = "buyer"
 
     utils.load_configuration(config_path)
 
-    initial_offer = utils.parse_initial_offer(job_path, token_data)
+    initial_offer = utils.parse_initial_offer(job_path, tokens_data)
     logging.info(f"Initial Offer: {initial_offer}")
 
     inference.start_inference_endpoint()
@@ -77,9 +77,20 @@ def start_sell(config_path: str):
 
     utils.load_configuration(config_path)
 
+    external_services.start_job_daemon()
+
     inference.start_inference_endpoint()
 
     external_services.start_messaging_client()
+
+
+@cli.command()
+def analysis():
+    """Offline Analysis."""
+    from apiary.utils import plot_negotiation
+
+    file_path = "apiary_output/negotiation.csv"
+    plot_negotiation(file_path)
 
 
 @cli.command()

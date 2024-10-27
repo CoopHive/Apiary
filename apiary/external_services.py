@@ -7,6 +7,12 @@ import subprocess
 import time
 
 
+def start_job_daemon():
+    """Start Job Daemon."""
+    os.system("podman machine init")
+    os.system("podman machine start")
+
+
 def start_messaging_client(initial_offer=None):
     """Start Messaging Client."""
     lock_file = f"messaging_client_{os.getenv('AGENT_NAME')}.lock"
