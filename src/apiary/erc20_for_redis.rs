@@ -142,7 +142,7 @@ pub async fn update_and_collect(
     new_expiration: u64,
     private_key: String,
 ) -> eyre::Result<FixedBytes<32>> {
-    let provider = provider::get_provider(private_key)?;
+    let provider = provider::get_wallet_provider(private_key)?;
 
     let result_address =
         env::var("REDIS_PROVISION_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
