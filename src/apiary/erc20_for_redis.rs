@@ -138,7 +138,8 @@ pub async fn get_buy_statement(
 pub async fn update_and_collect(
     buy_attestation_uid: FixedBytes<32>,
     old_statement_uid: FixedBytes<32>,
-    revision: RedisProvisionObligation::ChangeData,
+    revision: RedisProvisionObligation::StatementData,
+    new_expiration: u64,
     private_key: String,
 ) -> eyre::Result<FixedBytes<32>> {
     let provider = provider::get_provider(private_key)?;
@@ -152,7 +153,7 @@ pub async fn update_and_collect(
     let payment_contract = ERC20PaymentObligation::new(payment_address, &provider);
 
     let sell_uid = result_contract
-        .reviseStatement(old_statement_uid, revision)
+        .reviseStatement(old_statement_uid, revision, new_expiration)
         .send()
         .await?
         .get_receipt()
