@@ -47,24 +47,13 @@ pub fn get_wallet_provider(private_key: String) -> Result<WalletProvider, pyo3::
     Ok(provider)
 }
 
-type PublicProvider = FillProvider<
-    JoinFill<
-        Identity,
-        JoinFill<GasFiller, JoinFill<BlobGasFiller, JoinFill<NonceFiller, ChainIdFiller>>>,
-    >,
-    RootProvider<Http<Client>>,
-    Http<Client>,
-    Ethereum,
->;
-
-pub fn get_public_provider() -> Result<PublicProvider, pyo3::PyErr> {
+pub fn get_public_provider() -> Result<RootProvider<Http<Client>>, pyo3::PyErr> {
     let rpc_url = env::var("RPC_URL")
         .map_err(|_| py_val_err("RPC_URL not set"))?
         .parse()
         .map_err(|_| py_val_err("couldn't parse RPC_URL as a url"))?;
 
     let provider = ProviderBuilder::new()
-        .with_recommended_fillers()
         .on_http(rpc_url);
 
     Ok(provider)
