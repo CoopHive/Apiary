@@ -109,9 +109,7 @@ class Agent(ABC):
             token_standard = str(input_message_token["tokenStandard"])
 
             if token_standard == "ERC20":
-                (token, quantity, arbiter, job_cid) = apiars.erc20.get_buy_statement(
-                    statement_uid
-                )
+                (_, _, _, job_cid) = apiars.erc20.get_buy_statement(statement_uid)
 
                 result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
 
@@ -119,22 +117,21 @@ class Agent(ABC):
                     statement_uid, result_cid, self.private_key
                 )
             elif token_standard == "ERC721":
-                (token, token_id, arbiter, job_cid) = apiars.erc721.get_buy_statement(
-                    statement_uid
-                )
+                (_, _, _, job_cid) = apiars.erc721.get_buy_statement(statement_uid)
 
                 result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
 
                 sell_uid = apiars.erc721.submit_and_collect(
                     statement_uid, result_cid, self.private_key
                 )
-            else:
-                raise ValueError(f"Unsupported token standard: {token_standard}")
         else:
-            # Bundle
-            # TODO.
-            1 / 0
-            pass
+            (_, _, _, job_cid) = apiars.bundle.get_buy_statement(statement_uid)
+
+            result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
+
+            sell_uid = apiars.bundle.submit_and_collect(
+                statement_uid, result_cid, self.private_key
+            )
 
         output_message["data"]["_tag"] = "sellAttest"
         output_message["data"]["result"] = result_cid
@@ -177,27 +174,35 @@ class Agent(ABC):
             if token_standard == "ERC20":
                 amount = int(input_message_token["amt"])
 
-                statement_uid = apiars.bundle.make_buy_statement(
-                    [token_address], [amount], query, self.private_key
+                statement_uid = apiars.erc20.make_buy_statement(
+                    token_address, amount, query, self.private_key
                 )
-
-                # TODO: monkey-patch to check it to work in the trivial ERC20 case.
-                # statement_uid = apiars.erc20.make_buy_statement(
-                #     token_address, amount, query, self.private_key
-                # )
-
             elif token_standard == "ERC721":
                 token_id = int(input_message_token["id"])
                 statement_uid = apiars.erc721.make_buy_statement(
                     token_address, token_id, query, self.private_key
                 )
-            else:
-                raise ValueError(f"Unsupported token standard: {token_standard}")
         else:
-            # Bundle
-            # TODO.
-            1 / 0
-            pass
+            tokens = input_message["data"]["tokens"]
+
+            erc20_addresses_list = [
+                token["address"]
+                for token in tokens
+                if token["tokenStandard"] == "ERC20"
+            ]
+            erc20_amounts_list = [
+                token["amt"] for token in tokens if token["tokenStandard"] == "ERC20"
+            ]
+
+            # TODO add 721 support:
+            # erc721_addresses_list = [
+            #     token['address'] for token in tokens if token['tokenStandard'] == 'ERC721']
+            # erc721_amounts_list = [
+            #     token['amt'] for token in tokens if token['tokenStandard'] == 'ERC721']
+
+            statement_uid = apiars.bundle.make_buy_statement(
+                erc20_addresses_list, erc20_amounts_list, query, self.private_key
+            )
 
         output_message["data"]["_tag"] = "buyAttest"
         output_message["data"]["attestation"] = statement_uid
@@ -223,9 +228,8 @@ class Agent(ABC):
         subprocess.run(build_command, shell=True, check=True)
 
         # Run the container and capture the output
-        run_command = (
-            f"podman run --name job-container-{statement_uid} job-image-{statement_uid}"
-        )
+        run_command = f"podman run --name job-container-{
+            statement_uid} job-image-{statement_uid}"
         result = subprocess.run(
             run_command,
             shell=True,

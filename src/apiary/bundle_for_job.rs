@@ -1,5 +1,5 @@
 use alloy::{
-    primitives::{b256, Address, Bytes, FixedBytes},
+    primitives::{self, b256, Address, Bytes, FixedBytes},
     sol_types::{SolEvent, SolValue},
 };
 use std::env;
@@ -77,4 +77,81 @@ pub async fn make_buy_statement(
         .ok_or_else(|| eyre::eyre!("makeStatement logs didn't contain Attested"))??;
 
     Ok(log.inner.uid)
+}
+
+pub struct JobPayment {
+    pub price: BundlePrice,
+    pub arbiter: primitives::Address,
+    pub demand: JobResultObligation::StatementData,
+}
+
+pub async fn get_buy_statement(
+    statement_uid: FixedBytes<32>,
+) -> eyre::Result<JobPayment> {
+    let provider = provider::get_public_provider()?;
+
+    let eas_address = env::var("EAS_CONTRACT").map(|a| Address::parse_checksummed(a, None))??;
+
+    let contract = IEAS::new(eas_address, provider);
+    let attestation = contract.getAttestation(statement_uid).call().await?._0;
+
+    let attestation_data =
+        BundlePaymentObligation::StatementData::abi_decode(attestation.data.as_ref(), true)?;
+
+    Ok(JobPayment {
+        price: BundlePrice {
+            erc20_addresses: attestation_data.erc20Addresses,
+            erc20_amounts: attestation_data.erc20Amounts,
+            // TODO: erc721
+        },
+        arbiter: attestation_data.arbiter,
+        demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,
+    })
+}
+
+pub async fn submit_and_collect(
+    buy_attestation_uid: FixedBytes<32>,
+    result_cid: String,
+    private_key: String,
+) -> eyre::Result<FixedBytes<32>> {
+    let provider = provider::get_wallet_provider(private_key)?;
+
+    let result_address =
+        env::var("JOB_RESULT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
+    let payment_address =
+        env::var("BUNDLE_PAYMENT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
+
+    let result_contract = JobResultObligation::new(result_address, &provider);
+    let payment_contract = BundlePaymentObligation::new(payment_address, &provider);
+
+    let sell_uid = result_contract
+        .makeStatement(
+            JobResultObligation::StatementData { result: result_cid },
+            buy_attestation_uid,
+        )
+        .send()
+        .await?
+        .get_receipt()
+        .await?
+        .inner
+        .logs()
+        .iter()
+        .filter(|log| log.topic0() == Some(&IEAS::Attested::SIGNATURE_HASH))
+        .collect::<Vec<_>>()
+        .first()
+        .map(|log| log.log_decode::<IEAS::Attested>().map(|a| a.inner.uid))
+        .ok_or_else(|| eyre::eyre!("makeStatement logs didn't contain Attested"))??;
+
+    let collect_receipt = payment_contract
+        .collectPayment(buy_attestation_uid, sell_uid)
+        .send()
+        .await?
+        .get_receipt()
+        .await?;
+
+    if collect_receipt.status() {
+        Ok(sell_uid)
+    } else {
+        Err(eyre::eyre!("contract call to collect payment failed"))
+    }
 }
