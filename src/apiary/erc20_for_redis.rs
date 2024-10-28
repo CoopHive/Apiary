@@ -135,7 +135,53 @@ pub async fn get_buy_statement(
     })
 }
 
-pub async fn submit_and_collect(
+pub async fn update_and_collect(
+    buy_attestation_uid: FixedBytes<32>,
+    old_statement_uid: FixedBytes<32>,
+    revision: RedisProvisionObligation::StatementData,
+    new_expiration: u64,
+    private_key: String,
+) -> eyre::Result<FixedBytes<32>> {
+    let provider = provider::get_wallet_provider(private_key)?;
+
+    let result_address =
+        env::var("REDIS_PROVISION_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
+    let payment_address =
+        env::var("ERC20_PAYMENT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
+
+    let result_contract = RedisProvisionObligation::new(result_address, &provider);
+    let payment_contract = ERC20PaymentObligation::new(payment_address, &provider);
+
+    let sell_uid = result_contract
+        .reviseStatement(old_statement_uid, revision, new_expiration)
+        .send()
+        .await?
+        .get_receipt()
+        .await?
+        .inner
+        .logs()
+        .iter()
+        .filter(|log| log.topic0() == Some(&IEAS::Attested::SIGNATURE_HASH))
+        .collect::<Vec<_>>()
+        .first()
+        .map(|log| log.log_decode::<IEAS::Attested>().map(|a| a.inner.uid))
+        .ok_or_else(|| eyre::eyre!("makeStatement logs didn't contain Attest"))??;
+
+    let collect_receipt = payment_contract
+        .collectPayment(buy_attestation_uid, sell_uid)
+        .send()
+        .await?
+        .get_receipt()
+        .await?;
+
+    if collect_receipt.status() {
+        Ok(sell_uid)
+    } else {
+        Err(eyre::eyre!("contract call to collect payment failed"))
+    }
+}
+
+pub async fn make_new_and_collect(
     buy_attestation_uid: FixedBytes<32>,
     provision: RedisProvisionObligation::StatementData,
     expiration: u64,
