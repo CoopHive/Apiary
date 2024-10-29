@@ -61,6 +61,17 @@ class Agent(ABC):
         to define the states, load them, train models on them to define policies. This function assumes the presence of
         a dataset of states to be loaded.
         """
+        # NOTE:
+        # check that states (including p (internal states/model states/policy configurations))
+        # are up to date and warning if not (not doing anything directly, another process is responsibile for doing something about it).
+        #     import jax
+        #     model_pickle = read_pickle('jax_model.pickle')
+        #     model = jax.from_pickle(model_pickle) # This is why we do this in python, even if the training is happening in a completely separate process.
+        #     return {'X': , ''}
+        #    match input_message_tag to capute negotiation-strategy-invariant actions and move them to buy/sellagent functions if necessary, else:
+        #    reply_buy_attest.
+        #    reply_sell_attest.
+        #    NOTE: in the case messaging is server-push-based, deal negotiations and job runs are necessarily sequential.
         pass
 
     def infer(self, states, input_message):
@@ -125,7 +136,7 @@ class Agent(ABC):
                     statement_uid, result_cid, self.private_key
                 )
         else:
-            (_, _, _, job_cid) = apiars.bundle.get_buy_statement(statement_uid)
+            (_, _, _, _, _, job_cid) = apiars.bundle.get_buy_statement(statement_uid)
 
             result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
 
@@ -185,23 +196,31 @@ class Agent(ABC):
         else:
             tokens = input_message["data"]["tokens"]
 
-            erc20_addresses_list = [
-                token["address"]
-                for token in tokens
-                if token["tokenStandard"] == "ERC20"
-            ]
-            erc20_amounts_list = [
-                token["amt"] for token in tokens if token["tokenStandard"] == "ERC20"
+            erc20_list = [
+                token for token in tokens if token["tokenStandard"] == "ERC20"
             ]
 
-            # TODO add 721 support:
-            # erc721_addresses_list = [
-            #     token['address'] for token in tokens if token['tokenStandard'] == 'ERC721']
-            # erc721_amounts_list = [
-            #     token['amt'] for token in tokens if token['tokenStandard'] == 'ERC721']
+            erc20_addresses_list = [
+                erc20_token["address"] for erc20_token in erc20_list
+            ]
+            erc20_amounts_list = [erc20_token["amt"] for erc20_token in erc20_list]
+
+            erc721_list = [
+                token for token in tokens if token["tokenStandard"] == "ERC721"
+            ]
+
+            erc721_addresses_list = [
+                erc721_token["address"] for erc721_token in erc721_list
+            ]
+            erc721_ids_list = [erc721_token["id"] for erc721_token in erc721_list]
 
             statement_uid = apiars.bundle.make_buy_statement(
-                erc20_addresses_list, erc20_amounts_list, query, self.private_key
+                erc20_addresses_list,
+                erc20_amounts_list,
+                erc721_addresses_list,
+                erc721_ids_list,
+                query,
+                self.private_key,
             )
 
         output_message["data"]["_tag"] = "buyAttest"

@@ -6,7 +6,7 @@ use std::env;
 
 use crate::provider;
 use crate::{
-    contracts::{BundlePaymentObligation, JobResultObligation, IEAS, IERC20},
+    contracts::{BundlePaymentObligation, JobResultObligation, IEAS, IERC20, IERC721},
     shared::BundlePrice,
 };
 
@@ -45,8 +45,20 @@ pub async fn make_buy_statement(
     }
 
     // Iterate over erc721_addresses and erc721_ids together
-    // for (erc_721_address, id) in price.erc721_addresses.iter().zip(price.erc721_ids.iter()) {
-    // }
+    for (erc_721_address, id) in price.erc721_addresses.iter().zip(price.erc721_ids.iter()){
+        let token_contract = IERC721::new(*erc_721_address, &provider);
+
+        let approval_receipt = token_contract
+        .approve(payment_address, *id)
+        .send()
+        .await?
+        .get_receipt()
+        .await?;
+
+        if !approval_receipt.status() {
+            return Err(eyre::eyre!("approval failed"));
+        };
+    }
 
     let statement_contract = BundlePaymentObligation::new(payment_address, &provider);
 
@@ -55,8 +67,8 @@ pub async fn make_buy_statement(
             BundlePaymentObligation::StatementData {
                 erc20Addresses: price.erc20_addresses,
                 erc20Amounts: price.erc20_amounts,
-                erc721Addresses: vec![],
-                erc721Ids: vec![],
+                erc721Addresses: price.erc721_addresses,
+                erc721Ids: price.erc721_ids,
                 arbiter: arbiter_address,
                 demand,
             },
@@ -102,7 +114,8 @@ pub async fn get_buy_statement(
         price: BundlePrice {
             erc20_addresses: attestation_data.erc20Addresses,
             erc20_amounts: attestation_data.erc20Amounts,
-            // TODO: erc721
+            erc721_addresses: attestation_data.erc721Addresses,
+            erc721_ids: attestation_data.erc721Ids            
         },
         arbiter: attestation_data.arbiter,
         demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,

@@ -24,9 +24,8 @@ pub struct ERC721Price {
 pub struct BundlePrice {
     pub erc20_addresses: Vec<Address>,
     pub erc20_amounts: Vec<U256>,
-    // Working with erc20 only for now.
-    // pub erc721_addresses: Vec<Address>,
-    // pub erc721_ids: Vec<U256>,
+    pub erc721_addresses: Vec<Address>,
+    pub erc721_ids: Vec<U256>,
 }
 
 pub fn py_val_err(msg: impl Into<String>) -> PyErr {
