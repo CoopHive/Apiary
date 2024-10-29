@@ -3,7 +3,7 @@ import { match, P } from "ts-pattern";
 
 type Hex = `0x${string}`;
 type Token = { tokenStandard: "ERC20", address: Hex, amt: number } | {tokenStandard: "ERC721", address: Hex, id: number}
-type Offer = { query: string; token: Token };
+type Offer = { query: string; tokens: Token[] };
 
 type Messages =
   | ({ _tag: "offer" } & Offer)

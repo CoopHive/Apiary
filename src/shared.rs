@@ -1,7 +1,6 @@
 use alloy::{
-    primitives::{Address, FixedBytes},
-    sol,
-    sol_types::SolValue,
+    dyn_abi::SolType,
+    primitives::{Address, FixedBytes, U256},
 };
 use pyo3::{
     exceptions::{PyRuntimeError, PyValueError},
@@ -9,8 +8,25 @@ use pyo3::{
 };
 use std::env;
 
+use crate::contracts::{JobResultObligation, IEAS};
 use crate::provider;
 
+pub struct ERC20Price {
+    pub token: Address,
+    pub amount: U256,
+}
+
+pub struct ERC721Price {
+    pub token: Address,
+    pub id: U256,
+}
+
+pub struct BundlePrice {
+    pub erc20_addresses: Vec<Address>,
+    pub erc20_amounts: Vec<U256>,
+    pub erc721_addresses: Vec<Address>,
+    pub erc721_ids: Vec<U256>,
+}
 
 pub fn py_val_err(msg: impl Into<String>) -> PyErr {
     PyErr::new::<PyValueError, _>(msg.into())
@@ -20,25 +36,12 @@ pub fn py_run_err(msg: impl Into<String>) -> PyErr {
     PyErr::new::<PyRuntimeError, _>(msg.into())
 }
 
-sol!(
-    #[allow(missing_docs)]
-    #[sol(rpc)]
-    JobResultObligation,
-    "src/contracts/JobResultObligation.json"
-);
-
-
-sol!(
-    #[allow(missing_docs)]
-    #[sol(rpc)]
-    IEAS,
-    "src/contracts/IEAS.json"
-);
-
 #[tokio::main]
 #[pyfunction]
-pub async fn get_result_cid_from_sell_uid(sell_uid: String, private_key: String) -> PyResult<String> {
-    let provider = provider::get_provider(private_key)?;
+pub async fn get_result_cid_from_sell_uid(
+    sell_uid: String,
+) -> PyResult<String> {
+    let provider = provider::get_public_provider()?;
 
     let sell_uid = sell_uid
         .parse::<FixedBytes<32>>()

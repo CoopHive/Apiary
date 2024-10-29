@@ -16,8 +16,6 @@ install:
 	cd client && bun install && cd ..
 
 	cargo update
-	cargo build
-
 	rm -rf .venv && uv venv
 	uv pip install .[dev]
 	uvx maturin develop

@@ -5,6 +5,7 @@ import os
 import subprocess
 from abc import ABC, abstractmethod
 
+from apiary.utils import add_float_to_csv
 from dotenv import load_dotenv
 from lighthouseweb3 import Lighthouse
 
@@ -60,12 +61,37 @@ class Agent(ABC):
         to define the states, load them, train models on them to define policies. This function assumes the presence of
         a dataset of states to be loaded.
         """
+        # NOTE:
+        # check that states (including p (internal states/model states/policy configurations))
+        # are up to date and warning if not (not doing anything directly, another process is responsibile for doing something about it).
+        #     import jax
+        #     model_pickle = read_pickle('jax_model.pickle')
+        #     model = jax.from_pickle(model_pickle) # This is why we do this in python, even if the training is happening in a completely separate process.
+        #     return {'X': , ''}
+        #    match input_message_tag to capute negotiation-strategy-invariant actions and move them to buy/sellagent functions if necessary, else:
+        #    reply_buy_attest.
+        #    reply_sell_attest.
+        #    NOTE: in the case messaging is server-push-based, deal negotiations and job runs are necessarily sequential.
         pass
 
-    @abstractmethod
     def infer(self, states, input_message):
         """Infer scheme-compliant message following the (message, context) => message structure."""
-        ...
+        output_message = self._preprocess_infer(input_message)
+        if output_message == "noop":
+            return output_message
+
+        match input_message["data"].get("_tag"):
+            case "offer":
+                return self._handle_offer(input_message, output_message)
+            case "buyAttest":
+                return self._buy_attestation_to_sell_attestation(
+                    input_message, output_message
+                )
+            case "sellAttest":
+                self._handle_sell_attestation(input_message)
+                return "noop"
+
+        return output_message
 
     def _preprocess_infer(self, input_message):
         """Shared preprocessing logic for infer."""
@@ -80,6 +106,51 @@ class Agent(ABC):
         output_message["initial"] = False
 
         return output_message
+
+    @abstractmethod
+    def _handle_offer(self, input_message, output_message):
+        """Handle offer messages."""
+        ...
+
+    def _buy_attestation_to_sell_attestation(self, input_message, output_message):
+        statement_uid = input_message["data"]["attestation"]
+
+        if len(input_message["data"]["tokens"]) == 1:
+            input_message_token = input_message["data"]["tokens"][0]
+            token_standard = str(input_message_token["tokenStandard"])
+
+            if token_standard == "ERC20":
+                (_, _, _, job_cid) = apiars.erc20.get_buy_statement(statement_uid)
+
+                result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
+
+                sell_uid = apiars.erc20.submit_and_collect(
+                    statement_uid, result_cid, self.private_key
+                )
+            elif token_standard == "ERC721":
+                (_, _, _, job_cid) = apiars.erc721.get_buy_statement(statement_uid)
+
+                result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
+
+                sell_uid = apiars.erc721.submit_and_collect(
+                    statement_uid, result_cid, self.private_key
+                )
+        else:
+            (_, _, _, _, _, job_cid) = apiars.bundle.get_buy_statement(statement_uid)
+
+            result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
+
+            sell_uid = apiars.bundle.submit_and_collect(
+                statement_uid, result_cid, self.private_key
+            )
+
+        output_message["data"]["_tag"] = "sellAttest"
+        output_message["data"]["result"] = result_cid
+        output_message["data"]["attestation"] = sell_uid
+        return output_message
+
+    def _handle_sell_attestation(self, input_message):
+        self._get_result_from_result_cid(input_message["data"]["result"])
 
     def _get_query(self, input_message):
         """Parse Dockerfile from input_message query, upload to IPFS and return the query."""
@@ -105,22 +176,52 @@ class Agent(ABC):
     def _offer_to_buy_attestation(self, input_message, output_message):
         query = self._get_query(input_message)
 
-        token_standard = str(input_message["data"]["token"]["tokenStandard"])
-        token_address = str(input_message["data"]["token"]["address"])
+        if len(input_message["data"]["tokens"]) == 1:
+            input_message_token = input_message["data"]["tokens"][0]
 
-        if token_standard == "ERC20":
-            amount = int(input_message["data"]["token"]["amt"])
-            statement_uid = apiars.erc20.make_buy_statement(
-                token_address, amount, query, self.private_key
-            )
+            token_standard = str(input_message_token["tokenStandard"])
+            token_address = str(input_message_token["address"])
 
-        elif token_standard == "ERC721":
-            token_id = int(input_message["data"]["token"]["id"])
-            statement_uid = apiars.erc721.make_buy_statement(
-                token_address, token_id, query, self.private_key
-            )
+            if token_standard == "ERC20":
+                amount = int(input_message_token["amt"])
+
+                statement_uid = apiars.erc20.make_buy_statement(
+                    token_address, amount, query, self.private_key
+                )
+            elif token_standard == "ERC721":
+                token_id = int(input_message_token["id"])
+                statement_uid = apiars.erc721.make_buy_statement(
+                    token_address, token_id, query, self.private_key
+                )
         else:
-            raise ValueError(f"Unsupported token standard: {token_standard}")
+            tokens = input_message["data"]["tokens"]
+
+            erc20_list = [
+                token for token in tokens if token["tokenStandard"] == "ERC20"
+            ]
+
+            erc20_addresses_list = [
+                erc20_token["address"] for erc20_token in erc20_list
+            ]
+            erc20_amounts_list = [erc20_token["amt"] for erc20_token in erc20_list]
+
+            erc721_list = [
+                token for token in tokens if token["tokenStandard"] == "ERC721"
+            ]
+
+            erc721_addresses_list = [
+                erc721_token["address"] for erc721_token in erc721_list
+            ]
+            erc721_ids_list = [erc721_token["id"] for erc721_token in erc721_list]
+
+            statement_uid = apiars.bundle.make_buy_statement(
+                erc20_addresses_list,
+                erc20_amounts_list,
+                erc721_addresses_list,
+                erc721_ids_list,
+                query,
+                self.private_key,
+            )
 
         output_message["data"]["_tag"] = "buyAttest"
         output_message["data"]["attestation"] = statement_uid
@@ -146,9 +247,8 @@ class Agent(ABC):
         subprocess.run(build_command, shell=True, check=True)
 
         # Run the container and capture the output
-        run_command = (
-            f"podman run --name job-container-{statement_uid} job-image-{statement_uid}"
-        )
+        run_command = f"podman run --name job-container-{
+            statement_uid} job-image-{statement_uid}"
         result = subprocess.run(
             run_command,
             shell=True,
@@ -178,39 +278,6 @@ class Agent(ABC):
         result_cid = response["data"]["Hash"]
         return result_cid
 
-    def _buy_attestation_to_sell_attestation(self, input_message, output_message):
-        statement_uid = input_message["data"]["attestation"]
-
-        token_standard = str(input_message["data"]["token"]["tokenStandard"])
-
-        if token_standard == "ERC20":
-            (token, quantity, arbiter, job_cid) = apiars.erc20.get_buy_statement(
-                statement_uid, self.private_key
-            )
-
-            result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
-
-            sell_uid = apiars.erc20.submit_and_collect(
-                statement_uid, result_cid, self.private_key
-            )
-        elif token_standard == "ERC721":
-            (token, token_id, arbiter, job_cid) = apiars.erc721.get_buy_statement(
-                statement_uid, self.private_key
-            )
-
-            result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
-
-            sell_uid = apiars.erc721.submit_and_collect(
-                statement_uid, result_cid, self.private_key
-            )
-        else:
-            raise ValueError(f"Unsupported token standard: {token_standard}")
-
-        output_message["data"]["_tag"] = "sellAttest"
-        output_message["data"]["result"] = result_cid
-        output_message["data"]["attestation"] = sell_uid
-        return output_message
-
     def _get_result_from_result_cid(self, result_cid):
         try:
             results = self.lh.download(result_cid)
@@ -224,6 +291,58 @@ class Agent(ABC):
         # Write Dockerfile
         with open(f"results/{result_cid}.txt", "w") as f:
             f.write(results[0].decode("utf-8"))
+
+    def _kalman_handle_offer(self, input_message, output_message, is_buyer: bool):
+        if (
+            len(input_message["data"]["tokens"]) != 1
+            or input_message["data"]["tokens"][0]["tokenStandard"] != "ERC20"
+        ):
+            raise ValueError(
+                "Negotiation strategy currently defined over scalar ERC20 amount only."
+            )
+
+        valuation_estimation = float(os.getenv("VALUATION_ESTIMATION") or 300.0)
+        valuation_variance = float(os.getenv("VALUATION_VARIANCE") or 10.0)
+        abs_tol = float(os.getenv("ABSOLUTE_TOLERANCE") or 0.0)
+
+        valuation_measurement = input_message["data"]["tokens"][0]["amt"]
+
+        if not is_buyer:
+            add_float_to_csv(valuation_estimation)
+            add_float_to_csv(valuation_measurement)
+
+        if is_buyer and valuation_measurement <= valuation_estimation + abs_tol:
+            # Beneficial incoming offer, no further negotiation needed.
+            output_message = self._offer_to_buy_attestation(
+                input_message, output_message
+            )
+        elif not is_buyer and valuation_measurement >= valuation_estimation:
+            # Beneficial incoming offer, no further negotiation needed.
+            # Confirm buyer offer with identity counteroffer
+            pass
+        else:
+            valuation_measurement_variance = float(
+                os.getenv("VALUATION_MEASUREMENT_VARIANCE")
+            )
+
+            kalman_gain = valuation_variance / (
+                valuation_variance + valuation_measurement_variance
+            )
+
+            # Covariance Update
+            valuation_variance *= 1 - kalman_gain
+            os.environ["VALUATION_VARIANCE"] = str(valuation_variance)
+
+            # State Update
+            valuation_estimation *= 1 - kalman_gain
+            valuation_estimation += kalman_gain * valuation_measurement
+            valuation_estimation = round(
+                valuation_estimation
+            )  # EVM-compatible integer.
+            os.environ["VALUATION_ESTIMATION"] = str(valuation_estimation)
+            output_message["data"]["tokens"][0]["amt"] = valuation_estimation
+
+        return output_message
 
 
 # TODO: understand if the inference agent is at least responsible for writing messages.

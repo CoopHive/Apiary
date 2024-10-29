@@ -7,4 +7,4 @@ RUN apk update && \
     cd cowsay ; ./install.sh /usr/local && \
     rm -rf /var/cache/apk/* /var/tmp/* /tmp/* && \
     apk del git
-CMD ["/usr/local/bin/cowsay","Paying with ERC20 or ERC721 for Compute jobs is very nice!"]
+CMD ["/usr/local/bin/cowsay","Paying with ERC20, ERC721 or a generic combination of the two for Compute jobs is very nice!"]
