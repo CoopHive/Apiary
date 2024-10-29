@@ -1,1 +1,282 @@
-{"abi":[{"type":"function","name":"checkStatement","inputs":[{"name":"statement","type":"tuple","internalType":"struct Attestation","components":[{"name":"uid","type":"bytes32","internalType":"bytes32"},{"name":"schema","type":"bytes32","internalType":"bytes32"},{"name":"time","type":"uint64","internalType":"uint64"},{"name":"expirationTime","type":"uint64","internalType":"uint64"},{"name":"revocationTime","type":"uint64","internalType":"uint64"},{"name":"refUID","type":"bytes32","internalType":"bytes32"},{"name":"recipient","type":"address","internalType":"address"},{"name":"attester","type":"address","internalType":"address"},{"name":"revocable","type":"bool","internalType":"bool"},{"name":"data","type":"bytes","internalType":"bytes"}]},{"name":"demand","type":"bytes","internalType":"bytes"},{"name":"counteroffer","type":"bytes32","internalType":"bytes32"}],"outputs":[{"name":"","type":"bool","internalType":"bool"}],"stateMutability":"view"},{"type":"error","name":"IncompatibleStatement","inputs":[]},{"type":"error","name":"NotTrustedParty","inputs":[]}],"bytecode":{"object":"0x608080604052346015576104c9908161001b8239f35b600080fdfe6080604052600436101561001257600080fd5b60003560e01c631272ff8b1461002757600080fd5b3461036e57606036600319011261036e5760043567ffffffffffffffff811161036e57610140600319823603011261036e576101c06040526004810135608052602481013560a05261007b604482016103ab565b60c09081529061008d606482016103ab565b60e090815261009e608483016103ab565b61010090815260a48301356101209081529093906100be60c485016103c0565b610140526100ce60e485016103c0565b61016090815293610104810135801515810361036e57610180526101248101359067ffffffffffffffff821161036e57600461010d92369201016103f0565b6101a05260243567ffffffffffffffff811161036e576101319036906004016103f0565b9182518301602081019360208183031261036e5760208101519067ffffffffffffffff821161036e5701906060908290031261036e576040516060810181811067ffffffffffffffff8211176103735760405261019060208301610437565b815261019e60408301610437565b916020820192835260608101519067ffffffffffffffff821161036e57603f8183010187131561036e5760208282010151906101d9826103d4565b976101e7604051998a610389565b82895260408285018401011161036e576102099260208901910160400161044b565b604081019485526101405190516001600160a01b0391821691160361035d57519251604051631272ff8b60e01b815260606004820152608051606482015260a0516084820152915167ffffffffffffffff90811660a48401529451851660c4830152955190931660e48401525161010483015261014080516001600160a01b03908116610124850152935184166101448401526101805115156101648401526101a05161018484019190915291936020938593921691839182916102e991906102d7906101a485019061046e565b8381036003190160248501529061046e565b604435604483015203915afa90811561035157600091610311575b6020826040519015158152f35b6020813d602011610349575b8161032a60209383610389565b81010312610345575180151581036103455790506020610304565b5080fd5b3d915061031d565b6040513d6000823e3d90fd5b634673ab7b60e11b60005260046000fd5b600080fd5b634e487b7160e01b600052604160045260246000fd5b90601f8019910116810190811067ffffffffffffffff82111761037357604052565b359067ffffffffffffffff8216820361036e57565b35906001600160a01b038216820361036e57565b67ffffffffffffffff811161037357601f01601f191660200190565b81601f8201121561036e57803590610407826103d4565b926104156040519485610389565b8284526020838301011161036e57816000926020809301838601378301015290565b51906001600160a01b038216820361036e57565b60005b83811061045e5750506000910152565b818101518382015260200161044e565b906020916104878151809281855285808601910161044b565b601f01601f191601019056fea2646970667358221220804d8e4babd788abcc0e5fd0f1cd7aeb2f65e6cb104f4d23bb3c6eb6d82c8b0664736f6c634300081a0033","sourceMap":"202:765:61:-:0;;;;;;;;;;;;;;;;;","linkReferences":{}},"deployedBytecode":{"object":"0x6080604052600436101561001257600080fd5b60003560e01c631272ff8b1461002757600080fd5b3461036e57606036600319011261036e5760043567ffffffffffffffff811161036e57610140600319823603011261036e576101c06040526004810135608052602481013560a05261007b604482016103ab565b60c09081529061008d606482016103ab565b60e090815261009e608483016103ab565b61010090815260a48301356101209081529093906100be60c485016103c0565b610140526100ce60e485016103c0565b61016090815293610104810135801515810361036e57610180526101248101359067ffffffffffffffff821161036e57600461010d92369201016103f0565b6101a05260243567ffffffffffffffff811161036e576101319036906004016103f0565b9182518301602081019360208183031261036e5760208101519067ffffffffffffffff821161036e5701906060908290031261036e576040516060810181811067ffffffffffffffff8211176103735760405261019060208301610437565b815261019e60408301610437565b916020820192835260608101519067ffffffffffffffff821161036e57603f8183010187131561036e5760208282010151906101d9826103d4565b976101e7604051998a610389565b82895260408285018401011161036e576102099260208901910160400161044b565b604081019485526101405190516001600160a01b0391821691160361035d57519251604051631272ff8b60e01b815260606004820152608051606482015260a0516084820152915167ffffffffffffffff90811660a48401529451851660c4830152955190931660e48401525161010483015261014080516001600160a01b03908116610124850152935184166101448401526101805115156101648401526101a05161018484019190915291936020938593921691839182916102e991906102d7906101a485019061046e565b8381036003190160248501529061046e565b604435604483015203915afa90811561035157600091610311575b6020826040519015158152f35b6020813d602011610349575b8161032a60209383610389565b81010312610345575180151581036103455790506020610304565b5080fd5b3d915061031d565b6040513d6000823e3d90fd5b634673ab7b60e11b60005260046000fd5b600080fd5b634e487b7160e01b600052604160045260246000fd5b90601f8019910116810190811067ffffffffffffffff82111761037357604052565b359067ffffffffffffffff8216820361036e57565b35906001600160a01b038216820361036e57565b67ffffffffffffffff811161037357601f01601f191660200190565b81601f8201121561036e57803590610407826103d4565b926104156040519485610389565b8284526020838301011161036e57816000926020809301838601378301015290565b51906001600160a01b038216820361036e57565b60005b83811061045e5750506000910152565b818101518382015260200161044e565b906020916104878151809281855285808601910161044b565b601f01601f191601019056fea2646970667358221220804d8e4babd788abcc0e5fd0f1cd7aeb2f65e6cb104f4d23bb3c6eb6d82c8b0664736f6c634300081a0033","sourceMap":"202:765:61:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;202:765:61;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;:::i;:::-;;;;667:32;;202:765;667:32;;202:765;;;;;;;;;667:32;;202:765;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;202:765:61;;;;;;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;-1:-1:-1;;;;;202:765:61;;;;;713:38;709:68;;202:765;896:18;;202:765;;-1:-1:-1;;;807:151:61;;202:765;;807:151;;202:765;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;202:765:61;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;896:18;202:765;;;;;;;:::i;:::-;;;;-1:-1:-1;;202:765:61;;;;;;;:::i;:::-;;;;;;;807:151;;;;;;;;;202:765;807:151;;;202:765;;;;;;;;;;;807:151;202:765;807:151;;202:765;807:151;;;;;;202:765;807:151;;;:::i;:::-;;;202:765;;;;;;;;;;;;807:151;-1:-1:-1;202:765:61;807:151;;202:765;;;;807:151;;;-1:-1:-1;807:151:61;;;202:765;;;;;;;;;709:68;760:17;;;202:765;760:17;202:765;;760:17;202:765;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;:::o;:::-;;;-1:-1:-1;;;;;202:765:61;;;;;;:::o;:::-;;;;;;;;-1:-1:-1;;202:765:61;;;;:::o;:::-;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;-1:-1:-1;202:765:61;;;;;;;;;;;;;;:::o;:::-;;;-1:-1:-1;;;;;202:765:61;;;;;;:::o;:::-;;;;;;;;-1:-1:-1;;202:765:61;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;-1:-1:-1;;202:765:61;;;;:::o","linkReferences":{}},"methodIdentifiers":{"checkStatement((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes),bytes,bytes32)":"1272ff8b"},"rawMetadata":"{\"compiler\":{\"version\":\"0.8.26+commit.8a97fa7a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"IncompatibleStatement\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotTrustedParty\",\"type\":\"error\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes32\",\"name\":\"uid\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"schema\",\"type\":\"bytes32\"},{\"internalType\":\"uint64\",\"name\":\"time\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"expirationTime\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"revocationTime\",\"type\":\"uint64\"},{\"internalType\":\"bytes32\",\"name\":\"refUID\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"attester\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"revocable\",\"type\":\"bool\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"struct Attestation\",\"name\":\"statement\",\"type\":\"tuple\"},{\"internalType\":\"bytes\",\"name\":\"demand\",\"type\":\"bytes\"},{\"internalType\":\"bytes32\",\"name\":\"counteroffer\",\"type\":\"bytes32\"}],\"name\":\"checkStatement\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/Validators/TrustedPartyArbiter.sol\":\"TrustedPartyArbiter\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@eas/=lib/eas-contracts/contracts/\",\":@openzeppelin/=lib/openzeppelin-contracts/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/\",\":eas-contracts/=lib/eas-contracts/contracts/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"],\"viaIR\":true},\"sources\":{\"lib/eas-contracts/contracts/Common.sol\":{\"keccak256\":\"0x957bd2e6d0d6d637f86208b135c29fbaf4412cb08e5e7a61ede16b80561bf685\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://da1dc9aedbb1d4d39c46c2235918d3adfbc5741dd34a46010cf425d134e7936d\",\"dweb:/ipfs/QmWUk6bXnLaghS2riF3GTFEeURCzgYFMA5woa6AsgPwEgc\"]},\"src/ArbiterUtils.sol\":{\"keccak256\":\"0x1ae482f265bdcbd8bb02a1f6ef7ffdbca8957e8d2b34aae31ba67c1f8d53f11c\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://c23924e0e10367b023c4a0b6d64bda4303e2b3d96bed226fc7623b9b7255b265\",\"dweb:/ipfs/QmTEJsmSyRACQqWDL1rN9vTgeCXZf6wqBrX8cBeYHh2UtZ\"]},\"src/IArbiter.sol\":{\"keccak256\":\"0x1081592b193da4a0afa7524b03e5714f12770c6979bc65362714a7238705c647\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://3d676d3f5dcbb43ad28c18776d07d7b6567094a4effb2de8fe8455a6a45a9778\",\"dweb:/ipfs/QmYvL7JcFowSjcceZV4VRUDFV9RD5tg7vD4zeXTYACUmBp\"]},\"src/Validators/TrustedPartyArbiter.sol\":{\"keccak256\":\"0x98c208d67e3376ab31981772dce0e47ee1874b01bc50c93bc4ea67b223de6ad1\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://1cfef84483a2f7b03f97289e09aa2abefb44af3d31f35785628346b155e58f39\",\"dweb:/ipfs/QmQL4h2bqXg1ef2btevT9tjBPdcMLNdusJonMAcsgC17wD\"]}},\"version\":1}","metadata":{"compiler":{"version":"0.8.26+commit.8a97fa7a"},"language":"Solidity","output":{"abi":[{"inputs":[],"type":"error","name":"IncompatibleStatement"},{"inputs":[],"type":"error","name":"NotTrustedParty"},{"inputs":[{"internalType":"struct Attestation","name":"statement","type":"tuple","components":[{"internalType":"bytes32","name":"uid","type":"bytes32"},{"internalType":"bytes32","name":"schema","type":"bytes32"},{"internalType":"uint64","name":"time","type":"uint64"},{"internalType":"uint64","name":"expirationTime","type":"uint64"},{"internalType":"uint64","name":"revocationTime","type":"uint64"},{"internalType":"bytes32","name":"refUID","type":"bytes32"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"address","name":"attester","type":"address"},{"internalType":"bool","name":"revocable","type":"bool"},{"internalType":"bytes","name":"data","type":"bytes"}]},{"internalType":"bytes","name":"demand","type":"bytes"},{"internalType":"bytes32","name":"counteroffer","type":"bytes32"}],"stateMutability":"view","type":"function","name":"checkStatement","outputs":[{"internalType":"bool","name":"","type":"bool"}]}],"devdoc":{"kind":"dev","methods":{},"version":1},"userdoc":{"kind":"user","methods":{},"version":1}},"settings":{"remappings":["@eas/=lib/eas-contracts/contracts/","@openzeppelin/=lib/openzeppelin-contracts/contracts/","@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/","ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/","eas-contracts/=lib/eas-contracts/contracts/","erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/","forge-std/=lib/forge-std/src/","halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/","openzeppelin-contracts/=lib/openzeppelin-contracts/"],"optimizer":{"enabled":true,"runs":200},"metadata":{"bytecodeHash":"ipfs"},"compilationTarget":{"src/Validators/TrustedPartyArbiter.sol":"TrustedPartyArbiter"},"evmVersion":"paris","libraries":{},"viaIR":true},"sources":{"lib/eas-contracts/contracts/Common.sol":{"keccak256":"0x957bd2e6d0d6d637f86208b135c29fbaf4412cb08e5e7a61ede16b80561bf685","urls":["bzz-raw://da1dc9aedbb1d4d39c46c2235918d3adfbc5741dd34a46010cf425d134e7936d","dweb:/ipfs/QmWUk6bXnLaghS2riF3GTFEeURCzgYFMA5woa6AsgPwEgc"],"license":"MIT"},"src/ArbiterUtils.sol":{"keccak256":"0x1ae482f265bdcbd8bb02a1f6ef7ffdbca8957e8d2b34aae31ba67c1f8d53f11c","urls":["bzz-raw://c23924e0e10367b023c4a0b6d64bda4303e2b3d96bed226fc7623b9b7255b265","dweb:/ipfs/QmTEJsmSyRACQqWDL1rN9vTgeCXZf6wqBrX8cBeYHh2UtZ"],"license":"UNLICENSED"},"src/IArbiter.sol":{"keccak256":"0x1081592b193da4a0afa7524b03e5714f12770c6979bc65362714a7238705c647","urls":["bzz-raw://3d676d3f5dcbb43ad28c18776d07d7b6567094a4effb2de8fe8455a6a45a9778","dweb:/ipfs/QmYvL7JcFowSjcceZV4VRUDFV9RD5tg7vD4zeXTYACUmBp"],"license":"UNLICENSED"},"src/Validators/TrustedPartyArbiter.sol":{"keccak256":"0x98c208d67e3376ab31981772dce0e47ee1874b01bc50c93bc4ea67b223de6ad1","urls":["bzz-raw://1cfef84483a2f7b03f97289e09aa2abefb44af3d31f35785628346b155e58f39","dweb:/ipfs/QmQL4h2bqXg1ef2btevT9tjBPdcMLNdusJonMAcsgC17wD"],"license":"UNLICENSED"}},"version":1},"id":61}
+{
+    "abi": [
+        {
+            "type": "function",
+            "name": "checkStatement",
+            "inputs": [
+                {
+                    "name": "statement",
+                    "type": "tuple",
+                    "internalType": "struct Attestation",
+                    "components": [
+                        {
+                            "name": "uid",
+                            "type": "bytes32",
+                            "internalType": "bytes32"
+                        },
+                        {
+                            "name": "schema",
+                            "type": "bytes32",
+                            "internalType": "bytes32"
+                        },
+                        {
+                            "name": "time",
+                            "type": "uint64",
+                            "internalType": "uint64"
+                        },
+                        {
+                            "name": "expirationTime",
+                            "type": "uint64",
+                            "internalType": "uint64"
+                        },
+                        {
+                            "name": "revocationTime",
+                            "type": "uint64",
+                            "internalType": "uint64"
+                        },
+                        {
+                            "name": "refUID",
+                            "type": "bytes32",
+                            "internalType": "bytes32"
+                        },
+                        {
+                            "name": "recipient",
+                            "type": "address",
+                            "internalType": "address"
+                        },
+                        {
+                            "name": "attester",
+                            "type": "address",
+                            "internalType": "address"
+                        },
+                        {
+                            "name": "revocable",
+                            "type": "bool",
+                            "internalType": "bool"
+                        },
+                        {
+                            "name": "data",
+                            "type": "bytes",
+                            "internalType": "bytes"
+                        }
+                    ]
+                },
+                {
+                    "name": "demand",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                },
+                {
+                    "name": "counteroffer",
+                    "type": "bytes32",
+                    "internalType": "bytes32"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bool",
+                    "internalType": "bool"
+                }
+            ],
+            "stateMutability": "view"
+        },
+        {
+            "type": "error",
+            "name": "IncompatibleStatement",
+            "inputs": []
+        },
+        {
+            "type": "error",
+            "name": "NotTrustedParty",
+            "inputs": []
+        }
+    ],
+    "bytecode": {
+        "object": "0x608080604052346015576104c9908161001b8239f35b600080fdfe6080604052600436101561001257600080fd5b60003560e01c631272ff8b1461002757600080fd5b3461036e57606036600319011261036e5760043567ffffffffffffffff811161036e57610140600319823603011261036e576101c06040526004810135608052602481013560a05261007b604482016103ab565b60c09081529061008d606482016103ab565b60e090815261009e608483016103ab565b61010090815260a48301356101209081529093906100be60c485016103c0565b610140526100ce60e485016103c0565b61016090815293610104810135801515810361036e57610180526101248101359067ffffffffffffffff821161036e57600461010d92369201016103f0565b6101a05260243567ffffffffffffffff811161036e576101319036906004016103f0565b9182518301602081019360208183031261036e5760208101519067ffffffffffffffff821161036e5701906060908290031261036e576040516060810181811067ffffffffffffffff8211176103735760405261019060208301610437565b815261019e60408301610437565b916020820192835260608101519067ffffffffffffffff821161036e57603f8183010187131561036e5760208282010151906101d9826103d4565b976101e7604051998a610389565b82895260408285018401011161036e576102099260208901910160400161044b565b604081019485526101405190516001600160a01b0391821691160361035d57519251604051631272ff8b60e01b815260606004820152608051606482015260a0516084820152915167ffffffffffffffff90811660a48401529451851660c4830152955190931660e48401525161010483015261014080516001600160a01b03908116610124850152935184166101448401526101805115156101648401526101a05161018484019190915291936020938593921691839182916102e991906102d7906101a485019061046e565b8381036003190160248501529061046e565b604435604483015203915afa90811561035157600091610311575b6020826040519015158152f35b6020813d602011610349575b8161032a60209383610389565b81010312610345575180151581036103455790506020610304565b5080fd5b3d915061031d565b6040513d6000823e3d90fd5b634673ab7b60e11b60005260046000fd5b600080fd5b634e487b7160e01b600052604160045260246000fd5b90601f8019910116810190811067ffffffffffffffff82111761037357604052565b359067ffffffffffffffff8216820361036e57565b35906001600160a01b038216820361036e57565b67ffffffffffffffff811161037357601f01601f191660200190565b81601f8201121561036e57803590610407826103d4565b926104156040519485610389565b8284526020838301011161036e57816000926020809301838601378301015290565b51906001600160a01b038216820361036e57565b60005b83811061045e5750506000910152565b818101518382015260200161044e565b906020916104878151809281855285808601910161044b565b601f01601f191601019056fea2646970667358221220804d8e4babd788abcc0e5fd0f1cd7aeb2f65e6cb104f4d23bb3c6eb6d82c8b0664736f6c634300081a0033",
+        "sourceMap": "202:765:61:-:0;;;;;;;;;;;;;;;;;",
+        "linkReferences": {}
+    },
+    "deployedBytecode": {
+        "object": "0x6080604052600436101561001257600080fd5b60003560e01c631272ff8b1461002757600080fd5b3461036e57606036600319011261036e5760043567ffffffffffffffff811161036e57610140600319823603011261036e576101c06040526004810135608052602481013560a05261007b604482016103ab565b60c09081529061008d606482016103ab565b60e090815261009e608483016103ab565b61010090815260a48301356101209081529093906100be60c485016103c0565b610140526100ce60e485016103c0565b61016090815293610104810135801515810361036e57610180526101248101359067ffffffffffffffff821161036e57600461010d92369201016103f0565b6101a05260243567ffffffffffffffff811161036e576101319036906004016103f0565b9182518301602081019360208183031261036e5760208101519067ffffffffffffffff821161036e5701906060908290031261036e576040516060810181811067ffffffffffffffff8211176103735760405261019060208301610437565b815261019e60408301610437565b916020820192835260608101519067ffffffffffffffff821161036e57603f8183010187131561036e5760208282010151906101d9826103d4565b976101e7604051998a610389565b82895260408285018401011161036e576102099260208901910160400161044b565b604081019485526101405190516001600160a01b0391821691160361035d57519251604051631272ff8b60e01b815260606004820152608051606482015260a0516084820152915167ffffffffffffffff90811660a48401529451851660c4830152955190931660e48401525161010483015261014080516001600160a01b03908116610124850152935184166101448401526101805115156101648401526101a05161018484019190915291936020938593921691839182916102e991906102d7906101a485019061046e565b8381036003190160248501529061046e565b604435604483015203915afa90811561035157600091610311575b6020826040519015158152f35b6020813d602011610349575b8161032a60209383610389565b81010312610345575180151581036103455790506020610304565b5080fd5b3d915061031d565b6040513d6000823e3d90fd5b634673ab7b60e11b60005260046000fd5b600080fd5b634e487b7160e01b600052604160045260246000fd5b90601f8019910116810190811067ffffffffffffffff82111761037357604052565b359067ffffffffffffffff8216820361036e57565b35906001600160a01b038216820361036e57565b67ffffffffffffffff811161037357601f01601f191660200190565b81601f8201121561036e57803590610407826103d4565b926104156040519485610389565b8284526020838301011161036e57816000926020809301838601378301015290565b51906001600160a01b038216820361036e57565b60005b83811061045e5750506000910152565b818101518382015260200161044e565b906020916104878151809281855285808601910161044b565b601f01601f191601019056fea2646970667358221220804d8e4babd788abcc0e5fd0f1cd7aeb2f65e6cb104f4d23bb3c6eb6d82c8b0664736f6c634300081a0033",
+        "sourceMap": "202:765:61:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;202:765:61;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;:::i;:::-;;;;667:32;;202:765;667:32;;202:765;;;;;;;;;667:32;;202:765;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;202:765:61;;;;;;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;-1:-1:-1;;;;;202:765:61;;;;;713:38;709:68;;202:765;896:18;;202:765;;-1:-1:-1;;;807:151:61;;202:765;;807:151;;202:765;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;202:765:61;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;896:18;202:765;;;;;;;:::i;:::-;;;;-1:-1:-1;;202:765:61;;;;;;;:::i;:::-;;;;;;;807:151;;;;;;;;;202:765;807:151;;;202:765;;;;;;;;;;;807:151;202:765;807:151;;202:765;807:151;;;;;;202:765;807:151;;;:::i;:::-;;;202:765;;;;;;;;;;;;807:151;-1:-1:-1;202:765:61;807:151;;202:765;;;;807:151;;;-1:-1:-1;807:151:61;;;202:765;;;;;;;;;709:68;760:17;;;202:765;760:17;202:765;;760:17;202:765;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;:::o;:::-;;;-1:-1:-1;;;;;202:765:61;;;;;;:::o;:::-;;;;;;;;-1:-1:-1;;202:765:61;;;;:::o;:::-;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;-1:-1:-1;202:765:61;;;;;;;;;;;;;;:::o;:::-;;;-1:-1:-1;;;;;202:765:61;;;;;;:::o;:::-;;;;;;;;-1:-1:-1;;202:765:61;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;-1:-1:-1;;202:765:61;;;;:::o",
+        "linkReferences": {}
+    },
+    "methodIdentifiers": {
+        "checkStatement((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes),bytes,bytes32)": "1272ff8b"
+    },
+    "rawMetadata": "{\"compiler\":{\"version\":\"0.8.26+commit.8a97fa7a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"IncompatibleStatement\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotTrustedParty\",\"type\":\"error\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes32\",\"name\":\"uid\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"schema\",\"type\":\"bytes32\"},{\"internalType\":\"uint64\",\"name\":\"time\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"expirationTime\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"revocationTime\",\"type\":\"uint64\"},{\"internalType\":\"bytes32\",\"name\":\"refUID\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"attester\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"revocable\",\"type\":\"bool\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"struct Attestation\",\"name\":\"statement\",\"type\":\"tuple\"},{\"internalType\":\"bytes\",\"name\":\"demand\",\"type\":\"bytes\"},{\"internalType\":\"bytes32\",\"name\":\"counteroffer\",\"type\":\"bytes32\"}],\"name\":\"checkStatement\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/Validators/TrustedPartyArbiter.sol\":\"TrustedPartyArbiter\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@eas/=lib/eas-contracts/contracts/\",\":@openzeppelin/=lib/openzeppelin-contracts/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/\",\":eas-contracts/=lib/eas-contracts/contracts/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"],\"viaIR\":true},\"sources\":{\"lib/eas-contracts/contracts/Common.sol\":{\"keccak256\":\"0x957bd2e6d0d6d637f86208b135c29fbaf4412cb08e5e7a61ede16b80561bf685\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://da1dc9aedbb1d4d39c46c2235918d3adfbc5741dd34a46010cf425d134e7936d\",\"dweb:/ipfs/QmWUk6bXnLaghS2riF3GTFEeURCzgYFMA5woa6AsgPwEgc\"]},\"src/ArbiterUtils.sol\":{\"keccak256\":\"0x1ae482f265bdcbd8bb02a1f6ef7ffdbca8957e8d2b34aae31ba67c1f8d53f11c\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://c23924e0e10367b023c4a0b6d64bda4303e2b3d96bed226fc7623b9b7255b265\",\"dweb:/ipfs/QmTEJsmSyRACQqWDL1rN9vTgeCXZf6wqBrX8cBeYHh2UtZ\"]},\"src/IArbiter.sol\":{\"keccak256\":\"0x1081592b193da4a0afa7524b03e5714f12770c6979bc65362714a7238705c647\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://3d676d3f5dcbb43ad28c18776d07d7b6567094a4effb2de8fe8455a6a45a9778\",\"dweb:/ipfs/QmYvL7JcFowSjcceZV4VRUDFV9RD5tg7vD4zeXTYACUmBp\"]},\"src/Validators/TrustedPartyArbiter.sol\":{\"keccak256\":\"0x98c208d67e3376ab31981772dce0e47ee1874b01bc50c93bc4ea67b223de6ad1\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://1cfef84483a2f7b03f97289e09aa2abefb44af3d31f35785628346b155e58f39\",\"dweb:/ipfs/QmQL4h2bqXg1ef2btevT9tjBPdcMLNdusJonMAcsgC17wD\"]}},\"version\":1}",
+    "metadata": {
+        "compiler": {
+            "version": "0.8.26+commit.8a97fa7a"
+        },
+        "language": "Solidity",
+        "output": {
+            "abi": [
+                {
+                    "inputs": [],
+                    "type": "error",
+                    "name": "IncompatibleStatement"
+                },
+                {
+                    "inputs": [],
+                    "type": "error",
+                    "name": "NotTrustedParty"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "struct Attestation",
+                            "name": "statement",
+                            "type": "tuple",
+                            "components": [
+                                {
+                                    "internalType": "bytes32",
+                                    "name": "uid",
+                                    "type": "bytes32"
+                                },
+                                {
+                                    "internalType": "bytes32",
+                                    "name": "schema",
+                                    "type": "bytes32"
+                                },
+                                {
+                                    "internalType": "uint64",
+                                    "name": "time",
+                                    "type": "uint64"
+                                },
+                                {
+                                    "internalType": "uint64",
+                                    "name": "expirationTime",
+                                    "type": "uint64"
+                                },
+                                {
+                                    "internalType": "uint64",
+                                    "name": "revocationTime",
+                                    "type": "uint64"
+                                },
+                                {
+                                    "internalType": "bytes32",
+                                    "name": "refUID",
+                                    "type": "bytes32"
+                                },
+                                {
+                                    "internalType": "address",
+                                    "name": "recipient",
+                                    "type": "address"
+                                },
+                                {
+                                    "internalType": "address",
+                                    "name": "attester",
+                                    "type": "address"
+                                },
+                                {
+                                    "internalType": "bool",
+                                    "name": "revocable",
+                                    "type": "bool"
+                                },
+                                {
+                                    "internalType": "bytes",
+                                    "name": "data",
+                                    "type": "bytes"
+                                }
+                            ]
+                        },
+                        {
+                            "internalType": "bytes",
+                            "name": "demand",
+                            "type": "bytes"
+                        },
+                        {
+                            "internalType": "bytes32",
+                            "name": "counteroffer",
+                            "type": "bytes32"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function",
+                    "name": "checkStatement",
+                    "outputs": [
+                        {
+                            "internalType": "bool",
+                            "name": "",
+                            "type": "bool"
+                        }
+                    ]
+                }
+            ],
+            "devdoc": {
+                "kind": "dev",
+                "methods": {},
+                "version": 1
+            },
+            "userdoc": {
+                "kind": "user",
+                "methods": {},
+                "version": 1
+            }
+        },
+        "settings": {
+            "remappings": [
+                "@eas/=lib/eas-contracts/contracts/",
+                "@openzeppelin/=lib/openzeppelin-contracts/contracts/",
+                "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+                "ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/",
+                "eas-contracts/=lib/eas-contracts/contracts/",
+                "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+                "forge-std/=lib/forge-std/src/",
+                "halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/",
+                "openzeppelin-contracts/=lib/openzeppelin-contracts/"
+            ],
+            "optimizer": {
+                "enabled": true,
+                "runs": 200
+            },
+            "metadata": {
+                "bytecodeHash": "ipfs"
+            },
+            "compilationTarget": {
+                "src/Validators/TrustedPartyArbiter.sol": "TrustedPartyArbiter"
+            },
+            "evmVersion": "paris",
+            "libraries": {},
+            "viaIR": true
+        },
+        "sources": {
+            "lib/eas-contracts/contracts/Common.sol": {
+                "keccak256": "0x957bd2e6d0d6d637f86208b135c29fbaf4412cb08e5e7a61ede16b80561bf685",
+                "urls": [
+                    "bzz-raw://da1dc9aedbb1d4d39c46c2235918d3adfbc5741dd34a46010cf425d134e7936d",
+                    "dweb:/ipfs/QmWUk6bXnLaghS2riF3GTFEeURCzgYFMA5woa6AsgPwEgc"
+                ],
+                "license": "MIT"
+            },
+            "src/ArbiterUtils.sol": {
+                "keccak256": "0x1ae482f265bdcbd8bb02a1f6ef7ffdbca8957e8d2b34aae31ba67c1f8d53f11c",
+                "urls": [
+                    "bzz-raw://c23924e0e10367b023c4a0b6d64bda4303e2b3d96bed226fc7623b9b7255b265",
+                    "dweb:/ipfs/QmTEJsmSyRACQqWDL1rN9vTgeCXZf6wqBrX8cBeYHh2UtZ"
+                ],
+                "license": "UNLICENSED"
+            },
+            "src/IArbiter.sol": {
+                "keccak256": "0x1081592b193da4a0afa7524b03e5714f12770c6979bc65362714a7238705c647",
+                "urls": [
+                    "bzz-raw://3d676d3f5dcbb43ad28c18776d07d7b6567094a4effb2de8fe8455a6a45a9778",
+                    "dweb:/ipfs/QmYvL7JcFowSjcceZV4VRUDFV9RD5tg7vD4zeXTYACUmBp"
+                ],
+                "license": "UNLICENSED"
+            },
+            "src/Validators/TrustedPartyArbiter.sol": {
+                "keccak256": "0x98c208d67e3376ab31981772dce0e47ee1874b01bc50c93bc4ea67b223de6ad1",
+                "urls": [
+                    "bzz-raw://1cfef84483a2f7b03f97289e09aa2abefb44af3d31f35785628346b155e58f39",
+                    "dweb:/ipfs/QmQL4h2bqXg1ef2btevT9tjBPdcMLNdusJonMAcsgC17wD"
+                ],
+                "license": "UNLICENSED"
+            }
+        },
+        "version": 1
+    },
+    "id": 61
+}
