@@ -1,5 +1,5 @@
 use pyo3::prelude::*;
-use crate::provider;
+use crate::{contracts::ERC721PaymentObligation, provider};
 use std::env;
 
 use alloy::{
@@ -42,10 +42,15 @@ pub async fn get_buy_statement(
 
     let contract = IEAS::new(eas_address, provider);
     let attestation = contract.getAttestation(statement_uid).call().await?._0;
+    let attestation_schema_string = hex::encode(attestation.schema);
 
+    println!("{}", attestation_schema_string);
+
+    // TODO: SAVE THESE TO ENVIRONMENTAL VARIABLES:
     let erc20_schema_uid = "c962da008bda7e067ca18dc10c8bc18190d1d5faa3fcec9a3d1692f06428b332";
+    let erc721_schema_uid = "51305fa376cfdb38c02034c8702df04ffd1dd065e3c4469bbf6310f8ab0358d1";
 
-    if hex::encode(attestation.schema) == erc20_schema_uid {
+    if attestation_schema_string == erc20_schema_uid {
         let attestation_data =
         ERC20PaymentObligation::StatementData::abi_decode(attestation.data.as_ref(), true)?;
 
@@ -53,6 +58,18 @@ pub async fn get_buy_statement(
             price: ERC20Price {
                 token: attestation_data.token,
                 amount: attestation_data.amount,
+            },
+            arbiter: attestation_data.arbiter,
+            demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,
+        }))
+    } else if attestation_schema_string == erc721_schema_uid {
+        let attestation_data =
+        ERC721PaymentObligation::StatementData::abi_decode(attestation.data.as_ref(), true)?;
+        
+        Ok(JobPaymentResult::JobPayment721(JobPayment721 {
+            price: ERC721Price {
+                token: attestation_data.token,
+                id: attestation_data.tokenId,
             },
             arbiter: attestation_data.arbiter,
             demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,

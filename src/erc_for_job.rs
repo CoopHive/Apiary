@@ -33,7 +33,6 @@ async fn get_buy_statement(
 
     match payment_result {
         JobPaymentResult::JobPayment20(payment) => {
-            // Construct the Python-compatible struct and return it
             let result = BuyStatement::Single(
                 payment.price.token.to_string(),
                 payment.price.amount.try_into()
@@ -44,7 +43,14 @@ async fn get_buy_statement(
             Ok(result)
         },
         JobPaymentResult::JobPayment721(payment) => {
-            Err(PyValueError::new_err("Unsupported payment type: JobPayment721"))
+            let result = BuyStatement::Single(
+                payment.price.token.to_string(),
+                payment.price.id.try_into()
+                    .map_err(|_| PyValueError::new_err("amount too big for u64"))?,
+                payment.arbiter.to_string(),
+                payment.demand.result.to_string(),
+            );
+            Ok(result)
         },
         JobPaymentResult::JobPaymentBundle(payment) => {
             Err(PyValueError::new_err("Unsupported payment type: JobPaymentBundle"))
