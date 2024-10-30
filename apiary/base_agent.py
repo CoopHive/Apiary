@@ -144,13 +144,14 @@ class Agent(ABC):
                 )
 
         output_message["data"]["_tag"] = "sellAttest"
-        output_message["data"]["result"] = result_cid
         output_message["data"]["attestation"] = sell_uid
 
         return output_message
 
     def _handle_sell_attestation(self, input_message):
-        self._get_result_from_result_cid(input_message["data"]["result"])
+        sell_uid = input_message["data"]["attestation"]
+        result_cid = apiars.erc.get_sell_statement(sell_uid)
+        self._get_result_from_result_cid(result_cid)
 
     def _get_query(self, input_message):
         """Parse Dockerfile from input_message query, upload to IPFS and return the query."""

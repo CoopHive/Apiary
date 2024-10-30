@@ -3,7 +3,6 @@ use pyo3::exceptions::PyValueError;
 
 use pyo3::prelude::*;
 use crate::apiary::erc_for_job;
-use crate::apiary::erc_for_job::JobPaymentResult;
 
 #[tokio::main]
 #[pyfunction]
@@ -32,7 +31,7 @@ async fn get_buy_statement(
         .map_err(PyErr::from)?;
 
     match payment_result {
-        JobPaymentResult::JobPayment20(payment) => {
+        erc_for_job::JobPaymentResult::JobPayment20(payment) => {
             let result = BuyStatement::ERC20(
                 payment.price.token.to_string(),
                 payment.price.amount.try_into()
@@ -42,7 +41,7 @@ async fn get_buy_statement(
             );
             Ok(result)
         },
-        JobPaymentResult::JobPayment721(payment) => {
+        erc_for_job::JobPaymentResult::JobPayment721(payment) => {
             let result = BuyStatement::ERC721(
                 payment.price.token.to_string(),
                 payment.price.id.try_into()
@@ -52,7 +51,7 @@ async fn get_buy_statement(
             );
             Ok(result)
         },
-        JobPaymentResult::JobPaymentBundle(payment) => {
+        erc_for_job::JobPaymentResult::JobPaymentBundle(payment) => {
             let result = BuyStatement::Bundle(
                 payment.price.erc20_addresses.iter()
                 .map(|address| address.to_string())
@@ -87,6 +86,23 @@ async fn get_buy_statement(
     }
 }
 
+#[tokio::main]
+#[pyfunction]
+pub async fn get_sell_statement(
+    sell_uid: String,
+) -> PyResult<String> {
+
+    let sell_uid = sell_uid
+    .parse::<FixedBytes<32>>()
+    .map_err(|_| PyValueError::new_err("couldn't parse sell_uid as bytes32"))?;
+
+    let result_cid = erc_for_job::get_sell_statement(sell_uid)
+    .await
+    .map_err(PyErr::from)?;
+
+    Ok(result_cid)
+}
+
 pub fn add_erc_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     let erc_module = PyModule::new_bound(py, "erc")?;
 
@@ -94,6 +110,7 @@ pub fn add_erc_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> PyR
 
     erc_module.add_class::<BuyStatement>()?;
     erc_module.add_function(wrap_pyfunction!(get_buy_statement, &erc_module)?)?;
+    erc_module.add_function(wrap_pyfunction!(get_sell_statement, &erc_module)?)?;
 
     parent_module.add_submodule(&erc_module)?;
     Ok(())

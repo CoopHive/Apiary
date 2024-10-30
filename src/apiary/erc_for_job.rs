@@ -1,4 +1,3 @@
-use pyo3::prelude::*;
 use crate::{contracts::{BundlePaymentObligation, ERC721PaymentObligation}, provider};
 use std::env;
 
@@ -6,7 +5,7 @@ use alloy::{
     hex, primitives::{self, Address, FixedBytes}, sol_types::SolValue
 };
 
-use crate::shared::{py_val_err, py_run_err, ERC20Price, ERC721Price, BundlePrice};
+use crate::shared::{ERC20Price, ERC721Price, BundlePrice};
 use crate::contracts::{ERC20PaymentObligation, JobResultObligation, IEAS};
 
 pub struct JobPayment20 {
@@ -98,35 +97,24 @@ pub async fn get_buy_statement(
     }
 }
 
-// GENERALIZE THIS INTO GET_SELL_STATEMENT, same API as get_buy_statement
-#[tokio::main]
-#[pyfunction]
-pub async fn get_result_cid_from_sell_uid(
-    sell_uid: String,
-) -> PyResult<String> {
+pub async fn get_sell_statement(
+    sell_uid: FixedBytes<32>,
+) -> eyre::Result<String> {
     let provider = provider::get_public_provider()?;
 
-    let sell_uid = sell_uid
-        .parse::<FixedBytes<32>>()
-        .map_err(|_| py_val_err("couldn't parse sell_uid as bytes32"))?;
-
     let eas_address = env::var("EAS_CONTRACT")
-        .map_err(|_| py_val_err("EAS_CONTRACT not set"))
-        .map(|a| Address::parse_checksummed(a, None))?
-        .map_err(|_| py_val_err("couldn't parse EAS_CONTRACT as an address"))?;
+        .map(|a| Address::parse_checksummed(a, None))??;
 
     let contract = IEAS::new(eas_address, provider);
 
     let attestation = contract
         .getAttestation(sell_uid)
         .call()
-        .await
-        .map_err(|err| py_run_err(format!("contract call to getAttestation failed; {:?}", err)))?
+        .await?
         ._0;
 
     let attestation_data =
-        JobResultObligation::StatementData::abi_decode(attestation.data.as_ref(), true)
-            .map_err(|_| py_run_err("attestation_data decoding failed"))?;
+        JobResultObligation::StatementData::abi_decode(attestation.data.as_ref(), true)?;
 
     Ok(attestation_data.result)
 }
