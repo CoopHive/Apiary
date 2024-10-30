@@ -273,7 +273,7 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn test_make_buy_statement() {
+    async fn test_make_buy_redis() {
         let price = ERC20Price {
             token: address!("833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"),
             amount: 1000.try_into().unwrap(),
