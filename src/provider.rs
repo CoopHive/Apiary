@@ -12,8 +12,8 @@ use alloy::{
 };
 use alloy_provider::Identity;
 use std::env;
+use pyo3::exceptions::PyValueError;
 
-use crate::shared::py_val_err;
 
 type WalletProvider = FillProvider<
     JoinFill<
@@ -31,13 +31,13 @@ type WalletProvider = FillProvider<
 pub fn get_wallet_provider(private_key: String) -> Result<WalletProvider, pyo3::PyErr> {
     let signer: PrivateKeySigner = private_key
         .parse()
-        .map_err(|_| py_val_err("couldn't parse private_key as PrivateKeySigner"))?;
+        .map_err(|_| PyValueError::new_err("couldn't parse private_key as PrivateKeySigner"))?;
 
     let wallet = EthereumWallet::from(signer);
     let rpc_url = env::var("RPC_URL")
-        .map_err(|_| py_val_err("RPC_URL not set"))?
+        .map_err(|_| PyValueError::new_err("RPC_URL not set"))?
         .parse()
-        .map_err(|_| py_val_err("couldn't parse RPC_URL as a url"))?;
+        .map_err(|_| PyValueError::new_err("couldn't parse RPC_URL as a url"))?;
 
     let provider = ProviderBuilder::new()
         .with_recommended_fillers()
@@ -59,9 +59,9 @@ type PublicProvider = FillProvider<
 
 pub fn get_public_provider() -> Result<PublicProvider, pyo3::PyErr> {
     let rpc_url = env::var("RPC_URL")
-        .map_err(|_| py_val_err("RPC_URL not set"))?
+        .map_err(|_| PyValueError::new_err("RPC_URL not set"))?
         .parse()
-        .map_err(|_| py_val_err("couldn't parse RPC_URL as a url"))?;
+        .map_err(|_| PyValueError::new_err("couldn't parse RPC_URL as a url"))?;
 
     let provider = ProviderBuilder::new()
         .with_recommended_fillers()
