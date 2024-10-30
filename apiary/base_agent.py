@@ -115,31 +115,28 @@ class Agent(ABC):
     def _buy_attestation_to_sell_attestation(self, input_message, output_message):
         statement_uid = input_message["data"]["attestation"]
 
+        buy_statement = apiars.erc.get_buy_statement(statement_uid)
+
+        if isinstance(buy_statement, apiars.erc.BuyStatement.Single):
+            (_, _, _, job_cid) = buy_statement
+        elif isinstance(buy_statement, apiars.erc.BuyStatement.Multiple):
+            (_, _, _, _, _, job_cid) = buy_statement
+
+        result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
+
         if len(input_message["data"]["tokens"]) == 1:
             input_message_token = input_message["data"]["tokens"][0]
             token_standard = str(input_message_token["tokenStandard"])
 
             if token_standard == "ERC20":
-                (_, _, _, job_cid) = apiars.erc20.get_buy_statement(statement_uid)
-
-                result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
-
                 sell_uid = apiars.erc20.submit_and_collect(
                     statement_uid, result_cid, self.private_key
                 )
             elif token_standard == "ERC721":
-                (_, _, _, job_cid) = apiars.erc721.get_buy_statement(statement_uid)
-
-                result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
-
                 sell_uid = apiars.erc721.submit_and_collect(
                     statement_uid, result_cid, self.private_key
                 )
         else:
-            (_, _, _, _, _, job_cid) = apiars.bundle.get_buy_statement(statement_uid)
-
-            result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
-
             sell_uid = apiars.bundle.submit_and_collect(
                 statement_uid, result_cid, self.private_key
             )
@@ -147,6 +144,7 @@ class Agent(ABC):
         output_message["data"]["_tag"] = "sellAttest"
         output_message["data"]["result"] = result_cid
         output_message["data"]["attestation"] = sell_uid
+
         return output_message
 
     def _handle_sell_attestation(self, input_message):
