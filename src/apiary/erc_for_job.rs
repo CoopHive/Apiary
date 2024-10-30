@@ -1,5 +1,5 @@
 use pyo3::prelude::*;
-use crate::{contracts::ERC721PaymentObligation, provider};
+use crate::{contracts::{BundlePaymentObligation, ERC721PaymentObligation}, provider};
 use std::env;
 
 use alloy::{
@@ -46,9 +46,14 @@ pub async fn get_buy_statement(
 
     println!("{}", attestation_schema_string);
 
-    // TODO: SAVE THESE TO ENVIRONMENTAL VARIABLES:
-    let erc20_schema_uid = "c962da008bda7e067ca18dc10c8bc18190d1d5faa3fcec9a3d1692f06428b332";
-    let erc721_schema_uid = "51305fa376cfdb38c02034c8702df04ffd1dd065e3c4469bbf6310f8ab0358d1";
+    let erc20_schema_uid =
+        env::var("ERC20_SCHEMA_UID")?;
+
+    let erc721_schema_uid =
+        env::var("ERC721_SCHEMA_UID")?;
+
+    let bundle_schema_uid =
+        env::var("BUNDLE_SCHEMA_UID")?;
 
     if attestation_schema_string == erc20_schema_uid {
         let attestation_data =
@@ -74,10 +79,22 @@ pub async fn get_buy_statement(
             arbiter: attestation_data.arbiter,
             demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,
         }))
+    } else if attestation_schema_string == bundle_schema_uid {
+        let attestation_data =
+        BundlePaymentObligation::StatementData::abi_decode(attestation.data.as_ref(), true)?;
+        
+        Ok(JobPaymentResult::JobPaymentBundle(JobPaymentBundle {
+            price: BundlePrice {
+                erc20_addresses: attestation_data.erc20Addresses,
+                erc20_amounts: attestation_data.erc20Amounts,
+                erc721_addresses: attestation_data.erc721Addresses,
+                erc721_ids: attestation_data.erc721Ids
+            },
+            arbiter: attestation_data.arbiter,
+            demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,
+        }))
     } else {
-        println!("Else Statement:");
-        println!("{}", attestation.schema);
-        return Err(eyre::eyre!("Invalid statement UID."));
+        return Err(eyre::eyre!("Invalid attestation schema UID."));
     }
 }
 

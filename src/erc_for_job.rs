@@ -30,7 +30,6 @@ async fn get_buy_statement(
         .await
         .map_err(PyErr::from)?;
 
-
     match payment_result {
         JobPaymentResult::JobPayment20(payment) => {
             let result = BuyStatement::Single(
@@ -53,7 +52,36 @@ async fn get_buy_statement(
             Ok(result)
         },
         JobPaymentResult::JobPaymentBundle(payment) => {
-            Err(PyValueError::new_err("Unsupported payment type: JobPaymentBundle"))
+            let result = BuyStatement::Multiple(
+                payment.price.erc20_addresses.iter()
+                .map(|address| address.to_string())
+                .collect::<Vec<String>>(),
+
+                payment.price.erc20_amounts
+                .iter()
+                .map(|amount| {
+                    <&alloy::primitives::Uint<256, 4> as TryInto<u64>>::try_into(amount)
+                    .map_err(|_| PyValueError::new_err("amount too big for u64"))
+                })
+                .collect::<Result<Vec<u64>, _>>()?,
+
+                payment.price.erc721_addresses
+                .iter()
+                .map(|address| address.to_string())
+                .collect::<Vec<String>>(),
+
+                payment.price.erc721_ids
+                    .iter()
+                    .map(|amount| {
+                        <&alloy::primitives::Uint<256, 4> as TryInto<u64>>::try_into(amount)
+                        .map_err(|_| PyValueError::new_err("amount too big for u64"))
+                })
+                .collect::<Result<Vec<u64>, _>>()?,
+
+                payment.arbiter.to_string(),
+                payment.demand.result.to_string(),
+            );
+            Ok(result)
         },
     }
 }

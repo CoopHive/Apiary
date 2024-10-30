@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Check for processes using ports 8000 and 8001 and kill them if found
+for port in 8000 8001; do
+    pid=$(lsof -t -i :"$port")
+    if [ -n "$pid" ]; then
+        echo "Killing process on port $port with PID: $pid"
+        kill -9 "$pid"
+    else
+        echo "No process found on port $port."
+    fi
+done
+
 # Get PIDs of processes associated with 'uvicorn' or 'redis'
 pids=$(ps aux | grep -E 'uvicorn|redis' | grep -v grep | awk '{print $2}')
 
@@ -9,7 +20,7 @@ if [ -z "$pids" ]; then
 else
     # Kill all the found PIDs
     echo "Killing processes with PIDs: $pids"
-    kill $pids
+    kill -9 $pids
 fi
 
 # Delete files starting with 'messaging_client_' or 'inference_endpoint_'

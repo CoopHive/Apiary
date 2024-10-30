@@ -50,52 +50,6 @@ async fn make_buy_statement(
 
 #[tokio::main]
 #[pyfunction]
-async fn get_buy_statement(
-    statement_uid: String,
-) -> PyResult<(Vec<String>, Vec<u64>, Vec<String>, Vec<u64>, String, String)> {
-    let statement_uid: FixedBytes<32> = statement_uid
-        .parse::<FixedBytes<32>>()
-        .map_err(|_| PyValueError::new_err("couldn't parse statement_uid as bytes32"))?;
-
-    bundle_for_job::get_buy_statement(statement_uid)
-        .await
-        .map_err(PyErr::from)
-        .map(|r| -> PyResult<_> {
-            Ok((
-                r.price.erc20_addresses
-                .iter()
-                .map(|address| address.to_string())
-                .collect::<Vec<String>>(),
-
-                r.price.erc20_amounts
-                    .iter()
-                    .map(|amount| {
-                        <&alloy::primitives::Uint<256, 4> as TryInto<u64>>::try_into(amount)
-                        .map_err(|_| PyValueError::new_err("amount too big for u64"))
-                })
-                .collect::<Result<Vec<u64>, _>>()?,
-
-                r.price.erc721_addresses
-                .iter()
-                .map(|address| address.to_string())
-                .collect::<Vec<String>>(),
-
-                r.price.erc721_ids
-                    .iter()
-                    .map(|amount| {
-                        <&alloy::primitives::Uint<256, 4> as TryInto<u64>>::try_into(amount)
-                        .map_err(|_| PyValueError::new_err("amount too big for u64"))
-                })
-                .collect::<Result<Vec<u64>, _>>()?,
-
-                r.arbiter.to_string(),
-                r.demand.result, // actually query, unified by abi
-            ))
-        })?
-}
-
-#[tokio::main]
-#[pyfunction]
 async fn submit_and_collect(
     buy_attestation_uid: String,
     result_cid: String,
@@ -116,7 +70,6 @@ pub fn add_bundle_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> 
 
     bundle_module.add_function(wrap_pyfunction!(helloworld, &bundle_module)?)?;
     bundle_module.add_function(wrap_pyfunction!(make_buy_statement, &bundle_module)?)?;
-    bundle_module.add_function(wrap_pyfunction!(get_buy_statement, &bundle_module)?)?;
     bundle_module.add_function(wrap_pyfunction!(submit_and_collect, &bundle_module)?)?;
 
     parent_module.add_submodule(&bundle_module)?;
