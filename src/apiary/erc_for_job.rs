@@ -3,8 +3,7 @@ use crate::provider;
 use std::env;
 
 use alloy::{
-    primitives::{self, Address, FixedBytes},
-    sol_types::SolValue,
+    hex, primitives::{self, Address, FixedBytes}, sol_types::SolValue
 };
 
 use crate::shared::{py_val_err, py_run_err, ERC20Price, ERC721Price, BundlePrice};
@@ -43,20 +42,26 @@ pub async fn get_buy_statement(
 
     let contract = IEAS::new(eas_address, provider);
     let attestation = contract.getAttestation(statement_uid).call().await?._0;
-    
-    // Use right statement_data based on attestation.schema
-    let attestation_data =
+
+    let erc20_schema_uid = "c962da008bda7e067ca18dc10c8bc18190d1d5faa3fcec9a3d1692f06428b332";
+
+    if hex::encode(attestation.schema) == erc20_schema_uid {
+        let attestation_data =
         ERC20PaymentObligation::StatementData::abi_decode(attestation.data.as_ref(), true)?;
 
-    // Use right JobPaymentResult based on attestation.schema
-    Ok(JobPaymentResult::JobPayment20(JobPayment20 {
-        price: ERC20Price {
-            token: attestation_data.token,
-            amount: attestation_data.amount,
-        },
-        arbiter: attestation_data.arbiter,
-        demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,
-    }))
+        Ok(JobPaymentResult::JobPayment20(JobPayment20 {
+            price: ERC20Price {
+                token: attestation_data.token,
+                amount: attestation_data.amount,
+            },
+            arbiter: attestation_data.arbiter,
+            demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,
+        }))
+    } else {
+        println!("Else Statement:");
+        println!("{}", attestation.schema);
+        return Err(eyre::eyre!("Invalid statement UID."));
+    }
 }
 
 // GENERALIZE THIS INTO GET_SELL_STATEMENT, same API as get_buy_statement

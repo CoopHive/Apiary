@@ -109,7 +109,7 @@ apiary --verbose start-buy --config-path ./config/buyer_kalman.json --job-path .
 #### ERC721
 
 ```bash
-apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --tokens-data '["ERC721", "0x9757694a764de0c6599735D37fecd1d09501fb39", 622]'
+apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/cowsay.Dockerfile --tokens-data '["ERC721", "0x9757694a764de0c6599735D37fecd1d09501fb39", 625]'
 ```
 
 #### ERC20 Bundle
