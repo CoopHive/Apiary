@@ -8,7 +8,7 @@ type Offer = { query: string; tokens: Token[] };
 type Messages =
   | ({ _tag: "offer" } & Offer)
   | { _tag: "cancel"; error?: string }
-  | ({ _tag: "buyAttest"; attestation: Hex } & Offer)
+  | { _tag: "buyAttest"; attestation: Hex }
   | { _tag: "sellAttest"; attestation: Hex; result: string };
 
 type Roles = "buyer" | "seller";

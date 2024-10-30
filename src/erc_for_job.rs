@@ -13,8 +13,9 @@ async fn helloworld() -> PyResult<String> {
 
 #[pyclass]
 pub enum BuyStatement {
-    Single(String, u64, String, String),
-    Multiple(Vec<String>, Vec<u64>, Vec<String>, Vec<u64>, String, String),
+    ERC20(String, u64, String, String),
+    ERC721(String, u64, String, String),
+    Bundle(Vec<String>, Vec<u64>, Vec<String>, Vec<u64>, String, String),
 }
 
 #[tokio::main]
@@ -32,7 +33,7 @@ async fn get_buy_statement(
 
     match payment_result {
         JobPaymentResult::JobPayment20(payment) => {
-            let result = BuyStatement::Single(
+            let result = BuyStatement::ERC20(
                 payment.price.token.to_string(),
                 payment.price.amount.try_into()
                     .map_err(|_| PyValueError::new_err("amount too big for u64"))?,
@@ -42,7 +43,7 @@ async fn get_buy_statement(
             Ok(result)
         },
         JobPaymentResult::JobPayment721(payment) => {
-            let result = BuyStatement::Single(
+            let result = BuyStatement::ERC721(
                 payment.price.token.to_string(),
                 payment.price.id.try_into()
                     .map_err(|_| PyValueError::new_err("amount too big for u64"))?,
@@ -52,7 +53,7 @@ async fn get_buy_statement(
             Ok(result)
         },
         JobPaymentResult::JobPaymentBundle(payment) => {
-            let result = BuyStatement::Multiple(
+            let result = BuyStatement::Bundle(
                 payment.price.erc20_addresses.iter()
                 .map(|address| address.to_string())
                 .collect::<Vec<String>>(),

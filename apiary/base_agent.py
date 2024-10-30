@@ -117,29 +117,31 @@ class Agent(ABC):
 
         buy_statement = apiars.erc.get_buy_statement(statement_uid)
 
-        if isinstance(buy_statement, apiars.erc.BuyStatement.Single):
+        if isinstance(buy_statement, apiars.erc.BuyStatement.ERC20):
             (_, _, _, job_cid) = buy_statement
-        elif isinstance(buy_statement, apiars.erc.BuyStatement.Multiple):
+            token_standard = "ERC20"
+        elif isinstance(buy_statement, apiars.erc.BuyStatement.ERC721):
+            (_, _, _, job_cid) = buy_statement
+            token_standard = "ERC721"
+        elif isinstance(buy_statement, apiars.erc.BuyStatement.Bundle):
             (_, _, _, _, _, job_cid) = buy_statement
+            token_standard = "Bundle"
 
         result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
 
-        if len(input_message["data"]["tokens"]) == 1:
-            input_message_token = input_message["data"]["tokens"][0]
-            token_standard = str(input_message_token["tokenStandard"])
-
-            if token_standard == "ERC20":
+        match token_standard:
+            case "ERC20":
                 sell_uid = apiars.erc20.submit_and_collect(
                     statement_uid, result_cid, self.private_key
                 )
-            elif token_standard == "ERC721":
+            case "ERC721":
                 sell_uid = apiars.erc721.submit_and_collect(
                     statement_uid, result_cid, self.private_key
                 )
-        else:
-            sell_uid = apiars.bundle.submit_and_collect(
-                statement_uid, result_cid, self.private_key
-            )
+            case "Bundle":
+                sell_uid = apiars.bundle.submit_and_collect(
+                    statement_uid, result_cid, self.private_key
+                )
 
         output_message["data"]["_tag"] = "sellAttest"
         output_message["data"]["result"] = result_cid
@@ -223,6 +225,9 @@ class Agent(ABC):
 
         output_message["data"]["_tag"] = "buyAttest"
         output_message["data"]["attestation"] = statement_uid
+        output_message["data"].pop("query", None)
+        output_message["data"].pop("tokens", None)
+
         return output_message
 
     def _job_cid_to_result_cid(self, statement_uid: str, job_cid: str):
