@@ -1,5 +1,5 @@
 use alloy::{
-    primitives::{b256, Address, Bytes, FixedBytes},
+    primitives::{b256, Address, FixedBytes},
     sol,
     sol_types::{SolEvent, SolValue},
 };
@@ -50,7 +50,7 @@ pub async fn make_buy_statement(
     let arbiter_address =
         env::var("TRUSTED_PARTY_ARBITER").map(|a| Address::parse_checksummed(a, None))??;
 
-    let base_demand: Bytes = demand.abi_encode().into();
+    let base_demand = demand.abi_encode().into();
     let demand = TrustedPartyDemand {
         creator: service_provider,
         baseArbiter: redis_provision_obligation_address,
@@ -263,5 +263,40 @@ pub async fn make_new_and_collect(
         Ok(sell_uid)
     } else {
         Err(eyre::eyre!("contract call to collect payment failed"))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use alloy::{primitives::address, signers::local::PrivateKeySigner};
+
+    use super::*;
+
+    #[tokio::test]
+    async fn test_make_buy_statement() {
+        let price = ERC20Price {
+            token: address!("833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"),
+            amount: 1000.try_into().unwrap(),
+        };
+        let buyer_privkey = env::var("PRIVKEY_BUYER").unwrap();
+        let buyer: PrivateKeySigner = buyer_privkey.parse().unwrap();
+        let seller: PrivateKeySigner = env::var("PRIVKEY_SELLER").unwrap().parse().unwrap();
+
+        let demand = RedisProvisionDemand {
+            replaces: FixedBytes::<32>::default(),
+            user: buyer.address(),
+            capacity: 1000.try_into().unwrap(),
+            egress: 1000.try_into().unwrap(),
+            cpus: 1.try_into().unwrap(),
+            expiration: 1679808000,
+            serverName: "redis-server".to_string(),
+        };
+        let service_provider = seller.address();
+
+        let statement_uid = make_buy_statement(price, demand, service_provider, buyer_privkey)
+            .await
+            .unwrap();
+
+        println!("statement_uid: {:?}", statement_uid);
     }
 }

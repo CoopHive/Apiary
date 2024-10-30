@@ -75,9 +75,7 @@ pub struct JobPayment {
     pub demand: JobResultObligation::StatementData,
 }
 
-pub async fn get_buy_statement(
-    statement_uid: FixedBytes<32>,
-) -> eyre::Result<JobPayment> {
+pub async fn get_buy_statement(statement_uid: FixedBytes<32>) -> eyre::Result<JobPayment> {
     let provider = provider::get_public_provider()?;
 
     let eas_address = env::var("EAS_CONTRACT").map(|a| Address::parse_checksummed(a, None))??;
@@ -142,5 +140,27 @@ pub async fn submit_and_collect(
         Ok(sell_uid)
     } else {
         Err(eyre::eyre!("contract call to collect payment failed"))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use alloy::primitives::address;
+
+    use super::*;
+
+    #[tokio::test]
+    async fn test_make_buy_statement() {
+        let price = ERC20Price {
+            token: address!("833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"),
+            amount: 1000.try_into().unwrap(),
+        };
+        let buyer_privkey = env::var("PRIVKEY_BUYER").unwrap();
+
+        let statement_uid = make_buy_statement(price, "hello".to_string(), buyer_privkey)
+            .await
+            .unwrap();
+
+        println!("statement_uid: {:?}", statement_uid);
     }
 }
