@@ -135,20 +135,34 @@ pub async fn get_buy_statement(
     })
 }
 
-pub async fn get_sell_statement(
-    statement_uid: FixedBytes<32>,
-) -> eyre::Result<RedisProvisionObligation::StatementData> {
+#[derive(Debug)]
+pub struct ProvisionData {
+    pub statement_data: RedisProvisionObligation::StatementData,
+    pub provider: Address,
+    pub expiration: u64,
+    pub replaces: Option<FixedBytes<32>>,
+}
+
+pub async fn get_sell_statement(statement_uid: FixedBytes<32>) -> eyre::Result<ProvisionData> {
     let provider = provider::get_public_provider()?;
     let eas_address = env::var("EAS_CONTRACT").map(|a| Address::parse_checksummed(a, None))??;
 
     let contract = IEAS::new(eas_address, provider);
-
     let attestation = contract.getAttestation(statement_uid).call().await?._0;
 
     let attestation_data =
         RedisProvisionObligation::StatementData::abi_decode(attestation.data.as_ref(), true)?;
 
-    Ok(attestation_data)
+    Ok(ProvisionData {
+        statement_data: attestation_data,
+        provider: attestation.recipient,
+        expiration: attestation.expirationTime,
+        replaces: if attestation.refUID == FixedBytes::<32>::default() {
+            None
+        } else {
+            Some(attestation.refUID)
+        },
+    })
 }
 
 pub async fn update_and_collect(
