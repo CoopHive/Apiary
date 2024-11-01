@@ -74,7 +74,7 @@ class Agent(ABC):
         #    NOTE: in the case messaging is server-push-based, deal negotiations and job runs are necessarily sequential.
         pass
 
-    def infer(self, states, input_message):
+    def infer(self, states, input_message: dict):
         """Infer scheme-compliant message following the (message, context) => message structure."""
         output_message = self._preprocess_infer(input_message)
         if output_message == "noop":

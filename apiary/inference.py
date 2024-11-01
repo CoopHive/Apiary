@@ -5,16 +5,15 @@ import os
 import subprocess
 import time
 
-from fastapi import FastAPI
+from robyn import Request, Robyn
 
 from apiary import agent_registry
 
-# FastAPI application
-app = FastAPI()
+app = Robyn(__file__)
 
 
-@app.post("/")
-async def inference_endpoint(message: dict):
+@app.post("/jsonify")
+async def inference_endpoint(request: Request):
     """Process a message and return the inference result.
 
     The inference function defines the behavior of Agents based on predefined Policies within the CoopHive simulator.
@@ -23,6 +22,8 @@ async def inference_endpoint(message: dict):
     Each policy operates in a stateless manner, meaning that the Agent's actions (inferences) are computed in real-time
     using the current state, without persisting any state in memory.
     """
+    message = request.json()
+
     agent = agent_registry.get_agent()
     states = agent.load_states()
     return agent.infer(states, message)
@@ -40,15 +41,10 @@ def start_inference_endpoint():
         return
 
     command = [
-        "uvicorn",
-        "apiary.inference:app",
-        "--host",
-        os.getenv("INFERENCE_ENDPOINT.HOST"),
-        "--port",
-        str(os.getenv("INFERENCE_ENDPOINT.PORT")),
+        "python3",
+        "apiary/inference.py",
     ]
 
-    # Start the Uvicorn app and dump the PID to the lock file
     process = subprocess.Popen(command)
 
     time.sleep(3)
@@ -57,3 +53,9 @@ def start_inference_endpoint():
         f.write(str(process.pid))
 
     logging.info(f"Inference endpoint started with PID {process.pid}")
+
+
+if __name__ == "__main__":
+    host = "127.0.0.1"  # TODO: change the variable in configs here to this new format: os.getenv("INFERENCE_ENDPOINT.HOST")
+    port = int(os.getenv("INFERENCE_ENDPOINT.PORT"))
+    app.start(host=host, port=port)
