@@ -75,29 +75,6 @@ pub struct JobPayment {
     pub demand: JobResultObligation::StatementData,
 }
 
-pub async fn get_buy_statement(
-    statement_uid: FixedBytes<32>,
-) -> eyre::Result<JobPayment> {
-    let provider = provider::get_public_provider()?;
-
-    let eas_address = env::var("EAS_CONTRACT").map(|a| Address::parse_checksummed(a, None))??;
-
-    let contract = IEAS::new(eas_address, provider);
-    let attestation = contract.getAttestation(statement_uid).call().await?._0;
-
-    let attestation_data =
-        ERC20PaymentObligation::StatementData::abi_decode(attestation.data.as_ref(), true)?;
-
-    Ok(JobPayment {
-        price: ERC20Price {
-            token: attestation_data.token,
-            amount: attestation_data.amount,
-        },
-        arbiter: attestation_data.arbiter,
-        demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,
-    })
-}
-
 pub async fn submit_and_collect(
     buy_attestation_uid: FixedBytes<32>,
     result_cid: String,
