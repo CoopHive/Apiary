@@ -1,14 +1,28 @@
 #!/bin/bash
 
-# Check for processes using ports 8000 and 8001 and kill them if found
-for port in 8000 8001; do
-    pid=$(lsof -t -i :"$port")
-    if [ -n "$pid" ]; then
-        echo "Killing process on port $port with PID: $pid"
-        kill -9 "$pid"
+# Loop through files that match the patterns
+for file in messaging_client_* inference_endpoint_*; do
+  # Check if the file exists to avoid errors
+  if [[ -f "$file" ]]; then
+    # Read the PID from the file
+    pid=$(cat "$file")
+    
+    # Check if the PID is a valid number
+    if [[ "$pid" =~ ^[0-9]+$ ]]; then
+      # Kill the process
+      echo "Killing process with PID: $pid from file: $file"
+      kill "$pid"
+      
+      # Check if the kill command was successful
+      if [[ $? -eq 0 ]]; then
+        echo "Successfully killed process $pid."
+      else
+        echo "Failed to kill process $pid. It may not exist."
+      fi
     else
-        echo "No process found on port $port."
+      echo "Invalid PID in file: $file"
     fi
+  fi
 done
 
 # Get PIDs of processes associated with 'uvicorn' or 'redis'
@@ -24,7 +38,7 @@ else
 fi
 
 # Delete files starting with 'messaging_client_' or 'inference_endpoint_'
-echo "Deleting files starting with 'messaging_client_' or 'inference_endpoint_':"
+echo "Deleting lock files"
 rm -f messaging_client_* inference_endpoint_*
 
 # Check if any files were deleted
