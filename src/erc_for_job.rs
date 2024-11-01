@@ -30,34 +30,34 @@ async fn get_buy_statement(
         .await
         .map_err(PyErr::from)?;
 
-    match payment_result {
-        erc_for_job::JobPaymentResult::JobPayment20(payment) => {
+    match payment_result.price {
+        erc_for_job::JobPrice::ERC20(price) => {
             let result = BuyStatement::ERC20(
-                payment.price.token.to_string(),
-                payment.price.amount.try_into()
+                price.token.to_string(),
+                price.amount.try_into()
                     .map_err(|_| PyValueError::new_err("amount too big for u64"))?,
-                payment.arbiter.to_string(),
-                payment.demand.result.to_string(),
+                payment_result.arbiter.to_string(),
+                payment_result.demand.result.to_string(),
             );
             Ok(result)
         },
-        erc_for_job::JobPaymentResult::JobPayment721(payment) => {
+        erc_for_job::JobPrice::ERC721(price) => {
             let result = BuyStatement::ERC721(
-                payment.price.token.to_string(),
-                payment.price.id.try_into()
+                price.token.to_string(),
+                price.id.try_into()
                     .map_err(|_| PyValueError::new_err("amount too big for u64"))?,
-                payment.arbiter.to_string(),
-                payment.demand.result.to_string(),
+                payment_result.arbiter.to_string(),
+                payment_result.demand.result.to_string(),
             );
             Ok(result)
         },
-        erc_for_job::JobPaymentResult::JobPaymentBundle(payment) => {
+        erc_for_job::JobPrice::Bundle(price) => {
             let result = BuyStatement::Bundle(
-                payment.price.erc20_addresses.iter()
+                price.erc20_addresses.iter()
                 .map(|address| address.to_string())
                 .collect::<Vec<String>>(),
 
-                payment.price.erc20_amounts
+                price.erc20_amounts
                 .iter()
                 .map(|amount| {
                     <&alloy::primitives::Uint<256, 4> as TryInto<u64>>::try_into(amount)
@@ -65,12 +65,12 @@ async fn get_buy_statement(
                 })
                 .collect::<Result<Vec<u64>, _>>()?,
 
-                payment.price.erc721_addresses
+                price.erc721_addresses
                 .iter()
                 .map(|address| address.to_string())
                 .collect::<Vec<String>>(),
 
-                payment.price.erc721_ids
+                price.erc721_ids
                     .iter()
                     .map(|amount| {
                         <&alloy::primitives::Uint<256, 4> as TryInto<u64>>::try_into(amount)
@@ -78,8 +78,8 @@ async fn get_buy_statement(
                 })
                 .collect::<Result<Vec<u64>, _>>()?,
 
-                payment.arbiter.to_string(),
-                payment.demand.result.to_string(),
+                payment_result.arbiter.to_string(),
+                payment_result.demand.result.to_string(),
             );
             Ok(result)
         },
