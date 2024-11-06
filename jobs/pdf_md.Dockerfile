@@ -6,13 +6,11 @@ COPY run_chunker.py run_embedder.py ./
 # This is hardcoded in the docker image.
 # pdf_ipfs_cid =
 
-# The command shall ask the seller to copy the LIGHTHOUSE_TOKEN from .env to inside the docker image, if necessary. Security concerns?
-# docker_LIGHTHOUSE_TOKEN = 
-CMD ["bash", "-c", "python -c 'from lighthouseweb3 import Lighthouse; import os; lh = Lighthouse(docker_LIGHTHOUSE_TOKEN); lh.download(\"pdf_ipfs_cid\")' && python run_chunker.py && python run_embedder.py"]
+CMD ["bash", "-c", "python -c 'from lighthouseweb3 import Lighthouse; import os; lh = Lighthouse(); lh.download(\"pdf_ipfs_cid\")' && python run_chunker.py && python run_embedder.py"]
 
 # run_chunker and run_embedder here are given as scripts, assuming they automatically find the pdf downloaded from IPFS.
 # Ideally you should make the pdf-to-markdown a function with an API like this:
-# CMD ["bash", "-c", "python -c 'from lighthouseweb3 import Lighthouse; import os; lh = Lighthouse(docker_LIGHTHOUSE_TOKEN); lh.download(\"pdf_ipfs_cid\")' && pdf_to_markdown('path_to_input.pdf'=str, converter=conv1, chunker=chunk2, embedder=emb1)"]
+# CMD ["bash", "-c", "python -c 'from lighthouseweb3 import Lighthouse; import os; lh = Lighthouse(); lh.download(\"pdf_ipfs_cid\")' && pdf_to_markdown('path_to_input.pdf'=str, converter=conv1, chunker=chunk2, embedder=emb1)"]
 
 # Something like this:
 # pdf_to_markdown(path_to_input=str, converter=Enumerate[conv1, conv2,....], chunker=Enumerate[chunk1, chunk2,...], embedder=Enumerate[emb1, emb2])"
