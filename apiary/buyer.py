@@ -8,29 +8,14 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 
-class NaiveBuyer(Agent):
+class Naive(Agent):
     """Naive Buyer in the CoopHive protocol."""
 
     def __init__(self) -> None:
         """Initialize the Buyer instance."""
         super().__init__()
-        logging.info("NaiveBuyer initialized.")
+        logging.info("Naive Buyer initialized.")
 
-    def _handle_offer(self, input_message, output_message):
+    def _handle_offer(self, input, output):
         """Confirm seller counteroffer."""
-        return self._offer_to_buy_attestation(input_message, output_message)
-
-
-class KalmanBuyer(Agent):
-    """Kalman filter-based Buyer in the CoopHive protocol."""
-
-    def __init__(self) -> None:
-        """Initialize the Buyer instance."""
-        super().__init__()
-        logging.info("KalmanBuyer initialized.")
-
-    def _handle_offer(self, input_message, output_message):
-        """Use Kalman Filter from base class, defining only role locally."""
-        return super()._kalman_handle_offer(
-            input_message, output_message, is_buyer=True
-        )
+        return self._offer_to_buy_attestation(input, output)

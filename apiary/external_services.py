@@ -5,6 +5,7 @@ import logging
 import os
 import subprocess
 import time
+from datetime import datetime
 
 
 def start_job_daemon():
@@ -23,6 +24,11 @@ def start_messaging_client(initial_offer=None):
             f"{lock_file} already exists, assuming messaging client already running at PID {lock_content}"
         )
         return
+
+    if initial_offer:
+        # Initial Offer UNIX time (Buyer Measurement): negotiation thread t0.
+        utc_time = int(datetime.utcnow().timestamp())
+        os.environ["t0"] = str(utc_time)
 
     command = [
         "bun",
