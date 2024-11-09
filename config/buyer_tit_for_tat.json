@@ -10,5 +10,5 @@
     "imitation_type": "random_absolute",
     "delta": 1,
     "absolute_tolerance": 3,
-    "M": 0.5
+    "M": 1.5
 }

@@ -7,7 +7,7 @@
     },
     "min_usdc": 50,
     "max_usdc": 800,
-    "imitation_type": "relative",
-    "delta": 1,
+    "imitation_type": "averaged",
+    "delta": 2,
     "M": 1
 }

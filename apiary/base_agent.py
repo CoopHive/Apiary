@@ -175,7 +175,6 @@ class Agent(ABC):
         return query
 
     def _offer_to_buy_attestation(self, input, output):
-        1 / 0
         query = self._get_query(input)
 
         if len(input["data"]["tokens"]) == 1:
