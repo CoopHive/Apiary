@@ -7,7 +7,8 @@
     },
     "min_usdc": 100,
     "max_usdc": 550,
-    "imitation_type": "relative",
+    "imitation_type": "random_absolute",
     "delta": 1,
-    "absolute_tolerance": 3
+    "absolute_tolerance": 3,
+    "M": 0.5
 }

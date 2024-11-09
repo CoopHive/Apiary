@@ -6,6 +6,7 @@ import os
 from datetime import datetime
 from typing import Literal
 
+import numpy as np
 from apiary.base_agent import Agent
 from apiary.utils import add_float_to_csv
 from dotenv import load_dotenv
@@ -195,12 +196,13 @@ class TitForTat(Agent):
                 ratio = x_in_t[-delta - 1] / x_in_t[-delta]
                 x_out = min(max(ratio * last_x_out, x_min), x_max)
             elif self.imitation_type == "random_absolute":
-                pass
-                # if self.is_buyer:
-                #     x_out = 101
-                # else:
-                #     x_out = 101
-                # x_out = 101*(delta)
+                variation = x_in_t[-delta - 1] - x_in_t[-delta]
+                perturbation = (
+                    -(1 ** (int(self.is_buyer)))
+                    * float(os.getenv("M", 1))
+                    * np.random.randn()
+                )
+                x_out = min(max(last_x_out + variation + perturbation, x_min), x_max)
             elif self.imitation_type == "averaged":
                 # x_out = 101*(delta)
                 pass

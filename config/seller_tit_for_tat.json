@@ -8,5 +8,6 @@
     "min_usdc": 50,
     "max_usdc": 800,
     "imitation_type": "relative",
-    "delta": 1
+    "delta": 1,
+    "M": 1
 }
