@@ -204,8 +204,8 @@ class TitForTat(Agent):
                 )
                 x_out = min(max(last_x_out + variation + perturbation, x_min), x_max)
             elif self.imitation_type == "averaged":
-                # x_out = 101*(delta)
-                pass
+                ratio = x_in_t[-delta - 1] / x_in_t[-1]
+                x_out = min(max(ratio * last_x_out, x_min), x_max)
 
         os.environ["X_OUT"] = str(x_out)
 
