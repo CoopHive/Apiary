@@ -72,7 +72,7 @@ class Kalman(Agent):
             os.environ["VALUATION_ESTIMATION"] = str(valuation_estimation)
             output["data"]["tokens"][0]["amt"] = valuation_estimation
 
-        add_float_to_csv(output["data"]["tokens"][0]["amt"], "kalman")
+        add_float_to_csv(output["data"]["tokens"][0]["amt"], "negotiation")
         return output
 
 
@@ -141,7 +141,7 @@ class Time(Agent):
         else:
             output["data"]["tokens"][0]["amt"] = x_out
 
-        add_float_to_csv(output["data"]["tokens"][0]["amt"], f"{self.alpha}_time")
+        add_float_to_csv(output["data"]["tokens"][0]["amt"], "negotiation")
         return output
 
 
@@ -181,8 +181,8 @@ class TitForTat(Agent):
         x_in_t.append(x_in)
         os.environ[x_int_t_str] = json.dumps(x_in_t)
 
-        x_min = int(os.getenv("MIN_USDC"))
-        x_max = int(os.getenv("MAX_USDC"))
+        x_min = float(os.getenv("MIN_USDC"))
+        x_max = float(os.getenv("MAX_USDC"))
 
         len_x_in_t = len(x_in_t)
         if len_x_in_t < 2:
@@ -192,18 +192,8 @@ class TitForTat(Agent):
             last_x_out = float(os.getenv("X_OUT", 0))
 
             if self.imitation_type == "relative":
-                print(delta)
-                print(x_in_t)
-
-                ratio = x_in_t[-delta] / x_in_t[-delta - 1]
-
-                print(ratio)
-                print(last_x_out)
-
+                ratio = x_in_t[-delta - 1] / x_in_t[-delta]
                 x_out = min(max(ratio * last_x_out, x_min), x_max)
-
-                print(x_out)
-
             elif self.imitation_type == "random_absolute":
                 pass
                 # if self.is_buyer:
@@ -227,7 +217,5 @@ class TitForTat(Agent):
         else:
             output["data"]["tokens"][0]["amt"] = x_out
 
-        add_float_to_csv(
-            output["data"]["tokens"][0]["amt"], f"{self.imitation_type}_titfortat"
-        )
+        add_float_to_csv(output["data"]["tokens"][0]["amt"], "negotiation")
         return output
