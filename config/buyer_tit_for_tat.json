@@ -5,7 +5,7 @@
         "port": 8001,
         "host": "localhost"
     },
-    "min_usdc": 1,
+    "min_usdc": 100,
     "max_usdc": 550,
     "imitation_type": "relative",
     "delta": 1,

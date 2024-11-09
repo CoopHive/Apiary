@@ -1,5 +1,6 @@
 """This module defines the Agents Shared among different roles, used within the CoopHive protocol."""
 
+import json
 import logging
 import os
 from datetime import datetime
@@ -68,8 +69,6 @@ class Kalman(Agent):
             # State Update
             valuation_estimation *= 1 - kalman_gain
             valuation_estimation += kalman_gain * valuation_measurement
-            # EVM-compatible integer:
-            valuation_estimation = round(valuation_estimation)
             os.environ["VALUATION_ESTIMATION"] = str(valuation_estimation)
             output["data"]["tokens"][0]["amt"] = valuation_estimation
 
@@ -132,8 +131,6 @@ class Time(Agent):
         else:
             x_out = x_min + (1 - alpha_t) * (x_max - x_min)
 
-        x_out = round(x_out)  # EVM-compatible integer.
-
         if self.is_buyer and x_in <= x_out + self.abs_tol:
             # Beneficial incoming offer, no further negotiation needed.
             output = self._offer_to_buy_attestation(input, output)
@@ -179,28 +176,46 @@ class TitForTat(Agent):
 
         x_in = input["data"]["tokens"][0]["amt"]
 
+        x_int_t_str = "X_IN_T"
+        x_in_t = json.loads(os.getenv(x_int_t_str, "[]"))
+        x_in_t.append(x_in)
+        os.environ[x_int_t_str] = json.dumps(x_in_t)
+
         x_min = int(os.getenv("MIN_USDC"))
         x_max = int(os.getenv("MAX_USDC"))
 
-        if self.imitation_type == "relative":
-            x_out = 101
-        elif self.imitation_type == "random_absolute":
-            x_out = 101
-        elif self.imitation_type == "averaged":
-            x_out = 101
-
-        1 / 0
-
-        print(x_min)
-        print(x_max)
-
-        # TODO: very this difference is implicit above, before removing.
-        if self.is_buyer:
-            x_out = 101
+        len_x_in_t = len(x_in_t)
+        if len_x_in_t < 2:
+            x_out = x_min if self.is_buyer else x_max
         else:
-            x_out = 101
+            delta = min(len_x_in_t - 1, self.delta)
+            last_x_out = float(os.getenv("X_OUT", 0))
 
-        x_out = round(x_out)  # EVM-compatible integer.
+            if self.imitation_type == "relative":
+                print(delta)
+                print(x_in_t)
+
+                ratio = x_in_t[-delta] / x_in_t[-delta - 1]
+
+                print(ratio)
+                print(last_x_out)
+
+                x_out = min(max(ratio * last_x_out, x_min), x_max)
+
+                print(x_out)
+
+            elif self.imitation_type == "random_absolute":
+                pass
+                # if self.is_buyer:
+                #     x_out = 101
+                # else:
+                #     x_out = 101
+                # x_out = 101*(delta)
+            elif self.imitation_type == "averaged":
+                # x_out = 101*(delta)
+                pass
+
+        os.environ["X_OUT"] = str(x_out)
 
         if self.is_buyer and x_in <= x_out + self.abs_tol:
             # Beneficial incoming offer, no further negotiation needed.
