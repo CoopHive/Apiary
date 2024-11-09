@@ -30,7 +30,6 @@ class Kalman(Agent):
         # TODO: move to appending the state of the negotiation instead of overwriting it
         # (which would end up using messaging_thread[-1] as input only for the current strategy),
         # to generalize the dynamics (time-delay embedding, Takens's theorem...).
-
         if (
             len(input["data"]["tokens"]) != 1
             or input["data"]["tokens"][0]["tokenStandard"] != "ERC20"
@@ -39,8 +38,8 @@ class Kalman(Agent):
                 "Strategy currently defined over scalar ERC20 amount only."
             )
 
-        valuation_estimation = float(os.getenv("VALUATION_ESTIMATION") or 300.0)
-        valuation_variance = float(os.getenv("VALUATION_VARIANCE") or 10.0)
+        valuation_estimation = float(os.getenv("VALUATION_ESTIMATION"))
+        valuation_variance = float(os.getenv("VALUATION_VARIANCE"))
 
         valuation_measurement = input["data"]["tokens"][0]["amt"]
 

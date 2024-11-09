@@ -103,7 +103,7 @@ apiary --verbose start-buy --config-path ./config/buyer_naive.json --job-path ./
 Create a EURC offer with:
 
 ```bash
-apiary --verbose start-buy --config-path ./config/buyer_kalman.json --job-path ./jobs/sklearn.Dockerfile --tokens-data '["ERC20", "0x808456652fdb597867f38412077A9182bf77359F", 15]'
+apiary --verbose start-buy --config-path ./config/buyer_kalman.json --job-path ./jobs/sklearn.Dockerfile --tokens-data '["ERC20", "0x808456652fdb597867f38412077A9182bf77359F", 1]'
 ```
 
 #### ERC721

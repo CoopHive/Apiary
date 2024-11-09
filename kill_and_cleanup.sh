@@ -47,3 +47,6 @@ if [ $? -eq 0 ]; then
 else
     echo "No files matching the criteria were found."
 fi
+
+rm -rf ./apiary_output/negotiation.csv
+rm -rf ./apiary_output/negotiation.png
