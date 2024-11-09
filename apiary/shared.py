@@ -83,7 +83,7 @@ class Time(Agent):
     def __init__(self, is_buyer: bool, alpha: Literal["poly", "exp"]) -> None:
         """Initialize the instance."""
         super().__init__()
-        logging.info("Kalman initialized.")
+        logging.info("Time initialized.")
         self.is_buyer = is_buyer
         self.alpha = alpha
         self.abs_tol = float(os.getenv("ABSOLUTE_TOLERANCE") or 0.0)
@@ -145,4 +145,74 @@ class Time(Agent):
             output["data"]["tokens"][0]["amt"] = x_out
 
         add_float_to_csv(output["data"]["tokens"][0]["amt"], f"{self.alpha}_time")
+        return output
+
+
+class TitForTat(Agent):
+    """TitForTat Agent in the CoopHive protocol."""
+
+    def __init__(
+        self,
+        is_buyer: bool,
+        imitation_type: Literal["relative", "random_absolute", "averaged"],
+    ) -> None:
+        """Initialize the instance."""
+        super().__init__()
+        logging.info("TitForTat initialized.")
+        self.is_buyer = is_buyer
+        self.imitation_type = imitation_type
+        self.delta = int(os.getenv("DELTA"))
+        self.abs_tol = float(os.getenv("ABSOLUTE_TOLERANCE") or 0.0)
+
+    def _handle_offer(self, input, output):
+        """Handle Offer."""
+        if (
+            len(input["data"]["tokens"]) != 1
+            or input["data"]["tokens"][0]["tokenStandard"] != "ERC20"
+        ):
+            raise ValueError(
+                "Strategy currently defined over scalar ERC20 amount only."
+            )
+            # NOTE: Actually defined only for USDC, more in particular.
+            # TODO: Agents shall have a whitelist of assets and potentially a set of parameters asset-specific, in the multivariate case.
+            # This is true for every strategy, and should inform the high-level design of agents.
+
+        x_in = input["data"]["tokens"][0]["amt"]
+
+        x_min = int(os.getenv("MIN_USDC"))
+        x_max = int(os.getenv("MAX_USDC"))
+
+        if self.imitation_type == "relative":
+            x_out = 101
+        elif self.imitation_type == "random_absolute":
+            x_out = 101
+        elif self.imitation_type == "averaged":
+            x_out = 101
+
+        1 / 0
+
+        print(x_min)
+        print(x_max)
+
+        # TODO: very this difference is implicit above, before removing.
+        if self.is_buyer:
+            x_out = 101
+        else:
+            x_out = 101
+
+        x_out = round(x_out)  # EVM-compatible integer.
+
+        if self.is_buyer and x_in <= x_out + self.abs_tol:
+            # Beneficial incoming offer, no further negotiation needed.
+            output = self._offer_to_buy_attestation(input, output)
+        elif not self.is_buyer and x_in >= x_out:
+            # Beneficial incoming offer, no further negotiation needed.
+            # Confirm buyer offer with identity counteroffer
+            pass
+        else:
+            output["data"]["tokens"][0]["amt"] = x_out
+
+        add_float_to_csv(
+            output["data"]["tokens"][0]["amt"], f"{self.imitation_type}_titfortat"
+        )
         return output
