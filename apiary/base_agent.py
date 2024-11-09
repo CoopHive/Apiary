@@ -79,8 +79,8 @@ class Agent(ABC):
 
         if input["initial"]:
             # Initial Offer UNIX time (Seller Measurement): negotiation thread t0.
-            utc_time = int(datetime.utcnow().timestamp())
-            os.environ["t0"] = str(utc_time)
+            utc_time = datetime.utcnow().timestamp()
+            os.environ["T0"] = str(utc_time)
 
         match input["data"].get("_tag"):
             case "offer":

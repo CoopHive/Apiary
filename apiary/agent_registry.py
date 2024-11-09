@@ -8,11 +8,13 @@ agents_registry = {
     # ---------------------------------------------Buyers----------------------------------------------
     "buyer_naive": buyer.Naive,
     "buyer_kalman": lambda: shared.Kalman(is_buyer=True),
-    "buyer_poly_time": lambda: shared.Time(is_buyer=True, alpha_t="poly"),
+    "buyer_poly_time": lambda: shared.Time(is_buyer=True, alpha="poly"),
+    "buyer_exp_time": lambda: shared.Time(is_buyer=True, alpha="exp"),
     # ---------------------------------------------Sellers---------------------------------------------
     "seller_naive": seller.Naive,
     "seller_kalman": lambda: shared.Kalman(is_buyer=False),
-    "seller_poly_time": lambda: shared.Time(is_buyer=False, alpha_t="poly"),
+    "seller_poly_time": lambda: shared.Time(is_buyer=False, alpha="poly"),
+    "seller_exp_time": lambda: shared.Time(is_buyer=False, alpha="exp"),
 }
 
 

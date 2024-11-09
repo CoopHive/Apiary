@@ -85,12 +85,15 @@ def start_sell(config_path: str):
 
 
 @cli.command()
-def analysis():
+@click.option(
+    "--filename",
+    required=True,
+)
+def analysis(filename: str):
     """Offline Analysis."""
     from apiary.utils import plot_negotiation
 
-    file_path = "apiary_output/negotiation.csv"
-    plot_negotiation(file_path)
+    plot_negotiation(filename)
 
 
 @cli.command()
