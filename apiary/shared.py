@@ -48,11 +48,11 @@ class Kalman(Agent):
             and valuation_measurement <= valuation_estimation + self.abs_tol
         ):
             # Beneficial incoming offer, no further negotiation needed.
-            output = self._offer_to_buy_attestation(input, output)
+            return self._offer_to_buy_attestation(input, output)
         elif not self.is_buyer and valuation_measurement >= valuation_estimation:
             # Beneficial incoming offer, no further negotiation needed.
             # Confirm buyer offer with identity counteroffer
-            pass
+            return output
         else:
             valuation_measurement_variance = float(
                 os.getenv("VALUATION_MEASUREMENT_VARIANCE")
@@ -72,8 +72,8 @@ class Kalman(Agent):
             os.environ["VALUATION_ESTIMATION"] = str(valuation_estimation)
             output["data"]["tokens"][0]["amt"] = valuation_estimation
 
-        add_float_to_csv(output["data"]["tokens"][0]["amt"], "negotiation")
-        return output
+            add_float_to_csv(output["data"]["tokens"][0]["amt"], "negotiation")
+            return output
 
 
 class Time(Agent):
@@ -133,16 +133,15 @@ class Time(Agent):
 
         if self.is_buyer and x_in <= x_out + self.abs_tol:
             # Beneficial incoming offer, no further negotiation needed.
-            output = self._offer_to_buy_attestation(input, output)
+            return self._offer_to_buy_attestation(input, output)
         elif not self.is_buyer and x_in >= x_out:
             # Beneficial incoming offer, no further negotiation needed.
             # Confirm buyer offer with identity counteroffer
-            pass
+            return output
         else:
             output["data"]["tokens"][0]["amt"] = x_out
-
-        add_float_to_csv(output["data"]["tokens"][0]["amt"], "negotiation")
-        return output
+            add_float_to_csv(output["data"]["tokens"][0]["amt"], "negotiation")
+            return output
 
 
 class TitForTat(Agent):
@@ -210,13 +209,12 @@ class TitForTat(Agent):
 
         if self.is_buyer and x_in <= x_out + self.abs_tol:
             # Beneficial incoming offer, no further negotiation needed.
-            output = self._offer_to_buy_attestation(input, output)
+            return self._offer_to_buy_attestation(input, output)
         elif not self.is_buyer and x_in >= x_out:
             # Beneficial incoming offer, no further negotiation needed.
             # Confirm buyer offer with identity counteroffer
-            pass
+            return output
         else:
             output["data"]["tokens"][0]["amt"] = x_out
-
-        add_float_to_csv(output["data"]["tokens"][0]["amt"], "negotiation")
-        return output
+            add_float_to_csv(output["data"]["tokens"][0]["amt"], "negotiation")
+            return output
