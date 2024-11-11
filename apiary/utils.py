@@ -233,16 +233,17 @@ def plot_negotiation(filename: str):
     odd_entries = df.iloc[::2][::downsample_rate]
     even_entries = df.iloc[1::2][::downsample_rate]
 
+    unit_price = 1e-6  # TODO: hardcoded, may change for != USDC.
     plt.figure(figsize=(13, 5))
     plt.plot(
-        odd_entries.index,
+        unit_price * odd_entries.index,
         odd_entries,
         color="g",
         linewidth=1.5,
         label="Seller Offers",
     )
     plt.plot(
-        even_entries.index,
+        unit_price * even_entries.index,
         even_entries,
         color="m",
         linewidth=1.5,
@@ -250,8 +251,8 @@ def plot_negotiation(filename: str):
     )
 
     plt.title("Negotiation Rounds vs Offers", fontsize=16, fontweight="bold")
-    plt.xlabel("Negotiation Round", fontsize=12)
-    plt.ylabel("Offer", fontsize=12)
+    plt.xlabel("Negotiation Round []", fontsize=12)
+    plt.ylabel("Offer [USDC]", fontsize=12)  # TODO: remove hardcoded.
     plt.grid(True, linestyle="--", linewidth=0.5)
 
     plt.legend()
