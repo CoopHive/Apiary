@@ -5,8 +5,8 @@
         "port": 8001,
         "host": "localhost"
     },
-    "valuation_estimation": 300,
-    "valuation_variance": 10,
-    "valuation_measurement_variance": 100,
+    "valuation_estimation": 200,
+    "valuation_variance": 50,
+    "valuation_measurement_variance": 12,
     "absolute_tolerance": 2
 }

@@ -196,9 +196,9 @@ class TitForTat(Agent):
             elif self.imitation_type == "random_absolute":
                 variation = x_in_t[-delta - 1] - x_in_t[-delta]
                 perturbation = (
-                    -(1 ** (int(self.is_buyer)))
+                    +(1 ** (int(self.is_buyer)))
                     * float(os.getenv("M", 1))
-                    * np.random.randn()
+                    * np.random.randn() ** 2
                 )
                 x_out = min(max(last_x_out + variation + perturbation, x_min), x_max)
             elif self.imitation_type == "averaged":

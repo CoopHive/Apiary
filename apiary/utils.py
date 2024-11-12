@@ -236,15 +236,15 @@ def plot_negotiation(filename: str):
     unit_price = 1e-6  # TODO: hardcoded, may change for != USDC.
     plt.figure(figsize=(13, 5))
     plt.plot(
-        unit_price * odd_entries.index,
-        odd_entries,
+        odd_entries.index,
+        odd_entries * unit_price,
         color="g",
         linewidth=1.5,
         label="Seller Offers",
     )
     plt.plot(
-        unit_price * even_entries.index,
-        even_entries,
+        even_entries.index,
+        even_entries * unit_price,
         color="m",
         linewidth=1.5,
         label="Buyer Offers",

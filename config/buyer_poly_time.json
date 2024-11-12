@@ -7,8 +7,8 @@
     },
     "min_usdc": 1,
     "max_usdc": 550,
-    "t_max": 30,
-    "beta": 1.6,
+    "t_max": 7,
+    "beta": 1.9,
     "k": 0.3,
     "absolute_tolerance": 3
 }

@@ -8,7 +8,7 @@
     "min_usdc": 100,
     "max_usdc": 550,
     "imitation_type": "random_absolute",
-    "delta": 1,
+    "delta": 10,
     "absolute_tolerance": 3,
-    "M": 1.5
+    "M": 30.0
 }

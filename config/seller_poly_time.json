@@ -7,7 +7,7 @@
     },
     "min_usdc": 50,
     "max_usdc": 800,
-    "t_max": 200,
+    "t_max": 20,
     "beta": 5.5,
     "k": 0.5
 }
