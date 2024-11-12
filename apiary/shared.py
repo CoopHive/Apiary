@@ -72,6 +72,7 @@ class Kalman(Agent):
             os.environ["VALUATION_ESTIMATION"] = str(valuation_estimation)
             output["data"]["tokens"][0]["amt"] = valuation_estimation
 
+            add_float_to_csv(input["data"]["tokens"][0]["amt"], "negotiation")
             add_float_to_csv(output["data"]["tokens"][0]["amt"], "negotiation")
             return output
 

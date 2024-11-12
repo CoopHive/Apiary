@@ -9,6 +9,6 @@
     "max_usdc": 550,
     "imitation_type": "random_absolute",
     "delta": 10,
-    "absolute_tolerance": 3,
+    "absolute_tolerance": 1,
     "M": 30.0
 }
