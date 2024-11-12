@@ -38,6 +38,7 @@ class Kalman(Agent):
                 "Strategy currently defined over scalar ERC20 amount only."
             )
 
+        add_float_to_csv(input["data"]["tokens"][0]["amt"], "negotiation")
         valuation_estimation = float(os.getenv("VALUATION_ESTIMATION"))
         valuation_variance = float(os.getenv("VALUATION_VARIANCE"))
 
@@ -72,7 +73,6 @@ class Kalman(Agent):
             os.environ["VALUATION_ESTIMATION"] = str(valuation_estimation)
             output["data"]["tokens"][0]["amt"] = valuation_estimation
 
-            add_float_to_csv(input["data"]["tokens"][0]["amt"], "negotiation")
             add_float_to_csv(output["data"]["tokens"][0]["amt"], "negotiation")
             return output
 
@@ -114,6 +114,7 @@ class Time(Agent):
         if t > t_max:
             return "noop"
 
+        add_float_to_csv(input["data"]["tokens"][0]["amt"], "negotiation")
         x_in = input["data"]["tokens"][0]["amt"]
 
         beta = float(os.getenv("BETA"))
@@ -174,6 +175,7 @@ class TitForTat(Agent):
             # TODO: Agents shall have a whitelist of assets and potentially a set of parameters asset-specific, in the multivariate case.
             # This is true for every strategy, and should inform the high-level design of agents.
 
+        add_float_to_csv(input["data"]["tokens"][0]["amt"], "negotiation")
         x_in = input["data"]["tokens"][0]["amt"]
 
         x_int_t_str = "X_IN_T"
