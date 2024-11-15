@@ -30,6 +30,9 @@ pub async fn make_buy_statement(
 
     // Iterate over erc20_addresses and erc20_amounts together
     for (erc_20_address, amount) in price.erc20_addresses.iter().zip(price.erc20_amounts.iter()){
+        println!("Approving erc_20 tranfer. Address and Amount:");
+        println!("{}", erc_20_address);
+        println!("{}", amount);
         let token_contract = IERC20::new(*erc_20_address, &provider);
 
         let mut call = token_contract
