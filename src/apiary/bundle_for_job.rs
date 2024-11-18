@@ -30,9 +30,6 @@ pub async fn make_buy_statement(
 
     // Iterate over erc20_addresses and erc20_amounts together
     for (erc_20_address, amount) in price.erc20_addresses.iter().zip(price.erc20_amounts.iter()){
-        println!("Approving erc_20 tranfer. Address and Amount:");
-        println!("{}", erc_20_address);
-        println!("{}", amount);
         let token_contract = IERC20::new(*erc_20_address, &provider);
 
         let mut call = token_contract
@@ -41,11 +38,9 @@ pub async fn make_buy_statement(
         // let gas_estimate = call
         // .estimate_gas()
         // .await?;
-        // println!("Gas estimated");
         // let gas_limit = gas_estimate * 120 / 100;
         let gas_limit = 2_000_000u128;
         call = call.gas(gas_limit);
-        // println!("Gas limit set");
 
         let approval_receipt = call
         .send()
@@ -95,7 +90,6 @@ pub async fn make_buy_statement(
     // let gas_estimate = call
     // .estimate_gas()
     // .await?;
-    // println!("Gas estimated");
     // let gas_limit = gas_estimate * 120 / 100;
     let gas_limit = 5_000_000u128;
     call = call.gas(gas_limit);
