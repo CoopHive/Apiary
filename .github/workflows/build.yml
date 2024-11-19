@@ -55,20 +55,8 @@ jobs:
           make cargo-download
           make uv-download
 
-      - name: Install dependencies (Windows)
-        if: runner.os == 'Windows'
-        shell: bash
+      - name: Install dependencies
         run: |
-          python3 -m venv .venv
-          .venv\Scripts\activate
-          make install
-
-      - name: Install dependencies (Linux/macOS)
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-        shell: bash
-        run: |
-          python3 -m venv .venv
-          source .venv/bin/activate
           make install
         
       - name: Run style checks

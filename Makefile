@@ -17,6 +17,7 @@ install:
 
 	cargo update
 	rm -rf .venv && uv venv
+	uv pip install maturin
 	uv pip install .[dev]
 	maturin develop
 	uv run pre-commit install
