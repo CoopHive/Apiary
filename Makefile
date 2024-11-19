@@ -18,7 +18,7 @@ install:
 	cargo update
 	rm -rf .venv && uv venv
 	uv pip install .[dev]
-	uvx maturin develop
+	maturin develop
 	uv run pre-commit install
 
 .PHONY: codestyle
