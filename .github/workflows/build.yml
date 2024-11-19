@@ -17,8 +17,6 @@ jobs:
         platform:
           - ubuntu-latest
           - ubuntu-22.04
-          - windows-latest
-          - windows-2022
           - macos-latest
           - macos-14
         python-version: ["3.12"]
