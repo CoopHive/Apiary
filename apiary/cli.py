@@ -77,7 +77,7 @@ def start_sell(config_path: str):
 
     utils.load_configuration(config_path)
 
-    external_services.start_job_daemon()
+    # external_services.start_job_daemon()
 
     inference.start_inference_endpoint()
 
@@ -85,12 +85,15 @@ def start_sell(config_path: str):
 
 
 @cli.command()
-def analysis():
+@click.option(
+    "--filename",
+    required=True,
+)
+def analysis(filename: str):
     """Offline Analysis."""
     from apiary.utils import plot_negotiation
 
-    file_path = "apiary_output/negotiation.csv"
-    plot_negotiation(file_path)
+    plot_negotiation(filename)
 
 
 @cli.command()

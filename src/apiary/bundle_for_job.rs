@@ -32,8 +32,17 @@ pub async fn make_buy_statement(
     for (erc_20_address, amount) in price.erc20_addresses.iter().zip(price.erc20_amounts.iter()){
         let token_contract = IERC20::new(*erc_20_address, &provider);
 
-        let approval_receipt = token_contract
-        .approve(payment_address, *amount)
+        let mut call = token_contract
+        .approve(payment_address, *amount);
+        
+        // let gas_estimate = call
+        // .estimate_gas()
+        // .await?;
+        // let gas_limit = gas_estimate * 120 / 100;
+        let gas_limit = 2_000_000u128;
+        call = call.gas(gas_limit);
+
+        let approval_receipt = call
         .send()
         .await?
         .get_receipt()
@@ -48,8 +57,10 @@ pub async fn make_buy_statement(
     for (erc_721_address, id) in price.erc721_addresses.iter().zip(price.erc721_ids.iter()){
         let token_contract = IERC721::new(*erc_721_address, &provider);
 
-        let approval_receipt = token_contract
-        .approve(payment_address, *id)
+        let mut call = token_contract
+        .approve(payment_address, *id);
+
+        let approval_receipt = call
         .send()
         .await?
         .get_receipt()
@@ -62,19 +73,28 @@ pub async fn make_buy_statement(
 
     let statement_contract = BundlePaymentObligation::new(payment_address, &provider);
 
-    let log = statement_contract
-        .makeStatement(
-            BundlePaymentObligation::StatementData {
-                erc20Addresses: price.erc20_addresses,
-                erc20Amounts: price.erc20_amounts,
-                erc721Addresses: price.erc721_addresses,
-                erc721Ids: price.erc721_ids,
-                arbiter: arbiter_address,
-                demand,
-            },
-            0,
-            b256!("0000000000000000000000000000000000000000000000000000000000000000"),
-        )
+    let mut call = statement_contract
+    .makeStatement(
+        BundlePaymentObligation::StatementData {
+            erc20Addresses: price.erc20_addresses,
+            erc20Amounts: price.erc20_amounts,
+            erc721Addresses: price.erc721_addresses,
+            erc721Ids: price.erc721_ids,
+            arbiter: arbiter_address,
+            demand,
+        },
+        0,
+        b256!("0000000000000000000000000000000000000000000000000000000000000000"),
+    );
+
+    // let gas_estimate = call
+    // .estimate_gas()
+    // .await?;
+    // let gas_limit = gas_estimate * 120 / 100;
+    let gas_limit = 5_000_000u128;
+    call = call.gas(gas_limit);
+
+    let log = call
         .send()
         .await?
         .get_receipt()

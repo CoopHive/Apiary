@@ -4,8 +4,8 @@ import logging
 import os
 import subprocess
 from abc import ABC, abstractmethod
+from datetime import datetime
 
-from apiary.utils import add_float_to_csv
 from dotenv import load_dotenv
 from lighthouseweb3 import Lighthouse
 
@@ -68,52 +68,52 @@ class Agent(ABC):
         #     model_pickle = read_pickle('jax_model.pickle')
         #     model = jax.from_pickle(model_pickle) # This is why we do this in python, even if the training is happening in a completely separate process.
         #     return {'X': , ''}
-        #    match input_message_tag to capute negotiation-strategy-invariant actions and move them to buy/sellagent functions if necessary, else:
-        #    reply_buy_attest.
-        #    reply_sell_attest.
         #    NOTE: in the case messaging is server-push-based, deal negotiations and job runs are necessarily sequential.
         pass
 
-    def infer(self, states, input_message):
-        """Infer scheme-compliant message following the (message, context) => message structure."""
-        output_message = self._preprocess_infer(input_message)
-        if output_message == "noop":
-            return output_message
+    def infer(self, states, input):
+        """Infer scheme-compliant message following the (message, context) => message structure and populate negotiation thread."""
+        output = self._preprocess_infer(input)
+        if output == "noop":
+            return output
 
-        match input_message["data"].get("_tag"):
+        if input["initial"]:
+            # Initial Offer UNIX time (Seller Measurement): negotiation thread t0.
+            utc_time = datetime.utcnow().timestamp()
+            os.environ["T0"] = str(utc_time)
+
+        match input["data"].get("_tag"):
             case "offer":
-                return self._handle_offer(input_message, output_message)
+                return self._handle_offer(input, output)
             case "buyAttest":
-                return self._buy_attestation_to_sell_attestation(
-                    input_message, output_message
-                )
+                return self._buy_attestation_to_sell_attestation(input, output)
             case "sellAttest":
-                self._handle_sell_attestation(input_message)
+                self._handle_sell_attestation(input)
                 return "noop"
 
-        return output_message
+        return output
 
-    def _preprocess_infer(self, input_message):
+    def _preprocess_infer(self, input):
         """Shared preprocessing logic for infer."""
         pubkey = os.getenv("PUBLIC_KEY")
         # if transmitter same as receiver:
-        if input_message.get("pubkey") == pubkey:
+        if input.get("pubkey") == pubkey:
             return "noop"
 
         # Initialize the output message
-        output_message = input_message.copy()
-        output_message["pubkey"] = pubkey
-        output_message["initial"] = False
+        output = input.copy()
+        output["pubkey"] = pubkey
+        output["initial"] = False
 
-        return output_message
+        return output
 
     @abstractmethod
-    def _handle_offer(self, input_message, output_message):
+    def _handle_offer(self, input, output):
         """Handle offer messages."""
         ...
 
-    def _buy_attestation_to_sell_attestation(self, input_message, output_message):
-        statement_uid = input_message["data"]["attestation"]
+    def _buy_attestation_to_sell_attestation(self, input, output):
+        statement_uid = input["data"]["attestation"]
 
         buy_statement = apiars.erc.get_buy_statement(statement_uid)
 
@@ -143,22 +143,22 @@ class Agent(ABC):
                     statement_uid, result_cid, self.private_key
                 )
 
-        output_message["data"]["_tag"] = "sellAttest"
-        output_message["data"]["attestation"] = sell_uid
+        output["data"]["_tag"] = "sellAttest"
+        output["data"]["attestation"] = sell_uid
 
-        return output_message
+        return output
 
-    def _handle_sell_attestation(self, input_message):
-        sell_uid = input_message["data"]["attestation"]
+    def _handle_sell_attestation(self, input):
+        sell_uid = input["data"]["attestation"]
         result_cid = apiars.erc.get_sell_statement(sell_uid)
         self._get_result_from_result_cid(result_cid)
 
-    def _get_query(self, input_message):
-        """Parse Dockerfile from input_message query, upload to IPFS and return the query."""
+    def _get_query(self, input):
+        """Parse Dockerfile from input query, upload to IPFS and return the query."""
         file_path = "tmp_lighthouse.Dockerfile"
 
         with open(file_path, "w") as file:
-            file.write(input_message["data"]["query"])
+            file.write(input["data"]["query"])
 
         try:
             response = self.lh.upload(file_path)
@@ -174,28 +174,28 @@ class Agent(ABC):
         logging.info(f"https://gateway.lighthouse.storage/ipfs/{query}")
         return query
 
-    def _offer_to_buy_attestation(self, input_message, output_message):
-        query = self._get_query(input_message)
+    def _offer_to_buy_attestation(self, input, output):
+        query = self._get_query(input)
 
-        if len(input_message["data"]["tokens"]) == 1:
-            input_message_token = input_message["data"]["tokens"][0]
+        if len(input["data"]["tokens"]) == 1:
+            input_token = input["data"]["tokens"][0]
 
-            token_standard = str(input_message_token["tokenStandard"])
-            token_address = str(input_message_token["address"])
+            token_standard = str(input_token["tokenStandard"])
+            token_address = str(input_token["address"])
 
             if token_standard == "ERC20":
-                amount = int(input_message_token["amt"])
+                amount = int(input_token["amt"])
 
                 statement_uid = apiars.erc20.make_buy_statement(
                     token_address, amount, query, self.private_key
                 )
             elif token_standard == "ERC721":
-                token_id = int(input_message_token["id"])
+                token_id = int(input_token["id"])
                 statement_uid = apiars.erc721.make_buy_statement(
                     token_address, token_id, query, self.private_key
                 )
         else:
-            tokens = input_message["data"]["tokens"]
+            tokens = input["data"]["tokens"]
 
             erc20_list = [
                 token for token in tokens if token["tokenStandard"] == "ERC20"
@@ -224,12 +224,12 @@ class Agent(ABC):
                 self.private_key,
             )
 
-        output_message["data"]["_tag"] = "buyAttest"
-        output_message["data"]["attestation"] = statement_uid
-        output_message["data"].pop("query", None)
-        output_message["data"].pop("tokens", None)
+        output["data"]["_tag"] = "buyAttest"
+        output["data"]["attestation"] = statement_uid
+        output["data"].pop("query", None)
+        output["data"].pop("tokens", None)
 
-        return output_message
+        return output
 
     def _job_cid_to_result_cid(self, statement_uid: str, job_cid: str):
         """Download Dockerfile from job_cid, run the job, upload the results to IPFS and return the result_cid."""
@@ -295,61 +295,3 @@ class Agent(ABC):
         # Write Dockerfile
         with open(f"results/{result_cid}.txt", "w") as f:
             f.write(results[0].decode("utf-8"))
-
-    def _kalman_handle_offer(self, input_message, output_message, is_buyer: bool):
-        if (
-            len(input_message["data"]["tokens"]) != 1
-            or input_message["data"]["tokens"][0]["tokenStandard"] != "ERC20"
-        ):
-            raise ValueError(
-                "Negotiation strategy currently defined over scalar ERC20 amount only."
-            )
-
-        valuation_estimation = float(os.getenv("VALUATION_ESTIMATION") or 300.0)
-        valuation_variance = float(os.getenv("VALUATION_VARIANCE") or 10.0)
-        abs_tol = float(os.getenv("ABSOLUTE_TOLERANCE") or 0.0)
-
-        valuation_measurement = input_message["data"]["tokens"][0]["amt"]
-
-        if not is_buyer:
-            add_float_to_csv(valuation_estimation)
-            add_float_to_csv(valuation_measurement)
-
-        if is_buyer and valuation_measurement <= valuation_estimation + abs_tol:
-            # Beneficial incoming offer, no further negotiation needed.
-            output_message = self._offer_to_buy_attestation(
-                input_message, output_message
-            )
-        elif not is_buyer and valuation_measurement >= valuation_estimation:
-            # Beneficial incoming offer, no further negotiation needed.
-            # Confirm buyer offer with identity counteroffer
-            pass
-        else:
-            valuation_measurement_variance = float(
-                os.getenv("VALUATION_MEASUREMENT_VARIANCE")
-            )
-
-            kalman_gain = valuation_variance / (
-                valuation_variance + valuation_measurement_variance
-            )
-
-            # Covariance Update
-            valuation_variance *= 1 - kalman_gain
-            os.environ["VALUATION_VARIANCE"] = str(valuation_variance)
-
-            # State Update
-            valuation_estimation *= 1 - kalman_gain
-            valuation_estimation += kalman_gain * valuation_measurement
-            valuation_estimation = round(
-                valuation_estimation
-            )  # EVM-compatible integer.
-            os.environ["VALUATION_ESTIMATION"] = str(valuation_estimation)
-            output_message["data"]["tokens"][0]["amt"] = valuation_estimation
-
-        return output_message
-
-
-# TODO: understand if the inference agent is at least responsible for writing messages.
-# Use message_timestamp to populate a database of messages?
-# import time
-# message_timestamp = int(time.time() * 1000)

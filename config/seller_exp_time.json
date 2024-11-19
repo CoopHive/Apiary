@@ -5,7 +5,9 @@
         "port": 8000,
         "host": "localhost"
     },
-    "valuation_estimation": 1000,
-    "valuation_variance": 20,
-    "valuation_measurement_variance": 10
+    "min_usdc": 50,
+    "max_usdc": 800,
+    "t_max": 7,
+    "beta": 0.6,
+    "k": 0.5
 }
