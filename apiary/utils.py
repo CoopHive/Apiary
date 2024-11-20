@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import uuid
+from datetime import datetime
 from typing import TypedDict, Union
 
 import colorlog
@@ -190,6 +191,10 @@ def parse_initial_offer(job_path, tokens_data):
 
     data["tokens"] = tokens
 
+    # Initial Offer UNIX time (Buyer Measurement): negotiation thread t0.
+    utc_time = datetime.utcnow().timestamp()
+    os.environ["T0"] = str(utc_time)
+
     return {
         "pubkey": pubkey,
         "offerId": str(uuid.uuid4()),
@@ -198,9 +203,9 @@ def parse_initial_offer(job_path, tokens_data):
     }
 
 
-def add_float_to_csv(value):
+def add_float_to_csv(value, filename: str):
     """Append a float value to a CSV file."""
-    file_path = "apiary_output/negotiation.csv"
+    file_path = f"apiary_output/{filename}.csv"
     file_exists = os.path.isfile(file_path)
 
     # Open the file in append mode if it exists, otherwise create a new file
@@ -213,43 +218,46 @@ def add_float_to_csv(value):
         writer.writerow([value])
 
 
-def plot_negotiation(file_path: str):
+def plot_negotiation(filename: str):
     """Plot negotiation offers from a CSV file file_path."""
+    file_path = f"apiary_output/{filename}.csv"
     df = pd.read_csv(file_path)
 
-    odd_entries = df.iloc[::2]
-    even_entries = df.iloc[1::2]
+    num_entries = len(df)
+    downsample_rate = 1  # No downsampling by default
+    max_points = 400
 
+    if num_entries > max_points:
+        downsample_rate = num_entries // max_points
+
+    odd_entries = df.iloc[::2][::downsample_rate]
+    even_entries = df.iloc[1::2][::downsample_rate]
+
+    unit_price = 1e-6  # TODO: hardcoded, may change for != USDC.
     plt.figure(figsize=(13, 5))
-    plt.scatter(df.index, df, color="b", s=64, label="_nolegend_")
-
     plt.plot(
         odd_entries.index,
-        odd_entries,
-        linestyle="--",
+        odd_entries * unit_price,
         color="g",
         linewidth=1.5,
         label="Seller Offers",
     )
     plt.plot(
         even_entries.index,
-        even_entries,
-        linestyle="--",
+        even_entries * unit_price,
         color="m",
         linewidth=1.5,
         label="Buyer Offers",
     )
 
     plt.title("Negotiation Rounds vs Offers", fontsize=16, fontweight="bold")
-    plt.xlabel("Negotiation Round", fontsize=12)
-    plt.ylabel("Offer", fontsize=12)
+    plt.xlabel("Negotiation Round []", fontsize=12)
+    plt.ylabel("Offer [USDC]", fontsize=12)  # TODO: remove hardcoded.
     plt.grid(True, linestyle="--", linewidth=0.5)
-
-    plt.xticks(df.index)
 
     plt.legend()
 
     plt.tight_layout()
 
-    plt.savefig("apiary_output/negotiation.png")
+    plt.savefig(f"apiary_output/{filename}.png")
     plt.close()

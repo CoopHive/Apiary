@@ -10,6 +10,6 @@ class PlaceholderValidator(Agent):
         """Initialize the Validator instance."""
         super().__init__()
 
-    def infer(self, states, input_message):
+    def infer(self, states, input):
         """Policy of Placeholder Validator."""
         pass

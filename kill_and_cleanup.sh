@@ -25,8 +25,8 @@ for file in messaging_client_* inference_endpoint_*; do
   fi
 done
 
-# Get PIDs of processes associated with 'uvicorn' or 'redis'
-pids=$(ps aux | grep -E 'uvicorn|redis' | grep -v grep | awk '{print $2}')
+# Get PIDs of processes associated with 'uvicorn'
+pids=$(ps aux | grep -E 'uvicorn' | grep -v grep | awk '{print $2}')
 
 # Check if any PIDs were found
 if [ -z "$pids" ]; then
@@ -47,3 +47,6 @@ if [ $? -eq 0 ]; then
 else
     echo "No files matching the criteria were found."
 fi
+
+rm -rf ./apiary_output/negotiation.csv
+rm -rf ./apiary_output/negotiation.png
