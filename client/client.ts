@@ -118,8 +118,7 @@ export class RedisSchemeClient<
       body: JSON.stringify(message_),
     });
     const response_: Message<T> | "noop" = await response.json();
-    console.log("agent response: ", response_);
-
+    
     if (response_ === "noop") return;
     if (!(await this.scheme.onAgent(this, this.role, message_, response_))) {
 

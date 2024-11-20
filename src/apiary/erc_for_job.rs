@@ -31,8 +31,6 @@ pub async fn get_buy_statement(
     let attestation = contract.getAttestation(statement_uid).call().await?._0;
     let attestation_schema_string = hex::encode(attestation.schema);
 
-    println!("{}", attestation_schema_string);
-
     let erc20_schema_uid =
         env::var("ERC20_SCHEMA_UID")?;
 

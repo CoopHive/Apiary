@@ -77,7 +77,7 @@ def start_sell(config_path: str):
 
     utils.load_configuration(config_path)
 
-    # external_services.start_job_daemon()
+    external_services.start_job_daemon()
 
     inference.start_inference_endpoint()
 

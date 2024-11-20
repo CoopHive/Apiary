@@ -9,8 +9,41 @@ import time
 
 def start_job_daemon():
     """Start Job Daemon."""
-    os.system("podman machine init")
-    os.system("podman machine start")
+    try:
+        result = subprocess.run(
+            ["podman", "machine", "ls", "--format", "json"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        machines = json.loads(result.stdout)
+
+        machine_names = [entry["Name"] for entry in machines]
+
+        if "podman-machine-default" in machine_names:
+            is_running = bool(
+                next(
+                    (
+                        m["Running"]
+                        for m in machines
+                        if m["Name"] == "podman-machine-default"
+                    ),
+                    None,
+                )
+            )
+            logging.info("Podman machine 'podman-machine-default' already exists.")
+        else:
+            is_running = False
+            subprocess.run(["podman", "machine", "init"], check=True)
+            logging.info("Podman machine initialized successfully.")
+
+        if not is_running:
+            subprocess.run(["podman", "machine", "start"], check=True)
+            logging.info("Podman machine started successfully.")
+
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Error while managing Podman machine: {e}")
 
 
 def start_messaging_client(initial_offer=None):
