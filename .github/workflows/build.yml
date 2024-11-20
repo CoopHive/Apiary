@@ -47,10 +47,16 @@ jobs:
             ~/.cargo/git
           key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
 
-      - name: Install bun, cargo, and uv
+      - name: Install bun
         run: |
           make bun-download
+
+      - name: Install cargo
+        run: |
           make cargo-download
+
+      - name: Install uv
+        run: |
           make uv-download
 
       - name: Install dependencies
