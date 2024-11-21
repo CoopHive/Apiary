@@ -1,5 +1,5 @@
 use alloy::{
-    primitives::{b256, Address, Bytes, FixedBytes},
+    primitives::{b256, Address, FixedBytes},
     sol,
     sol_types::{SolEvent, SolValue},
 };
@@ -50,7 +50,7 @@ pub async fn make_buy_statement(
     let arbiter_address =
         env::var("TRUSTED_PARTY_ARBITER").map(|a| Address::parse_checksummed(a, None))??;
 
-    let base_demand: Bytes = demand.abi_encode().into();
+    let base_demand = demand.abi_encode().into();
     let demand = TrustedPartyDemand {
         creator: service_provider,
         baseArbiter: redis_provision_obligation_address,

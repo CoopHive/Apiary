@@ -34,6 +34,7 @@ pub fn get_wallet_provider(private_key: String) -> Result<WalletProvider, pyo3::
         .map_err(|_| py_val_err("couldn't parse private_key as PrivateKeySigner"))?;
 
     let wallet = EthereumWallet::from(signer);
+
     let rpc_url = env::var("RPC_URL")
         .map_err(|_| py_val_err("RPC_URL not set"))?
         .parse()
@@ -41,7 +42,7 @@ pub fn get_wallet_provider(private_key: String) -> Result<WalletProvider, pyo3::
 
     let provider = ProviderBuilder::new()
         .with_recommended_fillers()
-        .wallet(wallet)
+        .wallet(wallet.clone())
         .on_http(rpc_url);
 
     Ok(provider)

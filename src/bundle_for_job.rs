@@ -20,7 +20,7 @@ async fn make_buy_statement(
     erc721_ids_list: Vec<u64>,
     query: String,
     private_key: String,
-) -> PyResult<String> {
+) -> PyResult<(String, u128)> {
 
     if erc20_addresses_list.len() != erc20_amounts_list.len() {
         return Err(PyValueError::new_err("erc20_addresses_list and erc20_amounts_list must have the same length"));
@@ -44,7 +44,9 @@ async fn make_buy_statement(
 
     bundle_for_job::make_buy_statement(price, query, private_key)
         .await
-        .map(|x| x.to_string())
+        .map(|(uid, gas)| {
+            (uid.to_string(), gas)
+        })
         .map_err(PyErr::from)
 }
 

@@ -215,7 +215,7 @@ class Agent(ABC):
             ]
             erc721_ids_list = [erc721_token["id"] for erc721_token in erc721_list]
 
-            statement_uid = apiars.bundle.make_buy_statement(
+            statement_uid, _ = apiars.bundle.make_buy_statement(
                 erc20_addresses_list,
                 erc20_amounts_list,
                 erc721_addresses_list,

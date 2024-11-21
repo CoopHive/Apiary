@@ -14,8 +14,11 @@ pub async fn make_buy_statement(
     price: BundlePrice,
     query: String,
     private_key: String,
-) -> eyre::Result<FixedBytes<32>> {
+) -> eyre::Result<(FixedBytes<32>, u128)> {
     let provider = provider::get_wallet_provider(private_key)?;
+
+    // let gas_price = provider.get_gas_price().await?;
+    let mut gas_used: u128 = 0;
 
     let payment_address =
         env::var("BUNDLE_PAYMENT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
@@ -40,6 +43,7 @@ pub async fn make_buy_statement(
         // .await?;
         // let gas_limit = gas_estimate * 120 / 100;
         let gas_limit = 2_000_000u128;
+
         call = call.gas(gas_limit);
 
         let approval_receipt = call
@@ -51,6 +55,8 @@ pub async fn make_buy_statement(
         if !approval_receipt.status() {
             return Err(eyre::eyre!("approval failed"));
         };
+
+        gas_used = gas_used + approval_receipt.gas_used;
     }
 
     // Iterate over erc721_addresses and erc721_ids together
@@ -69,6 +75,8 @@ pub async fn make_buy_statement(
         if !approval_receipt.status() {
             return Err(eyre::eyre!("approval failed"));
         };
+
+        gas_used = gas_used + approval_receipt.gas_used;
     }
 
     let statement_contract = BundlePaymentObligation::new(payment_address, &provider);
@@ -94,11 +102,15 @@ pub async fn make_buy_statement(
     let gas_limit = 5_000_000u128;
     call = call.gas(gas_limit);
 
-    let log = call
+    let receipt = call
         .send()
         .await?
         .get_receipt()
-        .await?
+        .await?;
+
+    gas_used = gas_used + receipt.gas_used;
+
+    let log = receipt
         .inner
         .logs()
         .iter()
@@ -108,7 +120,7 @@ pub async fn make_buy_statement(
         .map(|log| log.log_decode::<IEAS::Attested>())
         .ok_or_else(|| eyre::eyre!("makeStatement logs didn't contain Attested"))??;
 
-    Ok(log.inner.uid)
+    Ok((log.inner.uid, gas_used))
 }
 
 pub struct JobPayment {
