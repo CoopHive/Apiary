@@ -58,7 +58,6 @@ pub fn get_public_provider() -> eyre::Result<PublicProvider> {
         .parse()?;
 
     let provider = ProviderBuilder::new()
-        .with_recommended_fillers()
         .on_http(rpc_url);
 
     Ok(provider)

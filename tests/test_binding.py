@@ -2,6 +2,8 @@ from apiary import apiars
 
 
 def test_binding():
+    res = apiars.erc.helloworld()
+    assert res == "HelloWorld ERC"
     res = apiars.erc20.helloworld()
     assert res == "HelloWorld ERC20"
     res = apiars.erc721.helloworld()

@@ -1,4 +1,4 @@
-use alloy::primitives::{Address, U256};
+use alloy::primitives::{Address, FixedBytes, U256};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
@@ -16,6 +16,8 @@ async fn helloworld() -> PyResult<String> {
 async fn make_buy_statement(
     erc20_addresses_list: Vec<String>,
     erc20_amounts_list: Vec<u64>,
+    erc721_addresses_list: Vec<String>,
+    erc721_ids_list: Vec<u64>,
     query: String,
     private_key: String,
 ) -> PyResult<String> {
@@ -23,16 +25,41 @@ async fn make_buy_statement(
     if erc20_addresses_list.len() != erc20_amounts_list.len() {
         return Err(PyValueError::new_err("erc20_addresses_list and erc20_amounts_list must have the same length"));
     }
+    if erc721_addresses_list.len() != erc721_ids_list.len() {
+        return Err(PyValueError::new_err("erc721_addresses_list and erc721_ids_list must have the same length"));
+    }
 
     let erc20_addresses = erc20_addresses_list.iter().map(|token| {Address::parse_checksummed(token, None).map_err(|_| PyValueError::new_err("couldn't parse token as an address"))}).collect::<Result<Vec<Address>, _>>()?;
-    let erc20_amounts: Vec<U256> = erc20_amounts_list.iter().map(|&amount| U256::from(amount)).collect();
+    let erc20_amounts: Vec<alloy::primitives::Uint<256, 4>> = erc20_amounts_list.iter().map(|&amount| U256::from(amount)).collect();
+
+    let erc721_addresses = erc721_addresses_list.iter().map(|token| {Address::parse_checksummed(token, None).map_err(|_| PyValueError::new_err("couldn't parse token as an address"))}).collect::<Result<Vec<Address>, _>>()?;
+    let erc721_ids: Vec<alloy::primitives::Uint<256, 4>> = erc721_ids_list.iter().map(|&id| U256::from(id)).collect();
 
     let price = BundlePrice {
         erc20_addresses: erc20_addresses,
-        erc20_amounts,
+        erc20_amounts: erc20_amounts,
+        erc721_addresses: erc721_addresses,
+        erc721_ids: erc721_ids
     };
 
     bundle_for_job::make_buy_statement(price, query, private_key)
+        .await
+        .map(|x| x.to_string())
+        .map_err(PyErr::from)
+}
+
+#[tokio::main]
+#[pyfunction]
+async fn submit_and_collect(
+    buy_attestation_uid: String,
+    result_cid: String,
+    private_key: String,
+) -> PyResult<String> {
+    let buy_attestation_uid: FixedBytes<32> = buy_attestation_uid
+        .parse::<FixedBytes<32>>()
+        .map_err(|_| PyValueError::new_err("couldn't parse buy_attestation_uid as bytes32"))?;
+
+        bundle_for_job::submit_and_collect(buy_attestation_uid, result_cid, private_key)
         .await
         .map(|x| x.to_string())
         .map_err(PyErr::from)
@@ -43,6 +70,7 @@ pub fn add_bundle_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> 
 
     bundle_module.add_function(wrap_pyfunction!(helloworld, &bundle_module)?)?;
     bundle_module.add_function(wrap_pyfunction!(make_buy_statement, &bundle_module)?)?;
+    bundle_module.add_function(wrap_pyfunction!(submit_and_collect, &bundle_module)?)?;
 
     parent_module.add_submodule(&bundle_module)?;
     Ok(())

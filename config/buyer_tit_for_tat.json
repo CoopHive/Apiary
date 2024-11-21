@@ -5,8 +5,10 @@
         "port": 8001,
         "host": "localhost"
     },
-    "valuation_estimation": 200,
-    "valuation_variance": 50,
-    "valuation_measurement_variance": 12,
-    "absolute_tolerance": 2
+    "min_usdc": 100,
+    "max_usdc": 550,
+    "imitation_type": "random_absolute",
+    "delta": 10,
+    "absolute_tolerance": 1,
+    "M": 30.0
 }

@@ -31,30 +31,6 @@ async fn make_buy_statement(
 
 #[tokio::main]
 #[pyfunction]
-async fn get_buy_statement(
-    statement_uid: String,
-) -> PyResult<(String, u64, String, String)> {
-    let statement_uid: FixedBytes<32> = statement_uid
-        .parse::<FixedBytes<32>>()
-        .map_err(|_| PyValueError::new_err("couldn't parse statement_uid as bytes32"))?;
-
-    erc721_for_job::get_buy_statement(statement_uid)
-        .await
-        .map(|r| -> PyResult<_> {
-            Ok((
-                r.price.token.to_string(),
-                r.price
-                    .id
-                    .try_into()
-                    .map_err(|_| PyValueError::new_err("token_id too big for u64"))?,
-                r.arbiter.to_string(),
-                r.demand.result, // actually query, unified by abi
-            ))
-        })?
-}
-
-#[tokio::main]
-#[pyfunction]
 async fn submit_and_collect(
     buy_attestation_uid: String,
     result_cid: String,
@@ -75,7 +51,6 @@ pub fn add_erc721_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> 
 
     erc721_module.add_function(wrap_pyfunction!(helloworld, &erc721_module)?)?;
     erc721_module.add_function(wrap_pyfunction!(make_buy_statement, &erc721_module)?)?;
-    erc721_module.add_function(wrap_pyfunction!(get_buy_statement, &erc721_module)?)?;
     erc721_module.add_function(wrap_pyfunction!(submit_and_collect, &erc721_module)?)?;
 
     parent_module.add_submodule(&erc721_module)?;
