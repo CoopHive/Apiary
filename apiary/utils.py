@@ -149,6 +149,31 @@ class ERC721Token(TypedDict):
 Token = Union[ERC20Token, ERC721Token]
 
 
+def upload_and_get_cid(input, is_file_path):
+    """Uploads content to Lighthouse and retrieves the content identifier (CID)."""
+    lh = Lighthouse(os.getenv("LIGHTHOUSE_TOKEN"))
+    if is_file_path:
+        file_path = input
+    else:
+        if not isinstance(input, str):
+            raise ValueError
+
+        if not os.path.exists("tmp"):
+            os.makedirs("tmp")
+
+        file_path = "tmp/job_input.txt"
+        rw.write(input, file_path)
+    try:
+        response = lh.upload(file_path)
+        cid = response["data"]["Hash"]
+    except Exception:
+        logging.error("Lighthouse Error occurred.", exc_info=True)
+        raise
+    logging.info(f"https://gateway.lighthouse.storage/ipfs/{cid}")
+
+    return cid
+
+
 def create_offer_tokens(tokens_data: list) -> Token:
     """Create offer-compatible tokens object from buyer inputs tokens data."""
     if not all(isinstance(entry, list) for entry in tokens_data):
@@ -188,24 +213,18 @@ def parse_initial_offer(job_path, tokens_data):
     if job_path.split(".")[-1] == "Dockerfile":
         job_type = "docker"
     else:
-        logging.error(f"Unsupported job type for file: {job_path}.")
+        logging.error(f"Unsupported job type for file {job_path}.")
         raise
 
-    # Upload to IPFS and return the job_cid to populate the query.
-    lh = Lighthouse(os.getenv("LIGHTHOUSE_TOKEN"))
-    try:
-        response = lh.upload(job_path)
-        job_cid = response["data"]["Hash"]
-    except Exception:
-        logging.error("Lighthouse Error occurred.", exc_info=True)
-        raise
-    logging.info(f"https://gateway.lighthouse.storage/ipfs/{job_cid}")
+    job_cid = upload_and_get_cid(job_path, is_file_path=True)
 
     # TODO: placeholder to be abstracted at the cli level of the package.
-    # Currently only cowsay supported.
+    # Currently only cowsay supported!
     job_input = "Paying with ERC20, ERC721 or a generic combination of the two for Compute jobs is very nice!"
 
-    query = {"job_type": job_type, "job_cid": job_cid, "job_input": job_input}
+    job_input_cid = upload_and_get_cid(job_input, is_file_path=False)
+
+    query = {"job_type": job_type, "job_cid": job_cid, "job_input_cid": job_input_cid}
 
     data = {
         "_tag": "offer",
@@ -234,13 +253,10 @@ def add_float_to_csv(value, filename: str):
     file_path = f"apiary_output/{filename}.csv"
     file_exists = os.path.isfile(file_path)
 
-    # Open the file in append mode if it exists, otherwise create a new file
     with open(file_path, mode="a", newline="") as file:
         writer = csv.writer(file)
         if not file_exists:
-            # Write the header if the file is being created
             writer.writerow(["Amount"])
-        # Append the current float value to the file
         writer.writerow([value])
 
 
