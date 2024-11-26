@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import readwrite as rw
 from dotenv import load_dotenv
+from lighthouseweb3 import Lighthouse
 
 load_dotenv(override=True)
 
@@ -177,9 +178,34 @@ def create_offer_tokens(tokens_data: list) -> Token:
 
 
 def parse_initial_offer(job_path, tokens_data):
-    """Parses the initial offer based on the provided job path and price."""
+    """Parses an initial offer for a compute job, including the job type, job content, and associated tokens.
+
+    This function determines the job type based on the file extension of the provided job path, uploads the job to Lighthouse,
+    and generates a unique offer ID. It then prepares the offer data, including the job CID, tokens, and additional metadata.
+    """
     pubkey = os.getenv("PUBLIC_KEY")
-    query = rw.read_as(job_path, "txt")
+
+    if job_path.split(".")[-1] == "Dockerfile":
+        job_type = "docker"
+    else:
+        logging.error(f"Unsupported job type for file: {job_path}.")
+        raise
+
+    # Upload to IPFS and return the job_cid to populate the query.
+    lh = Lighthouse(os.getenv("LIGHTHOUSE_TOKEN"))
+    try:
+        response = lh.upload(job_path)
+        job_cid = response["data"]["Hash"]
+    except Exception:
+        logging.error("Lighthouse Error occurred.", exc_info=True)
+        raise
+    logging.info(f"https://gateway.lighthouse.storage/ipfs/{job_cid}")
+
+    # TODO: placeholder to be abstracted at the cli level of the package.
+    # Currently only cowsay supported.
+    job_input = "Paying with ERC20, ERC721 or a generic combination of the two for Compute jobs is very nice!"
+
+    query = {"job_type": job_type, "job_cid": job_cid, "job_input": job_input}
 
     data = {
         "_tag": "offer",

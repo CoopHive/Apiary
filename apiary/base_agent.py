@@ -153,29 +153,8 @@ class Agent(ABC):
         result_cid = apiars.erc.get_sell_statement(sell_uid)
         self._get_result_from_result_cid(result_cid)
 
-    def _get_query(self, input):
-        """Parse Dockerfile from input query, upload to IPFS and return the query."""
-        file_path = "tmp_lighthouse.Dockerfile"
-
-        with open(file_path, "w") as file:
-            file.write(input["data"]["query"])
-
-        try:
-            response = self.lh.upload(file_path)
-            query = response["data"]["Hash"]
-        except Exception:
-            logging.error("Lighthouse Error occurred.", exc_info=True)
-            raise
-        finally:
-            # Remove the temporary file
-            if os.path.exists(file_path):
-                os.remove(file_path)
-
-        logging.info(f"https://gateway.lighthouse.storage/ipfs/{query}")
-        return query
-
     def _offer_to_buy_attestation(self, input, output):
-        query = self._get_query(input)
+        query = input["data"]["query"]["job_cid"]
 
         if len(input["data"]["tokens"]) == 1:
             input_token = input["data"]["tokens"][0]

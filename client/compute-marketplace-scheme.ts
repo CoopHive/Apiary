@@ -3,7 +3,14 @@ import { match, P } from "ts-pattern";
 
 type Hex = `0x${string}`;
 type Token = { tokenStandard: "ERC20", address: Hex, amt: number } | {tokenStandard: "ERC721", address: Hex, id: number}
-type Offer = { query: string; tokens: Token[] };
+
+type Query = {
+  job_type: "docker"; // Restricts job_type to "docker", in the future "docker" | "nix" | "python3.12" | redis TODO: start supporing multiple job types.
+  job_cid: string;
+  job_input: string
+};
+
+type Offer = { query: Query; tokens: Token[] };
 
 type Messages =
   | ({ _tag: "offer" } & Offer)
