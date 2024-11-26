@@ -202,7 +202,7 @@ def create_offer_tokens(tokens_data: list) -> Token:
     return offer_tokens
 
 
-def parse_initial_offer(job_path, tokens_data):
+def parse_initial_offer(job_path, job_input_path, tokens_data):
     """Parses an initial offer for a compute job, including the job type, job content, and associated tokens.
 
     This function determines the job type based on the file extension of the provided job path, uploads the job to Lighthouse,
@@ -217,10 +217,7 @@ def parse_initial_offer(job_path, tokens_data):
         raise
 
     job_cid = upload_and_get_cid(job_path, is_file_path=True)
-
-    # TODO: placeholder to be abstracted at the cli level of the package.
-    # Currently only cowsay supported!
-    job_input = "Paying with ERC20, ERC721 or a generic combination of the two for Compute jobs is very nice!"
+    job_input = rw.read(job_input_path)
 
     job_input_cid = upload_and_get_cid(job_input, is_file_path=False)
 

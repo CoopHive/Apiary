@@ -94,34 +94,20 @@ apiary start-sell --config-path ./config/seller_kalman.json
 
 #### ERC20
 
-To create a USDC offer, run:
-
 ```bash
-apiary start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/docker/cowsay.Dockerfile --tokens-data '["ERC20", "0x036CbD53842c5426634e7929541eC2318f3dCF7e", 10]'
-```
-
-Create a EURC offer with:
-
-```bash
-apiary start-buy --config-path ./config/buyer_kalman.json --job-path ./jobs/docker/sklearn.Dockerfile --tokens-data '["ERC20", "0x808456652fdb597867f38412077A9182bf77359F", 1]'
+apiary start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/docker/cowsay.Dockerfile --job-input-path ./jobs/input/cowsay.txt --tokens-data '["ERC20", "0x036CbD53842c5426634e7929541eC2318f3dCF7e", 10]'
 ```
 
 #### ERC721
 
 ```bash
-apiary start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/docker/cowsay.Dockerfile --tokens-data '["ERC721", "0x9757694a764de0c6599735D37fecd1d09501fb39", 626]'
+apiary start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/docker/cowsay.Dockerfile --job-input-path ./jobs/input/cowsay.txt --tokens-data '["ERC721", "0x9757694a764de0c6599735D37fecd1d09501fb39", 626]'
 ```
 
-#### ERC20 Bundle
+#### Bundle
 
 ```bash
-apiary start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/docker/cowsay.Dockerfile --tokens-data '[["ERC20", "0x036CbD53842c5426634e7929541eC2318f3dCF7e", 5], ["ERC20", "0x808456652fdb597867f38412077A9182bf77359F", 5]]'
-```
-
-#### ERC20/ERC721 Bundle
-
-```bash
-apiary start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/docker/cowsay.Dockerfile --tokens-data '[["ERC20", "0x036CbD53842c5426634e7929541eC2318f3dCF7e", 5], ["ERC20", "0x808456652fdb597867f38412077A9182bf77359F", 5], ["ERC721", "0x9757694a764de0c6599735D37fecd1d09501fb39", 623]]'
+apiary start-buy --config-path ./config/buyer_naive.json --job-path ./jobs/docker/cowsay.Dockerfile --job-input-path ./jobs/input/cowsay.txt --tokens-data '[["ERC20", "0x036CbD53842c5426634e7929541eC2318f3dCF7e", 5], ["ERC20", "0x808456652fdb597867f38412077A9182bf77359F", 5], ["ERC721", "0x9757694a764de0c6599735D37fecd1d09501fb39", 623]]'
 ```
 
 ### Make
