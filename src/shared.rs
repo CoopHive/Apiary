@@ -1,4 +1,4 @@
-use alloy::primitives::{Address, U256};
+use alloy::{primitives::{Address, U256}, sol};
 use pyo3::{
     exceptions::{PyRuntimeError, PyValueError},
     prelude::*,
@@ -19,6 +19,13 @@ pub struct BundlePrice {
     pub erc721_addresses: Vec<Address>,
     pub erc721_ids: Vec<U256>,
 }
+
+sol!{
+    struct DemandData {
+        string job_cid;
+        string job_input_cid;
+    }
+ }
 
 pub fn py_val_err(msg: impl Into<String>) -> PyErr {
     PyErr::new::<PyValueError, _>(msg.into())

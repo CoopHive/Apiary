@@ -1,5 +1,5 @@
 use alloy::{
-    primitives::{self, b256, Address, Bytes, FixedBytes},
+    primitives::{b256, Address, Bytes, FixedBytes},
     sol_types::{SolEvent, SolValue},
 };
 use std::env;
@@ -7,12 +7,13 @@ use std::env;
 use crate::provider;
 use crate::{
     contracts::{BundlePaymentObligation, JobResultObligation, IEAS, IERC20, IERC721},
-    shared::BundlePrice,
+    shared::{BundlePrice, DemandData},
 };
 
 pub async fn make_buy_statement(
     price: BundlePrice,
-    query: String,
+    job_cid: String,
+    job_input_cid: String,
     private_key: String,
 ) -> eyre::Result<FixedBytes<32>> {
     let provider = provider::get_wallet_provider(private_key)?;
@@ -22,11 +23,7 @@ pub async fn make_buy_statement(
     let arbiter_address =
         env::var("TRIVIAL_ARBITER").map(|a| Address::parse_checksummed(a, None))??;
 
-    // ResultData and StatementData became the same abi type after solc compilation
-    // since they have the same structure: (string)
-    let demand: Bytes = JobResultObligation::StatementData { result: query }
-        .abi_encode()
-        .into();
+    let demand: Bytes = DemandData{job_cid, job_input_cid}.abi_encode().into();
 
     // Iterate over erc20_addresses and erc20_amounts together
     for (erc_20_address, amount) in price.erc20_addresses.iter().zip(price.erc20_amounts.iter()){
@@ -35,6 +32,7 @@ pub async fn make_buy_statement(
         let mut call = token_contract
         .approve(payment_address, *amount);
         
+        // TODO: set gas limit based on gas_estimation
         // let gas_estimate = call
         // .estimate_gas()
         // .await?;
@@ -87,6 +85,7 @@ pub async fn make_buy_statement(
         b256!("0000000000000000000000000000000000000000000000000000000000000000"),
     );
 
+    // TODO: set gas limit based on gas_estimation
     // let gas_estimate = call
     // .estimate_gas()
     // .await?;
@@ -109,12 +108,6 @@ pub async fn make_buy_statement(
         .ok_or_else(|| eyre::eyre!("makeStatement logs didn't contain Attested"))??;
 
     Ok(log.inner.uid)
-}
-
-pub struct JobPayment {
-    pub price: BundlePrice,
-    pub arbiter: primitives::Address,
-    pub demand: JobResultObligation::StatementData,
 }
 
 pub async fn submit_and_collect(

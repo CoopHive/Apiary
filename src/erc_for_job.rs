@@ -12,9 +12,9 @@ async fn helloworld() -> PyResult<String> {
 
 #[pyclass]
 pub enum BuyStatement {
-    ERC20(String, u64, String, String),
-    ERC721(String, u64, String, String),
-    Bundle(Vec<String>, Vec<u64>, Vec<String>, Vec<u64>, String, String),
+    ERC20(String, u64, String, String, String),
+    ERC721(String, u64, String, String, String),
+    Bundle(Vec<String>, Vec<u64>, Vec<String>, Vec<u64>, String, String, String),
 }
 
 #[tokio::main]
@@ -37,7 +37,8 @@ async fn get_buy_statement(
                 price.amount.try_into()
                     .map_err(|_| PyValueError::new_err("amount too big for u64"))?,
                 payment_result.arbiter.to_string(),
-                payment_result.demand.result.to_string(),
+                payment_result.demand.job_cid.to_string(),
+                payment_result.demand.job_input_cid.to_string()
             );
             Ok(result)
         },
@@ -47,7 +48,8 @@ async fn get_buy_statement(
                 price.id.try_into()
                     .map_err(|_| PyValueError::new_err("amount too big for u64"))?,
                 payment_result.arbiter.to_string(),
-                payment_result.demand.result.to_string(),
+                payment_result.demand.job_cid.to_string(),
+                payment_result.demand.job_input_cid.to_string()
             );
             Ok(result)
         },
@@ -79,7 +81,8 @@ async fn get_buy_statement(
                 .collect::<Result<Vec<u64>, _>>()?,
 
                 payment_result.arbiter.to_string(),
-                payment_result.demand.result.to_string(),
+                payment_result.demand.job_cid.to_string(),
+                payment_result.demand.job_input_cid.to_string()
             );
             Ok(result)
         },

@@ -6,6 +6,7 @@ import subprocess
 from abc import ABC, abstractmethod
 from datetime import datetime
 
+import readwrite as rw
 from dotenv import load_dotenv
 from lighthouseweb3 import Lighthouse
 
@@ -118,16 +119,19 @@ class Agent(ABC):
         buy_statement = apiars.erc.get_buy_statement(statement_uid)
 
         if isinstance(buy_statement, apiars.erc.BuyStatement.ERC20):
-            (_, _, _, job_cid) = buy_statement
+            (_, _, _, job_cid, job_input_cid) = buy_statement
             token_standard = "ERC20"
         elif isinstance(buy_statement, apiars.erc.BuyStatement.ERC721):
-            (_, _, _, job_cid) = buy_statement
+            (_, _, _, job_cid, job_input_cid) = buy_statement
             token_standard = "ERC721"
         elif isinstance(buy_statement, apiars.erc.BuyStatement.Bundle):
-            (_, _, _, _, _, job_cid) = buy_statement
+            (_, _, _, _, _, job_cid, job_input_cid) = buy_statement
             token_standard = "Bundle"
 
-        result_cid = self._job_cid_to_result_cid(statement_uid, job_cid)
+        job_type = input["data"]["job_type"]
+        result_cid = self._job_cid_to_result_cid(
+            statement_uid, job_type, job_cid, job_input_cid
+        )
 
         match token_standard:
             case "ERC20":
@@ -153,29 +157,9 @@ class Agent(ABC):
         result_cid = apiars.erc.get_sell_statement(sell_uid)
         self._get_result_from_result_cid(result_cid)
 
-    def _get_query(self, input):
-        """Parse Dockerfile from input query, upload to IPFS and return the query."""
-        file_path = "tmp_lighthouse.Dockerfile"
-
-        with open(file_path, "w") as file:
-            file.write(input["data"]["query"])
-
-        try:
-            response = self.lh.upload(file_path)
-            query = response["data"]["Hash"]
-        except Exception:
-            logging.error("Lighthouse Error occurred.", exc_info=True)
-            raise
-        finally:
-            # Remove the temporary file
-            if os.path.exists(file_path):
-                os.remove(file_path)
-
-        logging.info(f"https://gateway.lighthouse.storage/ipfs/{query}")
-        return query
-
     def _offer_to_buy_attestation(self, input, output):
-        query = self._get_query(input)
+        job_cid = input["data"]["query"]["job_cid"]
+        job_input_cid = input["data"]["query"]["job_input_cid"]
 
         if len(input["data"]["tokens"]) == 1:
             input_token = input["data"]["tokens"][0]
@@ -187,12 +171,12 @@ class Agent(ABC):
                 amount = int(input_token["amt"])
 
                 statement_uid = apiars.erc20.make_buy_statement(
-                    token_address, amount, query, self.private_key
+                    token_address, amount, job_cid, job_input_cid, self.private_key
                 )
             elif token_standard == "ERC721":
                 token_id = int(input_token["id"])
                 statement_uid = apiars.erc721.make_buy_statement(
-                    token_address, token_id, query, self.private_key
+                    token_address, token_id, job_cid, job_input_cid, self.private_key
                 )
         else:
             tokens = input["data"]["tokens"]
@@ -220,21 +204,26 @@ class Agent(ABC):
                 erc20_amounts_list,
                 erc721_addresses_list,
                 erc721_ids_list,
-                query,
+                job_cid,
+                job_input_cid,
                 self.private_key,
             )
 
         output["data"]["_tag"] = "buyAttest"
         output["data"]["attestation"] = statement_uid
+
+        output["data"]["job_type"] = input["data"]["query"]["job_type"]
         output["data"].pop("query", None)
+
         output["data"].pop("tokens", None)
 
         return output
 
-    def _job_cid_to_result_cid(self, statement_uid: str, job_cid: str):
-        """Download Dockerfile from job_cid, run the job, upload the results to IPFS and return the result_cid."""
+    def _job_cid_to_result_cid(
+        self, statement_uid: str, job_type: str, job_cid: str, job_input_cid: str
+    ):
         try:
-            dockerFile = self.lh.download(job_cid)
+            job = self.lh.download(job_cid)
         except Exception:
             logging.error("Lighthouse Error occurred.", exc_info=True)
             raise
@@ -242,36 +231,43 @@ class Agent(ABC):
         if not os.path.exists("tmp"):
             os.makedirs("tmp")
 
-        # Write Dockerfile
-        with open("tmp/Dockerfile", "w") as f:
-            f.write(dockerFile[0].decode("utf-8"))
+        try:
+            job_input = self.lh.download(job_input_cid)[0].decode("utf-8")
+        except Exception:
+            logging.error("Lighthouse Error occurred.", exc_info=True)
+            raise
+        # NOTE: defaulting to interpret job_input as a string here. To be generalized.
+        # Better to always upload a zip tar file to be downloaded, and in the case of string
+        # Read the text file into a variable? To be defined.
 
-        # Build the image
-        build_command = f"podman build -t job-image-{statement_uid} tmp"
-        subprocess.run(build_command, shell=True, check=True)
+        # TODO: use job_type to setup right job daemon for seller.
+        if job_type == "docker":
+            rw.write_as(job[0].decode("utf-8"), "tmp/Dockerfile", extension="txt")
 
-        # Run the container and capture the output
-        run_command = f"podman run --name job-container-{
-            statement_uid} job-image-{statement_uid}"
-        result = subprocess.run(
-            run_command,
-            shell=True,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
+            # TODO: now possible to avoid rebuilding based on input-agnostic docker images.
+            build_command = f"podman build -t job-image-{statement_uid} tmp"
+            subprocess.run(build_command, shell=True, check=True)
 
-        # TODO: make result generic to volume.
-        result = result.stdout
+            # NOTE: defaulting to container removal, not necessarily the best behaviour.
+            run_command = f"podman run --rm --name job-container-{statement_uid} job-image-{statement_uid} {job_input}"
+            result = subprocess.run(
+                run_command,
+                shell=True,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            # TODO: run job as asyncronous process at a higher level, enabling agent to go back to negotiation/scheduling.
+            # In general, everything following the end of the deal should be async/parallelizable.
 
-        # Remove the container
-        remove_command = f"podman rm job-container-{statement_uid}"
-        subprocess.run(remove_command, shell=True, check=True)
+            # TODO: make result generic to volume, now defaulting to output of job being string.
+            result = result.stdout
+        else:
+            logging.error(f"Unsupported job type for file: {job_type}.")
+            raise
 
         result_file = "tmp/output.txt"
-        with open(result_file, "w") as file:
-            # Write the variable to the file
-            file.write(result)
+        rw.write(result, result_file)
 
         try:
             response = self.lh.upload(result_file)
@@ -283,6 +279,7 @@ class Agent(ABC):
         return result_cid
 
     def _get_result_from_result_cid(self, result_cid):
+        # TODO: code duplication, snippet below:
         try:
             results = self.lh.download(result_cid)
         except Exception:
@@ -292,6 +289,4 @@ class Agent(ABC):
         if not os.path.exists("results/"):
             os.makedirs("results")
 
-        # Write Dockerfile
-        with open(f"results/{result_cid}.txt", "w") as f:
-            f.write(results[0].decode("utf-8"))
+        rw.write(results[0].decode("utf-8"), f"results/{result_cid}.txt")

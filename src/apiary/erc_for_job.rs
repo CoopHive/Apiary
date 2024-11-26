@@ -5,7 +5,7 @@ use alloy::{
     hex, primitives::{self, Address, FixedBytes}, sol_types::SolValue
 };
 
-use crate::shared::{ERC20Price, ERC721Price, BundlePrice};
+use crate::shared::{ERC20Price, ERC721Price, BundlePrice, DemandData};
 use crate::contracts::{ERC20PaymentObligation, JobResultObligation, IEAS};
 
 pub enum JobPrice {
@@ -17,7 +17,7 @@ pub enum JobPrice {
 pub struct JobPayment {
     pub price: JobPrice,
     pub arbiter: primitives::Address,
-    pub demand: JobResultObligation::StatementData,
+    pub demand: DemandData,
 }
 
 pub async fn get_buy_statement(
@@ -30,6 +30,9 @@ pub async fn get_buy_statement(
     let contract = IEAS::new(eas_address, provider);
     let attestation = contract.getAttestation(statement_uid).call().await?._0;
     let attestation_schema_string = hex::encode(attestation.schema);
+
+    println!("attestation_schema_string:");
+    println!("{}", attestation_schema_string);
 
     let erc20_schema_uid =
         env::var("ERC20_SCHEMA_UID")?;
@@ -50,7 +53,7 @@ pub async fn get_buy_statement(
                 amount: attestation_data.amount,
             }),
             arbiter: attestation_data.arbiter,
-            demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,
+            demand: DemandData::abi_decode(&attestation_data.demand, true)?,
         })
     } else if attestation_schema_string == erc721_schema_uid {
         let attestation_data =
@@ -62,7 +65,7 @@ pub async fn get_buy_statement(
                 id: attestation_data.tokenId,
             }),
             arbiter: attestation_data.arbiter,
-            demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,
+            demand: DemandData::abi_decode(&attestation_data.demand, true)?,
         })
     } else if attestation_schema_string == bundle_schema_uid {
         let attestation_data =
@@ -76,7 +79,7 @@ pub async fn get_buy_statement(
                 erc721_ids: attestation_data.erc721Ids
             }),
             arbiter: attestation_data.arbiter,
-            demand: JobResultObligation::StatementData::abi_decode(&attestation_data.demand, true)?,
+            demand: DemandData::abi_decode(&attestation_data.demand, true)?,
         })
     } else {
         return Err(eyre::eyre!("Invalid attestation schema UID."));

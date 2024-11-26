@@ -1,0 +1,1 @@
+Paying with ERC20, ERC721 or a generic combination of the two for Compute jobs is very nice!

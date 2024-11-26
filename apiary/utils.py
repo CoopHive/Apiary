@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import readwrite as rw
 from dotenv import load_dotenv
+from lighthouseweb3 import Lighthouse
 
 load_dotenv(override=True)
 
@@ -148,6 +149,31 @@ class ERC721Token(TypedDict):
 Token = Union[ERC20Token, ERC721Token]
 
 
+def upload_and_get_cid(input, is_file_path):
+    """Uploads content to Lighthouse and retrieves the content identifier (CID)."""
+    lh = Lighthouse(os.getenv("LIGHTHOUSE_TOKEN"))
+    if is_file_path:
+        file_path = input
+    else:
+        if not isinstance(input, str):
+            raise ValueError
+
+        if not os.path.exists("tmp"):
+            os.makedirs("tmp")
+
+        file_path = "tmp/job_input.txt"
+        rw.write(input, file_path)
+    try:
+        response = lh.upload(file_path)
+        cid = response["data"]["Hash"]
+    except Exception:
+        logging.error("Lighthouse Error occurred.", exc_info=True)
+        raise
+    logging.info(f"https://gateway.lighthouse.storage/ipfs/{cid}")
+
+    return cid
+
+
 def create_offer_tokens(tokens_data: list) -> Token:
     """Create offer-compatible tokens object from buyer inputs tokens data."""
     if not all(isinstance(entry, list) for entry in tokens_data):
@@ -176,10 +202,26 @@ def create_offer_tokens(tokens_data: list) -> Token:
     return offer_tokens
 
 
-def parse_initial_offer(job_path, tokens_data):
-    """Parses the initial offer based on the provided job path and price."""
+def parse_initial_offer(job_path, job_input_path, tokens_data):
+    """Parses an initial offer for a compute job, including the job type, job content, and associated tokens.
+
+    This function determines the job type based on the file extension of the provided job path, uploads the job to Lighthouse,
+    and generates a unique offer ID. It then prepares the offer data, including the job CID, tokens, and additional metadata.
+    """
     pubkey = os.getenv("PUBLIC_KEY")
-    query = rw.read_as(job_path, "txt")
+
+    if job_path.split(".")[-1] == "Dockerfile":
+        job_type = "docker"
+    else:
+        logging.error(f"Unsupported job type for file {job_path}.")
+        raise
+
+    job_cid = upload_and_get_cid(job_path, is_file_path=True)
+    job_input = rw.read(job_input_path)
+
+    job_input_cid = upload_and_get_cid(job_input, is_file_path=False)
+
+    query = {"job_type": job_type, "job_cid": job_cid, "job_input_cid": job_input_cid}
 
     data = {
         "_tag": "offer",
@@ -208,13 +250,10 @@ def add_float_to_csv(value, filename: str):
     file_path = f"apiary_output/{filename}.csv"
     file_exists = os.path.isfile(file_path)
 
-    # Open the file in append mode if it exists, otherwise create a new file
     with open(file_path, mode="a", newline="") as file:
         writer = csv.writer(file)
         if not file_exists:
-            # Write the header if the file is being created
             writer.writerow(["Amount"])
-        # Append the current float value to the file
         writer.writerow([value])
 
 

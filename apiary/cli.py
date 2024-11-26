@@ -49,15 +49,19 @@ def cli(
     "--job-path",
     required=True,
 )
+@click.option(
+    "--job-input-path",
+    required=True,
+)
 @click.option("--tokens-data", required=True)
-def start_buy(config_path: str, job_path: str, tokens_data: str):
+def start_buy(config_path: str, job_path: str, job_input_path: str, tokens_data: str):
     """Start Buyer."""
     logging.info("Starting Buyer.")
     os.environ["ROLE"] = "buyer"
 
     utils.load_configuration(config_path)
 
-    initial_offer = utils.parse_initial_offer(job_path, tokens_data)
+    initial_offer = utils.parse_initial_offer(job_path, job_input_path, tokens_data)
     logging.info(f"Initial Offer: {initial_offer}")
 
     inference.start_inference_endpoint()

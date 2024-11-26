@@ -6,6 +6,8 @@ import os
 import subprocess
 import time
 
+import readwrite as rw
+
 
 def start_job_daemon():
     """Start Job Daemon."""
@@ -50,10 +52,9 @@ def start_messaging_client(initial_offer=None):
     """Start Messaging Client."""
     lock_file = f"messaging_client_{os.getenv('AGENT_NAME')}.lock"
     if os.path.exists(lock_file):
-        with open(lock_file, "r") as file:
-            lock_content = file.read()
+        lock_content = rw.read_as(lock_file, extension="txt")
         logging.warning(
-            f"{lock_file} already exists, assuming messaging client already running at PID {lock_content}"
+            f"{lock_file} exists, messaging client running at PID {lock_content}"
         )
         return
 
@@ -69,11 +70,8 @@ def start_messaging_client(initial_offer=None):
 
     process = subprocess.Popen(command)
 
-    time.sleep(3)
-
-    with open(lock_file, "w") as f:
-        f.write(str(process.pid))
-
+    time.sleep(1)
+    rw.write_as(str(process.pid), lock_file, extension="txt")
     logging.info(f"Messaging Client started with PID {process.pid}")
 
 

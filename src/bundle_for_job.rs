@@ -18,7 +18,8 @@ async fn make_buy_statement(
     erc20_amounts_list: Vec<u64>,
     erc721_addresses_list: Vec<String>,
     erc721_ids_list: Vec<u64>,
-    query: String,
+    job_cid: String,
+    job_input_cid: String,
     private_key: String,
 ) -> PyResult<String> {
 
@@ -42,7 +43,7 @@ async fn make_buy_statement(
         erc721_ids: erc721_ids
     };
 
-    bundle_for_job::make_buy_statement(price, query, private_key)
+    bundle_for_job::make_buy_statement(price, job_cid, job_input_cid, private_key)
         .await
         .map(|x| x.to_string())
         .map_err(PyErr::from)
