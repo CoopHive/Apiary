@@ -14,7 +14,8 @@ async fn helloworld() -> PyResult<String> {
 async fn make_buy_statement(
     token: String,
     token_id: u64,
-    query: String,
+    job_cid: String,
+    job_input_cid: String,
     private_key: String,
 ) -> PyResult<String> {
     let price = ERC721Price {
@@ -23,7 +24,7 @@ async fn make_buy_statement(
         id: U256::from(token_id),
     };
 
-    erc721_for_job::make_buy_statement(price, query, private_key)
+    erc721_for_job::make_buy_statement(price, job_cid, job_input_cid, private_key)
         .await
         .map(|x| x.to_string())
         .map_err(PyErr::from)

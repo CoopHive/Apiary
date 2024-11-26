@@ -1,5 +1,5 @@
 use alloy::{
-    primitives::{self, b256, Address, Bytes, FixedBytes},
+    primitives::{b256, Address, Bytes, FixedBytes},
     sol_types::{SolEvent, SolValue},
 };
 use std::env;
@@ -7,12 +7,13 @@ use std::env;
 use crate::provider;
 use crate::{
     contracts::{ERC721PaymentObligation, JobResultObligation, IEAS, IERC721},
-    shared::ERC721Price,
+    shared::{ERC721Price, DemandData}
 };
 
 pub async fn make_buy_statement(
     price: ERC721Price,
-    query: String,
+    job_cid: String,
+    job_input_cid: String,
     private_key: String,
 ) -> eyre::Result<FixedBytes<32>> {
     let provider = provider::get_wallet_provider(private_key)?;
@@ -20,11 +21,7 @@ pub async fn make_buy_statement(
     let arbiter_address =
         env::var("TRIVIAL_ARBITER").map(|a| Address::parse_checksummed(a, None))??;
 
-    // ResultData and StatementData became the same abi type after solc compilation
-    // since they have the same structure: (string)
-    let demand: Bytes = JobResultObligation::StatementData { result: query }
-        .abi_encode()
-        .into();
+    let demand: Bytes = DemandData{job_cid, job_input_cid}.abi_encode().into();
 
     let payment_address =
         env::var("ERC721_PAYMENT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
@@ -68,12 +65,6 @@ pub async fn make_buy_statement(
         .ok_or_else(|| eyre::eyre!("makeStatement logs didn't contain Attest"))??;
 
     Ok(log.inner.uid)
-}
-
-pub struct JobPayment {
-    pub price: ERC721Price,
-    pub arbiter: primitives::Address,
-    pub demand: JobResultObligation::StatementData,
 }
 
 pub async fn submit_and_collect(

@@ -6,6 +6,7 @@ import subprocess
 from abc import ABC, abstractmethod
 from datetime import datetime
 
+import readwrite as rw
 from dotenv import load_dotenv
 from lighthouseweb3 import Lighthouse
 
@@ -175,7 +176,7 @@ class Agent(ABC):
             elif token_standard == "ERC721":
                 token_id = int(input_token["id"])
                 statement_uid = apiars.erc721.make_buy_statement(
-                    token_address, token_id, None, self.private_key
+                    token_address, token_id, job_cid, job_input_cid, self.private_key
                 )
         else:
             tokens = input["data"]["tokens"]
@@ -203,7 +204,8 @@ class Agent(ABC):
                 erc20_amounts_list,
                 erc721_addresses_list,
                 erc721_ids_list,
-                None,
+                job_cid,
+                job_input_cid,
                 self.private_key,
             )
 
@@ -234,11 +236,13 @@ class Agent(ABC):
         except Exception:
             logging.error("Lighthouse Error occurred.", exc_info=True)
             raise
+        # NOTE: defaulting to interpret job_input as a string here. To be generalized.
+        # Better to always upload a zip tar file to be downloaded, and in the case of string
+        # Read the text file into a variable? To be defined.
 
         # TODO: use job_type to setup right job daemon for seller.
         if job_type == "docker":
-            with open("tmp/Dockerfile", "w") as f:
-                f.write(job[0].decode("utf-8"))
+            rw.write_as(job[0].decode("utf-8"), "tmp/Dockerfile", extension="txt")
 
             # TODO: now possible to avoid rebuilding based on input-agnostic docker images.
             build_command = f"podman build -t job-image-{statement_uid} tmp"
@@ -253,6 +257,8 @@ class Agent(ABC):
                 capture_output=True,
                 text=True,
             )
+            # TODO: run job as asyncronous process at a higher level, enabling agent to go back to negotiation/scheduling.
+            # In general, everything following the end of the deal should be async/parallelizable.
 
             # TODO: make result generic to volume, now defaulting to output of job being string.
             result = result.stdout
@@ -261,11 +267,8 @@ class Agent(ABC):
             raise
 
         result_file = "tmp/output.txt"
-        with open(result_file, "w") as file:
-            # Write the variable to the file
-            file.write(result)
+        rw.write(result, result_file)
 
-        # TODO: code duplication, use function in utils for the following:
         try:
             response = self.lh.upload(result_file)
         except Exception:
@@ -276,7 +279,7 @@ class Agent(ABC):
         return result_cid
 
     def _get_result_from_result_cid(self, result_cid):
-        # TODO: code duplication, snippet below :
+        # TODO: code duplication, snippet below:
         try:
             results = self.lh.download(result_cid)
         except Exception:
@@ -286,6 +289,4 @@ class Agent(ABC):
         if not os.path.exists("results/"):
             os.makedirs("results")
 
-        # Write Dockerfile
-        with open(f"results/{result_cid}.txt", "w") as f:
-            f.write(results[0].decode("utf-8"))
+        rw.write(results[0].decode("utf-8"), f"results/{result_cid}.txt")

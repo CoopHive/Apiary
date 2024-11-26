@@ -5,11 +5,11 @@ import os
 import subprocess
 import time
 
+import readwrite as rw
 from fastapi import FastAPI
 
 from apiary import agent_registry
 
-# FastAPI application
 app = FastAPI()
 
 
@@ -32,11 +32,8 @@ def start_inference_endpoint():
     """Start Inference Endpoint."""
     lock_file = f"inference_endpoint_{os.getenv('AGENT_NAME')}.lock"
     if os.path.exists(lock_file):
-        with open(lock_file, "r") as file:
-            lock_content = file.read()
-        logging.warning(
-            f"{lock_file} already exists, assuming job_daemon already running at PID {lock_content}"
-        )
+        lock_content = rw.read_as(lock_file, extension="txt")
+        logging.warning(f"{lock_file} exists, job_daemon running at PID {lock_content}")
         return
 
     command = [
@@ -51,9 +48,6 @@ def start_inference_endpoint():
     # Start the Uvicorn app and dump the PID to the lock file
     process = subprocess.Popen(command)
 
-    time.sleep(3)
-
-    with open(lock_file, "w") as f:
-        f.write(str(process.pid))
-
+    time.sleep(1)
+    rw.write_as(str(process.pid), lock_file, extension="txt")
     logging.info(f"Inference endpoint started with PID {process.pid}")
