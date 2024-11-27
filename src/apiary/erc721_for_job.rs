@@ -14,8 +14,10 @@ pub async fn make_buy_statement(
     price: ERC721Price,
     query: String,
     private_key: String,
-) -> eyre::Result<FixedBytes<32>> {
+) -> eyre::Result<(FixedBytes<32>, u128)> {
     let provider = provider::get_wallet_provider(private_key)?;
+
+    let mut gas_used: u128 = 0;
 
     let arbiter_address =
         env::var("TRIVIAL_ARBITER").map(|a| Address::parse_checksummed(a, None))??;
@@ -32,8 +34,10 @@ pub async fn make_buy_statement(
     let token_contract = IERC721::new(price.token, &provider);
     let statement_contract = ERC721PaymentObligation::new(payment_address, &provider);
 
-    let approval_receipt = token_contract
-        .approve(payment_address, price.id)
+    let gas_limit = 2_000_000u128;
+    approval_call = approval_call.gas(gas_limit);
+
+    let approval_receipt = approval_call
         .send()
         .await?
         .get_receipt()
@@ -43,21 +47,32 @@ pub async fn make_buy_statement(
         return Err(eyre::eyre!("approval failed"));
     };
 
-    let log = statement_contract
-        .makeStatement(
-            ERC721PaymentObligation::StatementData {
-                token: price.token,
-                tokenId: price.id,
-                arbiter: arbiter_address,
-                demand,
-            },
-            0,
-            b256!("0000000000000000000000000000000000000000000000000000000000000000"),
-        )
+    gas_used = gas_used + approval_receipt.gas_used;
+
+    let statement_contract = ERC721PaymentObligation::new(payment_address, &provider);
+    let mut statement_call = statement_contract.makeStatement(
+        ERC721PaymentObligation::StatementData {
+            token: price.token,
+            tokenId: price.id,
+            arbiter: arbiter_address,
+            demand,
+        },
+        0,
+        b256!("0000000000000000000000000000000000000000000000000000000000000000"),
+    );
+
+    let gas_limit = 5_000_000u128;
+    statement_call = statement_call.gas(gas_limit);
+
+    let statement_receipt = statement_call
         .send()
         .await?
         .get_receipt()
-        .await?
+        .await?;
+
+    gas_used = gas_used + statement_receipt.gas_used;
+
+    let log = statement_receipt
         .inner
         .logs()
         .iter()
@@ -67,7 +82,7 @@ pub async fn make_buy_statement(
         .map(|log| log.log_decode::<IEAS::Attested>())
         .ok_or_else(|| eyre::eyre!("makeStatement logs didn't contain Attest"))??;
 
-    Ok(log.inner.uid)
+    Ok((log.inner.uid, gas_used))
 }
 
 pub struct JobPayment {

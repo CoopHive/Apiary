@@ -186,12 +186,12 @@ class Agent(ABC):
             if token_standard == "ERC20":
                 amount = int(input_token["amt"])
 
-                statement_uid = apiars.erc20.make_buy_statement(
+                statement_uid, _ = apiars.erc20.make_buy_statement(
                     token_address, amount, query, self.private_key
                 )
             elif token_standard == "ERC721":
                 token_id = int(input_token["id"])
-                statement_uid = apiars.erc721.make_buy_statement(
+                statement_uid, _ = apiars.erc721.make_buy_statement(
                     token_address, token_id, query, self.private_key
                 )
         else:

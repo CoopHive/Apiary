@@ -18,7 +18,7 @@ async fn make_buy_statement(
     amount: u64,
     query: String,
     private_key: String,
-) -> PyResult<String> {
+) -> PyResult<(String, u128)> {
     let price = ERC20Price {
         token: Address::parse_checksummed(&token, None)
             .map_err(|_| PyValueError::new_err("couldn't parse token as an address"))?,
@@ -27,7 +27,9 @@ async fn make_buy_statement(
 
     erc20_for_job::make_buy_statement(price, query, private_key)
         .await
-        .map(|x| x.to_string())
+        .map(|(uid, gas)| {
+            (uid.to_string(), gas)
+        })
         .map_err(PyErr::from)
 }
 
