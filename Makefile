@@ -1,7 +1,7 @@
 .PHONY: bun-download
 bun-download:
 	npm install -g bun
-	curl -fsSL https://bun.sh/installer/bun.sh | bash
+	curl -fsSL https://bun.sh/install | bash
 
 .PHONY: cargo-download
 cargo-download:
@@ -16,11 +16,12 @@ install:
 	cd client && bun install && cd ..
 
 	cargo update
-	rm -rf .venv && uv venv
-	uv pip install .[dev]
-	uvx maturin develop
-	uv run pre-commit install
 
+	. .venv/bin/activate && \
+	uv pip install .[dev] && \
+	uvx maturin develop && \
+	uv run pre-commit install
+	
 .PHONY: codestyle
 codestyle:
 	uv run isort ./

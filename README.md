@@ -66,6 +66,12 @@ Please export the necessary paths or start a new session before proceeding.
 
     ```bash
     make install
+
+4. Activate your virtual environment:
+
+    ```bash
+    source .venv/bin/activate
+
 5. Populate all the necessary environmental variables and/or confguration file (see [.env.example](https://github.com/CoopHive/Apiary/blob/main/.env.example)):
     - REDIS_URL
     - RPC_URL
@@ -78,6 +84,8 @@ Please export the necessary paths or start a new session before proceeding.
     - PUBLIC_KEY
     - INFERENCE_ENDPOINT.PORT
     - INFERENCE_ENDPOINT.HOST
+
+Note that configuration files parameters are loaded to environmental variables, so you don't need to specify them twice.
 
 ## Example Usage
 
