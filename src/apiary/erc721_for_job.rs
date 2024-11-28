@@ -32,7 +32,8 @@ pub async fn make_buy_statement(
         env::var("ERC721_PAYMENT_OBLIGATION").map(|a| Address::parse_checksummed(a, None))??;
 
     let token_contract = IERC721::new(price.token, &provider);
-    let statement_contract = ERC721PaymentObligation::new(payment_address, &provider);
+
+    let mut approval_call = token_contract.approve(payment_address, price.id);
 
     let gas_limit = 2_000_000u128;
     approval_call = approval_call.gas(gas_limit);
