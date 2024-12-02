@@ -49,7 +49,7 @@ pub async fn make_buy_statement(
     };
 
     gas_used = gas_used + approval_receipt.gas_used;
-    
+
     // Make the statement
     let statement_contract = ERC20PaymentObligation::new(payment_address, &provider);
     let mut statement_call = statement_contract.makeStatement(
