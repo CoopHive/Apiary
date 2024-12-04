@@ -4,8 +4,10 @@ import csv
 import json
 import logging
 import os
+import tarfile
 import uuid
 from datetime import datetime
+from pathlib import Path
 from typing import TypedDict, Union
 
 import colorlog
@@ -149,29 +151,52 @@ class ERC721Token(TypedDict):
 Token = Union[ERC20Token, ERC721Token]
 
 
-def upload_and_get_cid(input, is_file_path):
-    """Uploads content to Lighthouse and retrieves the content identifier (CID)."""
-    lh = Lighthouse(os.getenv("LIGHTHOUSE_TOKEN"))
-    if is_file_path:
-        file_path = input
+def compress(input_path: str):
+    """Compresses the given folder path into a tar file.
+
+    The tar file is saved in the same folder as the input_path.
+    """
+    input_path = Path(input_path)
+    output_path = str(input_path.parent / f"{input_path.name}.tar")
+
+    with tarfile.open(output_path, "w") as tar:
+        for item in input_path.iterdir():
+            # Add files and subdirectories to the tar file
+            tar.add(item, arcname=item.name)
+
+    logging.info(f"Compressed '{input_path}' into '{output_path}'.")
+    return output_path
+
+
+def validate_input_path(input_path: str):
+    """Validates the given input path."""
+    if not os.path.exists(input_path):
+        raise ValueError(f"The path '{input_path}' does not exist.")
+    elif os.path.isfile(input_path):
+        return input_path
+    elif os.path.isdir(input_path):
+        return compress(input_path)
     else:
-        if not isinstance(input, str):
-            raise ValueError
+        raise ValueError(f"The path '{input_path}' is neither a file nor a folder.")
 
-        if not os.path.exists("tmp"):
-            os.makedirs("tmp")
 
-        file_path = "tmp/job_input.txt"
-        rw.write(input, file_path)
+def upload_and_get_url(input_path: str):
+    """Uploads content to Lighthouse and retrieves the url with content identifier (CID)."""
+    if input_path is None:
+        return ""
+    file_path = validate_input_path(input_path)
+
+    lh = Lighthouse(os.getenv("LIGHTHOUSE_TOKEN"))
     try:
         response = lh.upload(file_path)
         cid = response["data"]["Hash"]
     except Exception:
         logging.error("Lighthouse Error occurred.", exc_info=True)
         raise
-    logging.info(f"https://gateway.lighthouse.storage/ipfs/{cid}")
 
-    return cid
+    url = f"https://gateway.lighthouse.storage/ipfs/{cid}"
+    logging.info(url)
+    return url
 
 
 def create_offer_tokens(tokens_data: list) -> Token:
@@ -202,7 +227,9 @@ def create_offer_tokens(tokens_data: list) -> Token:
     return offer_tokens
 
 
-def parse_initial_offer(job_path, job_input_path, tokens_data):
+def parse_initial_offer(
+    job_path, job_input_volume_path, job_input_variables, tokens_data
+):
     """Parses an initial offer for a compute job, including the job type, job content, and associated tokens.
 
     This function determines the job type based on the file extension of the provided job path, uploads the job to Lighthouse,
@@ -216,12 +243,15 @@ def parse_initial_offer(job_path, job_input_path, tokens_data):
         logging.error(f"Unsupported job type for file {job_path}.")
         raise
 
-    job_cid = upload_and_get_cid(job_path, is_file_path=True)
-    job_input = rw.read(job_input_path)
+    job_url = upload_and_get_url(job_path)
+    job_input_volume_url = upload_and_get_url(job_input_volume_path)
 
-    job_input_cid = upload_and_get_cid(job_input, is_file_path=False)
-
-    query = {"job_type": job_type, "job_cid": job_cid, "job_input_cid": job_input_cid}
+    query = {
+        "job_type": job_type,
+        "job_url": job_url,
+        "job_input_volume_url": job_input_volume_url,
+        "job_input_variables": job_input_variables,
+    }
 
     data = {
         "_tag": "offer",
