@@ -39,7 +39,7 @@ docs:
 
 .PHONY: test
 test:
-	uv run pytest -c pyproject.toml tests/
+	uv run pytest -c pyproject.toml tests/ --cov=./ --cov-report=xml
 
 .PHONY: diagram
 diagram:
