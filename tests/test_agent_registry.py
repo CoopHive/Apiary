@@ -5,6 +5,8 @@ from apiary.agent_registry import get_agent
 
 from apiary import buyer, seller, shared
 
+os.environ["LIGHTHOUSE_TOKEN"] = "tmp"
+
 
 # Test case to check if the agent is returned correctly for a known buyer
 def test_get_buyer_naive():
