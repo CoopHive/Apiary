@@ -260,3 +260,6 @@ package-lock.json
 results/
 *.csv
 *.png
+
+jobs
+!jobs/docker/cowsay.Dockerfile
